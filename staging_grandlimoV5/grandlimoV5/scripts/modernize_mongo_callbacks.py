@@ -198,7 +198,7 @@ def wrap_await(indent: str, result_name: str, await_expr: str, body: str) -> str
         )
     return (
         f"{indent}try {{\n"
-        f"{inner}const {result_name} = await {await_expr};\n"
+        f"{inner}let {result_name} = await {await_expr};\n"
         f"{body_block}\n"
         f"{indent}}} catch (err) {{\n"
         f"{inner}console.log(err);\n"

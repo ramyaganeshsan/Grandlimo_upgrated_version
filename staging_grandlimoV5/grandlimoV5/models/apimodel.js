@@ -313,7 +313,7 @@ exports.driver_login = async function (q, data) {
 
   var collection = db.get().collection(t.MDB_PEOPLE);
     try {
-    const results = await collection.find(match_array, project).toArray();
+    const results = await collection.find(match_array, { projection: project }).toArray();
         deferred.resolve(results);
   
   } catch (err) {
@@ -801,7 +801,7 @@ exports.getVideoURL = async function (q) {
   var collection = db.get().collection(t.MDB_SITEINFO);
     try {
     const results = await collection
-    .find({}, { tab_video: 1, version: 1 }).toArray();
+    .find({}, { projection: { tab_video: 1, version: 1 } }).toArray();
           //console.log('results',results);
           deferred.resolve(results);
     
@@ -818,10 +818,7 @@ exports.get_driver_status = async function (q, driver_id) {
   var collection = db.get().collection(t.MDB_PEOPLE);
     try {
     const results = await collection
-    .find(
-      { _id: parseInt(driver_id), user_type: "D" },
-      { _id: 1, login_status: 1, status: 1 }
-    ).toArray();
+    .find({ _id: parseInt(driver_id), user_type: "D" }, { projection: { _id: 1, login_status: 1, status: 1 } }).toArray();
           //console.log('status',results);
           deferred.resolve(results);
     
@@ -869,10 +866,7 @@ exports.check_driver_location_update = async function (q, trip_id) {
   var collection = db.get().collection(t.MDB_DRIVER_LOCATION_HISTORY);
     try {
     const results = await collection
-    .find(
-      { trip_id: parseInt(trip_id) },
-      { "loc.coordinates": 1, distance: 1, _id: 1 }
-    ).toArray();
+    .find({ trip_id: parseInt(trip_id) }, { projection: { "loc.coordinates": 1, distance: 1, _id: 1 } }).toArray();
           //console.log('resultscheck',results);
           deferred.resolve(results);
     
@@ -890,7 +884,7 @@ exports.last_driver_location_update = async function (q) {
   var collection = db.get().collection(t.MDB_DRIVER_LOCATION_HISTORY);
     try {
     const results = await collection
-    .find({}, { _id: -1 })
+    .find({})
     .sort({ _id: -1 })
     .limit(1).toArray();
           deferred.resolve(results);
@@ -1084,13 +1078,11 @@ exports.get_auto_id = async function (q, table_name) {
 
   var collection = db.get().collection(table_name);
     try {
-    const results = await collection
-    .find({}, { _id: -1 })
+    let results = await collection
+    .find({})
     .sort({ _id: -1 })
     .limit(1).toArray();
-          if (results.length > 0) {
-            results = results;
-          } else {
+          if (!results.length) {
             results = [{ _id: 0 }];
           }
           deferred.resolve(results);
@@ -1174,7 +1166,7 @@ exports.ifTaxiReachService = async function (q, km) {
   var collection = db.get().collection(t.MDB_TAXI_SERVICE_RANGE);
     try {
     const results = await collection
-    .find(condition, { km: 1, label: 1, _id: 1 }).toArray();
+    .find(condition, { projection: { km: 1, label: 1, _id: 1 } }).toArray();
           //console.log('results',results);
           deferred.resolve(results);
     
@@ -1234,7 +1226,7 @@ exports.check_taxi_assign = async function (q, taxi_id) {
 
   var collection = db.get().collection(t.MDB_TAXIMAPPING);
     try {
-    const results = await collection.find(condition, { _id: 1 }).toArray();
+    const results = await collection.find(condition, { projection: { _id: 1 } }).toArray();
         //console.log('results',results);
         deferred.resolve(results);
   
@@ -1256,7 +1248,7 @@ exports.check_driver_assign = async function (q, driver_id) {
 
   var collection = db.get().collection(t.MDB_TAXIMAPPING);
     try {
-    const results = await collection.find(condition, { _id: 1 }).toArray();
+    const results = await collection.find(condition, { projection: { _id: 1 } }).toArray();
         //console.log('results',results);
         deferred.resolve(results);
   
@@ -1334,10 +1326,7 @@ exports.get_passenger_status = async function (q, userid) {
   var collection = db.get().collection(t.MDB_PASSENGERS);
     try {
     const results = await collection
-    .find(
-      { _id: parseInt(userid), user_status: "A" },
-      { _id: 1, login_status: 1, status: 1 }
-    ).toArray();
+    .find({ _id: parseInt(userid), user_status: "A" }, { projection: { _id: 1, login_status: 1, status: 1 } }).toArray();
           //console.log('status',results);
           deferred.resolve(results);
     
@@ -1356,7 +1345,7 @@ exports.taxino_isValid = async function (q, taxi_no) {
   //console.log(taxi_no);
     try {
     const results = await collection
-    .find({ taxi_no: taxi_no }, { _id: 1, starting_km: 1 }).toArray();
+    .find({ taxi_no: taxi_no }, { projection: { _id: 1, starting_km: 1 } }).toArray();
           //console.log('status',results);
           deferred.resolve(results);
     
@@ -1373,7 +1362,7 @@ exports.taxi_details = async function (q, taxi_id) {
   var collection = db.get().collection(t.MDB_TAXI);
     try {
     const results = await collection
-    .find({ _id: parseInt(taxi_id) }, { _id: 1, starting_km: 1 }).toArray();
+    .find({ _id: parseInt(taxi_id) }, { projection: { _id: 1, starting_km: 1 } }).toArray();
           //console.log('status',results);
           deferred.resolve(results);
     
@@ -2507,17 +2496,14 @@ exports.get_promocode_details = async function (q, promocode) {
   var collection = db.get().collection(t.MDB_PASSENGERS_PROMO);
     try {
     const results = await collection
-    .find(
-      { promocode: promocode },
-      {
+    .find({ promocode: promocode }, { projection: {
         promocode: 1,
         package: 1,
         promo_used: 1,
         promo_limit: 1,
         total_used: 1,
         total_applied: 1,
-      }
-    ).toArray();
+      } }).toArray();
           deferred.resolve(results);
     
   } catch (err) {
@@ -2533,10 +2519,7 @@ exports.coupon_package_details = async function (q, package) {
   var collection = db.get().collection(t.MDB_COUPON_PACKAGE);
     try {
     const results = await collection
-    .find(
-      { _id: package },
-      { passenger_commission: 1, corporate_commission: 1 }
-    ).toArray();
+    .find({ _id: package }, { projection: { passenger_commission: 1, corporate_commission: 1 } }).toArray();
           deferred.resolve(results);
     
   } catch (err) {
@@ -2616,10 +2599,7 @@ exports.gateway_details = async function (q) {
   var collection = db.get().collection(t.MDB_PAYMENT_MODULES);
     try {
     const results = await collection
-    .find(
-      { _id: { $in: [6, 1, 3] } },
-      { _id: 1, pay_mod_name: 1, pay_mod_default: 1 }
-    )
+    .find({ _id: { $in: [6, 1, 3] } }, { projection: { _id: 1, pay_mod_name: 1, pay_mod_default: 1 } })
     .sort({ _id: 1 }).toArray();
           deferred.resolve(results);
     
@@ -2822,13 +2802,13 @@ exports.knet_details = async function (q) {
   var collection = db.get().collection(t.MDB_PAYMENT_GATEWAYS);
     try {
     const results = await collection
-    .find(match_array, {
+    .find(match_array, { projection: {
       _id: 1,
       knet_alias: 1,
       payment_method: 1,
       knet_response_url: 1,
       knet_error_url: 1,
-    }).toArray();
+    } }).toArray();
           deferred.resolve(results);
     
   } catch (err) {
@@ -2934,13 +2914,13 @@ exports.current_driver_request = async function (q, trip_id, driver_id) {
   var collection = db.get().collection(t.MDB_DRIVER_REQUEST_DETAILS);
     try {
     const results = await collection
-    .find(match_array, {
+    .find(match_array, { projection: {
       _id: 1,
       available_drivers: 1,
       total_drivers: 1,
       rejected_timeout_drivers: 1,
       status: 1,
-    }).toArray();
+    } }).toArray();
           deferred.resolve(results);
     
   } catch (err) {
@@ -3002,13 +2982,13 @@ exports.get_ratings_info = async function (q) {
   var collection = db.get().collection(t.MDB_RATINGS);
     try {
     const results = await collection
-    .find(match_array, {
+    .find(match_array, { projection: {
       ratings_no: 1,
       ratings_title: 1,
       ratings_title_ar: 1,
       ratings_tags: 1,
       ratings_tags_ar: 1,
-    }).toArray();
+    } }).toArray();
           deferred.resolve(results);
     
   } catch (err) {
@@ -3874,7 +3854,7 @@ exports.driver_current_trip = async function (q, driver_id) {
   var collection = db.get().collection(t.MDB_PASSENGERSLOG);
     try {
     const results = await collection
-    .find(match_array, {})
+    .find(match_array)
     .limit(1).toArray();
           //console.log('results',results);
           deferred.resolve(results);

@@ -297,12 +297,12 @@ exports.check_phone_passengers = async function (q, phone) {
   var collection = db.get().collection(t.MDB_PASSENGERS);
     try {
     const results = await collection
-    .find(match_array, {
+    .find(match_array, { projection: {
       _id: 1,
       phone: 1,
       user_status: 1,
       showOTPOnApp: 1,
-    }).toArray();
+    } }).toArray();
           deferred.resolve(results);
     
   } catch (err) {
@@ -1264,7 +1264,7 @@ exports.passenger_current_trip = async function (q, passenger_id) {
 
   var collection = db.get().collection(t.MDB_PASSENGERSLOG);
     try {
-    const results = await collection.find(match_array, {}).toArray();
+    const results = await collection.find(match_array).toArray();
         deferred.resolve(results);
   
   } catch (err) {
@@ -1472,7 +1472,7 @@ exports.check_fav_exists = async function (q, input_array) {
   //console.log('match',match_array);
   var collection = db.get().collection(t.MDB_PASSENGERS_FAVOURITES);
     try {
-    const results = await collection.find(match_array, {}).toArray();
+    const results = await collection.find(match_array).toArray();
         //console.log('fav err',results);
         deferred.resolve(results);
   
@@ -1504,7 +1504,7 @@ exports.check_fav_type_exists = async function (q, input_array) {
 
   var collection = db.get().collection(t.MDB_PASSENGERS_FAVOURITES);
     try {
-    const results = await collection.find(match_array, {}).toArray();
+    const results = await collection.find(match_array).toArray();
         deferred.resolve(results);
   
   } catch (err) {
@@ -1567,7 +1567,7 @@ exports.check_fav_exists_id = async function (q, id) {
 
   var collection = db.get().collection(t.MDB_PASSENGERS_FAVOURITES);
     try {
-    const results = await collection.find(match_array, {}).toArray();
+    const results = await collection.find(match_array).toArray();
         deferred.resolve(results);
   
   } catch (err) {
@@ -2043,7 +2043,7 @@ exports.passenger_current_trips = async function (q, id) {
 
   var collection = db.get().collection(t.MDB_PASSENGERSLOG);
     try {
-    const results = await collection.find(match_array, {}).toArray();
+    const results = await collection.find(match_array).toArray();
         deferred.resolve(results);
   
   } catch (err) {
@@ -2101,7 +2101,7 @@ exports.promocode_details = async function (q, promocode) {
   var collection = db.get().collection(t.MDB_PASSENGER_PROMO);
     try {
     const results = await collection
-    .find(match_array, {
+    .find(match_array, { projection: {
       promocode: 1,
       promo_discount: 1,
       promo_used: 1,
@@ -2113,7 +2113,7 @@ exports.promocode_details = async function (q, promocode) {
       corporate_promocode: 1,
       /* Sasidharan June 12 2024 */
       skipCard: 1,
-    }).toArray();
+    } }).toArray();
           deferred.resolve(results);
     
   } catch (err) {
@@ -2146,7 +2146,7 @@ exports.promocode_details_by_phone = async function (q, promocode, phone) {
   var collection = db.get().collection(t.MDB_PASSENGER_PROMO);
     try {
     const results = await collection
-    .find(match_array, {
+    .find(match_array, { projection: {
       promocode: 1,
       promo_discount: 1,
       promo_used: 1,
@@ -2158,7 +2158,7 @@ exports.promocode_details_by_phone = async function (q, promocode, phone) {
       corporate_promocode: 1,
       /* Sasidharan June 12 2024 */
       skipCard: 1,
-    }).toArray();
+    } }).toArray();
           deferred.resolve(results);
     
   } catch (err) {
@@ -2184,7 +2184,7 @@ exports.check_passenger_trips = async function (q, id) {
 
   var collection = db.get().collection(t.MDB_PASSENGERSLOG);
     try {
-    const results = await collection.find(match_array, {}).toArray();
+    const results = await collection.find(match_array).toArray();
         deferred.resolve(results);
   
   } catch (err) {
@@ -2271,7 +2271,7 @@ exports.get_driver_availability = async function (q, driver_id, pickup_time) {
   var collection = db.get().collection(t.MDB_PASSENGERSLOG);
     try {
     const results = await collection
-    .find(match_array, {
+    .find(match_array, { projection: {
       promocode: 1,
       promo_discount: 1,
       promo_used: 1,
@@ -2280,7 +2280,7 @@ exports.get_driver_availability = async function (q, driver_id, pickup_time) {
       promo_limit: 1,
       total_applied: 1,
       total_used: 1,
-    }).toArray();
+    } }).toArray();
           deferred.resolve(results);
     
   } catch (err) {
@@ -2363,7 +2363,7 @@ exports.get_last_logid = async function (q) {
   var collection = db.get().collection(t.MDB_SITEINFO);
     try {
     const results = await collection
-    .find(match_array, { last_logid: 1 }).toArray();
+    .find(match_array, { projection: { last_logid: 1 } }).toArray();
           deferred.resolve(results);
     
   } catch (err) {
@@ -2384,7 +2384,7 @@ exports.get_sublogid = async function (q, sublog_id) {
   var collection = db.get().collection(t.MDB_PASSENGERSLOG);
     try {
     const results = await collection
-    .find(match_array, { sub_logid: 1 }).toArray();
+    .find(match_array, { projection: { sub_logid: 1 } }).toArray();
           deferred.resolve(results);
     
   } catch (err) {
@@ -3782,7 +3782,7 @@ exports.check_passenger_in_book_now = async function (
   var collection = db.get().collection(t.MDB_PASSENGERSLOG);
     try {
     const results = await collection
-    .find(match_array, { pickup_time: 1, _id: 1, confirm_flag: 1 }).toArray();
+    .find(match_array, { projection: { pickup_time: 1, _id: 1, confirm_flag: 1 } }).toArray();
           console.error("results : ", results);
           deferred.resolve(results);
     
@@ -3802,13 +3802,13 @@ exports.get_ratings_info = async function (q) {
   var collection = db.get().collection(t.MDB_RATINGS);
     try {
     const results = await collection
-    .find(match_array, {
+    .find(match_array, { projection: {
       ratings_no: 1,
       ratings_title: 1,
       ratings_title_ar: 1,
       ratings_tags: 1,
       ratings_tags_ar: 1,
-    }).toArray();
+    } }).toArray();
           deferred.resolve(results);
     
   } catch (err) {
@@ -3828,7 +3828,7 @@ exports.trip_pay_details = async function (q, trip_id) {
 
   var collection = db.get().collection(t.MDB_PAYDETAILS);
     try {
-    const results = await collection.find(match_array, {}).toArray();
+    const results = await collection.find(match_array).toArray();
         deferred.resolve(results);
   
   } catch (err) {
@@ -3849,12 +3849,12 @@ exports.check_confirmed_status = async function (q, trip_id) {
   var collection = db.get().collection(t.MDB_PASSENGERSLOG);
     try {
     const results = await collection
-    .find(match_array, {
+    .find(match_array, { projection: {
       travel_status: 1,
       confirm_flag: 1,
       book_type: 1,
       driver_reply: 1,
-    }).toArray();
+    } }).toArray();
           deferred.resolve(results);
     
   } catch (err) {
@@ -4275,7 +4275,7 @@ exports.get_cms_content = async function (q, menu) {
 
   var collection = db.get().collection(t.MDB_CMS);
     try {
-    const results = await collection.find(match_array, {}).toArray();
+    const results = await collection.find(match_array).toArray();
         deferred.resolve(results);
   
   } catch (err) {
@@ -5685,7 +5685,7 @@ exports.complete_trip_available = async function (q, passenger_id) {
   var collection = db.get().collection(t.MDB_LOGS_COMPLETED);
     try {
     const results = await collection
-    .find(match_array, { _id: 1 })
+    .find(match_array, { projection: { _id: 1 } })
     .limit(1).toArray();
           deferred.resolve(results);
     
@@ -6350,7 +6350,7 @@ exports.check_airport_zone = async function (q, longitude, latitude) {
   var collection = db.get().collection(t.MDB_ZONES);
     try {
     const results = await collection
-    .find(match_array, { _id: 1 })
+    .find(match_array, { projection: { _id: 1 } })
     .limit(1).toArray();
           deferred.resolve(results);
     
@@ -6382,7 +6382,7 @@ exports.check_zone_service = async function (q, longitude, latitude) {
   var collection = db.get().collection(t.MDB_ZONES);
     try {
     const results = await collection
-    .find(match_array, { _id: 1 })
+    .find(match_array, { projection: { _id: 1 } })
     .limit(1).toArray();
           deferred.resolve(results);
     
@@ -6421,7 +6421,7 @@ exports.search_zone_service = async function (q, longitude, latitude, is_drop) {
   var collection = db.get().collection(t.MDB_ZONES);
     try {
     const results = await collection
-    .find(match_array, { _id: 1 })
+    .find(match_array, { projection: { _id: 1 } })
     .limit(1).toArray();
           deferred.resolve(results);
     
@@ -6486,7 +6486,7 @@ exports.get_zone_fare = async function (q, zone_id, model_id) {
   var collection = db.get().collection(t.MDB_ZONE_FARE);
     try {
     const results = await collection
-    .find(match_array, { _id: 1, zone_fixed_fare: 1 }).toArray();
+    .find(match_array, { projection: { _id: 1, zone_fixed_fare: 1 } }).toArray();
           deferred.resolve(results);
     
   } catch (err) {
@@ -6682,7 +6682,7 @@ exports.get_passenger_group_details = async function (q, passenger_id) {
   };
   var collection = db.get().collection(t.MDB_CORPORATE_GROUP_NEW);
     try {
-    const results = await collection.find(filter, {}).toArray();
+    const results = await collection.find(filter).toArray();
         deferred.resolve(results);
   
   } catch (err) {
