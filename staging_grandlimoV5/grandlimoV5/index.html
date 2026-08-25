@@ -1,0 +1,121 @@
+<html>
+    <head>
+        <meta charset="UTF-8">
+<!--         <script src="https://ajax.googleapis.com/ajax/libs/prototype/1.7.2.0/prototype.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/scriptaculous/1.9.0/scriptaculous.js"></script> -->
+        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.6/angular.min.js"></script>
+
+        <title></title>
+        <style>
+            div {
+                width: 100%;float: left;overflow-wrap: normal;overflow-y: scroll;height: 450px;margin: 5px 5px 5px 5px;
+                background-color: activecaption;"
+                }
+            </style>
+        </head>
+        <body  ng-app="livetrackerapp">
+
+            <table ng-controller="livetrackerctrl" width="100%" border="1">
+                <tr>
+                <td>
+                <select ng-model="search.driver_id" >
+					<option>driver ID</option>
+                    <option ng-repeat="item in data_list | unique:'driver_id'">{{item.driver_id}} {{item.driver_number}}</option>
+                </select>
+                </td>
+                <td>
+                 <select ng-model="search.driver_pack" >
+					<option>Driver Pack</option>
+                    <option ng-repeat="item in data_list | unique:'driver_pack'">{{item.driver_pack}}</option>
+                </select>
+                </td>
+                </tr>
+                <tr>
+                    <td>Driver ID</td>
+                    <td>Driver Phone</td>
+                    <td>Location</td>
+                    <td>Timestamp</td>
+                </tr>
+                <tr ng-repeat="item in data_list | filter:search | reverse">
+                    <td>{{item.driver_id}}</td>
+                    <td>{{item.driver_number}}</td>
+                    <td>{{item.locations}}</td>
+                    <td>{{item.timestamp}}</td>
+                </tr>
+
+            </table>
+
+<!--              DRIVER LOCATION RESPONSE
+            <div id="Driverlocationresponse"></div>
+            <br/>
+            ERRORS
+            <div id="errors" ></div>
+            <script type="text/javascript">
+                function update()
+                {
+                    new Ajax.PeriodicalUpdater("Driverlocationresponse", "tailer.php", {method: 'get', frequency: 5});
+        
+                }
+                setTimeout("update();", 3000);
+            </script>
+ -->        </body>
+    </html>
+
+<script>
+
+var app = angular.module('livetrackerapp',[]);
+
+app.controller('livetrackerctrl',livetrackerctrl);
+
+app.filter('unique', function() {
+   // we will return a function which will take in a collection
+   // and a keyname
+   return function(collection, keyname) {
+      // we define our output and keys array;
+      var output = [], 
+          keys = [];
+      
+      // we utilize angular's foreach function
+      // this takes in our original collection and an iterator function
+      angular.forEach(collection, function(item) {
+          // we check to see whether our object exists
+          var key = item[keyname];
+          // if it's not already part of our keys array
+          if(keys.indexOf(key) === -1) {
+              // add it to our keys array
+              keys.push(key); 
+              // push this item to our final output array
+              output.push(item);
+          }
+      });
+      // return our array which should be devoid of
+      // any duplicates
+      return output;
+   };
+});
+
+app.filter('reverse', function() {
+  return function(items) {
+    return items.slice().reverse();
+  };
+});
+
+function livetrackerctrl ($scope, $http, $log, $q) {
+
+$scope.data_list=[];
+ var getdata = function() {
+   return $http.get('tailer.php')
+     .then(function(res) {
+		  console.log("result",res);
+		  $scope.data_list=res.data;
+      return res.data;
+    })
+ }
+
+setInterval(function($scope){
+	getdata();
+ }, 3000);
+
+}
+
+</script>

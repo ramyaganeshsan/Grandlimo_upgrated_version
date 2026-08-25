@@ -1,0 +1,997 @@
+<?php
+defined('SYSPATH') OR die("No direct access allowed.");
+
+/* Sasidharan Feb 06 2023 */
+$surgePriceOnWeekDays = isset($site_settings[0]['surge_on_week_days']) ? $site_settings[0]['surge_on_week_days'] : [];
+
+?>
+<!-- Sasidharan june 20 2022 -->
+<!-- time picker start-->
+<link rel="stylesheet" href="<?php echo URL_BASE;?>public/js/datetimehrspicker/jquery-ui-1.8.11.custom/css/ui-lightness/jquery-ui-1.8.11.custom.css" />
+<script defer src="<?php echo URL_BASE;?>public/js/datetimehrspicker/jquery-ui-1.8.11.custom/js/jquery-1.5.1.min.js"></script>
+<script defer src="<?php echo URL_BASE;?>public/js/datetimehrspicker/jquery-ui-1.8.11.custom/js/jquery-ui-1.8.11.custom.min.js"></script>
+<script defer src="<?php echo URL_BASE;?>public/js/datetimehrspicker/jquery-ui-timepicker-addon.js"></script>
+
+<script type="text/javascript" src="<?php echo URL_BASE;?>public/js/validation/jquery-1.6.3.min.js"></script>
+<script type="text/javascript" src="<?php echo URL_BASE;?>public/js/validation/jquery.validate.js"></script>
+<div class="container_content fl clr">
+    <div class="cont_container mt15 mt10">
+       <div class="content_middle"> 
+            <form method="POST" enctype="multipart/form-data" class="form" action="" name="settings" id="settings" >
+                <table class="0" cellpadding="5" cellspacing="0" width="85%">
+                    <tr>
+                        <td valign="top" width="20%"><label><?php echo __('site_name_label'); ?></label><span class="star">*</span></td>   
+                        <td><div class="new_input_field" style="width:400px;"><input type="text" name="app_name" id="app_name" title="<?php echo __('enter_site_name'); ?>" maxlength="250" value="<?php echo isset($site_settings) &&!array_key_exists('app_name',$postvalue)? trim($site_settings[0]['app_name']):$postvalue['app_name']; ?>"></div>
+                    <?php if(isset($errors) && array_key_exists('app_name',$errors)){ echo "<span class='error'>".ucfirst($errors['app_name'])."</span>";}?>
+                    </tr>
+
+                    <tr>
+                        <td valign="top" width="20%"><label><?php echo __('site_description_label'); ?></label><span class="star">*</span></td>   
+                        <td><div class="new_input_field" style="width:400px;"><textarea type="text" name="app_description" id="app_description" rows="7" cols="35" style="resize:none;" title="<?php echo __('enter_site_description'); ?>" value=""><?php echo isset($site_settings) && (!array_key_exists('app_description', $errors)) ? trim($site_settings[0]['app_description']) : trim($validator['app_description']); ?></textarea></div>
+                            <span class="error"><?php echo isset($errors['app_description']) ? $errors['app_description'] : ''; ?></span>
+                        </td>
+
+                    </tr> 
+                    
+                    <tr>
+                        <td valign="top" width="20%"><label><?php echo __('site_tagline_label'); ?></label><span class="star">*</span></td>   
+                        <td>
+				<div class="new_input_field" style="width:400px;">
+					<input type="text" name="site_tagline" id="site_tagline" title="<?php echo __('enter_site_tagline'); ?>" maxlength="50" value="<?php echo isset($site_settings) &&!array_key_exists('site_tagline',$postvalue)? trim($site_settings[0]['site_tagline']):$postvalue['site_tagline']; ?>">
+				</div>
+				<?php if(isset($errors) && array_key_exists('site_tagline',$errors)){ echo "<span class='error'>".ucfirst($errors['site_tagline'])."</span>";}?>
+			</td>
+                    </tr>                              
+
+
+                    <tr>
+                        <td valign="top" width="20%"><label><?php echo __('contact_email_label'); ?></label><span class="star">*</span></td>   
+                        <td><div class="new_input_field" style="width:400px;"><input type="text" name="contact_email" id="contact_email" title="<?php echo __('enter_contact_email'); ?>" maxlength="30" value="<?php echo isset($site_settings) && (!array_key_exists('email_id', $errors)) ? $site_settings[0]['email_id'] : $validator['email_id']; ?>"></div>
+                            <span class="error"><?php echo isset($errors['contact_email']) ? $errors['contact_email'] : ''; ?></span></td>
+                    </tr>
+
+                    <tr>
+                        <td valign="top" width="20%"><label><?php echo __('contact_phone_label'); ?></label><span class="star">*</span></td>   
+                        <td><div class="new_input_field" style="width:400px;"><input type="text" name="phone_number" id="phone_number"  title="<?php echo __('enter_phone_number'); ?>" maxlength="30" value="<?php echo isset($site_settings) && (!array_key_exists('phone_number', $errors)) ? $site_settings[0]['phone_number'] : $validator['phone_number']; ?>"></div>
+                            <span class="error"><?php echo isset($errors['phone_number']) ? $errors['phone_number'] : ''; ?></span></td>
+                    </tr>
+                    <tr>
+                        <td valign="top" width="20%"><label><?php echo __('pagination_settings'); ?></label><span class="star">*</span></td>   
+                        <td>
+							<div class="formRight">
+					<div class="selector" id="uniform-user_type">
+						<select name="pagination_settings" id="pagination_settings" title="<?php echo __('select_pagination'); ?>" >
+							<option value="">-- Select --</option>
+							<option value="10" <?php if($site_settings[0]['pagination_settings'] == '10') { echo 'selected=selected'; } ?> ><?php echo __('10');?></option>
+							<option value="20" <?php if($site_settings[0]['pagination_settings'] == '20') { echo 'selected=selected'; } ?> ><?php echo __('20');?></option>
+							<option value="30" <?php if($site_settings[0]['pagination_settings'] == '30') { echo 'selected=selected'; } ?> ><?php echo __('30');?></option>
+							<option value="40" <?php if($site_settings[0]['pagination_settings'] == '40') { echo 'selected=selected'; } ?> ><?php echo __('40');?></option>
+							<option value="50" <?php if($site_settings[0]['pagination_settings'] == '50') { echo 'selected=selected'; } ?> ><?php echo __('50');?></option>
+						<?php echo isset($site_settings) && (!array_key_exists('pagination_settings', $errors)) ? $site_settings[0]['pagination_settings'] : $validator['pagination_settings']; ?></select>
+						</div>
+						<span class="error"><?php echo isset($errors['pagination_settings']) ? $errors['pagination_settings'] : ''; ?></span>
+					</div>
+                        </td>
+                    </tr>
+                     <tr style="display:none;">
+                        <td valign="top" width="20%"><label><?php echo __('notification_settings_label'); ?></label><span class="star">*</span></td>   
+                        <td>
+							<div class="new_input_field" style="width:400px;">
+								<input type="text" name="notification_settings" class="required chk onlynumbers onlyseconds" id="notification_settings"  maxlength="3" value="<?php echo isset($site_settings) && (!array_key_exists('notification_settings', $errors)) ? $site_settings[0]['notification_settings'] : $validator['notification_settings']; ?>"></div>
+								<span class="error"><?php echo isset($errors['notification_settings']) ? $errors['notification_settings'] : ''; ?></span>
+								<span class="textclass fl clr"><?php echo __('notification_settings_upto'); ?></span>
+                           </td>
+                    </tr>
+                  <?php /*   <tr>
+                        <td valign="top" width="20%"><label><?php echo __('tell_to_friend_message'); ?></label><span class="star">*</span></td>   
+                        <td><div class="new_input_field" style="width:400px;"><textarea rows="5" cols="35" style="resize:none;" name="tell_to_friend_message" id="tell_to_friend_message"  title="<?php echo __('enter_tell_to_friend_message'); ?>" maxlength="150"><?php echo isset($site_settings) && (!array_key_exists('tell_to_friend_message', $errors)) ? $site_settings[0]['tell_to_friend_message'] : $validator['tell_to_friend_message']; ?></textarea></div>
+                            <span class="error"><?php echo isset($errors['tell_to_friend_message']) ? $errors['tell_to_friend_message'] : ''; ?></span>
+                            </td>
+                    </tr> */ ?>
+                    <tr>
+                        <td valign="top" width="20%"><label><?php echo __('meta_key_label'); ?></label><span class="star">*</span></td>   
+                        <td><div class="new_input_field" style="width:400px;">
+			<textarea name="meta_keyword" id="meta_keyword" rows="7" cols="35" title="<?php echo __('enter_meta_keywords'); ?>" style="resize:none;"><?php echo isset($site_settings) && (!array_key_exists('meta_keyword', $errors)) ? trim($site_settings[0]['meta_keyword']) : trim($validator['meta_keyword']); ?></textarea>
+			</div>
+                            <span class="error"><?php echo isset($errors['meta_keyword']) ? $errors['meta_keyword'] : ''; ?></span></td>
+                    </tr>
+                    
+                    <tr>
+                        <td valign="top" width="20%"><label><?php echo __('meta_desc_label'); ?></label><span class="star">*</span></td>   
+                        <td><div class="new_input_field" style="width:400px;">
+                        <textarea name="meta_description" id="meta_description" rows="7" cols="35" title="<?php echo __('enter_meta_description'); ?>" style="resize:none;"><?php echo isset($site_settings) && (!array_key_exists('meta_description', $errors)) ? trim($site_settings[0]['meta_description']) : trim($validator['meta_description']); ?></textarea>
+			</div>
+                            <span class="error"><?php echo isset($errors['meta_description']) ? $errors['meta_description'] : ''; ?></span></td>
+                    </tr>
+
+                     <tr>
+                        <td valign="top" width="20%"><label><?php echo __('sms_enable'); ?></label><span class="star">*</span></td>   
+                        <td><div class="new_input_field">
+							<div class="formRight">
+								<div class="selector" id="uniform-user_type">
+									<select name="sms_enable" id="sms_enable" title="<?php echo __('sms_enable'); ?>" >
+										<option value="">-- Select --</option>
+										<option value="1" <?php if($site_settings[0]['sms_enable'] == '1') { echo 'selected=selected'; } ?> ><?php echo __('yes');?></option>
+										<option value="0" <?php if($site_settings[0]['sms_enable'] == '0') { echo 'selected=selected'; } ?> ><?php echo __('no');?></option>
+									<?php echo isset($site_settings) && (!array_key_exists('sms_enable', $errors)) ? $site_settings[0]['sms_enable'] : $validator['sms_enable']; ?></select>
+									</div>
+								</div>
+							</div>
+						    <span class="error"><?php echo isset($errors['sms_enable']) ? $errors['sms_enable'] : ''; ?></span></td>
+                    </tr>
+                    
+                   <?php /*  <tr>
+                        <td valign="top" width="20%"><label><?php echo __('default_unit'); ?></label><span class="star">*</span></td>   
+                        <td><div class="new_input_field">
+                        <?php $checked=isset($site_settings[0]['default_unit'])?$site_settings[0]['default_unit']:"1"; 
+						//echo $checked;?>
+                        <input type="radio" name="default_unit" id="default_unit" title="<?php echo __('enter_payment_method'); ?>"  value="0" <?php if($checked=='0'){ echo 'checked=checked';}?> ><?php echo 'Kilometer'; ?>
+                        
+                        <input type="radio" name="default_unit" id="default_unit" title="<?php echo __('enter_payment_method'); ?>"  value="1" <?php if($checked=='1'){ echo 'checked=checked';}?>><?php  echo 'Mile'; ?>
+                        </div>
+						<?php if(isset($errors) && array_key_exists('default_unit',$errors)){ echo "<span class='error'>".ucfirst($errors['default_unit'])."</span>";}?></td>
+                    </tr> */ ?>
+					<tr>
+                        <td valign="top" width="20%"><label><?php echo __('skip_credit_card'); ?></label><span class="star">*</span></td>   
+                        <td><div class="new_input_field">
+                        <?php $checked=isset($site_settings[0]['skip_credit_card'])?$site_settings[0]['skip_credit_card']:"1"; 
+						//echo $checked;?>
+                        <input type="radio" name="skip_credit_card" id="skip_credit_card" title="<?php echo __('select_skip_credit_card'); ?>"  value="1" <?php if($checked=='1'){ echo 'checked=checked';}?> ><?php echo 'Enable'; ?>
+                        
+                        <input type="radio" name="skip_credit_card" id="skip_credit_card" title="<?php echo __('select_skip_credit_card'); ?>"  value="0" <?php if($checked=='0'){ echo 'checked=checked';}?>><?php  echo 'Disable'; ?>
+                        </div>
+						<?php if(isset($errors) && array_key_exists('skip_credit_card',$errors)){ echo "<span class='error'>".ucfirst($errors['skip_credit_card'])."</span>";}?></td>
+                    </tr>
+                    
+                     <?php /*    <tr>
+                        <td valign="top" width="20%"><label><?php echo __('cancellation_fare'); ?></label><span class="star">*</span></td>   
+                        <td><div class="new_input_field">
+						<div class="formRight">
+							<div class="selector" id="uniform-user_type">
+								<?php $cancel_chk=isset($validator['cancellation_fare'])?$validator['cancellation_fare']:$site_settings[0]['cancellation_fare_setting']; 
+								//echo $cancel_chk;?>
+								<select name="cancellation_fare" id="cancellation_fare" class="required" title="<?php echo __('cancellation_fare'); ?>">
+									<option value=""><?php echo __('select_label'); ?></option>
+									<option value="1" <?php if($cancel_chk == 1) { echo 'selected=selected'; } ?> ><?php echo __('yes');?></option>
+									<option value="0" <?php if($cancel_chk == 0) { echo 'selected=selected'; } ?> ><?php echo __('no');?></option>
+								</select>
+								</div>
+							</div>
+						</div> 
+						<label for="cancellation_fare" generated="true" class="errorvalid" style="display:none"></label>
+						<span class="error"><?php echo isset($errors['cancellation_fare']) ? $errors['cancellation_fare'] : ''; ?></span></td>
+                    </tr>
+                <tr>
+						<td valign="top" width="20%"><label><?php echo __('fare_settings'); ?></label><span class="star">*</span></td>        
+						<td>
+							<div class="formRight">
+							<div id="uniform-user_type">
+							<div id="fare_settings">
+								<input type="radio" name="price_settings" value="1" <?php if($site_settings[0]['price_settings'] == 1) { echo 'checked = checked'; } ?> /> <?php echo __('admin_fare'); ?>
+								<input type="radio" name="price_settings" value="2" <?php if($site_settings[0]['price_settings'] == 2) { echo 'checked = checked'; } ?> /> <?php echo __('company_fare'); ?>
+							</div>	
+							</div>
+							</div>
+							<label for="fare_settings" generated="true" style="display:none" class="errorvalid"><?php echo __('select_fare_settings'); ?></label>	
+							 <?php if(isset($errors) && array_key_exists('fare_settings',$errors)){ echo "<span class='error'>".ucfirst($errors['fare_settings'])."</span>"; }?>
+						</td>   	
+					</tr> */ ?>
+					<tr>
+                        <td valign="top" width="20%"><label><?php echo __('fare_calculation'); ?></label><span class="star">*</span></td>   
+                        <td><div class="new_input_field">
+							<div class="formRight">
+								<div class="selector" id="uniform-user_type">
+									<select name="fare_calculation" id="fare_calculation" title="<?php echo __('fare_calculation'); ?>" >
+										<option value="">-- Select --</option>
+										<option value="1" <?php if($site_settings[0]['fare_calculation_type'] == '1') { echo 'selected=selected'; } ?> ><?php echo __('distance');?></option>
+										<option value="2" <?php if($site_settings[0]['fare_calculation_type'] == '2') { echo 'selected=selected'; } ?> ><?php echo __('time');?></option>
+									<?php echo isset($site_settings) && (!array_key_exists('fare_calculation', $errors)) ? $site_settings[0]['fare_calculation_type'] : $validator['fare_calculation']; ?></select>
+									</div>
+								</div>
+							</div>
+						    <span class="error"><?php echo isset($errors['fare_calculation']) ? $errors['fare_calculation'] : ''; ?></span></td>
+                    </tr>
+                    <?php /*
+						<tr>
+							<td valign="top" width="20%"><label><?php echo __('referral_settings'); ?></label><span class="star">*</span></td>        
+							<td>
+								<div class="formRight">
+								<div id="uniform-user_type">
+								<div id="referral_settings">
+									<input type="radio" name="referral_settings" value="1" <?php if($site_settings[0]['referral_settings'] == 1) { echo 'checked = checked'; } ?> /> <?php echo __('enable'); ?>
+									<input type="radio" name="referral_settings" value="2" <?php if($site_settings[0]['referral_settings'] == 2) { echo 'checked = checked'; } ?> /> <?php echo __('disable'); ?>
+								</div>	
+								</div>
+								</div>
+								<label for="referral_settings" generated="true" style="display:none" class="errorvalid"><?php echo __('select_referral_settings'); ?></label>	
+								 <?php if(isset($errors) && array_key_exists('referral_settings',$errors)){ echo "<span class='error'>".ucfirst($errors['referral_settings'])."</span>"; }?>
+							</td>   	
+						</tr>
+						
+						<tr>
+							<td valign="top" width="20%"><label><?php echo __('referral_amount'); ?></label><span class="star">*</span></td>   
+							<td>
+								<div class="new_input_field" style="width:400px;">
+									<input type="text" name="referral_amount" id="referral_amount"  title="<?php echo __('enter_referral_amount'); ?>" maxlength="5" value="<?php echo isset($site_settings) && (!array_key_exists('referral_amount', $errors)) ? $site_settings[0]['referral_amount'] : $validator['referral_amount']; ?>">
+								</div>
+								<span class="error"><?php echo isset($errors['referral_amount']) ? ucfirst($errors['referral_amount']) : ''; ?></span>
+							</td>
+						</tr>
+						
+						<tr>
+							<td valign="top" width="20%"><label><?php echo __('wallet_amount1'); ?></label><span class="star">*</span></td>   
+							<td>
+								<div class="new_input_field" style="width:400px;">
+									<input type="text" name="wallet_amount1" id="wallet_amount1"  title="<?php echo __('enter_wallet_amount'); ?>" maxlength="5" value="<?php echo isset($site_settings) && (!array_key_exists('wallet_amount1', $errors)) ? $site_settings[0]['wallet_amount1'] : $validator['wallet_amount1']; ?>">
+								</div>
+								<span class="error"><?php echo isset($errors['wallet_amount1']) ? ucfirst($errors['wallet_amount1']) : ''; ?></span>
+							</td>
+						</tr>
+						
+						<tr>
+							<td valign="top" width="20%"><label><?php echo __('wallet_amount2'); ?></label><span class="star">*</span></td>   
+							<td>
+								<div class="new_input_field" style="width:400px;">
+									<input type="text" name="wallet_amount2" id="wallet_amount2"  title="<?php echo __('enter_wallet_amount'); ?>" maxlength="5" value="<?php echo isset($site_settings) && (!array_key_exists('wallet_amount2', $errors)) ? $site_settings[0]['wallet_amount2'] : $validator['wallet_amount2']; ?>">
+								</div>
+								<span class="error"><?php echo isset($errors['wallet_amount2']) ? ucfirst($errors['wallet_amount2']) : ''; ?></span>
+							</td>
+						</tr>
+						
+						<tr>
+							<td valign="top" width="20%"><label><?php echo __('wallet_amount3'); ?></label><span class="star">*</span></td>   
+							<td>
+								<div class="new_input_field" style="width:400px;">
+									<input type="text" name="wallet_amount3" id="wallet_amount3"  title="<?php echo __('enter_wallet_amount'); ?>" maxlength="5" value="<?php echo isset($site_settings) && (!array_key_exists('wallet_amount3', $errors)) ? $site_settings[0]['wallet_amount3'] : $validator['wallet_amount3']; ?>">
+								</div>
+								<span class="error"><?php echo isset($errors['wallet_amount3']) ? ucfirst($errors['wallet_amount3']) : ''; ?></span>
+							</td>
+						</tr>
+						
+						<tr>
+							<td valign="top" width="20%"><label><?php echo __('wallet_amount_range'); ?></label><span class="star">*</span></td>   
+							<td>
+								<div class="new_input_field" style="width:400px;">
+									<input type="text" name="wallet_amount_range" id="wallet_amount_range"  title="<?php echo __('enter_wallet_amount_range'); ?>" maxlength="20" value="<?php echo isset($site_settings) && (!array_key_exists('wallet_amount_range', $errors)) ? $site_settings[0]['wallet_amount_range'] : $validator['wallet_amount_range']; ?>">
+								</div>
+								<span class="error"><?php echo isset($errors['wallet_amount_range']) ? ucfirst($errors['wallet_amount_range']) : ''; ?></span>
+							</td>
+						</tr> */ ?>
+                    <tr style="display:none;"> 
+                        <td valign="top" width="20%"><label><?php echo __('site_map'); ?></label><span class="star">*</span></td>   
+                        <td><div class="new_input_field">
+				<div class="formRight">
+					<div class="selector" id="uniform-user_type">
+						<select name="show_map" id="show_map" title="<?php echo __('enter_site_map'); ?>" >
+							<option value="">-- Select --</option>
+							<option value="1" <?php if($site_settings[0]['show_map'] == '1') { echo 'selected=selected'; } ?>><?php echo __('front_end'); ?></option>
+							<option value="2" <?php if($site_settings[0]['show_map'] == '2') { echo 'selected=selected'; } ?>><?php echo __('admin_end'); ?></option>
+							<option value="3" <?php if($site_settings[0]['show_map'] == '3') { echo 'selected=selected'; } ?>><?php echo __('both_end'); ?></option>
+						<?php  echo isset($site_settings) && (!array_key_exists('show_map', $errors)) ? $site_settings[0]['show_map'] : $validator['show_map']; ?>
+						</select>
+						</div>
+					</div>
+				</div>
+						    <span class="error"><?php echo isset($errors['show_map']) ? $errors['show_map'] : ''; ?></span></td>
+                    </tr>
+
+                  <?php /*  <tr>
+                        <td valign="top" width="20%"><label><?php echo __('admin_commission'); ?></label><span class="star">*</span></td>   
+                        <td><div class="new_input_field" style="width:400px;">
+<input type="text" name="admin_commission" id="admin_commission"  title="<?php echo __('enteradmincommission'); ?>" max="100" maxlength="5" value="<?php echo isset($site_settings) && (!array_key_exists('admin_commission', $errors)) ? $site_settings[0]['admin_commission'] : $validator['admin_commission']; ?>">
+			</div>
+                            <span class="error"><?php echo isset($errors['admin_commission']) ? ucfirst($errors['admin_commission']) : ''; ?></span>
+			    <span class="textclass fl clr"><?php echo __('updateadmincommision'); ?></span>
+			</td>
+                    </tr>          */ ?>   
+				<tr style="display:none;">
+                       <td valign="top" width="20%"><label><?php echo __('continuous_request_time'); ?></label><span class="star">*</span></td>   
+                       <td><div class="new_input_field" style="width:400px;">
+<input type="text" name="continuous_request_time" id="continuous_request_time" class="required greaternotification" maxlength="6" value="<?php echo isset($site_settings) && (!array_key_exists('continuous_request_time', $errors)) ? $site_settings[0]['continuous_request_time'] : $validator['continuous_request_time']; ?>">
+                       </div>
+                           <span class="error"><?php echo isset($errors['continuous_request_time']) ? ucfirst($errors['continuous_request_time']) : ''; ?></span>
+                          <?php /* <span class="textclass fl clr"><?php echo __('updateadmincommision'); ?></span> */ ?>
+                       </td>
+                   </tr>                    
+
+                  <?php /*   <tr>
+                        <td valign="top" width="20%"><label><?php echo __('tax'); ?></label><span class="star">*</span></td>   
+                        <td><div class="new_input_field" style="width:400px;">
+							<input type="text" name="tax" id="tax"  title="<?php echo __('enter_tax'); ?>" maxlength="5" value="<?php echo isset($site_settings) && (!array_key_exists('tax', $errors)) ? $site_settings[0]['tax'] : $validator['tax']; ?>">
+							</div>
+                            <span class="error"><?php echo isset($errors['tax']) ? ucfirst($errors['tax']) : ''; ?></span>
+			    <span class="textclass fl clr"><?php echo __('note_tax'); ?></span>
+			</td>
+                    </tr> */ ?>
+                    <tr>
+                        <td valign="top" width="20%"><label><?php echo __('site_copyrights_label'); ?></label><span class="star">*</span></td>   
+                        <td>
+				<div class="new_input_field" style="width:400px;">
+					<input type="text" name="site_copyrights" id="site_copyrights" title="<?php echo __('enter_site_copyrights'); ?>" maxlength="100" value="<?php echo isset($site_settings) &&!array_key_exists('site_copyrights',$postvalue)? trim($site_settings[0]['site_copyrights']):$postvalue['site_copyrights']; ?>">
+				</div>
+				<?php if(isset($errors) && array_key_exists('site_copyrights',$errors)){ echo "<span class='error'>".ucfirst($errors['site_copyrights'])."</span>";}?>
+			</td>
+                    </tr>
+			<tr>
+                        <td valign="top" width="20%"><label><?php echo __('site_logo_label'); ?></label><span class="star">*</span></td>   
+                        <td>
+				<div class="new_input_field">
+					<input type="file" name="site_logo" id="site_logo" class="imageonly" title="<?php echo __('select_taxi_image'); ?>" value="<?php echo isset($site_settings) &&!array_key_exists('site_logo',$postvalue)? trim($site_settings[0]['site_logo']):$postvalue['site_logo']; ?>">
+					
+				</div>
+				<div class="site_logo" style="width:160px;">
+				<img src="<?php echo URL_BASE.SITE_LOGO_IMGPATH.'logo.png';?>" width="160">
+				</div>
+				<span><?php echo __('logo_desc'); ?></span>
+				<?php if(isset($errors) && array_key_exists('site_logo',$errors)){ echo "<span class='error'>".ucfirst($errors['site_logo'])."</span>";}?>
+				
+			</td>
+             </tr>
+             <tr>
+                <td valign="top" width="20%"><label><?php echo __('site_email_logo'); ?></label><span class="star">*</span></td>   
+                <td>
+					<div class="new_input_field">
+						<input type="file" name="email_site_logo" id="email_site_logo" class="imageonly" title="<?php echo __('select_taxi_image'); ?>" value="<?php echo isset($site_settings) &&!array_key_exists('email_site_logo',$postvalue)? trim($site_settings[0]['email_site_logo']):$postvalue['email_site_logo']; ?>">
+					</div>
+					<div class="email_site_logo" style="width:160px;">
+						<img src="<?php echo URL_BASE.'public/uploads/site_logo/email_site_logo.png';?>" width="160">
+					</div>
+				<span><?php echo __('email_logo_desc'); ?></span>
+				<?php if(isset($errors) && array_key_exists('email_site_logo',$errors)){ echo "<span class='error'>".ucfirst($errors['email_site_logo'])."</span>";}?>
+				
+			</td>
+                    </tr>
+                    
+                    <tr>
+                        <td valign="top" width="20%"><label><?php echo __('site_favicon_label'); ?></label><span class="star">*</span></td>   
+                        <td>
+				<div class="new_input_field">
+					<input type="file" name="site_favicon" id="site_favicon" class="imageonly" title="<?php echo __('select_taxi_image'); ?>" value="<?php echo isset($site_settings) &&!array_key_exists('site_favicon',$postvalue)? trim($site_settings[0]['site_favicon']):$postvalue['site_favicon']; ?>">
+					
+				</div>
+				<div class="site_logo" style="width:220px;"> <input type="hidden" name="favicon_old" id="favicon_old" value="<?php echo $site_settings[0]['site_favicon']; ?>" />
+				<img src="<?php echo URL_BASE.SITE_FAVICON_IMGPATH.$site_settings[0]['site_favicon'];?>">
+				</div>
+				<span><?php echo __('fav_desc'); ?></span>
+				<?php if(isset($errors) && array_key_exists('site_favicon',$errors)){ echo "<span class='error'>".ucfirst($errors['site_favicon'])."</span>";}?>
+			</td>
+                    </tr>
+                    <tr>
+                        <td valign="top" width="20%"><label><?php echo __('site_advertisement_label'); ?></label><span class="star">*</span></td>   
+                        <td>
+				<div class="new_input_field">
+					<input type="file" name="sitead_image" id="sitead_image" class="imageonly" title="<?php echo __('select_taxi_image'); ?>" value="<?php echo isset($site_settings) &&!array_key_exists('sitead_image',$postvalue)? trim($site_settings[0]['sitead_image']):$postvalue['sitead_image']; ?>">
+					
+				</div>
+				<div class="site_logo" style="width:160px;">
+				<img src="<?php echo URL_BASE.SITEAD_IMGPATH.'sitead_image.png';?>" width="160">
+				</div>
+				<span><?php echo __('adv_logo_desc'); ?></span>
+				<?php if(isset($errors) && array_key_exists('sitead_image',$errors)){ echo "<span class='error'>".ucfirst($errors['sitead_image'])."</span>";}?>
+				
+			</td>
+             </tr>
+					<!-- Changes on 19-may-2016 -->
+						<!-- <tr>
+							<td valign="top" width="20%"><label><?php echo __('airport_parking_charge').'(' .CURRENCY. ')'; ?></label><span class="star">*</span></td>   
+							<td>
+								<div class="new_input_field" style="width:400px;">
+									<input type="text" name="airport_parking_charge" id="airport_parking_charge"  title="<?php echo __('airport_parking_charge'); ?>" maxlength="5" value="<?php echo isset($site_settings) && (!array_key_exists('airport_parking_charge', $errors)) ? $site_settings[0]['airport_parking_charge'] : $validator['airport_parking_charge']; ?>">
+								</div>
+								<span class="error"><?php echo isset($errors['airport_parking_charge']) ? ucfirst($errors['airport_parking_charge']) : ''; ?></span>
+							</td>
+						</tr> -->
+                                 <tr>
+							<td valign="top" width="20%"><label><?php echo __('air_pick').'(' .CURRENCY. ')'; ?></label><span class="star">*</span></td>   
+							<td>
+								<div class="new_input_field" style="width:400px;">
+									<input type="text" name="airport_pick_up" id="airport_pick_up" title="<?php echo __('air_pick'); ?>" maxlength="3" value="<?php echo isset($site_settings) && (!array_key_exists('airport_pick_up', $errors)) ? $site_settings[0]['airport_pick_up'] : $validator['airport_pick_up']; ?>">
+								</div>
+								<span class="error"><?php echo isset($errors['airport_pick_up']) ? ucfirst($errors['airport_pick_up']) : ''; ?></span>
+							</td>
+						</tr>
+						<tr>
+							<td valign="top" width="20%"><label><?php echo __('air_drop').'(' .CURRENCY. ')'; ?></label><span class="star">*</span></td>   
+							<td>
+								<div class="new_input_field" style="width:400px;">
+									<input type="text" name="airport_drop_of" id="airport_drop_of"  title="<?php echo __('air_drop'); ?>" maxlength="3" value="<?php echo isset($site_settings) && (!array_key_exists('airport_drop_of', $errors)) ? $site_settings[0]['airport_drop_of'] : $validator['airport_drop_of']; ?>">
+								</div>
+								<span class="error"><?php echo isset($errors['airport_drop_of']) ? ucfirst($errors['airport_drop_of']) : ''; ?></span>
+							</td>
+						</tr>
+						<tr>
+							<td valign="top" width="20%"><label><?php echo __('max_fare_est')."(".__('minutes').")"; ?></label><span class="star numeric">*</span></td>   
+							<td>
+								<div class="new_input_field" style="width:400px;">
+									<input type="text" name="max_fare_est" id="max_fare_est"  title="<?php echo __('max_fare_est'); ?>" maxlength="3" value="<?php echo isset($site_settings) && (!array_key_exists('max_fare_est', $errors)) ? $site_settings[0]['max_fare_est'] : $validator['max_fare_est']; ?>">
+								</div>
+								<span class="error"><?php echo isset($errors['max_fare_est']) ? ucfirst($errors['max_fare_est']) : ''; ?></span>
+							</td>
+						</tr>
+					<?php /*
+						<tr>
+							<td valign="top" width="20%"><label><?php echo __('twilio_accout_sid'); ?></label><span class="star">*</span></td>   
+							<td>
+								<div class="new_input_field" style="width:400px;">
+									<input type="text" name="twilio_accout_sid" id="twilio_accout_sid"  title="<?php echo __('twilio_accout_sid'); ?>"  value="<?php echo isset($site_settings) && (!array_key_exists('twilio_accout_sid', $errors)) ? $site_settings[0]['twilio_accout_sid'] : $validator['twilio_accout_sid']; ?>">
+								</div>
+								<span class="error"><?php echo isset($errors['twilio_accout_sid']) ? ucfirst($errors['twilio_accout_sid']) : ''; ?></span>
+							</td>
+						</tr>
+						<tr>
+							<td valign="top" width="20%"><label><?php echo __('twilio_auth_token'); ?></label><span class="star">*</span></td>   
+							<td>
+								<div class="new_input_field" style="width:400px;">
+									<input type="text" name="twilio_auth_token" id="twilio_auth_token"  title="<?php echo __('twilio_auth_token'); ?>"  value="<?php echo isset($site_settings) && (!array_key_exists('twilio_auth_token', $errors)) ? $site_settings[0]['twilio_auth_token'] : $validator['twilio_auth_token']; ?>">
+								</div>
+								<span class="error"><?php echo isset($errors['twilio_auth_token']) ? ucfirst($errors['twilio_auth_token']) : ''; ?></span>
+							</td>
+						</tr>
+						<tr>
+							<td valign="top" width="20%"><label><?php echo __('twilio_number'); ?></label><span class="star">*</span></td>   
+							<td>
+								<div class="new_input_field" style="width:400px;">
+									<input type="text" name="twilio_number" id="twilio_number"  title="<?php echo __('twilio_number'); ?>"  value="<?php echo isset($site_settings) && (!array_key_exists('twilio_number', $errors)) ? $site_settings[0]['twilio_number'] : $validator['twilio_number']; ?>">
+								</div>
+								<span class="error"><?php echo isset($errors['twilio_number']) ? ucfirst($errors['twilio_number']) : ''; ?></span>
+							</td>
+						</tr>
+						*/ ?>
+						<input type="hidden" name="twilio_auth_token" id="twilio_auth_token"  title="<?php echo __('twilio_auth_token'); ?>"  value="<?php echo isset($site_settings) && (!array_key_exists('twilio_auth_token', $errors)) ? $site_settings[0]['twilio_auth_token'] : $validator['twilio_auth_token']; ?>">
+						<input type="hidden" name="twilio_accout_sid" id="twilio_accout_sid"  title="<?php echo __('twilio_accout_sid'); ?>"  value="<?php echo isset($site_settings) && (!array_key_exists('twilio_accout_sid', $errors)) ? $site_settings[0]['twilio_accout_sid'] : $validator['twilio_accout_sid']; ?>">
+						<input type="hidden" name="twilio_number" id="twilio_number"  title="<?php echo __('twilio_number'); ?>"  value="<?php echo isset($site_settings) && (!array_key_exists('twilio_number', $errors)) ? $site_settings[0]['twilio_number'] : $validator['twilio_number']; ?>">
+						<tr>
+							<td valign="top" width="20%"><label><?php echo __('smsbox_username'); ?></label><span class="star">*</span></td>   
+							<td>
+								<div class="new_input_field" style="width:400px;">
+									<input type="text" name="smsbox_username" id="smsbox_username"  title="<?php echo __('smsbox_username'); ?>"  value="<?php echo isset($site_settings) && (!array_key_exists('smsbox_username', $errors)) ? $site_settings[0]['smsbox_username'] : $validator['smsbox_username']; ?>">
+								</div>
+								<span class="error"><?php echo isset($errors['smsbox_username']) ? ucfirst($errors['smsbox_username']) : ''; ?></span>
+							</td>
+						</tr>
+						<tr>
+							<td valign="top" width="20%"><label><?php echo __('smsbox_password'); ?></label><span class="star">*</span></td>   
+							<td>
+								<div class="new_input_field" style="width:400px;">
+									<input type="password" name="smsbox_password" id="smsbox_password"  title="<?php echo __('smsbox_password'); ?>"  value="<?php echo isset($site_settings) && (!array_key_exists('smsbox_password', $errors)) ? $site_settings[0]['smsbox_password'] : $validator['smsbox_password']; ?>">
+								</div>
+								<span class="error"><?php echo isset($errors['smsbox_password']) ? ucfirst($errors['smsbox_password']) : ''; ?></span>
+							</td>
+						</tr>
+						<tr>
+							<td valign="top" width="20%"><label><?php echo __('smsbox_customerid'); ?></label><span class="star">*</span></td>   
+							<td>
+								<div class="new_input_field" style="width:400px;">
+									<input type="text" name="smsbox_customerid" id="smsbox_customerid"  title="<?php echo __('smsbox_customerid'); ?>"  value="<?php echo isset($site_settings) && (!array_key_exists('smsbox_customerid', $errors)) ? $site_settings[0]['smsbox_customerid'] : $validator['smsbox_customerid']; ?>">
+								</div>
+								<span class="error"><?php echo isset($errors['smsbox_customerid']) ? ucfirst($errors['smsbox_customerid']) : ''; ?></span>
+							</td>
+						</tr>
+
+						<tr>
+							<td valign="top" width="20%"><label><?php echo __('smsbox_senderid'); ?></label><span class="star">*</span></td>   
+							<td>
+								<div class="new_input_field" style="width:400px;">
+									<input type="text" name="smsbox_senderid" id="smsbox_senderid"  title="<?php echo __('smsbox_senderid'); ?>"  value="<?php echo isset($site_settings) && (!array_key_exists('smsbox_senderid', $errors)) ? $site_settings[0]['smsbox_senderid'] : $validator['smsbox_senderid']; ?>">
+								</div>
+								<span class="error"><?php echo isset($errors['smsbox_senderid']) ? ucfirst($errors['smsbox_senderid']) : ''; ?></span>
+							</td>
+						</tr>
+							<tr>
+							<td valign="top" width="20%"><label><?php echo __('grandlimo_video'); ?></label><span class="star">*</span></td>   
+							<td>
+								<div class="new_input_field" style="width:400px;">
+									<input type="text" name="grandlimo_video" id="grandlimo_video"  title="<?php echo __('grandlimo_video'); ?>"  value="<?php echo isset($site_settings) && (!array_key_exists('grandlimo_video', $errors)) ? $site_settings[0]['grandlimo_video'] : $validator['grandlimo_video']; ?>">
+								</div>
+								<span class="error"><?php echo isset($errors['grandlimo_video']) ? ucfirst($errors['grandlimo_video']) : ''; ?></span>
+							</td>
+						</tr>
+							<tr>
+							<td valign="top" width="20%"><label><?php echo __('tab_video'); ?></label><span class="star">*</span></td>   
+							<td>
+								<div class="new_input_field" style="width:400px;">
+									<input type="file" name="tab_video" class="videoonly" id="tab_video"  title="<?php echo __('tab_video_only'); ?>"  value="<?php echo isset($site_settings) && (!array_key_exists('tab_video', $errors)) ? $site_settings[0]['tab_video'] : $validator['tab_video']; ?>">
+								</div>
+								<span class="error"><?php echo isset($errors['tab_video']) ? ucfirst($errors['tab_video']) : ''; ?></span>
+							</td>
+						</tr>
+						</tr>
+							<tr>
+							<td valign="top" width="20%"><label><?php echo __('android_passenger_app_url'); ?></label><span class="star">*</span></td>   
+							<td>
+								<div class="new_input_field" style="width:400px;">
+									<input type="text" name="android_passenger_app_url" id="android_passenger_app_url"  title="<?php echo __('android_passenger_app_url'); ?>"  value="<?php echo isset($site_settings) && (!array_key_exists('android_passenger_app_url', $errors)) ? $site_settings[0]['android_passenger_app_url'] : $validator['android_passenger_app_url']; ?>">
+								</div>
+								<span class="error"><?php echo isset($errors['android_passenger_app_url']) ? ucfirst($errors['android_passenger_app_url']) : ''; ?></span>
+							</td>
+						</tr>
+						</tr>
+							<tr>
+							<td valign="top" width="20%"><label><?php echo __('ios_passenger_app_url'); ?></label><span class="star">*</span></td>   
+							<td>
+								<div class="new_input_field" style="width:400px;">
+									<input type="text" name="ios_passenger_app_url" id="ios_passenger_app_url"  title="<?php echo __('ios_passenger_app_url'); ?>"  value="<?php echo isset($site_settings) && (!array_key_exists('ios_passenger_app_url', $errors)) ? $site_settings[0]['ios_passenger_app_url'] : $validator['ios_passenger_app_url']; ?>">
+								</div>
+								<span class="error"><?php echo isset($errors['ios_passenger_app_url']) ? ucfirst($errors['ios_passenger_app_url']) : ''; ?></span>
+							</td>
+						</tr>	
+							<tr>
+							<td valign="top" width="20%"><label><?php echo __('customer_support'); ?></label><span class="star">*</span></td>   
+							<td>
+								<div class="new_input_field" style="width:400px;">
+									<input type="text" name="customer_support" id="customer_support"  title="<?php echo __('customer_support'); ?>"  value="<?php echo isset($site_settings) && (!array_key_exists('customer_support', $errors)) ? $site_settings[0]['customer_support'] : $validator['customer_support']; ?>">
+								</div>
+								<span class="error"><?php echo isset($errors['customer_support']) ? ucfirst($errors['customer_support']) : ''; ?></span>
+							</td>
+						</tr>
+						
+						
+						<tr>
+                       <td valign="top" width="20%"><label><?php echo __('book_later_time_interval')." (".__('hours').")"; ?></label><span class="star">*</span></td>   
+                       <td><div class="new_input_field" style="width:400px;">
+<input type="text" maxlength="2" name="book_later_time" id="book_later_time" value="<?php echo isset($site_settings) && (!array_key_exists('book_later_time', $errors)) ? $site_settings[0]['book_later_time'] : $validator['book_later_time']; ?>">
+                       </div>
+                           <span class="error"><?php echo isset($errors['book_later_time']) ? ucfirst($errors['book_later_time']) : ''; ?></span>
+                          <?php /* <span class="textclass fl clr"><?php echo __('updateadmincommision'); ?></span> */ ?>
+                       </td>
+                   </tr> <tr>
+                       <td valign="top" width="20%"><label><?php echo __('book_now_time_interval')." (".__('minutes').")"; ?></label><span class="star">*</span></td>   
+                       <td><div class="new_input_field" style="width:400px;">
+<input type="text" maxlength="2" name="book_now_time" id="book_now_time" value="<?php echo isset($site_settings) && (!array_key_exists('book_now_time', $errors)) ? $site_settings[0]['book_now_time'] : $validator['book_now_time']; ?>">
+                       </div>
+                           <span class="error"><?php echo isset($errors['book_now_time']) ? ucfirst($errors['book_now_time']) : ''; ?></span>
+                          <?php /* <span class="textclass fl clr"><?php echo __('updateadmincommision'); ?></span> */ ?>
+                       </td>
+                   </tr>
+                    <tr>
+                       <td valign="top" width="20%"><label><?php echo __('airport_trip_time_interval')." (".__('minutes').")"; ?></label><span class="star">*</span></td>   
+                       <td><div class="new_input_field" style="width:400px;">
+<input type="text" maxlength="2" name="airport_trip_time" id="airport_trip_time" value="<?php echo isset($site_settings) && (!array_key_exists('airport_trip_time', $errors)) ? $site_settings[0]['airport_trip_time'] : $validator['airport_trip_time']; ?>">
+                       </div>
+                           <span class="error"><?php echo isset($errors['airport_trip_time']) ? ucfirst($errors['airport_trip_time']) : ''; ?></span>
+                          <?php /* <span class="textclass fl clr"><?php echo __('updateadmincommision'); ?></span> */ ?>
+                       </td>
+                   </tr>
+                    <tr>
+                       <td valign="top" width="20%"><label><?php echo __('repeat_trip_time_interval')." (".__('minutes').")"; ?></label><span class="star">*</span></td>   
+                       <td><div class="new_input_field" style="width:400px;">
+<input type="text" maxlength="2" name="repeat_trip_time" id="repeat_trip_time" value="<?php echo isset($site_settings) && (!array_key_exists('repeat_trip_time', $errors)) ? $site_settings[0]['repeat_trip_time'] : $validator['repeat_trip_time']; ?>">
+                       </div>
+                           <span class="error"><?php echo isset($errors['repeat_trip_time']) ? ucfirst($errors['repeat_trip_time']) : ''; ?></span>
+                          <?php /* <span class="textclass fl clr"><?php echo __('updateadmincommision'); ?></span> */ ?>
+                       </td>
+                   </tr> 
+                   <tr>
+                       <td valign="top" width="20%"><label><?php echo __('dispatcher_notification_time_interval')." (".__('minutes').")"; ?></label><span class="star">*</span></td>   
+                       <td><div class="new_input_field" style="width:400px;">
+<input type="text" maxlength="2" name="dispatcher_notification_time" id="dispatcher_notification_time" value="<?php echo isset($site_settings) && (!array_key_exists('dispatcher_notification_time', $errors)) ? $site_settings[0]['dispatcher_notification_time'] : $validator['dispatcher_notification_time']; ?>">
+                       </div>
+                           <span class="error"><?php echo isset($errors['dispatcher_notification_time']) ? ucfirst($errors['dispatcher_notification_time']) : ''; ?></span>
+                          <?php /* <span class="textclass fl clr"><?php echo __('updateadmincommision'); ?></span> */ ?>
+                       </td>
+                   </tr>
+
+		<tr>
+                       <td valign="top" width="20%"><label><?php echo __('wallet_negative_limit'); ?></label><span class="star">*</span></td>   
+                       <td><div class="new_input_field" style="width:400px;">
+<input type="text" maxlength="8" name="wallet_negative_limit" id="wallet_negative_limit" value="<?php echo isset($site_settings) && (!array_key_exists('wallet_negative_limit', $errors)) ? $site_settings[0]['wallet_negative_limit'] : $validator['wallet_negative_limit']; ?>">
+                       </div>
+                           <span class="error"><?php echo isset($errors['wallet_negative_limit']) ? ucfirst($errors['wallet_negative_limit']) : ''; ?></span>
+                          <?php /* <span class="textclass fl clr"><?php echo __('updateadmincommision'); ?></span> */ ?>
+                       </td>
+                   </tr>
+
+
+                    <tr>
+                       <td valign="top" width="20%"><label><?php echo __('wallet_advance_limit'); ?></label><span class="star">*</span></td>   
+                       <td><div class="new_input_field" style="width:400px;">
+<input type="text" maxlength="8" name="wallet_advance_limit" id="wallet_advance_limit" value="<?php echo isset($site_settings) && (!array_key_exists('wallet_advance_limit', $errors)) ? $site_settings[0]['wallet_advance_limit'] : $validator['wallet_advance_limit']; ?>">
+                       </div>
+                           <span class="error"><?php echo isset($errors['wallet_advance_limit']) ? ucfirst($errors['wallet_advance_limit']) : ''; ?></span>
+                          <?php /* <span class="textclass fl clr"><?php echo __('updateadmincommision'); ?></span> */ ?>
+                       </td>
+                   </tr>
+
+                   <tr>
+                       <td valign="top" width="20%"><label><?php echo __('reward_per_trip'); ?></label><span class="star">*</span></td>   
+                       <td><div class="new_input_field" style="width:400px;">
+<input type="text" maxlength="8" name="reward_per_trip" id="reward_per_trip" value="<?php echo isset($site_settings) && (!array_key_exists('reward_per_trip', $errors)) ? $site_settings[0]['reward_per_trip'] : $validator['reward_per_trip']; ?>">
+                       </div>
+                           <span class="error"><?php echo isset($errors['reward_per_trip']) ? ucfirst($errors['reward_per_trip']) : ''; ?></span>
+                          <?php /* <span class="textclass fl clr"><?php echo __('updateadmincommision'); ?></span> */ ?>
+                       </td>
+                   </tr>
+
+                   <tr>
+                       <td valign="top" width="20%"><label><?php echo __('reward_kwd'); ?></label><span class="star">*</span></td>   
+                       <td><div class="new_input_field" style="width:400px;">
+<input type="text" maxlength="8" name="reward_kwd" id="reward_kwd" value="<?php echo isset($site_settings) && (!array_key_exists('reward_kwd', $errors)) ? $site_settings[0]['reward_kwd'] : $validator['reward_kwd']; ?>">
+                       </div>
+                           <span class="error"><?php echo isset($errors['reward_kwd']) ? ucfirst($errors['reward_kwd']) : ''; ?></span>
+                          <?php /* <span class="textclass fl clr"><?php echo __('updateadmincommision'); ?></span> */ ?>
+                       </td>
+                   </tr>
+
+                   <tr>
+                       <td valign="top" width="20%"><label><?php echo __('minimum_reward_request'); ?></label><span class="star">*</span></td>   
+                       <td><div class="new_input_field" style="width:400px;">
+<input type="text" maxlength="8" name="minimum_reward_request" id="minimum_reward_request" value="<?php echo isset($site_settings) && (!array_key_exists('minimum_reward_request', $errors)) ? $site_settings[0]['minimum_reward_request'] : $validator['minimum_reward_request']; ?>">
+                       </div>
+                           <span class="error"><?php echo isset($errors['minimum_reward_request']) ? ucfirst($errors['minimum_reward_request']) : ''; ?></span>
+                          <?php /* <span class="textclass fl clr"><?php echo __('updateadmincommision'); ?></span> */ ?>
+                       </td>
+                   </tr>
+
+                   <!--26 feb 2021 -->
+                   <tr>
+                       <td valign="top" width="20%"><label><?php echo __('Customer Minimum Wallet Limit'); ?></label><span class="star">*</span></td>   
+                       <td><div class="new_input_field" style="width:400px;">
+<input type="text"  maxlength="8" name="wallet_positive_limit" id="wallet_positive_limit" value="<?php echo isset($site_settings) && (!array_key_exists('wallet_positive_limit', $errors)) ? $site_settings[0]['wallet_positive_limit'] : $validator['wallet_positive_limit']; ?>">
+                       </div>
+                           <span class="error"><?php echo isset($errors['wallet_positive_limit']) ? ucfirst($errors['wallet_positive_limit']) : ''; ?></span>
+                          <?php /* <span class="textclass fl clr"><?php echo __('updateadmincommision'); ?></span> */ ?>
+                       </td>
+                   </tr>
+                   <!--26 feb 2021 -->
+
+                   <!--10 Jun 2021 -->
+                   <tr>
+                       <td valign="top" width="20%"><label><?php echo __('Nearest Driver API Interval (Seconds)'); ?></label><span class="star">*</span></td>   
+                       <td><div class="new_input_field" style="width:400px;">
+<input type="text"  maxlength="8" name="nearestdriver_api_interval" id="nearestdriver_api_interval" value="<?php echo isset($site_settings) && (!array_key_exists('nearestdriver_api_interval', $errors)) ? $site_settings[0]['nearestdriver_api_interval'] : $validator['nearestdriver_api_interval']; ?>">
+                       </div>
+                           <span class="error"><?php echo isset($errors['nearestdriver_api_interval']) ? ucfirst($errors['nearestdriver_api_interval']) : ''; ?></span>
+                       </td>
+                   </tr>
+                   <!--10 Jun 2021 -->
+
+                   <!--10 Jun 2021 -->
+                   <tr>
+                       <td valign="top" width="20%"><label><?php echo __('Directions API Interval (Seconds)'); ?></label><span class="star">*</span></td>   
+                       <td><div class="new_input_field" style="width:400px;">
+<input type="text"  maxlength="8" name="directions_api_interval" id="directions_api_interval" value="<?php echo isset($site_settings) && (!array_key_exists('directions_api_interval', $errors)) ? $site_settings[0]['directions_api_interval'] : $validator['directions_api_interval']; ?>">
+                       </div>
+                           <span class="error"><?php echo isset($errors['directions_api_interval']) ? ucfirst($errors['directions_api_interval']) : ''; ?></span>
+                       </td>
+                   </tr>
+                   <!--10 Jun 2021 -->
+
+                   <!--  Sasidharann may 18 2022  -->
+
+                   <tr>
+                        <td valign="top" width="20%"><label><?php echo __('enable_hesabe_payment_gateway'); ?></label><span class="star">*</span></td>   
+                        <td><div class="new_input_field">
+                        <?php $checked=isset($site_settings[0]['enable_hesabe_payment_gateway'])?$site_settings[0]['enable_hesabe_payment_gateway'] : "1"; 
+						//echo $checked;?>
+                        <input type="radio" name="enable_hesabe_payment_gateway" id="enable_hesabe_payment_gateway" title="<?php echo __('enable_hesabe_payment_gateway'); ?>"  value="1" <?php if($checked=='1'){ echo 'checked=checked';}?> ><?php echo __("yes"); ?>
+                        
+                        <input type="radio" name="enable_hesabe_payment_gateway" id="enable_hesabe_payment_gateway" title="<?php echo __('enable_hesabe_payment_gateway'); ?>"  value="0" <?php if($checked=='0'){ echo 'checked=checked';}?>><?php  echo __("no"); ?>
+                        </div>
+						<?php if(isset($errors) && array_key_exists('enable_hesabe_payment_gateway',$errors)){ echo "<span class='error'>".ucfirst($errors['enable_hesabe_payment_gateway'])."</span>";}?></td>
+                    </tr>
+
+                   <!--  End Sasidharann may 18 2022  -->
+
+                   <!-- Sasidharan Jan 31 3023 -->
+                   <tr>
+                        <td valign="top" width="20%"><label>Trip fare notification email's</label><span class="star">*</span></td>   
+                        <td><div class="new_input_field" style="width:400px;"><input type="text" name="trip_fare_notification_emails" id="trip_fare_notification_emails" title="<?php echo __('enter_site_name'); ?>" maxlength="250" value="<?php echo isset($site_settings) &&!array_key_exists('trip_fare_notification_emails',$postvalue)? trim($site_settings[0]['trip_fare_notification_emails']):$postvalue['trip_fare_notification_emails']; ?>"></div>
+                    <?php if(isset($errors) && array_key_exists('trip_fare_notification_emails',$errors)){ echo "<span class='error'>".ucfirst($errors['trip_fare_notification_emails'])."</span>";}?>
+                    </tr>
+                   <!-- End Sasidharan Jan 31 3023 -->
+
+                   <!-- Sasidharan june 20 2022 -->
+                    <tr>
+                    	<td>
+                    		<label><?php echo __('register_promocode'); ?></label>
+                    		<span class="star">*</span>
+                    	</td>
+											<td>
+												<div class="new_input_field">
+													<?php 
+														$register_promocode_date = "";
+														if(isset($site_settings[0]['register_promocode']) 
+															&& !empty($site_settings[0]['register_promocode']) && !isset($postvalue['register_promocode'])) {
+															$register_promocode_date = trim(commonfunction::convertphpdate('Y-m-d h:m:s',$site_settings[0]['register_promocode']));
+														} else if(isset($postvalue['register_promocode'])) {
+															$register_promocode_date = $postvalue['register_promocode'];
+														}
+													?>
+												  <input 
+												  	type="text"  
+												  	maxlength="30"
+												  	title="<?php echo __('register_promocode'); ?>" 
+												  	id="register_promocode" 
+												  	name="register_promocode" 
+												  	value="<?php echo $register_promocode_date; ?>" />
+												  	<?php 
+												  		if(isset($errors) && array_key_exists('register_promocode',$errors)){ echo "<span class='error'>".ucfirst($errors['register_promocode'])."</span>";}
+												  	?>
+												</div>
+											</td>
+                    </tr>
+
+                    <!--  Sasidharan Feb 06 2023  -->
+                   <tr>
+                   		<td>
+                    		<label><?php echo __('Surge Price On Week Days'); ?></label>
+                    		<span class="star">*</span>
+                    	</td>
+                    	<tr>
+                        <td valign="top" width="20%"><label>Sunday</td>
+                        <?php
+                        	$Sunday = 1;
+                        	if(isset($postvalue['surge_on_week_days']['Sunday'])) {
+                        		$Sunday = $postvalue['surge_on_week_days']['Sunday'];
+                        	} else if(isset($surgePriceOnWeekDays['Sunday']) && $surgePriceOnWeekDays['Sunday'] == 0) {
+                        		$Sunday = 0;
+                        	}
+                        ?>
+                        <td>
+                        	<div class="new_input_field">
+	                        <input type="radio" value="1" name="surge_on_week_days[Sunday]" id="enable_hesabe_payment_gateway" <?php if($Sunday == 1){ echo 'checked=checked';}?> ><?php echo __("enable"); ?>
+	                        
+	                        <input type="radio" value="0" name="surge_on_week_days[Sunday]" id="enable_hesabe_payment_gateway" <?php if($Sunday == 0){ echo 'checked=checked';}?> ><?php  echo __("disable"); ?>
+	                        </div>
+												</td>
+                    	</tr>
+                    	<tr>
+                        <td valign="top" width="20%"><label>Monday</td>
+                        <?php
+                        	$Monday = 1;
+                        	if(isset($postvalue['surge_on_week_days']['Monday'])) {
+                        		$Monday = $postvalue['surge_on_week_days']['Monday'];
+                        	} else if(isset($surgePriceOnWeekDays['Monday']) && $surgePriceOnWeekDays['Monday'] == 0) {
+                        		$Monday = 0;
+                        	}
+                        ?>
+                        <td>
+                        	<div class="new_input_field">
+	                        <input type="radio" value="1" name="surge_on_week_days[Monday]" id="enable_hesabe_payment_gateway" <?php if($Monday == 1){ echo 'checked=checked';}?> ><?php echo __("enable"); ?>
+	                        
+	                        <input type="radio" value="0" name="surge_on_week_days[Monday]" id="enable_hesabe_payment_gateway" <?php if($Monday == 0){ echo 'checked=checked';}?> ><?php  echo __("disable"); ?>
+	                        </div>
+												</td>
+                    	</tr>
+                    	<tr>
+                        <td valign="top" width="20%"><label>Tuesday</td>
+                        <?php
+                        	$Tuesday = 1;
+                        	if(isset($postvalue['surge_on_week_days']['Tuesday'])) {
+                        		$Tuesday = $postvalue['surge_on_week_days']['Tuesday'];
+                        	} else if(isset($surgePriceOnWeekDays['Tuesday']) && $surgePriceOnWeekDays['Tuesday'] == 0) {
+                        		$Tuesday = 0;
+                        	}
+                        ?>
+                        <td>
+                        	<div class="new_input_field">
+	                        <input type="radio" value="1" name="surge_on_week_days[Tuesday]" id="enable_hesabe_payment_gateway" <?php if($Tuesday == 1){ echo 'checked=checked';}?> ><?php echo __("enable"); ?>
+	                        
+	                        <input type="radio" value="0" name="surge_on_week_days[Tuesday]" id="enable_hesabe_payment_gateway" <?php if($Tuesday == 0){ echo 'checked=checked';}?> ><?php  echo __("disable"); ?>
+	                        </div>
+												</td>
+                    	</tr>
+                    	<tr>
+                        <td valign="top" width="20%"><label>Wednesday</td>
+                        <?php
+                        	$Wednesday = 1;
+                        	if(isset($postvalue['surge_on_week_days']['Wednesday'])) {
+                        		$Wednesday = $postvalue['surge_on_week_days']['Wednesday'];
+                        	} else if(isset($surgePriceOnWeekDays['Wednesday']) && $surgePriceOnWeekDays['Wednesday'] == 0) {
+                        		$Wednesday = 0;
+                        	}
+                        ?>
+                        <td>
+                        	<div class="new_input_field">
+	                        <input type="radio" value="1" name="surge_on_week_days[Wednesday]" id="enable_hesabe_payment_gateway" <?php if($Wednesday == 1){ echo 'checked=checked';}?> ><?php echo __("enable"); ?>
+	                        
+	                        <input type="radio" value="0" name="surge_on_week_days[Wednesday]" id="enable_hesabe_payment_gateway" <?php if($Wednesday == 0){ echo 'checked=checked';}?> ><?php  echo __("disable"); ?>
+	                        </div>
+												</td>
+                    	</tr>
+                    	<tr>
+                        <td valign="top" width="20%"><label>Thursday</td>
+                        <?php
+                        	$Thursday = 1;
+                        	if(isset($postvalue['surge_on_week_days']['Thursday'])) {
+                        		$Thursday = $postvalue['surge_on_week_days']['Thursday'];
+                        	} else if(isset($surgePriceOnWeekDays['Thursday']) && $surgePriceOnWeekDays['Thursday'] == 0) {
+                        		$Thursday = 0;
+                        	}
+                        ?>
+                        <td>
+                        	<div class="new_input_field">
+	                        <input type="radio" value="1" name="surge_on_week_days[Thursday]" id="enable_hesabe_payment_gateway" <?php if($Thursday == 1){ echo 'checked=checked';}?> ><?php echo __("enable"); ?>
+	                        
+	                        <input type="radio" value="0" name="surge_on_week_days[Thursday]" id="enable_hesabe_payment_gateway" <?php if($Thursday == 0){ echo 'checked=checked';}?> ><?php  echo __("disable"); ?>
+	                        </div>
+												</td>
+                    	</tr>
+                    	<tr>
+                        <td valign="top" width="20%"><label>Friday</td>
+                        <?php
+                        	$Friday = 1;
+                        	if(isset($postvalue['surge_on_week_days']['Friday'])) {
+                        		$Friday = $postvalue['surge_on_week_days']['Friday'];
+                        	} else if(isset($surgePriceOnWeekDays['Friday']) && $surgePriceOnWeekDays['Friday'] == 0) {
+                        		$Friday = 0;
+                        	}
+                        ?>
+                        <td>
+                        	<div class="new_input_field">
+	                        <input type="radio" value="1" name="surge_on_week_days[Friday]" id="enable_hesabe_payment_gateway" <?php if($Friday == 1){ echo 'checked=checked';}?> ><?php echo __("enable"); ?>
+	                        
+	                        <input type="radio" value="0" name="surge_on_week_days[Friday]" id="enable_hesabe_payment_gateway" <?php if($Friday == 0){ echo 'checked=checked';}?> ><?php  echo __("disable"); ?>
+	                        </div>
+												</td>
+                    	</tr>
+                    	<tr>
+                        <td valign="top" width="20%"><label>Saturday</td>
+                        <?php
+                        	$Saturday = 1;
+                        	if(isset($postvalue['surge_on_week_days']['Saturday'])) {
+                        		$Saturday = $postvalue['surge_on_week_days']['Saturday'];
+                        	} else if(isset($surgePriceOnWeekDays['Saturday']) && $surgePriceOnWeekDays['Saturday'] == 0) {
+                        		$Saturday = 0;
+                        	}
+                        ?>
+                        <td>
+                        	<div class="new_input_field">
+	                        <input type="radio" value="1" name="surge_on_week_days[Saturday]" id="enable_hesabe_payment_gateway" <?php if($Saturday == 1){ echo 'checked=checked';}?> ><?php echo __("enable"); ?>
+	                        
+	                        <input type="radio" value="0" name="surge_on_week_days[Saturday]" id="enable_hesabe_payment_gateway" <?php if($Saturday == 0){ echo 'checked=checked';}?> ><?php  echo __("disable"); ?>
+	                        </div>
+												</td>
+                    	</tr>
+                   </tr>
+                   <!--  End Sasidharan Feb 06 2023  -->
+
+					<!-- Changes on 19-may-2016 -->
+					
+					<!---- Milestones ------->
+			<?php /*		<tr>
+                       <td valign="top" width="20%"><label><?php echo __('Milestones'); ?></label><span class="star">*</span></td>   
+                       <td>
+						 <div class="new_input_field" style="width:400px;">
+								<?php if(isset($postvalue['milestone_km']) && isset($postvalue['milestone_label']) ) { ?>
+									<div class="field_wrapper">
+									 <?php foreach($postvalue['milestone_km'] as $key => $value) { ?>	
+											<div>
+												<input style="width:43%;margin-bottom: 3px;" maxlength="10" type="text" name="milestone_km[]" placeholder="Milestone KM" value="<?php echo $postvalue['milestone_km'][$key]; ?>"/>	
+													
+												<input style="width:43%;margin-bottom: 3px;" maxlength="10" type="text" name="milestone_label[]" placeholder="Milestone Label" value="<?php echo $postvalue['milestone_label'][$key]; ?>"/>	
+												<div style="float:left;width:100%">
+												<?php if(isset($errors['milestone_km'][$key])) { ?>
+													<span style="float:left;width:46% !important;margin-bottom: 3px;clear:none !important;" class="error"><?php echo $errors['milestone_km'][$key]; ?></span>
+												<?php } ?>
+												<?php if(isset($errors['milestone_label'][$key])) { ?>
+													<span style="float:right;width:46% !important;margin-bottom: 3px;clear:none !important;" class="error"><?php echo $errors['milestone_label'][$key]; ?></span>
+												<?php } ?>	
+												</div>
+												<?php if($key != 0) { ?>
+													<a href="javascript:void(0);" onclick="removeButton($(this))" class="remove_button" title="Remove Milestone"><img src="<?php echo URL_BASE.'public/img/'; ?>remove-icon.png" alt="Remove Milestone"/></a>
+												<?php } ?>									 	
+											</div>							
+									<?php } ?>
+									</div> 
+							 <?php } else { ?>
+									 <div class="field_wrapper">
+									 <?php if(!empty($milestones)) { ?>	 
+										 <?php foreach($milestones as $key =>$milestone) { ?>	
+												<div>
+													<input style="width:43%;margin-bottom: 3px;" maxlength="10" type="text" name="milestone_km[]" placeholder="Milestone KM" value="<?php echo $milestone["km"]; ?>"/>		
+													<input style="width:43%;margin-bottom: 3px;" maxlength="10" type="text" name="milestone_label[]" placeholder="Milestone Label" value="<?php echo $milestone["label"]; ?>"/>	
+													<?php if($key != 0) { ?>	
+														<a href="javascript:void(0);" onclick="removeButton($(this))" class="remove_button" title="Remove Milestone"><img src="<?php echo URL_BASE.'public/img/'; ?>remove-icon.png" alt="Remove Milestone"/></a>
+													<?php } ?>									 	
+												</div>							
+										<?php } ?>
+									<?php } else { ?>
+											<div>
+												<input style="width:43%;margin-bottom: 3px;" maxlength="10" type="text" name="milestone_km[]" placeholder="Milestone KM" value=""/>		
+												<input style="width:43%;margin-bottom: 3px;" maxlength="10" type="text" name="milestone_label[]" placeholder="Milestone Label" value=""/>																				 	
+											</div>
+									<?php } ?>	
+									</div>
+							<?php  } ?> 
+							<?php if(count($milestones) <= 10) { ?>
+								<a href="javascript:void(0);" style="margin-top: 4px;" class="add_button" title="Add Milestone"><img src="<?php echo URL_BASE.'public/img/'; ?>add-icon.png" alt="Add Milestone"/></a>
+							<?php } ?>
+						 </div>						  
+                       </td>
+                   </tr>
+					<!---- Milestones ------->
+
+                    <tr><?php */ ?>
+						<td>&nbsp;</td>
+                        <td colspan="" class="star">*<?php echo __('required_label'); ?></td>
+                    </tr>
+                    
+                    <tr>
+                        <td valign="top">&nbsp;</td>
+                        <td style="padding-left:0px;">
+                            <div class="button dredB"> <input type="reset" name="editsettings_reset" title="<?php echo __('button_reset'); ?>" value="<?php echo __('button_reset'); ?>"></div>
+                            <div class="button greenB">  <input type="submit" name="editsettings_submit" <?php if($email==SUPERADMIN_EMAIL) { ?> id="disable" <?php } ?> title ="<?php echo __('button_update'); ?>" value="<?php echo __('button_update'); ?>"></div>
+
+                        </td>
+					</tr>
+                </table>
+            </form>
+        </div>
+        <div class="content_bottom"><div class="bot_left"></div><div class="bot_center"></div><div class="bot_rgt" ></div></div>
+    </div>
+</div>
+<script type="text/javascript" language="javascript">
+var x = <?php echo (count($milestones) == 0) ? 1 : count($milestones); ?>;	
+$(document).ready(function() {
+
+	/* Sasidharan june 20 2022 */
+	$('#register_promocode').datetimepicker({
+		showTimepicker:true,
+		showSecond: true,
+		timeFormat: 'hh:mm:ss',
+		dateFormat: 'yy-mm-dd',
+		stepHour: 1,
+		stepMinute: 1,
+		stepSecond: 1
+ 	});
+
+	toggle(3);
+	
+	jQuery("#settings").validate();
+	
+	jQuery.validator.addMethod('chk', function(value) {
+	return (parseInt(document.getElementById('notification_settings').value)  > 0); }, 'Notification time should greater than zero');
+	
+	jQuery.validator.addMethod('onlyseconds', function(value) {
+	return (parseInt(document.getElementById('notification_settings').value)  < 60); }, 'Notification time should be less than 60 seconds.');
+	
+	jQuery.validator.addMethod('greaternotification', function(value) {
+	return (parseInt(document.getElementById('continuous_request_time').value)  > (4*parseInt(document.getElementById('notification_settings').value))); }, 'Continuous Request time should be greater than 4*Notification time.');
+	
+	$.validator.addMethod( "imageonly", function(value,element){
+	var pathLength = value.length; var lastDot = value.lastIndexOf( "."); var fileType = value.substring(lastDot,pathLength).toLowerCase(); return this.optional(element) || fileType.match(/(?:.jpg|.jpeg|.png)$/) }, "Please upload image file only");
+	
+	$.validator.addMethod( "videoonly", function(value,element){
+	var pathLength = value.length; var lastDot = value.lastIndexOf( "."); var fileType = value.substring(lastDot,pathLength).toLowerCase(); return this.optional(element) || fileType.match(/(?:.mp4|.flv)$/) }, "Please upload video file only");
+	
+	//For Field Focus
+	//===============
+	var field_val = $("#app_name").val();
+	$("#app_name").focus().val("").val(field_val);
+		
+	///////// Milestones ///////////
+	var maxField = 10; //Input fields increment limitation
+    var addButton = $('.add_button'); //Add button selector
+    var remButton = $('.remove_button'); //Remove button selector
+    var wrapper = $('.field_wrapper'); //Input field wrapper
+    var fieldHTML = '<div><input style="width:43%;margin-right:3px;margin-bottom: 3px;" maxlength="10" type="text" name="milestone_km[]" value="" placeholder="Milestone KM"/><input style="width:43%;margin-right:4px;margin-bottom: 3px;" maxlength="10" type="text" name="milestone_label[]" value="" placeholder="Milestone Label"/><a href="javascript:void(0);" onclick="removeButton($(this))" class="remove_button" title="Remove Milestone"><img src="<?php echo URL_BASE.'public/img/'; ?>remove-icon.png" alt="Remove Milestone"/></a></div>'; //New input field html 
+    //var x = 1; //Initial field counter is 1
+    $(addButton).click(function(){ //Once add button is clicked
+        if(x < maxField){ //Check maximum number of input fields
+            x++; //Increment field counter
+            $(wrapper).append(fieldHTML); // Add field html
+        } else {
+			alert('Add Only Max 10 Milestones');
+		}
+    });        
+	///////// Milestones ///////////
+
+	//26 feb 2021
+  	$("#wallet_positive_limit").keypress(function (e) {
+     //if the letter is not digit then display error and don't type anything
+     if (e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57)) {
+        //display error message
+        //$("#errmsg").html("Digits Only").show().fadeOut("slow");
+               return false;
+     }
+   });
+	//26 feb 2021
+});
+///////// Milestones ///////////
+function removeButton(e) {	
+	e.parent('div').remove();
+	x--;
+}
+///////// Milestones ///////////
+</script>

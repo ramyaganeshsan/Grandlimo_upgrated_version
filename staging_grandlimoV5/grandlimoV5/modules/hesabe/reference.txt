@@ -1,0 +1,84 @@
+##### Authentication Failed #####
+{
+    "status":false,
+    "code":501,
+    "message":"Authentication failed.",
+    "response":{
+        "data":""
+    }
+}
+
+##### Payment Success #####
+{
+    "status": true,
+    "code": 200,
+    "message": "Payment is Processed Successfully",
+    "response": {
+        "data": {
+            "headers": {},
+            "original": {
+                "status": true,
+                "message": "Transaction SuccessFull",
+                "data": {
+                    "data": [
+                        {
+                            "token": "84221717327690903948454749911",
+                            "amount": "1.000",
+                            "reference_number": "12345678",
+                            "status": "SUCCESSFUL",
+                            "TransactionID": "7327690913456743604951",
+                            "Id": 144630,
+                            "PaymentID": "433204646964",
+                            "Terminal": "38",
+                            "TrackID": "313711",
+                            "payment_type": "CYBS_RECURRING",
+                            "service_type": "Payment Gateway",
+                            "customerName": "Test Demo",
+                            "customerEmail": "demo@hesabe.com",
+                            "customerMobile": "88888888",
+                            "customerCardType": null,
+                            "customerCard": null,
+                            "datetime": "2024-11-28 07:44:51"
+                        }
+                    ]
+                }
+            },
+            "exception": null
+        }
+    }
+}
+
+##### Checkout Response #####
+{
+    "status":false,
+    "code":0,
+    "message":"Transaction Failed",
+    "response":{
+        "resultCode":"FAILED",
+        "amount":"1.000",
+        "paymentToken":"84221717327735909767665574223",
+        "paymentId":"433306013781",
+        "paidOn":"2024-11-28 09:05:54",
+        "orderReferenceNumber":"12345678",
+        "auth":null,
+        "trackID":"313819",
+        "transactionId":"841732773715",
+        "Id":144636,
+        "bankReferenceId":"05896f580b4a48cd",
+        "variable1":"WALLET",
+        "variable2":"{\"passengerId\":123,\"amount\":5}",
+        "variable3":null,
+        "variable4":null,
+        "variable5":null,
+        "method":2,
+        "administrativeCharge":"0.000",
+        "customer":{
+            "Name":"Sasidharan",
+            "Email":"sasi@gmail.com",
+            "Mobile":"8778185933",
+            "NameOnCard":"Sasidharan",
+            "CardNumber":null,
+            "CardType":null
+        }
+    }
+}

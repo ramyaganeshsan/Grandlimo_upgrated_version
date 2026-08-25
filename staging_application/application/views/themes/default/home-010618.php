@@ -1,0 +1,774 @@
+<?php defined('SYSPATH') OR die('No direct access allowed.');?>
+<?php
+	$lang="en";
+	$lang=isset($_SESSION['lang'])?$_SESSION['lang']:"en";
+	$play_store = COMMON_ANDROID_PASSENGER_APP;
+	$app_store = COMMON_IOS_PASSENGER_APP; 
+	
+	/////// Slider /////////
+	$home_slider = $mobile_slider = $slider = array(); 
+	$home_interval = $mobile_interval = $slide_interval =0;
+	/*foreach($slider_settings[0] as $key => $value) { 
+		if (preg_match('/^home_/', $key)) {
+			if($key == 'home_slide_interval') {
+				$home_interval = $value;
+			} else {
+				if($lang == 'ar') {
+					if (preg_match('/'.$lang.'/', $key)) {
+						$home_slider[$key] = $value; 
+					}
+				} else {
+					if (preg_match('#^((?!ar).)*$#', $key)) {
+						$home_slider[$key] = $value; 
+					}
+				}
+			}
+		}
+		if (preg_match('/^mobile_/', $key)) {
+			if($key == 'mobile_slide_interval') {
+				$mobile_interval = $value;
+			} else {
+				if($lang == 'ar') {
+					if (preg_match('/'.$lang.'/', $key)) {
+						$mobile_slider[$key] = $value;
+					}
+				} else {
+					if (preg_match('#^((?!ar).)*$#', $key)) {
+						$mobile_slider[$key] = $value; 
+					}
+				}
+			}
+			
+		}
+	}*///exit;
+	$home_interval = $slider_settings[0]['slider_interval'];
+	$mobile_interval = $slider_settings[0]['slider_interval'];
+	if($lang == 'ar') {
+			$home_slider = $slider_settings[0]['image_ar'];
+			$mobile_slider = $slider_settings[0]['mob_image_ar']; 
+		
+	} else {
+		$home_slider = $slider_settings[0]['image_en'];
+		$mobile_slider = $slider_settings[0]['mob_image_en']; 
+	}
+	/* print "<pre>";
+	 print_r($home_interval);
+	 print_r($mobile_interval);
+	 print_r($home_slider);
+	 print_r($mobile_slider);
+	 exit;*/
+	/////// Slider /////////
+?>
+
+<?php /*<link href="<?php echo URL_BASE;?>public/datepicker/css/bootstrap-datetimepicker.min.css" rel="stylesheet" type="text/css"/> 
+<script src="<?php echo URL_BASE;?>public/datepicker/js/moment.js"></script> 
+<script src="<?php echo URL_BASE;?>public/datepicker/js/bootstrap-datetimepicker.min.js"></script> 
+<script type="text/javascript">
+ $(function () {
+        $('#p_date').datepicker();
+    });  
+</script> */?>
+<?php /*<link rel="stylesheet" href="<?php echo URL_BASE;?>public/datepicker/jquery.timepicker.min.css">
+<script src="<?php echo URL_BASE;?>public/datepicker/jquery.timepicker.min.js"></script>*/?>
+
+  <link rel="stylesheet" href="<?php echo URL_BASE;?>public/datepicker/jquery-ui.css">
+  <script src="<?php echo URL_BASE;?>public/datepicker/jquery-ui.js"></script>
+
+  <link rel="stylesheet" href="<?php echo URL_BASE;?>public/timepicker/jquery.timepicker.css">
+  <script src="<?php echo URL_BASE;?>public/timepicker/jquery.timepicker.js"></script>
+  <script>
+  $(function() {
+
+  	var current_date = new Date();
+    var current_hrs = current_date.getHours();
+
+    $("#p_date").datepicker({minDate: 0,dateFormat: 'dd-mm-yy',});
+
+    //$('#p_time').timepicker({});
+
+  });
+
+  $(document).ready(function(){
+    	$('#p_time').timepicker({'step': 15});
+  });
+  </script>
+
+
+<section class="banner">
+	<div class="banner_img">
+		<img src="<?php echo URL_BASE;?>/public/images/home_banner.png" class="img-responsive">
+		<div class="home_banner_content visible-xs visible-sm">
+			<h2>Welcome to</h2>
+			<small>GrandLimo</small>
+		</div>
+	</div>
+	<div class="banner_content">
+		<div class="container">
+			<div class="banner_content_inner">
+				<div class="col-md-12">
+					<ul class="nav nav-pills">
+					    <li class="active"><a data-toggle="pill" href="#picknow" title="<?php echo __('airport_pickup_drop');?>" class="picknow" onclick="ChangeForm(1);"><i class="picknow_ico"></i><?php echo __('airport_pickup_drop');?></a></li>
+					    <li><a data-toggle="pill" href="#picknow" title="<?php echo __('pickup_later');?>" class="picklater" onclick="ChangeForm(2);"><i class="picklater_ico"></i><?php echo __('pickup_later');?></a></li>
+					</ul>    
+
+					<div class="tab-content">
+						<div id="picknow" class="tab-pane fade in active">
+						  	<form name="booking_form" id="booking_form" method="get" action="<?php echo URL_BASE.'users/booking_request'; ?>">
+								<div class="form-group width_fifty">
+									<i class="hpickup_ico"></i>
+									<span class="star">*</span>
+									<input type="text" name="pickup" id="pickup_loc" class="form-control" placeholder="<?php echo __('pickup_location');?>">
+									<label class="required_field" id="pickup_loc_error"></label>
+								</div>
+								<div class="form-group width_fifty">
+									<i class="hdrop_ico"></i>
+									<span class="star">*</span>
+									<input type="text" name="drop" id="drop_loc" class="form-control" placeholder="<?php echo __('drop_location');?>">
+									<label class="required_field" id="drop_loc_error"></label>
+								</div>
+								<div class="form-group width_thirty">
+									<i class="hphone_ico"></i>
+									<span class="star">*</span>
+									<input type="text" name="phone" id="phone_num" class="form-control" placeholder="<?php echo __('phone_no');?>" maxlength="10" onkeypress="return isNumber();">
+									<label class="required_field" id="phone_num_error"></label>
+								</div>
+								<div class="form-group width_thirty">
+									<i class="hemail_ico"></i>									
+									<input type="text" name="email" id="email_book" class="form-control hemail" placeholder="<?php echo __('email_label');?>">
+									<label class="required_field" id="email_book_error"></label>
+								</div>
+								<div class="form-group width_thirty">
+									<i class="hcartype_ico"></i>
+									<span class="star">*</span>
+									<input type="hidden" name="car_model" id="car_model">
+									<input type="text" name="car_type" id="car_type" class="form-control hcartype" data-toggle="modal" data-target="#cartype_modal" placeholder="<?php echo __('car_type');?>" onkeypress="return false;">
+									<label class="required_field" id="car_type_error"></label>
+								</div>
+								<div class="form-group width_twenty addwidth">
+									<i class="hdate_ico"></i>
+									<span class="star">*</span>
+									<input type="text" name="p_date" id="p_date" class="form-control hdate" placeholder="<?php echo __('date');?>">
+									<label class="required_field" id="p_date_error"></label>
+								</div>
+								<div class="form-group width_twenty addwidth">
+									<i class="htime_ico"></i>
+									<span class="star">*</span>
+									<input type="text" name="p_time" id="p_time" class="form-control htime" placeholder="<?php echo __('pick_up_time');?>">
+									<label class="required_field" id="p_time_error"></label>
+								</div>
+								<div class="form-group width_twenty addwidth">
+									<i class="hpsngr_ico"></i>
+									<span class="star">*</span>
+									<input type="text" name="passenger" id="passenger" class="form-control hpsngr" placeholder="<?php echo __('no_of_passenger');?>" onkeypress="return isNumber();">
+									<label class="required_field" id="passenger_error"></label>
+								</div>
+								<div class="form-group width_twenty addwidth">
+									<i class="hbag_ico"></i>
+									<input type="text" name="baggage" id="baggage" class="form-control hbag" placeholder="<?php echo __('no_of_baggage');?>" onkeypress="return isNumber();">
+									<label class="required_field" id="baggage_error"></label>
+								</div>
+								<div class="form-group width_twenty flight_no_div">
+									<i class="hplane_ico"></i>
+									<input type="text" name="flight_no" id="flight_no" class="form-control hplane" placeholder="<?php echo __('flight_no');?>">
+									<label class="required_field" id="flight_no_error"></label>
+								</div>
+								<div class="form-group width_twenty hauto">
+									<label class="required_note">*<i><?php echo __('required_field');?></i></label>
+								</div>
+								<div class="form-group width_twenty btn_block hauto">
+									<input type="button" name="booknow" value="<?php echo __('book_now');?>" title="<?php echo __('book_now');?>" class="btn btn-primary" onclick="ValidateBooking();">
+								</div>
+
+							</form>
+						</div>
+						<div id="picklater" class="tab-pane fade">
+						  	<?php /*<form name="booking_form" id="booking_form" method="get" action="<?php echo URL_BASE.'users/booking_request'; ?>">
+								<div class="form-group width_fifty">
+									<i class="hpickup_ico"></i>
+									<span class="star">*</span>
+									<input type="text" name="pickup" id="pickup_loc" class="form-control" placeholder="Pick up location">
+									<label class="required_field" id="pickup_loc_error"></label>
+								</div>
+								<div class="form-group width_fifty">
+									<i class="hdrop_ico"></i>
+									<span class="star">*</span>
+									<input type="text" name="drop" id="drop_loc" class="form-control" placeholder="Drop location">
+									<label class="required_field" id="drop_loc_error"></label>
+								</div>
+								<div class="form-group width_thirty">
+									<i class="hphone_ico"></i>
+									<span class="star">*</span>
+									<input type="text" name="phone" id="phone_num" class="form-control" placeholder="Phone Number" maxlength="10">
+									<label class="required_field" id="phone_num_error"></label>
+								</div>
+								<div class="form-group width_thirty">
+									<i class="hemail_ico"></i>									
+									<input type="text" name="email" id="email_book" class="form-control hemail" placeholder="Email">
+									<label class="required_field" id="email_book_error"></label>
+								</div>
+								<div class="form-group width_thirty">
+									<i class="hcartype_ico"></i>
+									<span class="star">*</span>
+									<input type="hidden" name="car_model" id="car_model">
+									<input type="text" name="car_type" id="car_type" class="form-control hcartype" data-toggle="modal" data-target="#cartype_modal" placeholder="Car type" onkeypress="return false;">
+									<label class="required_field" id="car_type_error"></label>
+								</div>
+								<div class="form-group width_twenty_five">
+									<i class="hdate_ico"></i>
+									<span class="star">*</span>
+									<input type="text" name="p_date" id="p_date" class="form-control hdate" placeholder="Date">
+									<label class="required_field" id="p_date_error"></label>
+								</div>
+								<div class="form-group width_twenty_five">
+									<i class="htime_ico"></i>
+									<span class="star">*</span>
+									<input type="text" name="p_time" id="p_time" class="form-control htime" placeholder="Time">
+									<label class="required_field" id="p_time_error"></label>
+								</div>
+								<div class="form-group width_twenty_five">
+									<i class="hpsngr_ico"></i>
+									<span class="star">*</span>
+									<input type="text" name="passenger" id="passenger" class="form-control hpsngr" placeholder="No of Passengers" onkeypress="return isNumber();">
+									<label class="required_field" id="passenger_error"></label>
+								</div>
+								<div class="form-group width_twenty_five">
+									<i class="hbag_ico"></i>
+									<input type="text" name="baggage" id="baggage" class="form-control hbag" placeholder="No of Baggage" onkeypress="return isNumber();">
+									<label class="required_field" id="baggage_error"></label>
+								</div>
+								<div class="form-group width_twenty hauto">
+									<label class="required_field">*<i>Required Field</i></label>
+								</div>
+								<div class="form-group width_twenty btn_block hauto">
+									<input type="button" name="booknow" value="Book Now" title="Book Now" class="btn btn-primary" onclick="ValidateBooking();">
+								</div>*/ ?>
+
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+<section class="vehicles_container">
+	<div class="container">
+		<div class="col-md-12">
+			<div class="blk_title text-center">
+				<h2><?php echo __('vechile_type');?></h2>
+				<small><?php echo __('vechile_type_content');?></small>
+			</div>
+		</div>
+		<div class="col-md-12">
+			<div class="vehicle_tab_container">
+				<ul class="nav nav-pills">
+				<?php if(count($model_list)){ 
+
+						foreach($model_list as $key=>$model){
+
+							if($lang == 'ar') {
+								$model_name = $model['model_name_ar'];
+							}else{
+								$model_name = $model['model_name'];
+							}
+
+							if($key==0){
+								$active = 'class="active"';
+							}else{
+								$active = '';
+							}?>
+
+						<li <?php echo $active; ?> ><a data-toggle="tab" href="#<?php echo $model_name; ?>" title="<?php echo $model_name; ?>"><?php echo $model_name; ?></a></li>
+
+				<?php } } ?>
+				   
+				</ul>
+  
+				<div class="tab-content">
+
+					<?php if(count($model_list)){ 
+
+						foreach($model_list as $key=>$model){
+
+							if($lang == 'ar') {
+								$model_name = $model['model_name_ar'];
+							}else{
+								$model_name = $model['model_name'];
+							}
+
+							if($key==0){
+								$fade_active = 'in active';
+							}else{
+								$fade_active = '';
+							}
+
+							if(file_exists($_SERVER["DOCUMENT_ROOT"].'/public/uploads/model_image/'.$model['website_model_image']) && !empty($model['website_model_image']) ){
+
+								$image_path = URL_BASE.'public/uploads/model_image/'.$model['website_model_image'];
+							}else{
+								$image_path = URL_BASE.'public/images/car_esclade.png';
+							}
+
+							?>
+
+						<div id="<?php echo $model_name; ?>" class="tab-pane fade <?php echo $fade_active; ?>">
+						<div class="vehic_desc_blocks">
+							<div class="veh_desc_lft">
+								<h4><?php echo $model_name; ?></h4>
+								<span><?php echo CURRENCY.' '.number_format((float)$model['base_fare'], 2, '.', ''); ?></span>
+								<!--<a href="javascript:;" title="View More">View More</a>-->
+							</div>
+							<div class="veh_desc_middle">
+								<img src="<?php echo $image_path; ?>" alt="<?php echo $model_name; ?>">
+							</div>
+							<div class="veh_desc_rgt">
+								<ul>
+									<li><?php echo __('meet_our_drivers');?><span><?php echo $model['base_fare'].' '.CURRENCY; ?></span></li>
+									<li><?php echo str_replace('%min%',$model['base_mins'],__('fare_per_min') );?><span><?php echo $model['minutes_fare'].' '.CURRENCY; ?> </span></li>
+									<li><?php echo __('waiting_charge_web');?><span><?php echo $model['waiting_cost_per_hour'].' '.CURRENCY; ?></span></li>
+									<li><?php echo __('luggage');?><span><?php echo $model['max_luggage']; ?></span></li>
+									<li><?php echo __('model_size_web');?><span><?php echo $model['model_size']; ?></span></li>
+								</ul>
+							</div>
+						</div>
+					</div>
+
+				<?php } } ?>
+
+					
+					<!--<div id="type_luxury" class="tab-pane fade">
+						<div class="vehic_desc_blocks">
+							<div class="veh_desc_lft">
+								<h4>Luxury</h4>
+								<span>KWD 2.00</span>
+								<a href="javascript:;" title="View More">View More</a>
+							</div>
+							<div class="veh_desc_middle">
+								<img src="public/images/car_esclade.png" alt="Esclade">
+							</div>
+							<div class="veh_desc_rgt">
+								<ul>
+									<li>Base Fare<span>2 KWD</span></li>
+									<li>Fare per 10 minutes<span>2 KWD</span></li>
+									<li>Waiting charge per (hr)<span>6 KWD</span></li>
+									<li>Luggage<span>2</span></li>
+									<li>Model Size<span>5</span></li>
+								</ul>
+							</div>
+						</div>
+					</div>-->
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+<section class="meet_drivers_container">
+	<div class="container">
+		<div class="col-md-12">
+			<div class="blk_title text-center">
+				<h2><?php echo __('meet_our_drivers');?></h2>
+				<small><?php echo __('meet_our_drivers_content');?></small>
+				<a href="<?php echo URL_BASE; ?>meet_our_drivers.html" title="View More" class="view_more"><?php echo __('view_more');?></a>
+			</div>
+		</div>
+		<div class="col-xs-6 col-sm-6 col-md-4">
+			<div class="driver_blks">
+				<div class="drv_img">
+					<img src="public/images/driver1.png" alt="">
+				</div>
+				<div class="drv_cont">
+					<h3>Shabeek</h3>
+					<p>It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. </p>
+					<ul class="drv_soclinks">
+						<li><a href="" title="Facebook" class="drv_fb"></a></li>
+						<li><a href="" title="Instagram" class="drv_insta"></a></li>
+						<li><a href="" title="Twitter" class="drv_twitter"></a></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+		<div class="col-xs-6 col-sm-6 col-md-4">
+			<div class="driver_blks">
+				<div class="drv_img">
+					<img src="public/images/driver2.png" alt="">
+				</div>
+				<div class="drv_cont">
+					<h3>Deepak</h3>
+					<p>But I must explain to you how all this mistaken idea of denouncing pleasure and praising pain was born.</p>
+					<ul class="drv_soclinks">
+						<li><a href="" title="Facebook" class="drv_fb"></a></li>
+						<li><a href="" title="Instagram" class="drv_insta"></a></li>
+						<li><a href="" title="Twitter" class="drv_twitter"></a></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+		<div class="col-xs-6 col-sm-6 col-md-4 hidden-xs hidden-sm">
+			<div class="driver_blks">
+				<div class="drv_img">
+					<img src="public/images/driver3.png" alt="">
+				</div>
+				<div class="drv_cont">
+					<h3>Nishad</h3>
+					<p>On the other hand, we denounce with righteous indignation and dislike men who are so beguiled.</p>
+					<ul class="drv_soclinks">
+						<li><a href="" title="Facebook" class="drv_fb"></a></li>
+						<li><a href="" title="Instagram" class="drv_insta"></a></li>
+						<li><a href="" title="Twitter" class="drv_twitter"></a></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+<section class="app_container">
+	<div class="container">
+		<div class="col-md-6">
+			<div class="app_container_lft">
+				<h2>Book GrandLimo from the App</h2>
+				<p>One tap and a car comes directly to you. Hope in your driver knows exactly where to go. </p>
+				<ul>
+		            <li><a href="javascript:;" title="" class="footer_app_icon footer_iapp_icon"></a></li>
+		            <li><a href="javascript:;" title="" class="footer_app_icon footer_gapp_icon"></a></li>
+		        </ul>
+		    </div>
+		</div>
+		<div class="col-md-6">
+			<div class="app_container_rgt">
+				<img src="public/images/app_cont_screen.png" alt="">
+			</div>
+		</div>
+	</div>
+</section>
+<section class="widgets_btm_container">
+	<div class="container">
+		<div class="col-xs-12 col-sm-12 col-md-4">
+			<div class="widgets_blk text-center">
+				<i class="widget_ico w_ico1"></i>
+				<h3>Pick at Spot</h3>
+				<p>Book the Vehicle through our Smartphone App and Enjoy your Chauffeured Experience. </p>
+			</div>
+		</div>
+		<div class="col-xs-12 col-sm-12 col-md-4">
+			<div class="widgets_blk text-center">
+				<i class="widget_ico w_ico2"></i>
+				<h3>Card Payment</h3>
+				<p>Your Payment is Guaranteed to be Handled Securely and safely via your Choice of Credit or Debit Card. </p>
+			</div>
+		</div>
+		<div class="col-xs-12 col-sm-12 col-md-4">
+			<div class="widgets_blk text-center">
+				<i class="widget_ico w_ico3"></i>
+				<h3>Secured</h3>
+				<p>The App Securely Manages your Content Safely with the Proper Handling Procedures of your Banking Cards.</p>
+			</div>
+		</div>
+	</div>
+</section>
+<section class="testimonial_container">
+	<a href="javascript:;" class="testi_insta"></a>
+	<div class="container">
+		<div class="testimonial_inner_container">
+			<div class="owl-carousel owl-theme">
+				<div class="item">
+					<div class="testi_blks">
+						<div class="testi_img_blk">
+							<img src="public/images/testi1.png" class="testi_img" alt="">
+						</div>
+						<h4>Khalid bin waleed</h4>
+						<small>@khalidbinwaleed</small>
+						<p>Anyone who is running a company should look into @tint! Great tool that allows companies to compile their social media presence in 1 place</p>
+					</div>
+				</div>	
+				<div class="item">
+					<div class="testi_blks">
+						<div class="testi_img_blk">
+							<img src="public/images/testi1.png" class="testi_img" alt="">
+						</div>
+						<h4>Khalid bin</h4>
+						<small>@khalidbinwaleed</small>
+						<p>Anyone who is running a company should look into @tint! Great tool that allows companies to compile their social media presence in 1 place</p>
+					</div>
+				</div>	
+				<div class="item">
+					<div class="testi_blks">
+						<div class="testi_img_blk">
+							<img src="public/images/testi1.png" class="testi_img" alt="">
+						</div>
+						<h4>Khalid waleed</h4>
+						<small>@khalidbinwaleed</small>
+						<p>Anyone who is running a company should look into @tint! Great tool that allows companies to compile their social media presence in 1 place</p>
+					</div>
+				</div>	
+			</div>
+		</div>
+	</div>
+</section>
+<!-- car type modal -->
+<div id="cartype_modal" class="modal fade cartype_modal" role="dialog">
+  	<div class="modal-dialog">
+	    <div class="modal-content">
+	      	<div class="modal-header">
+	        	<button type="button" class="close" data-dismiss="modal">&times;</button>
+	        	<h4 class="modal-title"><?php echo __('select_car_type'); ?></h4>
+	      	</div>
+	      	<div class="modal-body">
+	        	<ul>
+
+	        		<?php if(count($model_list)){ 
+
+						foreach($model_list as $key=>$model){
+
+							if($lang == 'ar') {
+								$model_name = $model['model_name_ar'];
+							}else{
+								$model_name = $model['model_name'];
+							}
+
+							if(file_exists($_SERVER["DOCUMENT_ROOT"].'/public/uploads/model_image/'.$model['website_model_image']) && !empty($model['website_model_image']) ){
+
+								$image_path = URL_BASE.'public/uploads/model_image/'.$model['website_model_image'];
+							}else{
+								$image_path = URL_BASE.'public/images/car_business.png';
+							}
+
+							?>
+
+	        		<li>
+	        			<div class="car_type_lft">
+	        				<div class="car_type_lft_cont">
+	        					<h4><?php echo $model_name; ?></h4>
+	        					<p>
+	        						<span><?php echo $model['category_name']; ?></span>
+	        						<i><?php echo CURRENCY.' '.number_format((float)$model['minutes_fare'], 2, '.', ''); ?></i>  						
+	        						<small><?php echo str_replace('%min%',$model['base_mins'],__('fare_per_min') );?></small>
+	        					</p>
+	        				</div>
+	        				<div class="car_type_lft_img">
+	        					<img src="<?php echo $image_path; ?>" alt="Car type" class="img-responsive">
+	        				</div>
+	        			</div>
+	        			<div class="car_type_rgt">
+	        				<div class="radio_style">
+	        					<input type="radio" name="car_type" value="<?php echo $model['model_id']; ?>" onclick="update_car_model('<?php echo $model['model_id']; ?>','<?php echo $model_name; ?>');" >
+	        					<label></label>
+	        				</div>
+	        			</div>
+	        		</li>
+	        		
+	        		<?php } } ?>
+	        		<!--<li>
+	        			<div class="car_type_lft">
+	        				<div class="car_type_lft_cont">
+	        					<h4>Luxury</h4>
+	        					<p>
+	        						<span>Mercedez Benz or Similar</span>
+	        						<i>KWD 10.00</i>
+	        						<small>Fare per 10 minutes</small>
+	        					</p>
+	        				</div>
+	        				<div class="car_type_lft_img">
+	        					<img src="public/images/car_luxury.png" alt="Car type" class="img-responsive">
+	        				</div>
+	        			</div>
+	        			<div class="car_type_rgt">
+	        				<div class="radio_style">
+	        					<input type="radio" name="car_type">
+	        					<label></label>
+	        				</div>
+	        			</div>
+	        		</li>-->
+	        	</ul>
+	      	</div>
+	    </div>
+  	</div>
+</div>
+<!-- car type modal -->
+
+<script src="https://maps.google.com/maps/api/js?key=<?php echo GOOGLE_MAP_API_KEY; ?>&libraries=places,geometry" type="text/javascript"></script>
+<script type="text/javascript">
+
+function ChangeForm(type){
+	//alert('333');
+	$("#booking_form")[0].reset();
+	$('.required_field').text('');
+	if(type==1){
+		$('.addwidth').addClass('width_twenty');
+		$('.addwidth').removeClass('width_twenty_five');		
+		$('.flight_no_div').show();
+	}else{
+		$('.addwidth').addClass('width_twenty_five');
+		$('.addwidth').removeClass('width_twenty');		
+		$('.flight_no_div').hide();
+	}
+
+}
+function update_car_model(id,model_name){
+	//alert(id);
+	if(id && model_name){
+
+		$('#car_model').val(id);
+		$('#car_type').val(model_name);
+
+		$('#cartype_modal').modal('hide');
+	}
+}
+
+function isNumber(evt) {
+    evt = (evt) ? evt : window.event;
+    var charCode = (evt.which) ? evt.which : evt.keyCode;
+    if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+        return false;
+    }
+    return true;
+}
+
+function validateEmail(email) {
+  var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+  return re.test(email);
+}
+
+function ValidateBooking(){
+
+	var pickup = $('#pickup_loc').val();
+	var drop = $('#drop_loc').val();
+	
+	var phone = $('#phone_num').val();
+	var email = $('#email_book').val();
+	var car_type = $('#car_type').val();
+	var p_date = $('#p_date').val();
+	var p_time = $('#p_time').val();
+	var passenger = $('#passenger').val();
+	var baggage = $('#baggage').val();
+	var flight_no = $('#flight_no').val();
+
+	//if(pickup =='' || drop =='' || phone == '' || email == '' || car_type == '' || p_date == '' || p_time == '' || passenger == '' ){
+
+		//alert('Please enter all require fields');
+		$('.required_field').text('');
+		var error = 1;
+		if(pickup == '' || pickup.length <4 ){
+			error = 0;
+			$('#pickup_loc_error').text("<?php echo __('enter_pickup_loc');?>");
+		}
+		if(drop == '' || drop.length <4){
+			error = 0;
+			$('#drop_loc_error').text("<?php echo __('enter_drop_loc');?>");
+		}
+		if(phone == '' || phone.length <4){
+			error = 0;
+			$('#phone_num_error').text("<?php echo __('enter_phone');?>");
+		}
+		/*if(email == '' || email.length <4 ){
+			error = 0;
+			$('#email_book_error').text("<?php echo __('enter_email');?>");
+		}*/
+		if(car_type == ''){
+			error = 0;
+			$('#car_type_error').text("<?php echo __('enter_car_type');?>");
+		}
+		if(p_date == ''){
+			error = 0;
+			$('#p_date_error').text("<?php echo __('enter_pickup_date');?>");
+		}
+		if(p_time == ''){
+			error = 0;
+			$('#p_time_error').text("<?php echo __('enter_pickup_time');?>");
+		}
+		if(passenger == ''){
+			error = 0;
+			$('#passenger_error').text("<?php echo __('enter_passenger');?>");
+		}
+
+		if (email!='' && !validateEmail(email)) {
+			error = 0;
+			$('#email_book_error').text("<?php echo __('enter_valid_email');?>");
+		}
+
+		if(error==0){
+			return false;
+		}else{
+			$('#booking_form').submit();
+		}
+
+	
+	
+}
+
+	$(document).ready(function() {
+		$('.owl-carousel').owlCarousel({
+		    loop: true,
+		    margin: 0,
+		    <?php if($lang == 'ar') {  ?>
+		    rtl:true,
+		    <?php } ?>
+          	mouseDrag: false,
+		    responsiveClass: true,
+		    autoplay:true,
+		    smartSpeed : 500,
+		    nav: false,
+		    dots: true,
+		    responsive: {
+			0: {
+			    items: 1,
+			    mouseDrag: false
+			},
+			600: {
+			    items: 1,
+			    mouseDrag: false
+			},
+			1000: {
+			    items: 1,
+			    loop: true,
+			    mouseDrag: false,
+			    margin: 0
+			}
+		    }
+		});
+	});
+
+
+  var bounds = new google.maps.LatLngBounds();
+  var markers = [];
+  var map; 
+  var start;
+  var end;
+  var autocomplete, toAutocomplete;
+  var directionsService = new google.maps.DirectionsService;
+  var directionsDisplay = new google.maps.DirectionsRenderer({suppressMarkers: true});
+  
+  function initMap()
+  {    
+    /** google autocomplete functionality in add booking **/
+    //var options = {types: [] };
+    /* Restrictions to load only particular country */
+
+    var options = {types: [],componentRestrictions: {country: "kw"} };
+    
+    autocomplete = new google.maps.places.Autocomplete(document.getElementById('pickup_loc'), options);
+    toAutocomplete = new google.maps.places.Autocomplete(document.getElementById('drop_loc'), options);
+    
+    
+    google.maps.event.addDomListener(document.getElementById('pickup_loc'), 'focus', geolocate);
+    google.maps.event.addDomListener(document.getElementById('drop_loc'), 'focus', geolocate);  
+
+  }
+
+function geolocate() {
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(function(position) {
+        var geolocation = new google.maps.LatLng(
+            position.coords.latitude, position.coords.longitude);
+        var circle = new google.maps.Circle({
+            center: geolocation,
+            radius: position.coords.accuracy
+        });
+        autocomplete.setBounds(circle.getBounds());
+        // Log autocomplete bounds here
+        console.log(autocomplete.getBounds());
+    });
+  }
+}
+google.maps.event.addDomListener(window, "load", initMap);
+
+    </script>

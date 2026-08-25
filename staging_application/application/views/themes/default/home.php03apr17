@@ -1,0 +1,679 @@
+<?php defined('SYSPATH') OR die('No direct access allowed.');?> 
+<div id="fb-root"></div>
+<section>
+<div class="video_wrapper">
+	<div id="vfade" class="video_fade" style="display:none;"></div>
+	<div id="sho" class="video_outer" style="display:none;">       
+		<div class="video_block"><a id="close_vx" class="close_video" href="javascript:;" onclick="popup_close('sho');">X</a></div>  
+		<iframe src="//player.vimeo.com/video/101892616" id="vdemo" width="960" height="540" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
+	</div>
+</div>
+<div class="clearfix">
+<?php
+	$play_store = isset($site_info['android_passenger_app_url'])?$site_info['android_passenger_app_url']:'';
+	$app_store  = isset($site_info['ios_passenger_app_url'])?$site_info['ios_passenger_app_url']:'';
+        //For Notice Messages
+	//===================
+	$sucessful_message=Message::display();
+	//echo $sucessful_message;		
+	//$Message->message;
+	if($sucessful_message) { ?>
+	
+	<div id="messagedisplay" class="homemessage">
+	<div class="alert alert-success">
+	<div class="success_float_tt">
+	<button type="button" class="close" data-dismiss="alert">×</button>
+	<label style="float: left; margin: 4px 0 0 6px;"><?php echo $sucessful_message; ?></label>
+	</div>
+	</div>
+	</div>
+<?php } ?>  
+	<div class="taxi_mobility_banner">    
+		<div class="taxi_mobility_banner_block">
+				<div class="banner_info">
+					<div class="banner_app wow fadeInUp" data-wow-duration="1.5s">
+						<img src="public/images/banner_app.gif" alt="Banner App" />
+					</div>
+					<div class="banner_left wow fadeIn" data-wow-duration="2s">
+						<div class="ban_title"><?php echo __('today_we_are_into_entirely_new_era_of_taxi_business'); ?></div>
+						<p class="ban_txt"><?php echo __('taxi_solution_desc'); ?></p>
+						<div class="banner_button">	<?php /*<a class="yellow_but" href="/features.html"  title="<?php echo __('site_buy_now_home'); ?>"><?php echo __('site_buy_now_home'); ?></a>*/ ?>
+						<?php  ?>
+					<a href="<?php echo $play_store; ?>" title="Google Play" class="google_play_icon"></a>
+					<a href="<?php echo $app_store; ?>" title="App Store" class="app_store_icon"></a>
+					</div>
+					</div>
+				</div>                                     
+			</div>  
+	</div>
+    <div class="taxi_service_outer taxi_service_outer_home">    
+     
+    
+     
+     
+     <div class="feature_services down">
+    <div class="key_block_outer support_block_outer clearfix">
+        <div class="key_block key_block_featured">
+            <h1 class="home_subtitle service_title animation-box wow bounceIn animated"><?php echo __('what_we_have');?></h1>
+            <h2><?php echo __('what_we_have_desc');?></h2> 
+            <ul class="clearfix">
+                <li class="support_info wow animated fadeInLeft">
+					<div class="support_info_top">
+						<div class="tu-item tu-item-1">				
+							<div class="tu-info-wrap">
+							<div class="tu-info">					
+							<div class="tu-info-front tu-item-1">
+								<img src="public/images/pick_spot.png"  alt="Pick at spot" />
+							</div>
+							<div class="tu-info-back">
+								<img src="public/images/pick_spot.png" alt="Pick at spot" />
+							</div>	
+							</div>
+							</div>
+						</div>						
+                        <h3 class="support_icon1"><?php echo __('pick_at_spot'); ?></h3>
+                        <p><?php echo __('pick_at_spot_desc'); ?></p>
+                    </div>                
+                </li>
+                <li class="support_info wow animated bounceInUp">
+                    <div class="support_info_top">
+						<div class="tu-item tu-item-1">				
+							<div class="tu-info-wrap">
+							<div class="tu-info">					
+							<div class="tu-info-front tu-item-1">
+								<img src="public/images/creditcard.png"  alt="Credit card" />
+							</div>
+							<div class="tu-info-back">
+								<img src="public/images/creditcard.png"  height="191px" alt="Credit card" />
+							</div>	
+							</div>
+							</div>
+						</div>
+                        <h3 class="support_icon1 support_icon2"><?php echo __('credit_pay');?></h3>
+                        <p><?php echo __('credit_pay_desc');?></p>
+                    </div>               
+                </li>
+                <li class="support_info support_info1 wow animated fadeInRight">
+                    <div class="support_info_top">
+						<div class="tu-item tu-item-1">				
+							<div class="tu-info-wrap">
+							<div class="tu-info">					
+							<div class="tu-info-front tu-item-1">
+								<img src="public/images/secureapp.png" alt="secureapp" />
+							</div>
+							<div class="tu-info-back">
+								<img src="public/images/secureapp.png"height="191px" alt="secureapp" />
+							</div>	
+							</div>
+							</div>
+						</div>                        
+                        <h3 class="support_icon1 support_icon3"><?php echo __('secure_app');?></h3>
+                        <p><?php echo __('secure_desc');?></p>
+                    </div>                
+                </li>                    
+            </ul>
+        </div>
+    </div>  
+</div>
+     
+     
+     
+        <div class="taxi_bussiness_outer_banner">
+		<div class="taxi_bussiness_inner_bg">					 
+            <div class="taxi_bussiness_outer">
+            	<div class="taxi_bussiness_outer_title text-uppercase">
+            		<h1><?php echo __('how_it_works')?></h1>
+            	</div>          
+                <div class="taxi_bussiness_left">
+                    <ul class="taxi_service_content">
+                        <li class="wow fadeInLeft animated" data-wow-duration="1s">
+                            <a href="<?php echo URL_BASE;?>features.html#dispatch" title="AUTO DISPATCH SYSTEM"><span class="service_icon service_icon1">&nbsp;</span></a>
+                            <h3 class="service_sub_title">
+                                <a href="<?php echo URL_BASE;?>features.html#dispatch" title="AUTO DISPATCH SYSTEM">
+                                    <?php echo __('auto_dispatch_system'); ?>
+                                </a>
+                            </h3>
+                            <p><?php echo __('auto_content');?></p>
+                        </li>
+                        <li class="wow fadeInLeft animated" data-wow-duration="2s">
+                           <a href="<?php echo URL_BASE;?>features.html#robust" title="ROBUST APPS"> <span class="service_icon service_icon2">&nbsp;</span></a>
+                            <h3 class="service_sub_title">
+                                <a href="<?php echo URL_BASE;?>features.html#robust" title="ROBUST APPS">
+                                    <?php echo __('robust_apps'); ?>
+                                </a>					
+                            </h3>
+                            <p><?php echo __('robust_apps_desc'); ?></p>
+                        </li>
+                        <li class="wow fadeInLeft animated" data-wow-duration="3s">
+                            <a href="<?php echo URL_BASE;?>features.html#booking" title="BOOKING SYSTEM"><span class="service_icon service_icon3">&nbsp;</span></a>
+                            <h3 class="service_sub_title">
+                                <a href="<?php echo URL_BASE;?>features.html#booking" title="BOOKING SYSTEM">
+                                    <?php echo __('booking_system'); ?>
+                                </a>				
+                            </h3>
+                            <p><?php echo __('booking_system_desc'); ?></p>
+                        </li>
+                    </ul>
+                </div>
+ 
+				<div class="taxi_bussiness_app animation-box wow bounceIn animated">       
+					<div class="taxi_slide_bg">
+						   <div id="myCarousel" class="carousel slide" data-ride="carousel">
+                        <!-- Indicators -->
+                        <ol class="carousel-indicators">
+                          <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
+                          <li data-target="#myCarousel" data-slide-to="1"></li>
+                          <li data-target="#myCarousel" data-slide-to="2"></li>
+                          <li data-target="#myCarousel" data-slide-to="3"></li>
+                          <li data-target="#myCarousel" data-slide-to="4"></li>
+                          <li data-target="#myCarousel" data-slide-to="5"></li>
+						  <li data-target="#myCarousel" data-slide-to="6"></li>
+						  <li data-target="#myCarousel" data-slide-to="7"></li>						  
+                        </ol>
+                        <!-- Wrapper for slides -->
+                        <div class="carousel-inner" role="listbox">
+                          <div class="item active">
+                            <img src="public/images/slide_app_screen_1.png" width="252px" height="443px" alt="slide">
+                          </div>
+                          <div class="item">
+                            <img src="public/images/slide_app_screen_2.png" width="252px" height="443px" alt="slide">
+                          </div>
+                          <div class="item">
+                            <img src="public/images/slide_app_screen_3.png" width="252px" height="443px" alt="slide">
+                          </div>
+                          <div class="item">
+                            <img src="public/images/slide_app_screen_4.png" width="252px" height="443px" alt="slide">
+                          </div>
+                          <div class="item">
+                            <img src="public/images/slide_app_screen_5.png" width="252px" height="443px" alt="slide">
+                          </div>
+                          <div class="item">
+                            <img src="public/images/slide_app_screen_6.png" width="252px" height="443px" alt="slide">
+                          </div>
+                          <div class="item">
+                            <img src="public/images/slide_app_screen_7.png" width="252px" height="443px" alt="slide">
+                          </div>
+                          <div class="item">
+                            <img src="public/images/slide_app_screen_8.png" width="252px" height="443px" alt="slide">
+                          </div>                           
+                        </div>
+                        <!-- Left and right controls -->
+                        <a class="left carousel-control" href="#myCarousel" role="button" data-slide="prev">
+                          <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+                          <span class="sr-only arrow_left"><<</span>
+                        </a>
+                        <a class="right carousel-control" href="#myCarousel" role="button" data-slide="next">
+                          <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+                          <span class="sr-only arrow_right">>></span>
+                        </a>
+                      </div>
+					</div>
+                </div>
+	 
+                <div class="taxi_bussiness_right">
+                    <ul class="taxi_service_content">
+                        <li class="wow fadeInRight animated" data-wow-duration="1s">
+                            <a href="<?php echo URL_BASE;?>features.html#theme" title="FACEBOOK LOGIN SOCIAL SHARING"><span class="service_icon service_icon4">&nbsp;</span></a>
+                            <h3 class="service_sub_title">
+								<a href="<?php echo URL_BASE;?>features.html#theme" title="FACEBOOK LOGIN SOCIAL SHARING"><?php echo __('fb_and_social_sharing'); ?></a>
+							</h3>
+                            <p><?php echo __('fb_and_social_sharing_desc'); ?></p>
+                        </li>
+                        <li class="wow fadeInRight animated" data-wow-duration="2s">
+                            <a href="<?php echo URL_BASE;?>features.html#useracc" title="E-RECEIPTS AND INVOICE"><span class="service_icon service_icon5">&nbsp;</span></a>
+                            <h3 class="service_sub_title">
+								<a href="<?php echo URL_BASE;?>features.html#useracc" title="E-RECEIPTS AND INVOICE"><?php echo __('ereceipt_and_invoices'); ?></a>				
+							</h3>
+                            <p><?php echo __('ereceipt_and_invoices_desc'); ?></p>
+                        </li>
+                        <li class="wow fadeInRight animated" data-wow-duration="3s">
+                            <a href="<?php echo URL_BASE;?>features.html#gps" title="GPS TRACKING SYSTEM"><span class="service_icon service_icon6">&nbsp;</span></a>
+                            <h3 class="service_sub_title">
+								<a href="<?php echo URL_BASE;?>features.html#gps" title="GPS TRACKING SYSTEM"><?php echo __('gps_tracking_system'); ?></a>
+							</h3>
+                            <p> <?php echo __('gps_tracking_system_desc'); ?></p>
+                        </li>
+                    </ul>
+                </div>               
+                </div>               
+            </div>
+        </div>
+    </div>
+</div>
+
+<?php /* <div class="home_faq_outer clearfix">
+	<ul>
+		<li>
+			<a title="Taxi Booking & Dispatching" href="javascript:;">
+				<div class="hover_animation_hide"></div>
+				<span class="faq_img"><img src="public/images/faq_one.png" alt="Faq One"></span>
+					<span class="faq_title"><h3 class="faq_height">Taxi Booking & Dispatching</h3><span class="like_website">Like Uber</span>
+				</span>
+			</a>
+		</li>
+		<li>
+			<a title="For Delivery Services" href="javascript:;">
+				<div class="hover_animation_hide"></div>
+				<span class="faq_img"><img src="public/images/faq_two.png" alt="Faq One"></span>
+				<span class="faq_title">
+					<h3 class="faq_height">For Delivery <br/>Services</h3>
+					<span class="like_website">Like TNT</span>
+				</span>
+			</a>
+		</li>
+		<li>
+			<a title="Chauffeured Cars & Drivers" href="javascript:;">
+				<div class="hover_animation_hide"></div>
+				<span class="faq_img"><img src="public/images/faq_three.png" alt="Faq One"></span>
+				<span class="faq_title">
+					<h3 class="faq_height">Chauffeured Cars & Drivers</h3>
+					<span class="like_website">Like TNT</span>
+				</span>
+			</a>
+		</li>
+		<li>
+			<a title="Truck Companies" href="javascript:;">
+				<div class="hover_animation_hide"></div>
+				<span class="faq_img"><img src="public/images/faq_four.png" alt="Faq One"></span>
+				<span class="faq_title">
+					<h3 class="faq_height">Truck Companies</h3>
+					<span class="like_website">Like UPS</span>
+				</span>
+			</a>
+		</li>
+		<li>
+			<a title="Airport Transfer" href="javascript:;">
+				<div class="hover_animation_hide"></div>
+				<span class="faq_img"><img src="public/images/faq_five.png" alt="Faq One"></span>
+				<span class="faq_title">
+					<h3>Airport Transfer</h3>
+					<span class="like_website">Like SVX</span>
+				</span>
+			</a>
+		</li>
+		<li>
+			<a title="Towing Services" href="javascript:;">
+				<div class="hover_animation_hide"></div>
+				<span class="faq_img"><img src="public/images/faq_six.png" alt="Faq One"></span>
+				<span class="faq_title">
+					<h3>Towing Services</h3>
+					<span class="like_website">Like SVX</span>
+				</span>
+			</a>
+		</li>
+		<li>
+			<a title="Shuttle Services" href="javascript:;">
+				<div class="hover_animation_hide"></div>
+				<span class="faq_img"><img src="public/images/faq_seven.png" alt="Faq One"></span>
+				<span class="faq_title">
+					<h3>Shuttle Services</h3>
+					<span class="like_website">Like USV</span>
+				</span>
+			</a>
+		</li>
+		<li>
+			<a title="Limo Companies" href="javascript:;">
+				<div class="hover_animation_hide"></div>
+				<span class="faq_img"><img src="public/images/faq_eight.png" alt="Faq One"></span>
+				<span class="faq_title">
+					<h3>Limo Companies</h3>
+					<span class="like_website">Like ZBEST</span>
+				</span>
+			</a>
+		</li>
+	</ul>
+</div>
+<div class="faq_show_section">
+	<a href="javascript:;" title="FAQs">FAQs</a>
+</div>
+<div class="faq_tab_outer">
+	<div id="accordian">
+		<ul>
+			<li>
+				<h3>What is Taxi Mobility ?</h3>
+				<ul>
+					<li><a href="javascript:;">Taxi Mobility is a one stop solution to take your taxi business to a new era. It consist of a Customer app, Driver app and a Dispatch panel. Book, track, manage, execute entire taxi booking and dispatch process under one platform.</a></li>
+				</ul>
+			</li>			
+			<li>
+				<h3>Why should I use Taxi Mobility ?</h3>
+				<ul>
+					<li><a href="javascript:;">Taxi Mobility will reduce taxi company’s manual efforts in dispatching and managing bookings. It provides your existing taxi business a high tech working environment. Taxi Mobility efficiently allocate tasks, manage transactions, and also helps you maintain a complete client database which is essential in analyzing performance reports. </a></li>
+				</ul>
+			</li>
+			<li>
+				<h3>I am not a very big player in the taxi industry, will Taxi Mobility suit to a smaller taxi company like mine ?</h3>
+				<ul>
+					<li><a href="javascript:;">Yes, Taxi Mobility adapts itself to small, medium and big taxi companies. It has all in-built features in its admin panel to make itself rightly fit to any company hierarchy. </a></li>
+				</ul>
+			</li>
+			<li>
+				<h3>Is Taxi Mobility easy to use and light on my pocket ?</h3>
+				<ul>
+					<li><a href="javascript:;">Taxi Mobility needs minimal guidance to work . It is a ‘ready to use’ software designed to be used in any part of the world. Keeping the software User friendly and affordable was one of our prime objectives. </a></li>
+				</ul>
+			</li>
+			<li>
+				<h3>Can I get a demo of the system ?</h3>
+				
+			</li>			
+			<li>
+				<h3>Is there a separate app for Customers and Drivers ? also, can the back-end be used to dispatch cabs manually ?</h3>
+				<ul>
+					<li><a href="javascript:;">You can go ahead and download Taxi Mobility apps for both Customer and Driver from Google Play and App store. You can find links to the Apps at our Website, keep browsing :) and yes the admin panel is designed to cater requests for any manual dispatch of the cabs.</a></li>
+				</ul>
+			</li>
+			<li>
+				<h3>How should I buy Taxi Mobility ?</h3>
+				<ul>
+					<li><a href="javascript:;">Visit Contact Us’ page and click ‘Get a free quote’. You will be assisted by our representative giving you complete details about payment procedures.</a></li>
+				</ul>
+			</li>
+			<li>
+				<h3>I have more questions, what should I do ?</h3>
+				
+			</li>			
+		</ul>
+	</div>
+</div> */?>
+<div class="key_block_outer clearfix" style="display:none;">
+	<div class="key_block_tab_outer">
+		<div class="key_block_tab_inner">            
+			<ul class="key_block_tab">
+				<li class="active" id="bkey">
+					<span class="key_tab_icon"></span>
+					<a href="javascript:;" title="Key Benifits" >
+						<span class="key_ben_icon">&nbsp;</span>
+						<b><?php echo __('key_benifits');?></b>
+					</a>
+				</li>                    
+				<?php /* <li id="croi" class="key_tab_bg">
+					<span class="key_tab_icon"></span>
+					<a href="javascript:;" title="Calculate your ROI" >
+						<span class="key_ben_icon key_cal_icon">&nbsp;</span>
+						<b>Calculate your ROI</b>
+					</a>
+				</li> */?>
+			</ul>
+			<span class="key_bottom_shadow">&nbsp;</span>
+		</div>
+	</div>
+	<div class="highlights_tab_outer">
+		<div class="key_block" id="key">     
+			<div class="key_block_right wow animated fadeInLeft">
+				<span class="key_block_img">
+					<img src="<?php echo URL_BASE.'public/images/key_block_img.png'; ?>" width="410px" height="715px" alt="Dispatch system" />
+				</span>                    
+			</div>        
+			<div class="key_block_left wow animated fadeInRight">
+				<h2 class="home_subtitle"><?php echo __('highlights'); ?></h2>                
+				<ul class="key_list">
+					<li><span><?php echo __('heighlight_points_1'); ?></span></li>
+					<li><span><?php echo __('heighlight_points_2'); ?></span></li>
+					<li><span><?php echo __('heighlight_points_3'); ?></span></li>                
+					<li><span><?php echo __('heighlight_points_4'); ?></span></li>
+					<?php /* <li><span><?php echo __('heighlight_points_5'); ?></span></li> */ ?>
+					<li><span><?php echo __('heighlight_points_6'); ?></span></li>
+					<li><span><?php echo __('heighlight_points_7'); ?></span></li>
+					<li><span><?php echo __('heighlight_points_8'); ?></span></li>                
+					<li><span><?php echo __('heighlight_points_9'); ?></span></li>
+					<li><span><?php echo __('heighlight_points_10'); ?></span></li>
+					<li><span><?php echo __('heighlight_points_11'); ?></span></li>
+					<li><span><?php echo __('heighlight_points_12'); ?></span></li>
+					<li><span><?php echo __('heighlight_points_13'); ?></span></li>
+				</ul>           
+			</div>
+		</div>
+		<div class="key_block calculate_roi_block" id="roi">    
+			<h2 class="home_subtitle ro_title">Are you getting your ROI in time? </h2>
+			<p class="ro_descripe">Shape your ultimate success with Taxi Mobility integrated in your Taxi Business. Wondering how ? Take a look upon how your return on investment might look like after integrating with Taxi Mobility. Use our ROI calculator to find your answer within seconds.</p>
+			<div class="calculate_block clearfix">
+				<ul class="calculate_frm">
+					<li>
+						<label>Number of Taxis : </label>
+						<input type="text"  class="cal_inputbx" id="taxi1" placeholder="10"/>    
+					</li>
+					<li>
+						<label>Added Income/Taxi per day : </label>
+						<input type="text"  class="cal_inputbx" id="trip1" placeholder="25"/>    
+					</li>
+					<li>                
+						<a href="javascript:;" class="calculate_bt yellow_but" title="Calculate" onclick=com_amount()>Calculate</a>    
+						<div class="show_cal_value">
+							<span class="dol_txt">$</span>
+							<input class ="cal_inputbx cal_value_bx" type="text" id="amount" readonly  placeholder="7500.00"/>
+							<span class="dol_txt dol_txt1">/ Month</span>
+						</div>
+					</li>
+				</ul>
+				<div class="calculate_frm_info">
+					<h3>Example:</h3>
+					<p>Consider you are having 10 cabs and using this mobile app (Taxi Mobility) additionally earns you 25$ per day per cab . </p>
+					<p>Then 10 cabs = 250$ per day.</p>
+					<p>250$ per day = 7500$ per month !!</p>
+				</div>
+			</div>
+		</div>
+	</div>   
+</div>
+<?php /*
+<div class="awesome_clients">    
+	<div class="awesome_clients_inner">
+		<div class="awesome_clients_lft">
+			<h5>Showcase of our great work</h5>
+			<p>"We are a successful taxi booking & dispatching solution provider having a good number of happiest clients across the world. We have an enthusiastic & expertise crew, who had worked on many challenging projects and provided elegant solutions. GrandLimo is trusted by many of our clients for giving great solutions and We are immensely proud of our achievement made by our crew. Take a moment and checkout the great work we have done."</p>                
+			<a title="Get a Quote" href="/contact-us.html">Get a Quote</a>
+			<a title="Best Work" href="/portfolios.html">Best Work</a>
+		</div>
+		<div class="awesome_clients_rgt">
+			<ul>
+				<li class="wow animated fadeIn" data-wow-delay="0s"><a class="runboy" href="/portfolios.html#runboy" title="Runboy">&nbsp;</a></li>
+				<li class="wow animated fadeIn" data-wow-delay="0.3s"><a class="smart_cops" href="/portfolios.html#aa_ah" title="Smart cops">&nbsp;</a></li>				
+				<li class="wow animated fadeIn" data-wow-delay="0.5s"><a class="riperide" href="/portfolios.html#riperides" title="Ripe Rides">&nbsp;</a></li>
+				<li class="wow animated fadeIn" data-wow-delay="0.8s"><a class="q8" title="Q8 Taxi" href="/portfolios.html#q8_taxi">&nbsp;</a></li>
+				<li class="wow animated fadeIn" data-wow-delay="1s"><a class="anfalimo" href="/portfolios.html#anfalimo" title="Anfalimo">&nbsp;</a></li>								
+				<li class="wow animated fadeIn" data-wow-delay="1.8s"><a class="ibookride" title="iBookRide" href="/portfolios.html#ibookride">&nbsp;</a></li>
+				<li class="wow animated fadeIn" data-wow-delay="1.5s"><a class="mtl" title="MTL" href="/portfolios.html#mtl">&nbsp;</a></li>				
+				<li class="wow animated fadeIn" data-wow-delay="1.3s"><a class="blu" title="Blu Taxi" href="/portfolios.html#blu_taxi">&nbsp;</a></li>
+				<?php /* <li><a class="mtl" title="MTL" href="/portfolios.html#mtl">&nbsp;</a></li>
+				<li><a class="taxius" title="Taxi.US" href="/portfolios.html#taxius">&nbsp;</a></li>
+				<li><a class="roselimo" title="Roselimo" href="/portfolios.html#roslimo">&nbsp;</a></li>
+				<li><a class="edison" title="Edison" href="/portfolios.html#edison">&nbsp;</a></li> */?>				
+		<?php /*	</ul>
+		</div>
+	</div>
+</div>         
+<div class="testimonial_taxi_outer">
+    <div class="testimonial_taxi_inner">
+        <h4 class="hsinfo_title">What Our Client Says</h4>
+        <p>At the end of the day its all about building smart apps that tell amazing stories</p>
+        <div class="clinet_says_video">
+			<a class="video_imgblc" id="palys_client" rel="prettyPhoto" title="Client Says">
+				<img src="<?php echo URL_BASE; ?>public/images/client_video.png" width="131px" height="132px" alt="Client Says" />
+			</a>
+        </div> 
+        <div class="clinet_says_rgt">                    
+			<h5>Khurram Sheikh Says</h5>
+			<p>
+				Hi! This is Khurram am the General Manger at  iBookride... We were looking for a taxi solution and we came across Grandlimo...And  Grandlimo had a product called Taxi Mobility and which was a perfect solution for us but we did more out of that project..So we went ahead with Grandlimo and we made some modifications with them and the end product was what we were looking for ..And these guys are best in solving problems with great customer support and if there is anyone out there looking for a taxi solution,I think should you go for it
+			</p>
+		</div>
+    </div>
+</div>*/?>
+<div class="demo_contact_popup_outer" id="c_info" style="display:none">
+    <a class="demo_contact_popup_close" id="close_x" href="javascript:;" style="cursor:pointer;" onclick="hide_req2()"title="Close"></a>                    
+    <div class="demo_contact_popup">				
+        <h3 class="demo_frm_title">Enter your details for Demo Request!</h3>                                                
+        <form  name="home_contact" method="post"  onsubmit="return validates()" >
+            <div class="demo_popup_frm">
+                <div class="demo_popup_row">
+                        <div class="popup_label">
+                                <p>Name*</p>
+                        </div>
+                        <div class="popup_txtbox">
+                                <input type="text" name="name" />
+                                <em id="name_error" style="color:red;font:12px arial;"></em>
+                        </div>
+                </div>
+                <div class="demo_popup_row">
+                        <div class="popup_label">
+                                <p>Email Id*</p>
+                        </div>
+                        <div class="popup_txtbox">
+                                <input type="text"  name="email"/>
+                                <em id="email_error" style="color:red;font:12px arial;"></em>
+                        </div>
+                </div>
+                <div class="demo_popup_row">
+                        <div class="popup_label">
+                                <p>Phone</p>
+                        </div>
+                        <div class="popup_txtbox">
+                                <input type="text"  name="phone"/>
+                        </div>
+                </div>
+                <div class="demo_popup_row">
+                        <div class="popup_label">
+                                <p>&nbsp;</p>
+                        </div>
+                        <input type="hidden" name="subject" value="Request for GrandLimo">
+                        <input type="hidden" name="message" value="Request for GrandLimo">
+                        <input type="hidden" name="security_code" value="123">
+                        <input type="hidden" name="org_captcha" value="123" /> 
+                        <div class="popup_txtbox">
+                        <input class="btn btn-inverse" type="submit" value="Submit"/>
+                        </div>
+                </div>
+            </div>
+        </form>						
+    </div>					
+</div>               
+</section>
+<div class="download_app">
+<div class="download_app_in">
+<h1><?php echo __('download_app_your_ride');?></h1>
+<p><?php //echo __('download_app_your_ride_sub');?></p>
+<div class="banner_button">	<?php /*<a class="yellow_but" href="/features.html"  title="<?php echo __('site_buy_now_home'); ?>"><?php echo __('site_buy_now_home'); ?></a>*/ ?>
+						
+					<a href="Google Play" title="Google Play" class="google_play_icon"></a>
+					<a href="App Store" title="App Store" class="app_store_icon"></a>
+					</div></div>
+</div> 
+<script type="text/javascript">	 
+	$(window).load(function() {
+		$("#fb_like_remove").removeClass("social_remove");
+	});
+    $(document).ready(function(){
+	$(window).fadeThis({		  
+	  speed: 1000		  
+	});
+ 
+ 	$(".faq_tab_outer ul li").each(function() {
+		if ($(this).next().length > 0) {
+			$(this).addClass("parent");
+		}
+	});
+	
+	$(".faq_show_section a").click(function(e) {
+		e.preventDefault();
+		$(this).toggleClass("active");
+		$(".faq_tab_outer").slideToggle("medium");
+	});
+	adjustMenu();
+	
+	$("#accordian h3").click(function(){
+	$(".parent active").removeClass("active");
+		//slide up all the link lists
+		$("#accordian ul ul").slideUp();
+		$(this).toggleClass("active");
+		//slide down the link list below the h3 clicked - only if its closed
+		if(!$(this).next().is(":visible"))
+		{
+			$(this).next().slideDown();
+		}
+	})
+	$("#fb_like_remove").addClass("social_remove");	
+	$("#sho").hide();
+    $( "#palys" ).click(function() {
+    var source="//player.vimeo.com/video/101892616?title=0&amp;byline=0&amp;portrait=0&amp;autoplay=1";
+            $('iframe#vdemo').attr('src',source);
+            $("#sho").show();
+            $('#vfade').show();
+        });		
+	$( "#palys_client" ).click(function() {
+   
+    });
+    $("#c_info").hide();
+    $("#roi").hide();
+    });
+    $("#popup1").click(function(){
+    $("#c_info").show();
+    $('body').append('<div id="fade"></div>');
+	$('#fade').css({'filter' : 'alpha(opacity=100)'}).fadeIn();
+	$('#fade').css({'visibility' : 'visible'});
+    });
+    $("#bkey").click(function(){
+    $("#roi").hide();
+    $("#key").show();
+    $("#bkey").addClass("active");
+    $("#croi").removeClass("active");
+    });
+    $("#croi").click(function(){
+    $("#roi").show();
+    $("#key").hide();
+    $("#bkey").removeClass("active");
+    $("#croi").addClass("active");
+    });
+    $(document).keyup(function(e) {
+        if (e.keyCode == 27) { 
+            $('#c_info').hide();
+            $('div#fade').remove();
+		}
+    });
+    function hide_req2(){
+	$('#c_info').hide();
+	$('div#fade').remove();
+    }
+    function popup_close(popup_block){
+    $('#'+popup_block).hide();    
+    $('#vfade').hide();
+      //var source = "//player.vimeo.com/video/101892616";
+      //next SRC attribute clear
+      $('iframe#vdemo').attr('src','');
+      //callback previous SRC attribute:
+      //$('iframe#vdemo').attr('src',source);
+    }  
+    // Load this when the DOM is ready
+    $(function(){
+    $('.carousel').carousel();
+	
+	$('.carousel-control.left').click(function() {
+		$('#myCarousel').carousel('prev');
+	});
+
+	$('.carousel-control.right').click(function() {
+	  $('#myCarousel').carousel('next');
+	});
+    });	
+	new WOW().init();		
+	(function(d, s, id) {
+	var js, fjs = d.getElementsByTagName(s)[0];
+	if (d.getElementById(id)) return;
+	js = d.createElement(s); js.id = id;
+	js.src = "//connect.facebook.net/en_GB/sdk.js#xfbml=1&version=v2.4";
+	fjs.parentNode.insertBefore(js, fjs);
+	}(document, 'script', 'facebook-jssdk'));
+	function equalHeight(group) {
+		tallest = 0;
+		group.each(function() {
+		thisHeight = $(this).height();
+		if(thisHeight > tallest) {
+		tallest = thisHeight;
+		}
+		});
+		group.height(tallest);
+	}
+	$(document).ready(function() {
+		equalHeight($(".faq_height"));
+	});
+</script>

@@ -1,0 +1,355 @@
+var express = require("express");
+var router = express.Router();
+var apimodel = require("../models/apimodel.js");
+const tapPaymentGateway = require("../utils/tapPaymentGateway.js");
+const shared = require("../utils/shared.js");
+
+const getImage = (name) => {
+  var url = `${global.settings.base_url}/public/images/defaultcard.png`;
+  if (!name) return url;
+
+  try {
+    name = name.split(" ").join("").toLowerCase();
+
+    if (name.includes("visa")) {
+      url = `${global.settings.base_url}/public/images/visa.png`;
+    } else if (name.includes("mastercard") || name.includes("maestro")) {
+      url = `${global.settings.base_url}/public/images/mastercard.png`;
+    } else if (name.includes("americanexpress") || name.includes("amex")) {
+      url = `${global.settings.base_url}/public/images/americanexpress.png`;
+    } else if (name.includes("mada")) {
+      url = `${global.settings.base_url}/public/images/mada.png`;
+    } else if (name.includes("knet")) {
+      url = `${global.settings.base_url}/public/images/knettap.png`;
+    }
+  } catch (err) {
+    console.error(err);
+  }
+
+  return url;
+};
+
+module.exports = function (app) {
+  /* Get all user cards */
+  router.get("/getMyCards", async (req, res) => {
+    let { passenger_id, start = 0, end = 10 } = req.query;
+
+    start = isNaN(start) ? 0 : +start;
+    end = isNaN(end) ? 10 : +end;
+
+    if (!passenger_id) {
+      return res.send({
+        status: 0,
+        message: "Invalid request",
+        data: [],
+      });
+    }
+
+    let passengerDetails = await apimodel.getPassengerCustomerId(passenger_id);
+    if (!passengerDetails) {
+      return res.send({
+        status: 0,
+        message: "Passenger details not found.",
+        data: [],
+      });
+    }
+
+    if (passengerDetails && !passengerDetails["customerTapPaymentId"]) {
+      passengerDetails = await shared.getPassengerId(passenger_id);
+      if (passengerDetails && Object.keys(passengerDetails).length > 0) {
+        return res.send({
+          status: -1,
+          message: "",
+          data: [],
+          customerId: passengerDetails["customerTapPaymentId"],
+        });
+      } else {
+        return res.send({
+          status: 0,
+          message: "Failed to generate customer ID.",
+          data: [],
+        });
+      }
+    }
+
+    /* Sasidharan May 06 2024 */
+    let cardDetails = await tapPaymentGateway.getCustomerInfo(
+      passengerDetails["customerTapPaymentId"],
+      start,
+      end
+    );
+
+    if (!cardDetails || !cardDetails.cards) {
+      cardDetails = [];
+    } else {
+      cardDetails = cardDetails.cards;
+    }
+    // let cardDetails = await tapPaymentGateway.getMyCards(
+    //   passengerDetails["customerTapPaymentId"],
+    //   start,
+    //   end
+    // );
+    // if (!cardDetails || !cardDetails.data) {
+    //   cardDetails = [];
+    // } else {
+    //   cardDetails = cardDetails.data;
+    // }
+    // cardDetails = cardDetails.map((card) => {
+    //   return {
+    //     id: card.id,
+    //     type: card.brand,
+    //     number: card.last_four,
+    //     image: getImage(card.brand),
+    //   };
+    // });
+
+    if (cardDetails.length == 1) {
+      cardDetails = cardDetails.map((card) => {
+        return {
+          id: card.id,
+          type: card.brand,
+          number: card.last_four,
+          default: 1,
+expiryMonth: card.expiry.month,
+          expiryYear: card.expiry.year,
+          image: getImage(card.brand),
+        };
+      });
+    } else {
+      cardDetails = cardDetails.map((card) => {
+        return {
+          id: card.id,
+          type: card.brand,
+          number: card.last_four,
+
+          default: card.default.toString() === "true" ? 1 : 0,
+          image: getImage(card.brand),
+
+        };
+      });
+    }
+
+    // console.error("======== CUSTOMER CARD DETAILS ========");
+    // console.error(cardDetails);
+    // console.error("======== CUSTOMER CARD DETAILS END ========");
+
+    // let cardDetails = await apimodel.getCustomerCards(passenger_id);
+    // if (!cardDetails) {
+    //   cardDetails = [];
+    // }
+
+    // cardDetails = cardDetails.map((card) => {
+    //   return {
+    //     id: card.id,
+    //     type: card.type,
+    //     number: card.number,
+    //     image: getImage(card.type),
+    //   };
+    // });
+
+    if (cardDetails.length > 0) {
+      cardDetails.sort((a, b) => b.default - a.default);
+    }
+
+    res.send({
+      status: cardDetails.length > 0 ? 1 : -1,
+      message: "",
+      data: cardDetails,
+      customerId: passengerDetails["customerTapPaymentId"],
+    });
+  });
+
+  router.post("/deleteMyCard", async (req, res) => {
+    let { passengerId, cardId } = req.body;
+    if (!passengerId || !cardId) {
+      return res.send({
+        status: 0,
+        message: "Invalid request",
+        data: [],
+      });
+    }
+
+    let passengerDetails = await apimodel.getPassengerCustomerId(passengerId);
+    if (!passengerDetails) {
+      return res.send({
+        status: 0,
+        message: "Passenger details not found.",
+      });
+    }
+
+    if (passengerDetails && !passengerDetails["customerTapPaymentId"]) {
+      return res.send({
+        status: 0,
+        message: "Invalid request",
+      });
+    }
+
+    let response = await tapPaymentGateway.deleteMyCard(
+      passengerDetails["customerTapPaymentId"],
+      cardId
+    );
+
+    if (response && response.deleted) {
+      /* Sasidharan May 06 2024 */
+      // await apimodel.deleteCard(passengerId, cardId);
+
+      return res.send({
+        status: 1,
+        message: req.__("card_deleted"),
+      });
+    }
+
+    return res.send({
+      status: 0,
+      // message: "Failed to delete your card details. Please try again later.",
+      message: req.__("card_deleted_failed"),
+    });
+  });
+
+  /* Sasidharan May 6 2024 */
+  router.post("/addCard", async (req, res) => {
+    try {
+      let { passengerId, cardDetails, customerId } = req.body;
+
+      if (!cardDetails.id) {
+        return res.send({
+          status: 0,
+          message: req.__("invalid_request"),
+        });
+      }
+
+      let customer = await tapPaymentGateway.getCustomerInfo(customerId);
+
+      if (!customer || Object.keys(customer).length <= 0) {
+        await tapPaymentGateway.deleteMyCard(customerId, cardDetails.id);
+        return res.send({
+          status: 0,
+          message: "Failed to add your card details.",
+        });
+      }
+
+      // let paymentAgreementId = "";
+      // if (customer && customer.payment_agreements) {
+      //   customer.payment_agreements.map((card) => {
+      //     if (card.contract.id === cardDetails.id) {
+      //       paymentAgreementId = card.id;
+      //       cardDetails["paymentAgreementId"] = paymentAgreementId;
+      //     }
+      //   });
+      // }
+
+      // if (!paymentAgreementId) {
+      //   await tapPaymentGateway.deleteMyCard(customerId, cardDetails.id);
+      //   return res.send({
+      //     status: 0,
+      //     message: "Failed to add your card details.",
+      //   });
+      // }
+
+      // let response = await apimodel.addCard(passengerId, cardDetails);
+      // if (response)
+      //   return res.send({
+      //     status: 1,
+      //     message: "Your card details has been successfully added.",
+      //   });
+      // return res.send({
+      //   status: 0,
+      //   message: "Failed to add your card details.",
+      // });
+
+      // console.error("============ CUSTOMER ============");
+      // console.error(customer.cards);
+      // console.error("============ END CUSTOMER ============");
+
+      let isAlreadyHaveDefaultCard = true;
+      let cards = Array.isArray(customer.cards) ? customer.cards : [];
+      isAlreadyHaveDefaultCard = cards.some(
+        (card) => card.default.toString() == "true"
+      );
+
+      // console.error(cards, isAlreadyHaveDefaultCard);
+
+      if (!isAlreadyHaveDefaultCard) {
+        let response = await tapPaymentGateway.updateCustomerDefaultCard(
+          customerId,
+          cardDetails.id
+        );
+
+        await apimodel.updateCardStatus(customerId);
+
+        if (response && Object.keys(response).length > 0)
+          return res.send({
+            status: 1,
+            message: "Your card details has been successfully added.",
+          });
+        else await tapPaymentGateway.deleteMyCard(customerId, cardDetails.id);
+        console.error(response);
+        return res.send({
+          status: 0,
+          message: "Failed to add your card details.",
+        });
+      }
+
+      // if (
+      //   customer &&
+      //   ((customer.cards && customer.cards.length == 0) ||
+      //     typeof customer.cards === "undefined" ||
+      //     (customer.cards && customer.cards.length == 1))
+      // ) {
+      //   let response = await tapPaymentGateway.updateCustomerDefaultCard(
+      //     customerId,
+      //     cardDetails.id
+      //   );
+      //   if (response && Object.keys(response).length > 0)
+      //     return res.send({
+      //       status: 1,
+      //       message: "Your card details has been successfully added.",
+      //     });
+      //   else await tapPaymentGateway.deleteMyCard(customerId, cardDetails.id);
+      //   return res.send({
+      //     status: 0,
+      //     message: "Failed to add your card details.",
+      //   });
+      // }
+      return res.send({
+        status: 1,
+        message: "Your card details has been successfully added.",
+      });
+    } catch (err) {
+      console.error(err);
+      res.send({
+        status: 0,
+        message: "Failed to add your card details.",
+      });
+    }
+  });
+
+  /* Sasidharan May 06 2024 */
+  router.post("/updateDefaultCard", async (req, res) => {
+    try {
+      let { customerId, cardId } = req.body;
+
+      let response = await tapPaymentGateway.updateCustomerDefaultCard(
+        customerId,
+        cardId
+      );
+      if (response && Object.keys(response).length > 0)
+        return res.send({
+          status: 1,
+          message: req.__("card_updated_successfully"),
+        });
+      return res.send({
+        status: 0,
+        message: req.__("card_updated_failed"),
+      });
+    } catch (err) {
+      console.error(err);
+      res.send({
+        status: 0,
+        message: req.__("card_updated_failed"),
+      });
+    }
+  });
+
+  return router;
+};

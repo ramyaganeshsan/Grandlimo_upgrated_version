@@ -1,0 +1,801 @@
+<?php  defined('SYSPATH') or die("No direct script access.");
+//--------------------------------------------------
+$path = explode('.',$_SERVER['SCRIPT_NAME']);
+		$url = explode('/',$path[0]);
+		$cnt = count($url)-1;
+		$SEGMENT = "";
+		for($i=0; $i<$cnt; $i++){
+			$SEGMENT .= $url[$i].'/';
+		}
+/*		
+$result = DB::select(SITEINFO.'.pagination_settings',SITEINFO.'.price_settings',SITEINFO.'.notification_settings',SITEINFO.'.facebook_key',SITEINFO.'.site_country',SITEINFO.'.site_state',SITEINFO.'.site_city',SITEINFO.'.admin_commission',SITEINFO.'.app_name',SITEINFO.'.site_copyrights',SITEINFO.'.facebook_share',SITEINFO.'.twitter_share',SITEINFO.'.google_share',SITEINFO.'.linkedin_share',SITEINFO.'.sms_enable',SITEINFO.'.driver_tell_to_friend_message',SITEINFO.'.tell_to_friend_message',SITEINFO.'.default_unit',SITEINFO.'.skip_credit_card',SITEINFO.'.cancellation_fare_setting',SITEINFO.'.referral_discount',SITEINFO.'.email_id',SITEINFO.'.show_map',SITEINFO.'.taxi_charge',SITEINFO.'.fare_calculation_type', SITEINFO.'.app_description',SITEINFO.'.continuous_request_time',SITEINFO.'.tax')->from(SITEINFO)
+		->where('id', '=', '1')
+		->execute()
+		->as_array();
+$default_currency = DB::select('currency_code','currency_symbol')->from(PAYMENT_GATEWAYS)
+		->where('default_payment_gateway', '=', '1')
+		->where('company_id', '=', '0')
+		->execute()
+		->as_array();		
+*/		
+$mongoDB    = MangoDB::instance('default');
+$condition = array("_id"=> (int)1);
+$arguments = array(
+	array('$match' => $condition),
+	array('$project' =>array(
+			'_id' => 0,
+			'pagination_settings' => '$pagination_settings',
+			'price_settings' => '$price_settings',
+			'notification_settings' => '$notification_settings',
+			'facebook_key' => '$facebook_key',
+			'site_country' => '$site_country',
+			'site_state' => '$site_state',
+			'site_city' => '$site_city',
+			'admin_commission' => '$admin_commission',
+			'app_name' => '$app_name',
+			'site_copyrights' => '$site_copyrights',
+			'facebook_share' => '$facebook_share',
+			'twitter_share' => '$twitter_share',
+			'google_share' => '$google_share',
+			'linkedin_share' => '$linkedin_share',
+			'sms_enable' => '$sms_enable',
+			'driver_tell_to_friend_message' => '$driver_tell_to_friend_message',
+			'tell_to_friend_message' => '$tell_to_friend_message',
+			'default_unit' => '$default_unit',
+			'skip_credit_card' => '$skip_credit_card',
+			'cancellation_fare_setting' => '$cancellation_fare_setting',
+			'referral_discount' => '$referral_discount',
+			'email_id' => '$email_id',
+			'show_map' => '$show_map',
+			'taxi_charge' => '$taxi_charge',
+			'fare_calculation_type' => '$fare_calculation_type',
+			'app_description' => '$app_description',
+			'continuous_request_time' => '$continuous_request_time',
+			'tax' => '$tax',
+			'grandlimo_video' => '$grandlimo_video',
+			'book_later_time' => '$book_later_time',
+			'book_now_time' => '$book_now_time',
+			'default_country_code' => '$default_country_code',
+			'android_passenger_app_url' => '$android_passenger_app_url',
+			'c_a_k' => '$customer_android_key',
+			'd_a_k' => '$driver_android_key',
+			't_a_k' => '$tab_android_key',
+			'ios_passenger_app_url' => '$ios_passenger_app_url'
+		)
+	),
+	array('$limit' => 1)
+);
+$res = $mongoDB->aggregate(MDB_SITEINFO, $arguments);
+$result = $res['result'];
+/*$siteresult = $mongoDB->find(MDB_SITEINFO,array('_id'=>1));
+$result = array_values(iterator_to_array($siteresult));
+*/
+
+$condition = array("default_payment_gateway"=> (int)1, 'company_id' => (int)1);
+$arguments = array(
+	array('$match' => $condition),
+	array('$project' =>array(
+			'_id' => 0,
+			'currency_code' => '$currency_code',
+			'currency_symbol' => '$currency_symbol',					
+		)
+	),
+	array('$limit' => 1)
+);
+$default_currency = $mongoDB->aggregate(MDB_PAYMENT_GATEWAYS, $arguments);
+$default_currency = $default_currency['result'];
+
+define('APPLICATION_NAME','q8grandlimo');
+
+DEFINE('PROTOCOL','http');
+
+//DEFINE BASE URL(URL_BASE)
+DEFINE('URL_BASE',url::base(PROTOCOL,TRUE));	
+
+DEFINE('TEST_MODE',"T");
+DEFINE('LIVE_MODE',"L");
+DEFINE('IN_REVIEW',"R");
+
+
+//DEFINE('GOOGLE_MAP_API_KEY',"AIzaSyByFlLjgMjTCIoGEy_Et02p5aMV_XGl5jM");
+DEFINE('GOOGLE_MAP_API_KEY',"AIzaSyBse91pUlY1yIXAydiq2DJ_kout5zHz4Dw");
+
+//DEFINE('GOOGLE_GEO_API_KEY',"AIzaSyCO-f2RoRqVdpYSuMwG6a9wuYwv_wcDQug");
+DEFINE('GOOGLE_GEO_API_KEY',"AIzaSyCO-f2RoRqVdpYSuMwG6a9wuYwv_wcDQug");
+
+DEFINE('IPINFOAPI_KEY',"3aec9d045fb56ca9da8994707354ed3a85f6ea8ed850aafb284524eb6a5b3bbe");
+
+DEFINE('ENCRYPT_KEY',"ndotencript_");
+
+//set the headers here
+header('Cache-Control: no-cache, no-store, must-revalidate'); // HTTP 1.1.
+header('Pragma: no-cache'); // HTTP 1.0.
+header('Expires: 0'); // Proxies.
+
+//View path
+define("ADMINVIEW","admin/");
+define("COMPANYVIEW","company/");
+define("MANAGERVIEW","manager/");
+define("VIEW_PATH","pages/");
+
+
+define("SCRIPTPATH",URL_BASE."public/js/");
+
+//Status
+define("ACTIVE","A");
+define("INACTIVE","I");
+define("DELETED","D");
+define("SUCCESS","S");
+define("PENDING","P");
+define("SUCCESSWITHWARNING","SW");
+define("FAILURE","F");
+define("FAILUREWITHWARNING","FW");
+
+define("DELIVERED","D");
+define("UNDELIVERED","U");
+
+define("ADMIN","A");
+define("STOREADMIN","S");
+define("NORMALUSER","N");
+
+//define("REC_PER_PAGE",2);
+define("PAGE_NO",1);
+define("SUCESS",1);
+define("FAIL",0);
+
+define("PAID_PACKAGE",6);
+define("COMMON_ANDROID_PASSENGER_APP", $result[0]['android_passenger_app_url']);
+define("COMMON_IOS_PASSENGER_APP", $result[0]['ios_passenger_app_url']);
+define("COMMON_ANDROID_DRIVER_APP",'https://play.google.com/store/apps/details?id=com.taximobility.driver');
+define("CUS_ANDROID_KEY", $result[0]['c_a_k']);
+define("DRI_ANDROID_KEY", $result[0]['d_a_k']);
+define("TAB_ANDROID_KEY", $result[0]['t_a_k']);
+
+//Map default location declaration
+//define("LOCATION_LATI","37.7913");
+//define("LOCATION_LONG","-122.401");
+define("LOCATION_LATI","34.0500");
+define("LOCATION_LONG","-118.2500");
+define("LOCATION_ADDR","San Francisco");
+define("IPADDRESS","182.72.62.190");
+define("RANDOM_KEY_LENGTH","15");
+
+define("REPLACE_LOGO","##LOGO##");
+define("REPLACE_NAME","##NAME##");
+define("REPLACE_USERNAME","##USERNAME##");
+define("REPLACE_SHAREDUSER","##SHAREDUSER##");
+define("REPLACE_CONTROLLERNAME","##CONTROLLERNAME##");
+define("REPLACE_PASSWORD","##PASSWORD##");
+define("REPLACE_SUBJECT","##SUBJECT##");
+define("RESET_LINK","##RESET_LINK##");
+define("REPLACE_PHONE","##PHONE##");
+define("REPLACE_MESSAGE","##MESSAGE##");
+define("REPLACE_PROMOCODE","##PROMOCODE##");
+define("REPLACE_OTP","##OTP##");
+define("REPLACE_EMAIL","##EMAIL##");
+define("REPLACE_SALES_PERSON_EMAIL","##SALES_PERSONEMAIL##");
+define("REPLACE_MOBILE","##MOBILE##");
+define("REPLACE_SITENAME","##SITENAME##");
+define("REPLACE_DOMAINNAME","##DOMAINNAME##");
+define("REPLACE_EMAIL_LOGO","##EMAILLOGO##");
+define("REPLACE_SITELINK","##SITELINK##");
+define("REPLACE_SITEURL","##SITEURL##");//
+define("REPLACE_ACTLINK","##ACTLINK##");//
+define("REPLACE_REQMESSAGE","##REQMESSAGE##");
+define("REPLACE_ORDERLIST","##ORDERS_LIST##");
+define("REPLACE_DELIVERYADDRESS","##DELIVERY_ADDRESS##");
+define("REPLACE_ORDERID","##ORDERID##");
+define("REPLACE_SITEEMAIL","##SITEEMAIL##");
+define("REPLACE_PAY", "##PAY##");
+define("REPLACE_NOOFTAXI","##NOOFTAXI##");
+define("REPLACE_COMPANY","##COMPANY##");
+define("REPLACE_CLIENT_NAME","##CLIENT_NAME##");
+define("REPLACE_COUNTRY","##COUNTRY##");
+define("REPLACE_CITY","##CITY##");
+define("CONTACT_NO","##CONTACT_NO##");
+define("REPLACE_PICKUP","##PICKUP##");
+define("REPLACE_MAPURl","##MAPURL##");
+define("REPLACE_DROP","##DROP##");
+define("REPLACE_CURRENCY","##CURRENCY##");
+define("REPLACE_PACKAGE","##PACKAGE_NAME##");
+define("REPLACE_TAXIS","##NO_OF_TAXIS##");
+define("REPLACE_CHARGE","##CHARGE_PER_TAXI##");
+define("REPLACE_AMOUNT","##TOTAL_AMOUNT##");
+define("REPLACE_COPYRIGHTS","##COPYRIGHTS##");
+define("REPLACE_COPYRIGHTYEAR","##COPYYEAR##");
+define("REPLACE_PARENTID","##PARENTID##");
+
+define("REPLACE_ANDROID_PASSENGER_APP","##ANDROID_PASSENGER_APP##");
+define("REPLACE_IOS_PASSENGER_APP","##IOS_PASSENGER_APP##");
+define("REPLACE_ANDROID_DRIVER_APP","##ANDROID_DRIVER_APP##");
+					
+define('MESSAGE','##MESSAGE##');
+define('TEMPLATE_CONTENT','##TEMPLATE_CONTENT##');
+define('SITE_DESCRIPTION','##SITE_DESCRIPTION##');
+define("REPLACE_VERIFYLINK","##VERIFYLINK##");
+
+define("REPLACE_STARTDATE","##STARTDATE##");
+define("REPLACE_EXPIREDATE","##EXPIREDATE##");
+define("REPLACE_USAGELIMIT","##USAGELIMIT##");
+
+define("IMGPATH",URL_BASE."public/admin/images/");
+define('PUBLIC_FOLDER',"public/admin");
+define('PUBLIC_UPLOADS_FOLDER',"public/uploads");
+define('MODEL_IMGPATH', PUBLIC_UPLOADS_FOLDER . '/' . 'model_image/');
+define('SITEAD_IMG', "sitead_image/");
+define('SITEAD_IMGPATH', PUBLIC_UPLOADS_FOLDER . '/' . SITEAD_IMG);
+
+
+define('PUBLIC_IMAGES_FOLDER',"public/images/");
+define('PUBLIC_UPLOAD_BANNER_FOLDER',"public/uploads/banners/");
+
+
+define('UPLOADED_FILES',"uploadfiles");
+define('USERS_IMGFOLDER',"users/");
+define('USER_IMGPATH',PUBLIC_FOLDER.'/'.UPLOADED_FILES.'/'.USERS_IMGFOLDER);
+define('USER_IMGPATH_THUMB',USER_IMGPATH.'thumb/');
+define('USER_IMGPATH_PROFILE',USER_IMGPATH.'profile/');
+
+define('PUBLIC_FOLDER_IMGPATH',PUBLIC_FOLDER.'/'.'images');
+define('PUBLIC_IMGPATH',URL_BASE.'public/'.'images');
+define("TEMPLATEPATH","public/emailtemplate/");
+define("REPLACE_TAXINO","##TAXINO##");
+define('SITE_LOGOIMG',"site_logo/");
+define('BANNER_IMG',"banners/");
+define('LOGOPATH',PUBLIC_FOLDER.'/images/');
+define('SITE_LOGO_IMGPATH',PUBLIC_UPLOADS_FOLDER.'/'.SITE_LOGOIMG);
+define('BANNER_IMGPATH',PUBLIC_UPLOADS_FOLDER.'/'.BANNER_IMG);
+define('TAXI_IMG',"taxi_image/");
+define('COMPANY_IMG',"company/");
+define('TAXI_IMG_IMGPATH',PUBLIC_UPLOADS_FOLDER.'/'.TAXI_IMG);
+define('COMPANY_IMG_IMGPATH',PUBLIC_UPLOADS_FOLDER.'/'.COMPANY_IMG);
+define('PASS_IMG',"passenger/");
+define('PASS_IMG_IMGPATH',PUBLIC_UPLOADS_FOLDER.'/'.PASS_IMG);
+define('PASS_CIVIL_IMGPATH', PUBLIC_UPLOADS_FOLDER . '/' . PASS_IMG . 'civilid/');
+define('TAXI_IMG_WIDTH',340);
+define('TAXI_IMG_HEIGHT',260);//
+define('TAXI_APP_THMB32_IMG_WIDTH',32);
+define('TAXI_APP_THMB32_IMG_HEIGHT',32);
+define('TAXI_APP_THMB100_IMG_WIDTH',100);
+define('TAXI_APP_THMB100_IMG_HEIGHT',100);
+define('COMPANY_IMG_WIDTH',32);
+define('COMPANY_IMG_HEIGHT',32);
+define('PASS_IMG_WIDTH',140);
+define('PASS_IMG_HEIGHT',140);
+define('DRIVER_DOC_IMG_WIDTH',500);
+define('DRIVER_DOC_IMG_HEIGHT',500);
+define('PASS_THUMBIMG_WIDTH',80);
+define('PASS_THUMBIMG_HEIGHT',80);
+define('PASS_THUMBIMG_WIDTH1',100);
+define('PASS_THUMBIMG_HEIGHT1',100);
+define('CIVIL_THUMBIMG_WIDTH',150);
+define('CIVIL_THUMBIMG_HEIGHT',150);
+define('SITE_LOGO_WIDTH',155);
+define('SITE_LOGO_HEIGHT',35);
+define('BANNER_SLIDER_WIDTH',1600);
+define('BANNER_SLIDER_HEIGHT',557);
+define('FAVICON_IMG',"favicon/");
+define('SITE_FAVICON_IMGPATH',PUBLIC_UPLOADS_FOLDER.'/'.FAVICON_IMG);
+define('FAVICON_WIDTH',16);
+define('FAVICON_HEIGHT',16);
+define('DRIVER_IMG',"driver_image/");
+define('SITE_DRIVER_IMGPATH',PUBLIC_UPLOADS_FOLDER.'/'.DRIVER_IMG);
+
+//Taxi Dispatch
+	define('BOOTSTRAP_IMGPATH',URL_BASE.'public/bootstrap-3.2.0/vendor/bootstrap/images');
+	define('TAXI_DISPATCH',"admin/taxi_dispatch/");
+	define('DATATABLE_CSSPATH',URL_BASE."public/bootstrap-3.2.0/vendor/Datatable/css/");
+	define('DATATABLE_JSPATH',URL_BASE."public/bootstrap-3.2.0/vendor/Datatable/js/");
+	define('TDISPATCH_VIEW',1); //1-Show , 0-Hide
+	define('MAP_COUNTRY','IND');
+
+
+define('CURRENCY',$default_currency[0]['currency_symbol']);
+define('CURRENCY_FORMAT',$default_currency[0]['currency_code']);
+define('REC_PER_PAGE',$result[0]['pagination_settings']);
+define('FARE_SETTINGS',$result[0]['price_settings']);
+define('ADMIN_NOTIFICATION_TIME',$result[0]['notification_settings']);
+define('CONTINOUS_REQUEST_TIME',$result[0]['continuous_request_time']);
+define('FB_KEY',$result[0]['facebook_key']);
+define('DEFAULT_COUNTRY',$result[0]['site_country']);
+define('DEFAULT_STATE',$result[0]['site_state']);
+define('DEFAULT_CITY',$result[0]['site_city']);
+define('APP_DESCRIPTION',$result[0]['app_description']);
+define('TOTAL_RATING',5);
+define('REMINDER_TIME',1);
+define('ADMIN_COMMISSON',$result[0]['admin_commission']);
+define('TAX',$result[0]['tax']);
+define('VIDEO_URL',$result[0]['grandlimo_video']);
+define('MIN_FUND',"");
+define('MAX_FUND',"");
+define('SITE_NAME',$result[0]['app_name']);
+define('SITE_COPYRIGHT',$result[0]['site_copyrights']);
+define('BOOK_LATERAL_TIME', $result[0]['book_later_time']);
+define('BOOK_NOW_TIME', $result[0]['book_now_time']); 
+define('DEFAULT_COUNTRY_CODE', $result[0]['default_country_code']);
+define('FB_SHARE',$result[0]['facebook_share']);
+define('TW_SHARE',$result[0]['twitter_share']);
+define('GOOGLE_SHARE',$result[0]['google_share']);
+define('LINKEDIN_SHARE',$result[0]['linkedin_share']);
+define('SMS',$result[0]['sms_enable']);
+
+define('DRIVER_TELL_TO_FRIEND_MESSAGE',$result[0]['driver_tell_to_friend_message']);
+define('REFERRAL_DISCOUNT',$result[0]['referral_discount']);
+define('SITE_EMAIL_CONTACT',$result[0]['email_id']);
+define('SHOW_MAP',$result[0]['show_map']);
+define('TAXI_CHARGE',$result[0]['taxi_charge']);
+define('SITE_FARE_CALCULATION_TYPE',$result[0]['fare_calculation_type']);
+
+define('BOOK_BY_PASSENGER',1);
+define('BOOK_BY_CONTROLLER',2);
+
+define('CURRENCY_SYMB',$default_currency[0]['currency_symbol']);
+define('REPLACE_COMPANYNAME','##COMPANYNAME##');
+define('REPLACE_COMPANYDOMAIN','##COMPANYDOMAIN##');
+define('LOCATIONUPDATESECONDS',15);
+define('DEFAULTMILE',50);
+define('DEFAULT_DRIVER_MILE',3);
+define('TRAILEXPIRY',10);
+define('DEFAULT_CONNECTION','default');
+
+
+
+
+//DEFINE("EMAILTEMPLATELOGO",URL_BASE.PUBLIC_FOLDER_IMGPATH.'/logo.png');
+
+//print_r($smtp_result[0]);
+
+define("SMTP",1); 		
+define("NIGHT_FROM","20:00:00"); 
+define("NIGHT_TO","05:59:59"); 
+define("EVENING_FROM","16:00:00"); 
+define("EVENING_TO","19:59:59"); 
+define("SAR_EQUAL_USD","0.27");
+define('REPLACE_TRIPDETAILS','##TRIP_DETAILS##');
+
+
+
+$subdomainname = '.'.$_SERVER["HTTP_HOST"];
+define("SUB_DOMAIN_NAME",$subdomainname); 
+define("DOMAIN_NAME",'q8grandlimo.com'); 
+define("DOMAIN_URL_NAME",'www.q8grandlimo.com'); 
+
+$url=URL_BASE;
+//$url="http://demo.taximobility.com"; //odeeluxury11@gmail.com
+//$url="http://512rides.taximobility.com";
+$subdomain="q8grandlimo"; 
+define("SUBDOMAIN",$subdomain);
+//define("LIVECHATSTATUS","0");
+//define('MONGODBPATH',APPPATH.'vendor/mongp-common.php');
+
+/* TO get the livechat status */ 
+//View::bind_global('subdomain',$this->subdomain);
+if(is_null($subdomain))
+{
+
+  define("COMPANY_CID",0);
+  define("TIMEZONE",'Asia/Kuwait');	
+ 
+}
+else
+{
+   $company_cid=findcompanyid($subdomain);
+   /** Added for redirection to site when subdomain not present *
+   if($company_cid==0){
+		header('Location: http://www.taximobility.com/');
+		exit;
+	}
+   /** Added for redirection to site when subdomain not present **/ 
+	   define("COMPANY_CID",$company_cid);
+	   $company_timezone=$this->findcompany_timezone($company_cid);	
+
+	   if(($company_timezone !='') || ($company_timezone !='0') )	
+	   {	
+			define("TIMEZONE",$company_timezone);	
+	   }	
+	   else
+	   {
+	   		define("TIMEZONE",'Asia/Kuwait');	
+	   }
+					
+}
+//echo SUBDOMAIN;
+//echo COMPANY_CID;exit;
+//define("COMPANY_CID",0);
+if(isset($_SESSION['company_id']) && $_SESSION['company_id'] != 0) {
+       $email_logo = URL_BASE.SITE_LOGO_IMGPATH.'/'.SUBDOMAIN.'_email_logo.png';
+} else {
+       $email_logo = URL_BASE.SITE_LOGO_IMGPATH.'/email_site_logo.png';
+}
+DEFINE("EMAIL_TEMPLATE_LOGO",$email_logo);
+
+if(isset($_SESSION['company_id']) && $_SESSION['company_id'] != 0) {
+	$email_logo = URL_BASE.SITE_LOGO_IMGPATH.'/'.SUBDOMAIN.'_email_logo.png';
+} else {
+	$email_logo = URL_BASE.SITE_LOGO_IMGPATH.'/email_site_logo.png';
+}
+DEFINE("EMAILTEMPLATELOGO",$email_logo);
+
+	/*function findcompanyid($subdomain)
+	{
+			$rs = DB::select(COMPANYINFO.'.company_cid')->from(COMPANYINFO)
+				->where('company_domain','=',$subdomain)
+				->execute()
+				->as_array();	
+			if(count($rs)>0)
+			return $rs[0]['company_cid'];
+			else
+			return 0;		
+	}
+*/
+function findcompanyid($subdomain)
+{
+	//MongoDB
+    $mongodb        = MangoDB::instance('default');
+    $rs = $mongodb->find_one(MDB_COMPANY,array('companyinfo.company_domain'=>'q8grandlimo'),array('_id'));
+	return (count($rs)>0)?$rs['_id']:0;
+}
+ $mongodb        = MangoDB::instance('default');
+$company_currency = $mongodb->find_one(MDB_PAYMENT_GATEWAYS,array('default_payment_gateway'=>1,'company_id'=>(int)COMPANY_CID),array('currency_code','currency_symbol'));
+
+$company_curency_symbol = isset($company_currency['currency_symbol']) ? $company_currency['currency_symbol'] : CURRENCY;
+$company_curency_code   = isset($company_currency['currency_code']) ? $company_currency['currency_code'] : CURRENCY_FORMAT;
+
+	if(COMPANY_CID!=0)
+	{
+		 //MongoDB
+    $ops = array(
+        array('$match' => array('user_type'=>'A','company_id'=>(int)COMPANY_CID)),
+        array(
+            '$lookup' => array(
+                'from'=>MDB_COMPANY,
+                'localField'=> "company_id",
+                'foreignField' => "_id",
+                'as'=> "cdetails"
+            )
+        ),
+        array('$project' =>
+            array('_id' => 0,
+                'company_logo' => '$cdetails.companyinfo.company_logo', 
+                'company_favicon' => '$cdetails.companyinfo.company_favicon',
+                'company_facebook_share' => '$cdetails.companyinfo.company_facebook_share',
+                'company_twitter_share' => '$cdetails.companyinfo.company_twitter_share',
+                'company_google_share' => '$cdetails.companyinfo.company_google_share',
+                'company_linkedin_share' => '$cdetails.companyinfo.company_linkedin_share',
+                'customer_app_url' => '$cdetails.companyinfo.customer_app_url',
+                'company_app_name' => '$cdetails.companyinfo.company_app_name',
+                'driver_app_url' => '$cdetails.companyinfo.driver_app_url',
+                'company_api_key' => '$cdetails.companyinfo.company_api_key',
+                'company_facebook_key' => '$cdetails.companyinfo.company_facebook_key',
+                'company_facebook_secretkey' => '$cdetails.companyinfo.company_facebook_secretkey',
+                'company_notification_settings' => '$cdetails.companyinfo.company_notification_settings',
+                'company_name' => '$cdetails.companydetails.company_name',
+                'header_bgcolor' => '$cdetails.companydetails.header_bgcolor',
+                'menu_color' => '$cdetails.companydetails.menu_color',
+                'mouseover_color' => '$cdetails.companydetails.mouseover_color',
+                'company_phone_number' => '$cdetails.companyinfo.company_phone_number',
+                'company_meta_title' => '$cdetails.companyinfo.company_meta_title',
+                'company_meta_keyword' => '$cdetails.companyinfo.company_meta_keyword',
+                'company_meta_description' => '$cdetails.companyinfo.company_meta_description',
+                'company_copyrights' => '$cdetails.companyinfo.company_copyrights',
+                'default_unit' => '$cdetails.companyinfo.default_unit',
+                'skip_credit_card' => '$cdetails.companyinfo.skip_credit_card',
+                'fare_calculation_type' => '$cdetails.companyinfo.fare_calculation_type',
+                'company_app_description' => '$cdetails.companyinfo.company_app_description',
+                'cancellation_fare' => '$cdetails.companyinfo.cancellation_fare',
+                'name' => '$name',
+                'lastname' => '$lastname',
+                'email' => '$email',
+                'address' => '$address',
+                'login_city' => '$login_city',
+                'login_state' => '$login_state',
+                'login_country' => '$login_country',
+            )
+        ),
+        array(
+          '$limit' => 1
+        )
+    );
+    
+   
+  $res = $mongodb->aggregate(MDB_PEOPLE,$ops);
+		
+			  /*$rs = DB::select(COMPANYINFO.'.company_favicon',COMPANYINFO.'.company_app_name',COMPANYINFO.'.customer_app_url',COMPANYINFO.'.driver_app_url',
+			COMPANYINFO.'.company_api_key',COMPANYINFO.'.company_phone_number',COMPANYINFO.'.company_copyrights',COMPANYINFO.'.company_app_name',
+			COMPANYINFO.'.default_unit',COMPANYINFO.'.skip_credit_card',COMPANYINFO.'.fare_calculation_type',COMPANYINFO.'.company_app_description',
+			COMPANYINFO.'.cancellation_fare',PEOPLE.'.name',PEOPLE.'.lastname',PEOPLE.'.email',PEOPLE.'.address',CITY.'.city_name',CITY.'.zipcode',
+			STATE.'.state_name',COUNTRY.'.iso_country_code',PAYMENT_GATEWAYS.'.currency_symbol',PAYMENT_GATEWAYS.'.currency_code')->from(COMPANYINFO)
+				->join(PEOPLE, 'LEFT')->on(PEOPLE.'.company_id', '=', COMPANYINFO.'.company_cid')
+				->join(COMPANY, 'LEFT')->on(COMPANY.'.cid', '=', COMPANYINFO.'.company_cid')
+				->join(CITY, 'LEFT')->on(CITY.'.city_id', '=', PEOPLE.'.login_city')				
+				->join(STATE, 'LEFT')->on(STATE.'.state_id', '=', PEOPLE.'.login_state')
+				->join(COUNTRY, 'LEFT')->on(COUNTRY.'.country_id', '=', PEOPLE.'.login_country')
+				->join(PAYMENT_GATEWAYS, 'LEFT')->on(PAYMENT_GATEWAYS.'.company_id', '=', COMPANY.'.cid')
+				->where(COMPANYINFO.'.company_cid','=',COMPANY_CID)
+				->where(PAYMENT_GATEWAYS.'.default_payment_gateway','=','1')
+				->where(PEOPLE.'.user_type','=','C')
+				->limit(1)
+				->execute()
+				->as_array();
+				//print_r($rs);exit;
+			$company_curency_symbol = isset($rs[0]['currency_symbol'])?$rs[0]['currency_symbol']:CURRENCY;
+			$company_curency_code = isset($rs[0]['currency_code'])?$rs[0]['currency_code']:CURRENCY_FORMAT; */
+			
+			  $rs = $res['result'][0];
+			//   print_r($rs);exit;
+    define("COMPANY_LOGO_URL_PATH", URL_BASE . PUBLIC_UPLOADS_FOLDER . '/' . SITE_LOGOIMG . '/' . $rs['company_logo'][0]);
+    define("COMPANY_LOGO_FILE_PATH", DOCROOT . PUBLIC_UPLOADS_FOLDER . '/' . SITE_LOGOIMG . '/' . $rs['company_logo'][0]);
+    define("COMPANY_LOGO_NAME", $rs['company_logo'][0]);
+    define("COMPANY_FAV_URL_PATH", URL_BASE . PUBLIC_UPLOADS_FOLDER . '/' . FAVICON_IMG . '/' . $rs['company_favicon'][0]);
+    define("COMPANY_FAV_FILE_PATH", DOCROOT . PUBLIC_UPLOADS_FOLDER . '/' . FAVICON_IMG . '/' . $rs['company_favicon'][0]);
+    define("COMPANY_FAV_NAME", $rs['company_favicon'][0]);
+    define("COMPANY_APP_NAME", $rs['company_app_name'][0]);
+    define("COMPANY_FACEBOOK_LINK", $rs['company_facebook_share'][0]);
+    define("COMPANY_TWITTER_LINK", $rs['company_twitter_share'][0]);
+    define("COMPANY_GOOGLE_LINK", $rs['company_google_share'][0]);
+    define("COMPANY_LINKED_LINK", $rs['company_linkedin_share'][0]);
+    define("COMPANY_CUSTOMER_APP_URL", $rs['customer_app_url'][0]);
+    define("COMPANY_DRIVER_APP_URL", $rs['driver_app_url'][0]);
+    define("COMPANY_API_KEY", $rs['company_api_key'][0]);
+    define("COMPANY_FB_KEY", $rs['company_facebook_key'][0]);
+    define("COMPANY_FB_SECRET", $rs['company_facebook_secretkey'][0]);
+    define("COMPANY_NOTIFICATION_TIME", $rs['company_notification_settings'][0]);
+    define("COMPANY_NAME", $rs['company_name'][0]);
+    define("COMPANY_HEADER_BGCOLOR", $rs['header_bgcolor'][0]);
+    define("COMPANY_HEADER_MENUCOLOR", $rs['menu_color'][0]);
+    define("COMPANY_HEADER_MOUSEOVERCOLOR", $rs['mouseover_color'][0]);
+    define("COMPANY_CONTACT_PHONE_NUMBER", $rs['company_phone_number'][0]);
+    define("COMPANY_META_TITLE", $rs['company_meta_title'][0]);
+    define("COMPANY_META_KEYWORD", $rs['company_meta_keyword'][0]);
+    define("COMPANY_META_DESCRIPTION", $rs['company_meta_description'][0]);
+    define("COMPANY_COPYRIGHT", $rs['company_copyrights'][0]);
+    define("COMPANY_SITENAME", $rs['company_app_name'][0]);
+   
+    define("DEFAULT_UNIT", $rs['default_unit'][0]);
+    define("DEFAULT_SKIP_CREDIT_CARD", $result[0]['skip_credit_card']);
+    define("COMPANY_FARE_CALCULATION_TYPE", $rs['fare_calculation_type'][0]); //
+    define("COMPANY_CURRENCY", $company_curency_symbol); //eg: $
+    define("COMPANY_CURRENCY_FORMAT", $company_curency_code); //eg: USD
+    define("TELL_TO_FRIEND_MESSAGE", $rs['company_app_description'][0]);
+    //define("CANCELLATION_FARE", $rs['cancellation_fare'][0]);
+    define("CANCELLATION_FARE",$result[0]['cancellation_fare_setting']);
+    define("COMPANY_FIRST_NAME", $rs['name']);
+    define("COMPANY_LAST_NAME", $rs['lastname']);
+    define("COMPANY_CONTACT_EMAIL", $rs['email']);
+    define("COMPANY_STREET_ADDR", $rs['address']);
+    define("COMPANY_LOGIN_CITY", isset($rs['login_city']) ? $rs['login_city'] : DEFAULT_CITY);
+    define("COMPANY_LOGIN_STATE", isset($rs['login_state']) ? $rs['login_state'] : DEFAULT_STATE);
+    define("COMPANY_LOGIN_COUNTRY", isset($rs['login_country']) ? $rs['login_country'] : DEFAULT_COUNTRY);
+    define("CONTACT_EMAIL", COMPANY_CONTACT_EMAIL);
+    define("SITE_FAVICON", $rs['company_favicon'][0]);
+    if(!empty(COMPANY_LOGIN_CITY) && !empty(COMPANY_LOGIN_STATE) && !empty(COMPANY_LOGIN_COUNTRY)){
+        //MongoDB with aggregate process only
+		$ops = array(
+			array('$unwind' => '$stateinfo'),
+			array('$unwind' => '$stateinfo.cityinfo'),
+			array('$match' => array('stateinfo.cityinfo.city_id'=>(int)COMPANY_LOGIN_CITY,'stateinfo.cityinfo.city_stateid'=>(int)COMPANY_LOGIN_STATE,'stateinfo.cityinfo.city_countryid'=>(int)COMPANY_LOGIN_COUNTRY)),
+			array('$project' => array('_id' => 0,
+                    'state_name' => '$stateinfo.state_name', 
+                    'city_name' => '$stateinfo.cityinfo.city_name',
+                    'zipcode' => '$stateinfo.cityinfo.zipcode',
+                    'iso_country_code' => '$iso_country_code',
+                )
+            )
+		);
+		$res = $mongodb->aggregate(MDB_CSC,$ops);
+		$result = $res['result'];
+        define("COMPANY_LOGIN_CITY_NAME", $result[0]['city_name']);
+        define("COMPANY_ZIPCODE", $result[0]['zipcode']);
+        define("COMPANY_LOGIN_STATE_NAME", $result[0]['state_name']);
+        define("COMPANY_LOGIN_ISO_COUNTRYCODE", $result[0]['iso_country_code']);
+    }
+     //echo COMPANY_SITENAME;exit;
+	}
+	else
+	{
+		define("COMPANY_SITENAME",SITE_NAME);
+		define("COMPANY_NOTIFICATION_TIME",60);
+		define("COMPANY_CUSTOMER_APP_URL",'https://play.google.com/store/apps/details?id=com.taximobility');
+		define("COMPANY_DRIVER_APP_URL",'https://play.google.com/store/apps/details?id=com.taximobility.driver');
+		define('TELL_TO_FRIEND_MESSAGE',$result[0]['tell_to_friend_message']);
+		define("DEFAULT_UNIT",$result[0]['default_unit']);
+		define("DEFAULT_SKIP_CREDIT_CARD",$result[0]['skip_credit_card']);
+		define("COMPANY_CURRENCY",CURRENCY);
+		//define("CANCELLATION_FARE",0);
+		define("CANCELLATION_FARE",$result[0]['cancellation_fare_setting']);
+		define("COMPANY_COPYRIGHT",SITE_COPYRIGHT);
+		define("CONTACT_EMAIL",SITE_EMAIL_CONTACT);
+	}
+	//echo CANCELLATION_FARE; exit;
+	define("COPYRIGHT_YEAR","2016");
+	/**************** Convert the Timezone *********/
+	function convert_timezone($time,$timezone='')
+	{	
+		//echo $timezone;
+		//$timezone = 'Europe/London';  
+		//$timezone = 'America/Chicago';
+		//$timezone = 'Asia/Kolkata';
+		$date = new DateTime($time, new DateTimeZone($timezone));
+		$localtime = $date->format('Y-m-d H:i:s');
+		return $localtime;
+	}
+
+	// FUNCTION FOR CURRENCY CONVERSION
+	function currency_conversion($company_currency , $amt)
+	{
+		try {
+			return $amt;
+			/*$from   = $company_currency; /*change it to your required currencies *
+			$to     = CURRENCY_FORMAT;
+			if($from != $to)
+			{
+				$url = 'http://finance.yahoo.com/d/quotes.csv?e=.csv&f=sl1d1t1&s='. $from . $to .'=X';
+				$handle = @fopen($url, 'r');
+				if ($handle) {
+					$result = fgets($handle, 4096);
+					fclose($handle);
+				}
+				if(!empty($result))
+				{
+					$allData = explode(',',$result); /* Get all the contents to an array *
+					$dollarValue = $allData[1];
+					$converted_amt = $dollarValue * $amt;
+					return $converted_amt;
+				}
+				else
+				{
+					Message::error(__('currency_converstion_not_applicable'));
+					$location = URL_BASE.'/admin/dashboard';
+					header("Location: $location");
+				}
+			}
+			else
+			{
+				return $amt;
+			}*/
+		}
+		catch (Kohana_Exception $e) {
+			Message::error(__('currency_converstion_not_applicable'));
+			$location = URL_BASE.'/admin/dashboard';
+			header("Location: $location");
+		}
+	}
+
+// FUNCTION FOR CURRENCY CONVERSION to USD
+	function currency_conversion_usd($company_currency , $amt)
+	{
+		try {
+			return $amt;
+			/*$from   = $company_currency; /*change it to your required currencies *
+			$to     = 'USD';
+			if($from != $to)
+			{
+				$url = 'http://finance.yahoo.com/d/quotes.csv?e=.csv&f=sl1d1t1&s='. $from . $to .'=X';
+				$handle = @fopen($url, 'r');
+				if ($handle) {
+					$result = fgets($handle, 4096);
+					fclose($handle);
+				}
+				if(!empty($result))
+				{
+					$allData = explode(',',$result); /* Get all the contents to an array *
+					$dollarValue = $allData[1];
+					$converted_amt = $dollarValue * $amt;
+					return $converted_amt;
+				}
+				else
+				{
+					$converted_amt = SAR_EQUAL_USD * $amt;
+					return $converted_amt;
+				}
+			}
+			else
+			{
+				return $amt;
+			}*/
+		}
+		catch (Kohana_Exception $e) {
+					$converted_amt = SAR_EQUAL_USD * $amt;
+					return $converted_amt;
+		}
+	}	
+	//ENCRIPTION AND DECRIPTION FUNCTION
+	function encrypt_decrypt($action, $string) {
+	   $output = false;
+
+	   $key = 'Taxi Application';
+
+	   // initialization vector 
+	   $iv = md5(md5($key));
+
+	   if( $action == 'encrypt' ) {
+	       //$output = mcrypt_encrypt(MCRYPT_RIJNDAEL_256, md5($key), $string, MCRYPT_MODE_CBC, $iv);
+	       $output = base64_encode(ENCRYPT_KEY.$string);
+	   }
+	   else if( $action == 'decrypt' ){
+	       //$output = mcrypt_decrypt(MCRYPT_RIJNDAEL_256, md5($key), base64_decode($string), MCRYPT_MODE_CBC, $iv);
+	       //$output = rtrim($output, "");
+	       $decrypt_val = base64_decode($string);
+	       $split = explode('_',$decrypt_val);	
+			
+	       if(count($split)>1)	
+	       {
+				$output = trim($split[1]);
+		   }
+		   else
+		   {
+				$output = "";
+		   }
+	   }
+	   return $output;
+	}	
+	// Repeat X function
+	function repeatx($data,$repeatstring,$repeatcount)
+	{
+		if($data != "")
+		{
+			if($repeatcount == 'All')
+			{
+				return str_repeat($repeatstring, (strlen($data)));
+				
+			}
+			else
+			{				
+				return str_repeat($repeatstring, (strlen($data) - $repeatcount)) . substr($data,-$repeatcount,$repeatcount);
+			}
+		}
+		else
+		{
+			return 0;
+		}
+	}
+	
+
+	define("SENDGRID_HOST",'smtp.sendgrid.net');
+	define("SENDGRID_PORT",'25');
+	define("SENDGRID_USERNAME",'Taxindot9');
+	define("SENDGRID_PASSWORD",'taxisendto&6!');
+
+	/*** Language setting for mobile application*****/	
+	$lang = (isset($_GET))?(Arr::get($_GET,'lang')):'en';
+	if($lang == ''){
+		$lang='en';
+	}
+	define("LANG",$lang);
+	/***********************************************/
+
+	define("SUPERADMIN_EMAIL","superadmin@taximobility.com");
+
+	
+	/*if(COMPANY_CID!=0){
+		define('UNIT',DEFAULT_UNIT); 
+	}else{
+		define('UNIT',0); // 0 as Kilometer , 1 as Miles
+	} */
+	define('UNIT',DEFAULT_UNIT);
+
+	if(UNIT==1){
+		define('UNIT_NAME','MILES');
+	}else{
+		define('UNIT_NAME','KM');
+	}
+
+	if(COMPANY_CID!=0){
+		
+		define('FARE_CALCULATION_TYPE',COMPANY_FARE_CALCULATION_TYPE);  //1 => Distance, 2 => Time, 3=> Distance / Time
+	}else{
+		//define('SKIP_CREDIT_CARD',1); // 1 as Skip , 0 as No-Skip
+		define('FARE_CALCULATION_TYPE',SITE_FARE_CALCULATION_TYPE); //1 => Distance, 2 => Time, 3=> Distance / Time
+	}
+	define('SKIP_CREDIT_CARD',DEFAULT_SKIP_CREDIT_CARD); // 1 as Skip , 0 as No-Skip
+	/****Tell to friend-App URL Display by PAID VERSION Start****/
+	
+	define("ANDROID_PASSENGER_APP",COMMON_ANDROID_PASSENGER_APP);
+	define("IOS_PASSENGER_APP",COMMON_IOS_PASSENGER_APP);
+	define("ANDROID_DRIVER_APP",COMMON_ANDROID_DRIVER_APP);
+	
+	/**** Driver tracking DB initializing****/
+	define('DRIVER_TRACK_DB','driver_tracking'); //Access Database 2
+
+?>
+

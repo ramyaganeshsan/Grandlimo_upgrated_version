@@ -1,0 +1,10 @@
+{
+	"PUBLIC_UPLOADS_FOLDER":"public/uploads",
+	"MODEL_IMGPATH":"public/uploads/model_image/",
+	"NO_IMAGE":"public/images/no_image109.png",
+	"NO_MAP_IMAGE":"public/images/no-image.png",
+	"TIMEZONE":"Asia/Kuwait",
+	"Q8TAXI_ENABLE":"0",
+	"ASSET_KEY":"AIzaSyBxP4UEHJFGCbF-1inY3w79p1Kj95swe8Y",
+	"INT_KEY":"AIzaSyAvNpwSepYa3JS7x8XIp5PLYh864u5ekVI"
+}

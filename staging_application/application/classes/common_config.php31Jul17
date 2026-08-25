@@ -1,0 +1,1217 @@
+<?php
+defined('SYSPATH') or die("No direct script access.");
+//--------------------------------------------------		
+//MongoDB Instance
+$mongodb        = MangoDB::instance('default');
+$result = $mongodb->find_one(MDB_SITEINFO,array('_id'=>1));
+$smtp_result = $mongodb->find_one(MDB_SMTP_SETTINGS,array('_id'=>1));
+$default_currency = $mongodb->find_one(MDB_PAYMENT_GATEWAYS,array('payment_status'=> 'A','default_payment_gateway'=>1,'company_id'=>1));
+$payment_knet = $mongodb->find_one(MDB_PAYMENT_GATEWAYS,array('payment_status'=> 'A','default_payment_gateway'=>1,'company_id'=>1),array('knet_response_url','knet_error_url','knet_resource_path','knet_alias'));
+
+define('APPLICATION_NAME', 'q8grandlimo');
+DEFINE('PROTOCOL', 'http');
+//DEFINE BASE URL(URL_BASE)
+DEFINE('URL_BASE', url::base(PROTOCOL, TRUE));
+DEFINE('TEST_MODE', "T");
+DEFINE('LIVE_MODE', "L");
+DEFINE('IN_REVIEW', "R");
+//DEFINE('GOOGLE_MAP_API_KEY', "AIzaSyByFlLjgMjTCIoGEy_Et02p5aMV_XGl5jM");
+//DEFINE('GOOGLE_MAP_API_KEY', "AIzaSyBse91pUlY1yIXAydiq2DJ_kout5zHz4Dw");
+//DEFINE('GOOGLE_GEO_API_KEY',"AIzaSyCO-f2RoRqVdpYSuMwG6a9wuYwv_wcDQug");
+DEFINE('GOOGLE_GEO_API_KEY', "AIzaSyCO-f2RoRqVdpYSuMwG6a9wuYwv_wcDQug");
+
+DEFINE('GOOGLE_MAP_API_KEY',"AIzaSyByFlLjgMjTCIoGEy_Et02p5aMV_XGl5jM");
+DEFINE('GOOGLE_CLIENT_KEY',"gme-caesarsforwebsite");
+
+DEFINE('IPINFOAPI_KEY', "3aec9d045fb56ca9da8994707354ed3a85f6ea8ed850aafb284524eb6a5b3bbe");
+DEFINE('ENCRYPT_KEY', "ndotencript_");
+//set the headers here
+header('Cache-Control: no-cache, no-store, must-revalidate'); // HTTP 1.1.
+header('Pragma: no-cache'); // HTTP 1.0.
+header('Expires: 0'); // Proxies.
+//View path
+define("ADMINVIEW", "admin/");
+define("COMPANYVIEW", "company/");
+define("MANAGERVIEW", "manager/");
+define("CORPORATEVIEW", "corporate/");
+define("VIEW_PATH", "pages/");
+define("SCRIPTPATH", URL_BASE . "public/js/");
+define("REPLACE_PARENTID","##PARENTID##");
+
+//Status
+define("ACTIVE", "A");
+define("INACTIVE", "I");
+define("DELETED", "D");
+define("SUCCESS", "S");
+define("PENDING", "P");
+define("SUCCESSWITHWARNING", "SW");
+define("FAILURE", "F");
+define("FAILUREWITHWARNING", "FW");
+define("DELIVERED", "D");
+define("UNDELIVERED", "U");
+define("ADMIN", "A");
+define("STOREADMIN", "S");
+define("NORMALUSER", "N");
+//define("REC_PER_PAGE",2);
+define("PAGE_NO", 1);
+define("SUCESS", 1);
+define("FAIL", 0);
+define("PAID_PACKAGE", 6);
+define("COMMON_ANDROID_PASSENGER_APP", $result['android_passenger_app_url']);
+define("COMMON_IOS_PASSENGER_APP", $result['ios_passenger_app_url']);
+define("COMMON_ANDROID_DRIVER_APP", 'https://play.google.com/store/apps/details?id=com.taximobility.driver');
+define("CUS_ANDROID_KEY", $result['customer_android_key']);
+define("DRI_ANDROID_KEY", $result['driver_android_key']);
+define("TAB_ANDROID_KEY", $result['tab_android_key']);
+//Map default location declaration
+//define("LOCATION_LATI","37.7913");
+//define("LOCATION_LONG","-122.401");
+define("LOCATION_LATI", "34.0500");
+define("LOCATION_LONG", "-118.2500");
+define("LOCATION_ADDR", "San Francisco");
+define("IPADDRESS", "182.72.62.190");
+define("RANDOM_KEY_LENGTH", "15");
+define("REPLACE_LOGO", "##LOGO##");
+define("REPLACE_NAME", "##NAME##");
+define("REPLACE_USERNAME", "##USERNAME##");
+define("REPLACE_SHAREDUSER", "##SHAREDUSER##");
+define("REPLACE_CONTROLLERNAME", "##CONTROLLERNAME##");
+define("REPLACE_PASSWORD", "##PASSWORD##");
+define("REPLACE_SUBJECT", "##SUBJECT##");
+define("RESET_LINK", "##RESET_LINK##");
+define("REPLACE_PHONE", "##PHONE##");
+define("REPLACE_MESSAGE", "##MESSAGE##");
+define("REPLACE_PROMOCODE", "##PROMOCODE##");
+define("REPLACE_OTP", "##OTP##");
+define("REPLACE_EMAIL", "##EMAIL##");
+define("REPLACE_SALES_PERSON_EMAIL", "##SALES_PERSONEMAIL##");
+define("REPLACE_MOBILE", "##MOBILE##");
+define("REPLACE_SITENAME", "##SITENAME##");
+define("REPLACE_COPYRIGHTYEAR", "##COPYYEAR##");
+define("REPLACE_DOMAINNAME", "##DOMAINNAME##");
+define("REPLACE_EMAIL_LOGO", "##EMAILLOGO##");
+define("REPLACE_SITELINK", "##SITELINK##");
+define("REPLACE_SITEURL", "##SITEURL##"); //
+define("REPLACE_ACTLINK", "##ACTLINK##"); //
+define("REPLACE_REQMESSAGE", "##REQMESSAGE##");
+define("REPLACE_ORDERLIST", "##ORDERS_LIST##");
+define("REPLACE_DELIVERYADDRESS", "##DELIVERY_ADDRESS##");
+define("REPLACE_ORDERID", "##ORDERID##");
+define("REPLACE_SITEEMAIL", "##SITEEMAIL##");
+define("REPLACE_NOOFTAXI", "##NOOFTAXI##");
+define("REPLACE_COMPANY", "##COMPANY##");
+define("REPLACE_CLIENT_NAME", "##CLIENT_NAME##");
+define("REPLACE_COUNTRY", "##COUNTRY##");
+define("REPLACE_CITY", "##CITY##");
+define("CONTACT_NO", "##CONTACT_NO##");
+define("REPLACE_PICKUP", "##PICKUP##");
+define("REPLACE_MAPURl", "##MAPURL##");
+define("REPLACE_DROP", "##DROP##");
+define("REPLACE_CURRENCY", "##CURRENCY##");
+define("REPLACE_PACKAGE", "##PACKAGE_NAME##");
+define("REPLACE_TAXIS", "##NO_OF_TAXIS##");
+define("REPLACE_CHARGE", "##CHARGE_PER_TAXI##");
+define("REPLACE_AMOUNT", "##TOTAL_AMOUNT##");
+define("REPLACE_PAY", "##PAY##");
+define("REPLACE_COPYRIGHTS", "##COPYRIGHTS##");
+define("REPLACE_ANDROID_PASSENGER_APP", "##ANDROID_PASSENGER_APP##");
+define("REPLACE_IOS_PASSENGER_APP", "##IOS_PASSENGER_APP##");
+define("REPLACE_ANDROID_DRIVER_APP", "##ANDROID_DRIVER_APP##");
+define('MESSAGE', '##MESSAGE##');
+define('TEMPLATE_CONTENT', '##TEMPLATE_CONTENT##');
+define('SITE_DESCRIPTION', '##SITE_DESCRIPTION##');
+define("REPLACE_VERIFYLINK", "##VERIFYLINK##");
+define("REPLACE_STARTDATE", "##STARTDATE##");
+define("REPLACE_EXPIREDATE", "##EXPIREDATE##");
+define("REPLACE_USAGELIMIT", "##USAGELIMIT##");
+define("IMGPATH", URL_BASE . "public/admin/images/");
+define('PUBLIC_FOLDER', "public/admin");
+define('PUBLIC_UPLOADS_FOLDER', "public/uploads");
+define('PUBLIC_IMAGES_FOLDER', "public/images/");
+define('PUBLIC_UPLOAD_BANNER_FOLDER', "public/uploads/banners/");
+define('UPLOADED_FILES', "uploadfiles");
+define('USERS_IMGFOLDER', "users/");
+define('USER_IMGPATH', PUBLIC_FOLDER . '/' . UPLOADED_FILES . '/' . USERS_IMGFOLDER);
+define('USER_IMGPATH_THUMB', USER_IMGPATH . 'thumb/');
+define('USER_IMGPATH_PROFILE', USER_IMGPATH . 'profile/');
+define('PUBLIC_FOLDER_IMGPATH', PUBLIC_FOLDER . '/' . 'images');
+define('PUBLIC_IMGPATH', URL_BASE . 'public/' . 'images');
+define("TEMPLATEPATH", "public/emailtemplate/");
+define("REPLACE_TAXINO", "##TAXINO##");
+define('SITE_LOGOIMG', "site_logo/");
+define('BANNER_IMG', "banners/");
+define('LOGOPATH', PUBLIC_FOLDER . '/images/');
+define('VIDEOPATH', 'public/video/');
+define('SITE_LOGO_IMGPATH', PUBLIC_UPLOADS_FOLDER . '/' . SITE_LOGOIMG);
+define('SITEAD_IMG', "sitead_image/");
+define('SITEAD_IMGPATH', PUBLIC_UPLOADS_FOLDER . '/' . SITEAD_IMG);
+define('BANNER_IMGPATH', PUBLIC_UPLOADS_FOLDER . '/' . BANNER_IMG);
+define('TAXI_IMG', "taxi_image/");
+define('MODEL_IMG', "model_image/");
+define('COMPANY_IMG', "company/");
+define('TAXI_IMG_IMGPATH', PUBLIC_UPLOADS_FOLDER . '/' . TAXI_IMG);
+define('MODEL_IMG_IMGPATH', PUBLIC_UPLOADS_FOLDER . '/' . MODEL_IMG);
+define('COMPANY_IMG_IMGPATH', PUBLIC_UPLOADS_FOLDER . '/' . COMPANY_IMG);
+define('PASS_IMG', "passenger/");
+define('PASS_IMG_IMGPATH', PUBLIC_UPLOADS_FOLDER . '/' . PASS_IMG);
+define('PASS_CIVIL_IMGPATH', PUBLIC_UPLOADS_FOLDER . '/' . PASS_IMG . 'civilid/');
+define('MODEL_IMGPATH', PUBLIC_UPLOADS_FOLDER . '/' . 'model_image/');
+define('TAXI_IMG_WIDTH', 340);
+define('TAXI_IMG_HEIGHT', 260); //
+define('TAXI_APP_THMB32_IMG_WIDTH', 32);
+define('TAXI_APP_THMB32_IMG_HEIGHT', 32);
+define('TAXI_APP_THMB100_IMG_WIDTH', 100);
+define('TAXI_APP_THMB100_IMG_HEIGHT', 100);
+define('CIVIL_THUMBIMG_WIDTH',150);
+define('CIVIL_THUMBIMG_HEIGHT',150);
+define('COMPANY_IMG_WIDTH', 32);
+define('COMPANY_IMG_HEIGHT', 32);
+define('PASS_IMG_WIDTH', 140);
+define('PASS_IMG_HEIGHT', 140);
+define('PASS_THUMBIMG_WIDTH', 50);
+define('PASS_THUMBIMG_HEIGHT', 50);
+define('PASS_THUMBIMG_WIDTH1', 100);
+define('PASS_THUMBIMG_HEIGHT1', 100);
+define('MODEL_THUMBIMG_WIDTH', 100);
+define('MODEL_THUMBIMG_HEIGHT', 100);
+define('ICONIC_THUMBIMG_WIDTH', 180);
+define('ICONIC_THUMBIMG_HEIGHT', 100);
+define('SITE_LOGO_WIDTH', 190);
+define('SITE_LOGO_HEIGHT', 50);
+define('BANNER_SLIDER_WIDTH', 1600);
+define('BANNER_SLIDER_HEIGHT', 557);
+define('FAVICON_IMG', "favicon/");
+define('SITE_FAVICON_IMGPATH', PUBLIC_UPLOADS_FOLDER . '/' . FAVICON_IMG);
+define('FAVICON_WIDTH', 16);
+define('FAVICON_HEIGHT', 16);
+define('DRIVER_IMG', "driver_image/");
+define('CORPORATE_IMG', "corporate_image/");
+
+define('SITE_DRIVER_IMGPATH', PUBLIC_UPLOADS_FOLDER . '/' . DRIVER_IMG);
+define('SITE_CORPORATE_IMGPATH', PUBLIC_UPLOADS_FOLDER . '/' . CORPORATE_IMG);
+//Taxi Dispatch
+define('BOOTSTRAP_IMGPATH', URL_BASE . 'public/bootstrap-3.2.0/vendor/bootstrap/images');
+define('TAXI_DISPATCH', "admin/taxi_dispatch/");
+define('DATATABLE_CSSPATH', URL_BASE . "public/bootstrap-3.2.0/vendor/Datatable/css/");
+define('DATATABLE_JSPATH', URL_BASE . "public/bootstrap-3.2.0/vendor/Datatable/js/");
+define('TDISPATCH_VIEW', 1); //1-Show , 0-Hide
+define('MAP_COUNTRY', 'IND');
+define('CURRENCY', $default_currency['currency_symbol']);
+define('CURRENCY_FORMAT', $default_currency['currency_code']);
+define('REC_PER_PAGE', $result['pagination_settings']);
+define('FARE_SETTINGS', $result['price_settings']);
+define('ADMIN_NOTIFICATION_TIME', $result['notification_settings']);
+define('CONTINOUS_REQUEST_TIME', $result['continuous_request_time']);
+define('FB_KEY', $result['facebook_key']);
+define('DEFAULT_COUNTRY', $result['site_country']);
+define('DEFAULT_STATE', $result['site_state']);
+define('DEFAULT_CITY', $result['site_city']);
+define('APP_DESCRIPTION', $result['app_description']);
+define('TOTAL_RATING', 5);
+define('REMINDER_TIME', 1);
+define('ADMIN_COMMISSON', $result['admin_commission']);
+define('MOB_API_URL', $result['mobile_api_url']);
+define('TAX', $result['tax']);
+define('MIN_FUND', "");
+define('MAX_FUND', "");
+define('SITE_NAME', $result['app_name']);
+define('SITE_COPYRIGHT', $result['site_copyrights']);
+define('BOOK_LATERAL_TIME', $result['book_later_time']);
+define('FB_SHARE', $result['facebook_share']);
+define('TW_SHARE', $result['twitter_share']);
+define('GOOGLE_SHARE', $result['google_share']);
+define('LINKEDIN_SHARE', $result['linkedin_share']);
+define('SMS', $result['sms_enable']);
+define('DRIVER_TELL_TO_FRIEND_MESSAGE', $result['driver_tell_to_friend_message']);
+define('REFERRAL_DISCOUNT', $result['referral_discount']);
+define('SITE_EMAIL_CONTACT', $result['email_id']);
+define('SHOW_MAP', $result['show_map']);
+define('TAXI_CHARGE', $result['taxi_charge']);
+define('SITE_FARE_CALCULATION_TYPE', $result['fare_calculation_type']);
+define('BOOK_BY_PASSENGER', 1);
+define('BOOK_BY_CONTROLLER', 2);
+define('CURRENCY_SYMB', $default_currency['currency_symbol']);
+define('REPLACE_COMPANYNAME', '##COMPANYNAME##');
+define('REPLACE_COMPANYDOMAIN', '##COMPANYDOMAIN##');
+define('LOCATIONUPDATESECONDS', 15);
+define('DEFAULTMILE', 50);
+define('DEFAULT_DRIVER_MILE', 3);
+define('TRAILEXPIRY', 10);
+define('DEFAULT_CONNECTION', 'default');
+//DEFINE("EMAILTEMPLATELOGO",URL_BASE.PUBLIC_FOLDER_IMGPATH.'/logo.png');
+//print_r($smtp_result);
+define("SMTP_USERNAME", $smtp_result["smtp_username"]);
+define("SMTP_PASSWORD", $smtp_result["smtp_password"]);
+define("SMTP_HOST", $smtp_result["smtp_host"]);
+define("SMTP_TRANSPORT_LAYER_SECURITY", $smtp_result["transport_layer_security"]);
+define("SMTP_PORT", $smtp_result["smtp_port"]);
+define("SMTP", $smtp_result["smtp"]);
+define("NIGHT_FROM", "20:00:00");
+define("NIGHT_TO", "05:59:59");
+define("EVENING_FROM", "16:00:00");
+define("EVENING_TO", "19:59:59");
+define("SAR_EQUAL_USD", "0.27");
+define('REPLACE_TRIPDETAILS', '##TRIP_DETAILS##');
+/* changes on 19-may-2016 */
+define('TAXI_PARKING_CHARGE', $result['airport_parking_charge']);
+define('TWILIO_ACCOUNT_SID', $result['twilio_accout_sid']);
+define('TWILIO_AUTH_TOKEN', $result['twilio_auth_token']);
+define('TWILIO_NUMBER', $result['twilio_number']);
+define('KNET_RESPONSE_URL',$payment_knet['knet_response_url'] );
+define('KNET_ERROR_URL', $payment_knet['knet_error_url']);
+define('KNET_RESOURCE_PATH',$_SERVER['DOCUMENT_ROOT'].$payment_knet['knet_resource_path']);
+define('KNET_ALIAS',$payment_knet['knet_alias']);
+/* changes on 19-may-2016 */
+
+
+$subdomainname = '.' . $_SERVER["HTTP_HOST"];
+define("SUB_DOMAIN_NAME", $subdomainname);
+define("DOMAIN_NAME", 'q8grandlimo.com');
+define("DOMAIN_URL_NAME", 'www.q8grandlimo.com');
+$url = URL_BASE;
+$url = "http://www.q8grandlimo.com";
+//$url="http://512rides.taximobility.com";
+//$subdomain = getUrlSubdomain($url);
+$subdomain = "q8grandlimo";
+define("SUBDOMAIN", $subdomain);
+//define("LIVECHATSTATUS","0");
+if ($_SERVER["HTTP_HOST"] == DOMAIN_URL_NAME) {
+    // TO get the livechat status		 
+    $url = "https://api.livechatinc.com/status";
+    $ch  = curl_init();
+    curl_setopt($ch, CURLOPT_URL, $url);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_USERPWD, "nandakumar@ndot.in:23e139ff7346643fa378d302277dbe0f");
+    curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
+    $output = curl_exec($ch);
+    curl_close($ch);
+    $a = $output;
+    if (strpos($a, 'online')) {
+        define('LIVECHATSTATUS', 0);
+    } else {
+        define('LIVECHATSTATUS', 1);
+    }
+} else {
+    define('LIVECHATSTATUS', 0);
+}
+/* TO get the livechat status */
+//View::bind_global('subdomain',$this->subdomain);
+/*if (is_null($subdomain)) {
+    define("COMPANY_CID", 0);
+    define("TIMEZONE", 'America/New_York');
+} else { */
+    $company_cid = findcompanyid($subdomain);
+    /** Added for redirection to site when subdomain not present **/
+    define("COMPANY_CID", $company_cid);
+    $company_timezone = findcompany_timezone($company_cid);
+    if (($company_timezone != '') || ($company_timezone != '0')) {
+        define("TIMEZONE", $company_timezone);
+    } else {
+        define("TIMEZONE", 'Asia/Kuwait');
+    }
+//}
+//echo SUBDOMAIN;
+//echo COMPANY_CID;exit;
+//define("COMPANY_CID",0);
+if (COMPANY_CID != 0) {
+    $email_logo = URL_BASE . SITE_LOGO_IMGPATH . '/' . SUBDOMAIN . '_email_logo.png';
+} else {
+    $email_logo = URL_BASE . SITE_LOGO_IMGPATH . '/email_site_logo.png';
+}
+DEFINE("EMAIL_TEMPLATE_LOGO", $email_logo);
+DEFINE("EMAILTEMPLATELOGO", $email_logo);
+function getUrlSubdomain($url)
+{
+    $urlSegments     = parse_url($url);
+    $urlHostSegments = explode('.', $urlSegments['host']);
+    if (count($urlHostSegments) > 2) {
+        return $urlHostSegments[0];
+    } else {
+        return null;
+    }
+}
+
+function findcompanyid($subdomain)
+{
+    //MongoDB
+    $mongodb        = MangoDB::instance('default');
+    $rs = $mongodb->find_one(MDB_COMPANY,array('companyinfo.company_domain'=>$subdomain),array('_id'));
+    return (count($rs)>0)?$rs['_id']:0;
+}
+function findcompany_timezone($company_cid)
+{
+    //MongoDB
+    $mongodb        = MangoDB::instance('default');
+    $rs = $mongodb->find_one(MDB_COMPANY,array('_id'=>(int)$company_cid),array('companydetails.time_zone'));
+    return (count($rs)>0)?$rs['companydetails']['time_zone']:0;
+}
+function getcompanycontent($cid)
+{
+    //MongoDB
+    $mongodb        = MangoDB::instance('default');
+    $rs = $mongodb->find_one(MDB_COMPANY,array('_id'=>(int)$cid,'company_cms.type'=>1,'company_cms.status'=>1),array('company_cms.menu_name','company_cms.page_url'));
+    return (!empty($rs))?$rs['company_cms']:array();
+}
+$company_currency = $mongodb->find_one(MDB_PAYMENT_GATEWAYS,array('payment_status'=> 'A','default_payment_gateway'=>1,'company_id'=>(int)COMPANY_CID),array('currency_code','currency_symbol'));
+
+$company_curency_symbol = isset($company_currency['currency_symbol']) ? $company_currency['currency_symbol'] : CURRENCY;
+$company_curency_code   = isset($company_currency['currency_code']) ? $company_currency['currency_code'] : CURRENCY_FORMAT;
+//echo SITE_EMAIL_CONTACT;exit;
+if (COMPANY_CID != 0) {
+    //MongoDB
+    $ops = array(
+        array('$match' => array('user_type'=>'A','company_id'=>(int)COMPANY_CID)),
+        array(
+            '$lookup' => array(
+                'from'=>MDB_COMPANY,
+                'localField'=> "company_id",
+                'foreignField' => "_id",
+                'as'=> "cdetails"
+            )
+        ),
+        array('$project' =>
+            array('_id' => 0,
+                'company_logo' => '$cdetails.companyinfo.company_logo', 
+                'company_favicon' => '$cdetails.companyinfo.company_favicon',
+                'company_facebook_share' => '$cdetails.companyinfo.company_facebook_share',
+                'company_twitter_share' => '$cdetails.companyinfo.company_twitter_share',
+                'company_google_share' => '$cdetails.companyinfo.company_google_share',
+                'company_linkedin_share' => '$cdetails.companyinfo.company_linkedin_share',
+                'customer_app_url' => '$cdetails.companyinfo.customer_app_url',
+                'company_app_name' => '$cdetails.companyinfo.company_app_name',
+                'driver_app_url' => '$cdetails.companyinfo.driver_app_url',
+                'company_api_key' => '$cdetails.companyinfo.company_api_key',
+                'company_facebook_key' => '$cdetails.companyinfo.company_facebook_key',
+                'company_facebook_secretkey' => '$cdetails.companyinfo.company_facebook_secretkey',
+                'company_notification_settings' => '$cdetails.companyinfo.company_notification_settings',
+                'company_name' => '$cdetails.companydetails.company_name',
+                'header_bgcolor' => '$cdetails.companydetails.header_bgcolor',
+                'menu_color' => '$cdetails.companydetails.menu_color',
+                'mouseover_color' => '$cdetails.companydetails.mouseover_color',
+                'company_phone_number' => '$cdetails.companyinfo.company_phone_number',
+                'company_meta_title' => '$cdetails.companyinfo.company_meta_title',
+                'company_meta_keyword' => '$cdetails.companyinfo.company_meta_keyword',
+                'company_meta_description' => '$cdetails.companyinfo.company_meta_description',
+                'company_copyrights' => '$cdetails.companyinfo.company_copyrights',
+                'default_unit' => '$cdetails.companyinfo.default_unit',
+                'skip_credit_card' => '$cdetails.companyinfo.skip_credit_card',
+                'fare_calculation_type' => '$cdetails.companyinfo.fare_calculation_type',
+                'company_app_description' => '$cdetails.companyinfo.company_app_description',
+                'cancellation_fare' => '$cdetails.companyinfo.cancellation_fare',
+                'name' => '$name',
+                'lastname' => '$lastname',
+                'email' => '$email',
+                'address' => '$address',
+                'login_city' => '$login_city',
+                'login_state' => '$login_state',
+                'login_country' => '$login_country',
+            )
+        ),
+        array(
+          '$limit' => 1
+        )
+    );
+    $res = $mongodb->aggregate(MDB_PEOPLE,$ops);
+   //echo '<pre>';
+   //print_r($res['result'][0]); echo '</pre>';exit;
+    $rs = $res['result'][0];
+    define("COMPANY_LOGO_URL_PATH", URL_BASE . PUBLIC_UPLOADS_FOLDER . '/' . SITE_LOGOIMG . '/' . $rs['company_logo'][0]);
+    define("COMPANY_LOGO_FILE_PATH", DOCROOT . PUBLIC_UPLOADS_FOLDER . '/' . SITE_LOGOIMG . '/' . $rs['company_logo'][0]);
+    define("COMPANY_LOGO_NAME", $rs['company_logo'][0]);
+    define("COMPANY_FAV_URL_PATH", URL_BASE . PUBLIC_UPLOADS_FOLDER . '/' . FAVICON_IMG . '/' . $rs['company_favicon'][0]);
+    define("COMPANY_FAV_FILE_PATH", DOCROOT . PUBLIC_UPLOADS_FOLDER . '/' . FAVICON_IMG . '/' . $rs['company_favicon'][0]);
+    define("COMPANY_FAV_NAME", $rs['company_favicon'][0]);
+    define("COMPANY_APP_NAME", $rs['company_app_name'][0]);
+    define("COMPANY_FACEBOOK_LINK", $rs['company_facebook_share'][0]);
+    define("COMPANY_TWITTER_LINK", $rs['company_twitter_share'][0]);
+    define("COMPANY_GOOGLE_LINK", $rs['company_google_share'][0]);
+    define("COMPANY_LINKED_LINK", $rs['company_linkedin_share'][0]);
+    define("COMPANY_CUSTOMER_APP_URL", $rs['customer_app_url'][0]);
+    define("COMPANY_DRIVER_APP_URL", $rs['driver_app_url'][0]);
+    define("COMPANY_API_KEY", $rs['company_api_key'][0]);
+    define("COMPANY_FB_KEY", $rs['company_facebook_key'][0]);
+    define("COMPANY_FB_SECRET", $rs['company_facebook_secretkey'][0]);
+    define("COMPANY_NOTIFICATION_TIME", $rs['company_notification_settings'][0]);
+    define("COMPANY_NAME", $rs['company_name'][0]);
+    define("COMPANY_HEADER_BGCOLOR", $rs['header_bgcolor'][0]);
+    define("COMPANY_HEADER_MENUCOLOR", $rs['menu_color'][0]);
+    define("COMPANY_HEADER_MOUSEOVERCOLOR", $rs['mouseover_color'][0]);
+    define("COMPANY_CONTACT_PHONE_NUMBER", $rs['company_phone_number'][0]);
+    define("COMPANY_META_TITLE", $rs['company_meta_title'][0]);
+    define("COMPANY_META_KEYWORD", $rs['company_meta_keyword'][0]);
+    define("COMPANY_META_DESCRIPTION", $rs['company_meta_description'][0]);
+    define("COMPANY_COPYRIGHT", $rs['company_copyrights'][0]);
+    define("COMPANY_SITENAME", $rs['company_app_name'][0]);
+    define("DEFAULT_UNIT", $rs['default_unit'][0]);
+    define("DEFAULT_SKIP_CREDIT_CARD", $rs['skip_credit_card'][0]);
+    define("COMPANY_FARE_CALCULATION_TYPE", $rs['fare_calculation_type'][0]); //
+    define("COMPANY_CURRENCY", $company_curency_symbol); //eg: $
+    define("COMPANY_CURRENCY_FORMAT", $company_curency_code); //eg: USD
+    define("TELL_TO_FRIEND_MESSAGE", $rs['company_app_description'][0]);
+   // define("CANCELLATION_FARE", $rs['cancellation_fare'][0]);
+     define("CANCELLATION_FARE", $result['cancellation_fare_setting']);
+    define("COMPANY_FIRST_NAME", $rs['name']);
+    define("COMPANY_LAST_NAME", $rs['lastname']);
+    define("COMPANY_CONTACT_EMAIL", $rs['email']);
+    define("COMPANY_STREET_ADDR", $rs['address']);
+    define("COMPANY_LOGIN_CITY", isset($rs['login_city']) ? $rs['login_city'] : DEFAULT_CITY);
+    define("COMPANY_LOGIN_STATE", isset($rs['login_state']) ? $rs['login_state'] : DEFAULT_STATE);
+    define("COMPANY_LOGIN_COUNTRY", isset($rs['login_country']) ? $rs['login_country'] : DEFAULT_COUNTRY);
+    define("CONTACT_EMAIL", COMPANY_CONTACT_EMAIL);
+    define("SITE_FAVICON", $rs['company_favicon'][0]);
+    if(!empty(COMPANY_LOGIN_CITY) && !empty(COMPANY_LOGIN_STATE) && !empty(COMPANY_LOGIN_COUNTRY)){
+        //MongoDB with aggregate process only
+		$ops = array(
+			array('$unwind' => '$stateinfo'),
+			array('$unwind' => '$stateinfo.cityinfo'),
+			array('$match' => array('stateinfo.cityinfo.city_id'=>(int)COMPANY_LOGIN_CITY,'stateinfo.cityinfo.city_stateid'=>(int)COMPANY_LOGIN_STATE,'stateinfo.cityinfo.city_countryid'=>(int)COMPANY_LOGIN_COUNTRY)),
+			array('$project' => array('_id' => 0,
+                    'state_name' => '$stateinfo.state_name', 
+                    'city_name' => '$stateinfo.cityinfo.city_name',
+                    'zipcode' => '$stateinfo.cityinfo.zipcode',
+                    'iso_country_code' => '$iso_country_code',
+                )
+            )
+		);
+		$res = $mongodb->aggregate(MDB_CSC,$ops);
+		$result = $res['result'];
+        define("COMPANY_LOGIN_CITY_NAME", $result[0]['city_name']);
+        define("COMPANY_ZIPCODE", $result[0]['zipcode']);
+        define("COMPANY_LOGIN_STATE_NAME", $result[0]['state_name']);
+        define("COMPANY_LOGIN_ISO_COUNTRYCODE", $result[0]['iso_country_code']);
+    }
+} else {
+    define("COMPANY_SITENAME", SITE_NAME);
+    define("COMPANY_NOTIFICATION_TIME", 60);
+    define("COMPANY_CUSTOMER_APP_URL", 'https://play.google.com/store/apps/details?id=com.taximobility');
+    define("COMPANY_DRIVER_APP_URL", 'https://play.google.com/store/apps/details?id=com.taximobility.driver');
+    define('TELL_TO_FRIEND_MESSAGE', $result['tell_to_friend_message']);
+    define("DEFAULT_UNIT", $result['default_unit']);
+    define("DEFAULT_SKIP_CREDIT_CARD", $result['skip_credit_card']);
+    define("COMPANY_CURRENCY", CURRENCY);
+    define("CANCELLATION_FARE", $result['cancellation_fare_setting']);
+    define("COMPANY_COPYRIGHT", SITE_COPYRIGHT);
+    define("CONTACT_EMAIL", SITE_EMAIL_CONTACT);
+    define("SITE_FAVICON", $result['site_favicon']);
+}
+//echo CANCELLATION_FARE; exit;
+define("COPYRIGHT_YEAR", "2016");
+$config = array(
+    "Africa/Abidjan" => "Africa/Abidjan",
+    "Africa/Accra" => "Africa/Accra",
+    "Africa/Addis_Ababa" => "Africa/Addis_Ababa",
+    "Africa/Algiers" => "Africa/Algiers",
+    "Africa/Asmara" => "Africa/Asmara",
+    "Africa/Asmera" => "Africa/Asmera",
+    "Africa/Bamako" => "Africa/Bamako",
+    "Africa/Bangui" => "Africa/Bangui",
+    "Africa/Banjul" => "Africa/Banjul",
+    "Africa/Bissau" => "Africa/Bissau",
+    "Africa/Blantyre" => "Africa/Blantyre",
+    "Africa/Brazzaville" => "Africa/Brazzaville",
+    "Africa/Bujumbura" => "Africa/Bujumbura",
+    "Africa/Cairo" => "Africa/Cairo",
+    "Africa/Casablanca" => "Africa/Casablanca",
+    "Africa/Ceuta" => "Africa/Ceuta",
+    "Africa/Conakry" => "Africa/Conakry",
+    "Africa/Dakar" => "Africa/Dakar",
+    "Africa/Dar_es_Salaam" => "Africa/Dar_es_Salaam",
+    "Africa/Djibouti" => "Africa/Djibouti",
+    "Africa/Douala" => "Africa/Douala",
+    "Africa/El_Aaiun" => "Africa/El_Aaiun",
+    "Africa/Freetown" => "Africa/Freetown",
+    "Africa/Gaborone" => "Africa/Gaborone",
+    "Africa/Harare" => "Africa/Harare",
+    "Africa/Johannesburg" => "Africa/Johannesburg",
+    "Africa/Juba" => "Africa/Juba",
+    "Africa/Kampala" => "Africa/Kampala",
+    "Africa/Khartoum" => "Africa/Khartoum",
+    "Africa/Kigali" => "Africa/Kigali",
+    "Africa/Kinshasa" => "Africa/Kinshasa",
+    "Africa/Lagos" => "Africa/Lagos",
+    "Africa/Libreville" => "Africa/Libreville",
+    "Africa/Lome" => "Africa/Lome",
+    "Africa/Luanda" => "Africa/Luanda",
+    "Africa/Lubumbashi" => "Africa/Lubumbashi",
+    "Africa/Lusaka" => "Africa/Lusaka",
+    "Africa/Malabo" => "Africa/Malabo",
+    "Africa/Maputo" => "Africa/Maputo",
+    "Africa/Maseru" => "Africa/Maseru",
+    "Africa/Mbabane" => "Africa/Mbabane",
+    "Africa/Mogadishu" => "Africa/Mogadishu",
+    "Africa/Monrovia" => "Africa/Monrovia",
+    "Africa/Nairobi" => "Africa/Nairobi",
+    "Africa/Ndjamena" => "Africa/Ndjamena",
+    "Africa/Niamey" => "Africa/Niamey",
+    "Africa/Nouakchott" => "Africa/Nouakchott",
+    "Africa/Ouagadougou" => "Africa/Ouagadougou",
+    "Africa/Porto-Novo" => "Africa/Porto-Novo",
+    "Africa/Sao_Tome" => "Africa/Sao_Tome",
+    "Africa/Timbuktu" => "Africa/Timbuktu",
+    "Africa/Tripoli" => "Africa/Tripoli",
+    "Africa/Tunis" => "Africa/Tunis",
+    "Africa/Windhoek" => "Africa/Windhoek",
+    "America/Adak" => "America/Adak",
+    "America/Anchorage" => "America/Anchorage",
+    "America/Anguilla" => "America/Anguilla",
+    "America/Antigua" => "America/Antigua",
+    "America/Araguaina" => "America/Araguaina",
+    "America/Argentina/Buenos_Aires" => "America/Argentina/Buenos_Aires",
+    "America/Argentina/Catamarca" => "America/Argentina/Catamarca",
+    "America/Argentina/ComodRivadavia" => "America/Argentina/ComodRivadavia",
+    "America/Argentina/Cordoba" => "America/Argentina/Cordoba",
+    "America/Argentina/Jujuy" => "America/Argentina/Jujuy",
+    "America/Argentina/La_Rioja" => "America/Argentina/La_Rioja",
+    "America/Argentina/Mendoza" => "America/Argentina/Mendoza",
+    "America/Argentina/Rio_Gallegos" => "America/Argentina/Rio_Gallegos",
+    "America/Argentina/Salta" => "America/Argentina/Salta",
+    "America/Argentina/San_Juan" => "America/Argentina/San_Juan",
+    "America/Argentina/San_Luis" => "America/Argentina/San_Luis",
+    "America/Argentina/Tucuman" => "America/Argentina/Tucuman",
+    "America/Argentina/Ushuaia" => "America/Argentina/Ushuaia",
+    "America/Aruba" => "America/Aruba",
+    "America/Asuncion" => "America/Asuncion",
+    "America/Atikokan" => "America/Atikokan",
+    "America/Atka" => "America/Atka",
+    "America/Bahia" => "America/Bahia",
+    "America/Bahia_Banderas" => "America/Bahia_Banderas",
+    "America/Barbados" => "America/Barbados",
+    "America/Belem" => "America/Belem",
+    "America/Belize" => "America/Belize",
+    "America/Blanc-Sablon" => "America/Blanc-Sablon",
+    "America/Boa_Vista" => "America/Boa_Vista",
+    "America/Bogota" => "America/Bogota",
+    "America/Boise" => "America/Boise",
+    "America/Buenos_Aires" => "America/Buenos_Aires",
+    "America/Cambridge_Bay" => "America/Cambridge_Bay",
+    "America/Campo_Grande" => "America/Campo_Grande",
+    "America/Cancun" => "America/Cancun",
+    "America/Caracas" => "America/Caracas",
+    "America/Catamarca" => "America/Catamarca",
+    "America/Cayenne" => "America/Cayenne",
+    "America/Cayman" => "America/Cayman",
+    "America/Chicago" => "America/Chicago",
+    "America/Chihuahua" => "America/Chihuahua",
+    "America/Coral_Harbour" => "America/Coral_Harbour",
+    "America/Cordoba" => "America/Cordoba",
+    "America/Costa_Rica" => "America/Costa_Rica",
+    "America/Creston" => "America/Creston",
+    "America/Cuiaba" => "America/Cuiaba",
+    "America/Curacao" => "America/Curacao",
+    "America/Danmarkshavn" => "America/Danmarkshavn",
+    "America/Dawson" => "America/Dawson",
+    "America/Dawson_Creek" => "America/Dawson_Creek",
+    "America/Denver" => "America/Denver",
+    "America/Detroit" => "America/Detroit",
+    "America/Dominica" => "America/Dominica",
+    "America/Edmonton" => "America/Edmonton",
+    "America/Eirunepe" => "America/Eirunepe",
+    "America/El_Salvador" => "America/El_Salvador",
+    "America/Ensenada" => "America/Ensenada",
+    "America/Fort_Wayne" => "America/Fort_Wayne",
+    "America/Fortaleza" => "America/Fortaleza",
+    "America/Glace_Bay" => "America/Glace_Bay",
+    "America/Godthab" => "America/Godthab",
+    "America/Goose_Bay" => "America/Goose_Bay",
+    "America/Grand_Turk" => "America/Grand_Turk",
+    "America/Grenada" => "America/Grenada",
+    "America/Guadeloupe" => "America/Guadeloupe",
+    "America/Guatemala" => "America/Guatemala",
+    "America/Guayaquil" => "America/Guayaquil",
+    "America/Guyana" => "America/Guyana",
+    "America/Halifax" => "America/Halifax",
+    "America/Havana" => "America/Havana",
+    "America/Hermosillo" => "America/Hermosillo",
+    "America/Indiana/Indianapolis" => "America/Indiana/Indianapolis",
+    "America/Indiana/Knox" => "America/Indiana/Knox",
+    "America/Indiana/Marengo" => "America/Indiana/Marengo",
+    "America/Indiana/Petersburg" => "America/Indiana/Petersburg",
+    "America/Indiana/Tell_City" => "America/Indiana/Tell_City",
+    "America/Indiana/Vevay" => "America/Indiana/Vevay",
+    "America/Indiana/Vincennes" => "America/Indiana/Vincennes",
+    "America/Indiana/Winamac" => "America/Indiana/Winamac",
+    "America/Indianapolis" => "America/Indianapolis",
+    "America/Inuvik" => "America/Inuvik",
+    "America/Iqaluit" => "America/Iqaluit",
+    "America/Jamaica" => "America/Jamaica",
+    "America/Jujuy" => "America/Jujuy",
+    "America/Juneau" => "America/Juneau",
+    "America/Kentucky/Louisville" => "America/Kentucky/Louisville",
+    "America/Kentucky/Monticello" => "America/Kentucky/Monticello",
+    "America/Knox_IN" => "America/Knox_IN",
+    "America/Kralendijk" => "America/Kralendijk",
+    "America/La_Paz" => "America/La_Paz",
+    "America/Lima" => "America/Lima",
+    "America/Los_Angeles" => "America/Los_Angeles",
+    "America/Louisville" => "America/Louisville",
+    "America/Lower_Princes" => "America/Lower_Princes",
+    "America/Maceio" => "America/Maceio",
+    "America/Managua" => "America/Managua",
+    "America/Manaus" => "America/Manaus",
+    "America/Marigot" => "America/Marigot",
+    "America/Martinique" => "America/Martinique",
+    "America/Matamoros" => "America/Matamoros",
+    "America/Mazatlan" => "America/Mazatlan",
+    "America/Mendoza" => "America/Mendoza",
+    "America/Menominee" => "America/Menominee",
+    "America/Merida" => "America/Merida",
+    "America/Metlakatla" => "America/Metlakatla",
+    "America/Mexico_City" => "America/Mexico_City",
+    "America/Miquelon" => "America/Miquelon",
+    "America/Moncton" => "America/Moncton",
+    "America/Monterrey" => "America/Monterrey",
+    "America/Montevideo" => "America/Montevideo",
+    "America/Montreal" => "America/Montreal",
+    "America/Montserrat" => "America/Montserrat",
+    "America/Nassau" => "America/Nassau",
+    "America/New_York" => "America/New_York",
+    "America/Nipigon" => "America/Nipigon",
+    "America/Nome" => "America/Nome",
+    "America/Noronha" => "America/Noronha",
+    "America/North_Dakota/Beulah" => "America/North_Dakota/Beulah",
+    "America/North_Dakota/Center" => "America/North_Dakota/Center",
+    "America/North_Dakota/New_Salem" => "America/North_Dakota/New_Salem",
+    "America/Ojinaga" => "America/Ojinaga",
+    "America/Panama" => "America/Panama",
+    "America/Pangnirtung" => "America/Pangnirtung",
+    "America/Paramaribo" => "America/Paramaribo",
+    "America/Phoenix" => "America/Phoenix",
+    "America/Port-au-Prince" => "America/Port-au-Prince",
+    "America/Port_of_Spain" => "America/Port_of_Spain",
+    "America/Porto_Acre" => "America/Porto_Acre",
+    "America/Porto_Velho" => "America/Porto_Velho",
+    "America/Puerto_Rico" => "America/Puerto_Rico",
+    "America/Rainy_River" => "America/Rainy_River",
+    "America/Rankin_Inlet" => "America/Rankin_Inlet",
+    "America/Recife" => "America/Recife",
+    "America/Regina" => "America/Regina",
+    "America/Resolute" => "America/Resolute",
+    "America/Rio_Branco" => "America/Rio_Branco",
+    "America/Rosario" => "America/Rosario",
+    "America/Santa_Isabel" => "America/Santa_Isabel",
+    "America/Santarem" => "America/Santarem",
+    "America/Santiago" => "America/Santiago",
+    "America/Santo_Domingo" => "America/Santo_Domingo",
+    "America/Sao_Paulo" => "America/Sao_Paulo",
+    "America/Scoresbysund" => "America/Scoresbysund",
+    "America/Shiprock" => "America/Shiprock",
+    "America/Sitka" => "America/Sitka",
+    "America/St_Barthelemy" => "America/St_Barthelemy",
+    "America/St_Johns" => "America/St_Johns",
+    "America/St_Kitts" => "America/St_Kitts",
+    "America/St_Lucia" => "America/St_Lucia",
+    "America/St_Thomas" => "America/St_Thomas",
+    "America/St_Vincent" => "America/St_Vincent",
+    "America/Swift_Current" => "America/Swift_Current",
+    "America/Tegucigalpa" => "America/Tegucigalpa",
+    "America/Thule" => "America/Thule",
+    "America/Thunder_Bay" => "America/Thunder_Bay",
+    "America/Tijuana" => "America/Tijuana",
+    "America/Toronto" => "America/Toronto",
+    "America/Tortola" => "America/Tortola",
+    "America/Vancouver" => "America/Vancouver",
+    "America/Virgin" => "America/Virgin",
+    "America/Whitehorse" => "America/Whitehorse",
+    "America/Winnipeg" => "America/Winnipeg",
+    "America/Yakutat" => "America/Yakutat",
+    "America/Yellowknife" => "America/Yellowknife",
+    "Antarctica/Casey" => "Antarctica/Casey",
+    "Antarctica/Davis" => "Antarctica/Davis",
+    "Antarctica/DumontDUrville" => "Antarctica/DumontDUrville",
+    "Antarctica/Macquarie" => "Antarctica/Macquarie",
+    "Antarctica/Mawson" => "Antarctica/Mawson",
+    "Antarctica/McMurdo" => "Antarctica/McMurdo",
+    "Antarctica/Palmer" => "Antarctica/Palmer",
+    "Antarctica/Rothera" => "Antarctica/Rothera",
+    "Antarctica/South_Pole" => "Antarctica/South_Pole",
+    "Antarctica/Syowa" => "Antarctica/Syowa",
+    "Antarctica/Troll" => "Antarctica/Troll",
+    "Antarctica/Vostok" => "Antarctica/Vostok",
+    "Arctic/Longyearbyen" => "Arctic/Longyearbyen",
+    "Asia/Aden" => "Asia/Aden",
+    "Asia/Almaty" => "Asia/Almaty",
+    "Asia/Amman" => "Asia/Amman",
+    "Asia/Anadyr" => "Asia/Anadyr",
+    "Asia/Aqtau" => "Asia/Aqtau",
+    "Asia/Aqtobe" => "Asia/Aqtobe",
+    "Asia/Ashgabat" => "Asia/Ashgabat",
+    "Asia/Ashkhabad" => "Asia/Ashkhabad",
+    "Asia/Baghdad" => "Asia/Baghdad",
+    "Asia/Bahrain" => "Asia/Bahrain",
+    "Asia/Baku" => "Asia/Baku",
+    "Asia/Bangkok" => "Asia/Bangkok",
+    "Asia/Beirut" => "Asia/Beirut",
+    "Asia/Bishkek" => "Asia/Bishkek",
+    "Asia/Brunei" => "Asia/Brunei",
+    "Asia/Calcutta" => "Asia/Calcutta",
+    "Asia/Chita" => "Asia/Chita",
+    "Asia/Choibalsan" => "Asia/Choibalsan",
+    "Asia/Chongqing" => "Asia/Chongqing",
+    "Asia/Chungking" => "Asia/Chungking",
+    "Asia/Colombo" => "Asia/Colombo",
+    "Asia/Dacca" => "Asia/Dacca",
+    "Asia/Damascus" => "Asia/Damascus",
+    "Asia/Dhaka" => "Asia/Dhaka",
+    "Asia/Dili" => "Asia/Dili",
+    "Asia/Dubai" => "Asia/Dubai",
+    "Asia/Dushanbe" => "Asia/Dushanbe",
+    "Asia/Gaza" => "Asia/Gaza",
+    "Asia/Harbin" => "Asia/Harbin",
+    "Asia/Hebron" => "Asia/Hebron",
+    "Asia/Ho_Chi_Minh" => "Asia/Ho_Chi_Minh",
+    "Asia/Hong_Kong" => "Asia/Hong_Kong",
+    "Asia/Hovd" => "Asia/Hovd",
+    "Asia/Irkutsk" => "Asia/Irkutsk",
+    "Asia/Istanbul" => "Asia/Istanbul",
+    "Asia/Jakarta" => "Asia/Jakarta",
+    "Asia/Jayapura" => "Asia/Jayapura",
+    "Asia/Jerusalem" => "Asia/Jerusalem",
+    "Asia/Kabul" => "Asia/Kabul",
+    "Asia/Kamchatka" => "Asia/Kamchatka",
+    "Asia/Karachi" => "Asia/Karachi",
+    "Asia/Kashgar" => "Asia/Kashgar",
+    "Asia/Kathmandu" => "Asia/Kathmandu",
+    "Asia/Katmandu" => "Asia/Katmandu",
+    "Asia/Khandyga" => "Asia/Khandyga",
+    "Asia/Kolkata" => "Asia/Kolkata",
+    "Asia/Krasnoyarsk" => "Asia/Krasnoyarsk",
+    "Asia/Kuala_Lumpur" => "Asia/Kuala_Lumpur",
+    "Asia/Kuching" => "Asia/Kuching",
+    "Asia/Kuwait" => "Asia/Kuwait",
+    "Asia/Macao" => "Asia/Macao",
+    "Asia/Macau" => "Asia/Macau",
+    "Asia/Magadan" => "Asia/Magadan",
+    "Asia/Makassar" => "Asia/Makassar",
+    "Asia/Manila" => "Asia/Manila",
+    "Asia/Muscat" => "Asia/Muscat",
+    "Asia/Nicosia" => "Asia/Nicosia",
+    "Asia/Novokuznetsk" => "Asia/Novokuznetsk",
+    "Asia/Novosibirsk" => "Asia/Novosibirsk",
+    "Asia/Omsk" => "Asia/Omsk",
+    "Asia/Oral" => "Asia/Oral",
+    "Asia/Phnom_Penh" => "Asia/Phnom_Penh",
+    "Asia/Pontianak" => "Asia/Pontianak",
+    "Asia/Pyongyang" => "Asia/Pyongyang",
+    "Asia/Qatar" => "Asia/Qatar",
+    "Asia/Qyzylorda" => "Asia/Qyzylorda",
+    "Asia/Rangoon" => "Asia/Rangoon",
+    "Asia/Riyadh" => "Asia/Riyadh",
+    "Asia/Saigon" => "Asia/Saigon",
+    "Asia/Sakhalin" => "Asia/Sakhalin",
+    "Asia/Samarkand" => "Asia/Samarkand",
+    "Asia/Seoul" => "Asia/Seoul",
+    "Asia/Shanghai" => "Asia/Shanghai",
+    "Asia/Singapore" => "Asia/Singapore",
+    "Asia/Srednekolymsk" => "Asia/Srednekolymsk",
+    "Asia/Taipei" => "Asia/Taipei",
+    "Asia/Tashkent" => "Asia/Tashkent",
+    "Asia/Tbilisi" => "Asia/Tbilisi",
+    "Asia/Tehran" => "Asia/Tehran",
+    "Asia/Tel_Aviv" => "Asia/Tel_Aviv",
+    "Asia/Thimbu" => "Asia/Thimbu",
+    "Asia/Thimphu" => "Asia/Thimphu",
+    "Asia/Tokyo" => "Asia/Tokyo",
+    "Asia/Ujung_Pandang" => "Asia/Ujung_Pandang",
+    "Asia/Ulaanbaatar" => "Asia/Ulaanbaatar",
+    "Asia/Ulan_Bator" => "Asia/Ulan_Bator",
+    "Asia/Urumqi" => "Asia/Urumqi",
+    "Asia/Ust-Nera" => "Asia/Ust-Nera",
+    "Asia/Vientiane" => "Asia/Vientiane",
+    "Asia/Vladivostok" => "Asia/Vladivostok",
+    "Asia/Yakutsk" => "Asia/Yakutsk",
+    "Asia/Yekaterinburg" => "Asia/Yekaterinburg",
+    "Asia/Yerevan" => "Asia/Yerevan",
+    "Atlantic/Azores" => "Atlantic/Azores",
+    "Atlantic/Bermuda" => "Atlantic/Bermuda",
+    "Atlantic/Canary" => "Atlantic/Canary",
+    "Atlantic/Cape_Verde" => "Atlantic/Cape_Verde",
+    "Atlantic/Faeroe" => "Atlantic/Faeroe",
+    "Atlantic/Faroe" => "Atlantic/Faroe",
+    "Atlantic/Jan_Mayen" => "Atlantic/Jan_Mayen",
+    "Atlantic/Madeira" => "Atlantic/Madeira",
+    "Atlantic/Reykjavik" => "Atlantic/Reykjavik",
+    "Atlantic/South_Georgia" => "Atlantic/South_Georgia",
+    "Atlantic/St_Helena" => "Atlantic/St_Helena",
+    "Atlantic/Stanley" => "Atlantic/Stanley",
+    "Australia/ACT" => "Australia/ACT",
+    "Australia/Adelaide" => "Australia/Adelaide",
+    "Australia/Brisbane" => "Australia/Brisbane",
+    "Australia/Broken_Hill" => "Australia/Broken_Hill",
+    "Australia/Canberra" => "Australia/Canberra",
+    "Australia/Currie" => "Australia/Currie",
+    "Australia/Darwin" => "Australia/Darwin",
+    "Australia/Eucla" => "Australia/Eucla",
+    "Australia/Hobart" => "Australia/Hobart",
+    "Australia/LHI" => "Australia/LHI",
+    "Australia/Lindeman" => "Australia/Lindeman",
+    "Australia/Lord_Howe" => "Australia/Lord_Howe",
+    "Australia/Melbourne" => "Australia/Melbourne",
+    "Australia/North" => "Australia/North",
+    "Australia/NSW" => "Australia/NSW",
+    "Australia/Perth" => "Australia/Perth",
+    "Australia/Queensland" => "Australia/Queensland",
+    "Australia/South" => "Australia/South",
+    "Australia/Sydney" => "Australia/Sydney",
+    "Australia/Tasmania" => "Australia/Tasmania",
+    "Australia/Victoria" => "Australia/Victoria",
+    "Australia/West" => "Australia/West",
+    "Australia/Yancowinna" => "Australia/Yancowinna",
+    "Europe/Amsterdam" => "Europe/Amsterdam",
+    "Europe/Andorra" => "Europe/Andorra",
+    "Europe/Athens" => "Europe/Athens",
+    "Europe/Belfast" => "Europe/Belfast",
+    "Europe/Belgrade" => "Europe/Belgrade",
+    "Europe/Berlin" => "Europe/Berlin",
+    "Europe/Bratislava" => "Europe/Bratislava",
+    "Europe/Brussels" => "Europe/Brussels",
+    "Europe/Bucharest" => "Europe/Bucharest",
+    "Europe/Budapest" => "Europe/Budapest",
+    "Europe/Busingen" => "Europe/Busingen",
+    "Europe/Chisinau" => "Europe/Chisinau",
+    "Europe/Copenhagen" => "Europe/Copenhagen",
+    "Europe/Dublin" => "Europe/Dublin",
+    "Europe/Gibraltar" => "Europe/Gibraltar",
+    "Europe/Guernsey" => "Europe/Guernsey",
+    "Europe/Helsinki" => "Europe/Helsinki",
+    "Europe/Isle_of_Man" => "Europe/Isle_of_Man",
+    "Europe/Istanbul" => "Europe/Istanbul",
+    "Europe/Jersey" => "Europe/Jersey",
+    "Europe/Kaliningrad" => "Europe/Kaliningrad",
+    "Europe/Kiev" => "Europe/Kiev",
+    "Europe/Lisbon" => "Europe/Lisbon",
+    "Europe/Ljubljana" => "Europe/Ljubljana",
+    "Europe/London" => "Europe/London",
+    "Europe/Luxembourg" => "Europe/Luxembourg",
+    "Europe/Madrid" => "Europe/Madrid",
+    "Europe/Malta" => "Europe/Malta",
+    "Europe/Mariehamn" => "Europe/Mariehamn",
+    "Europe/Minsk" => "Europe/Minsk",
+    "Europe/Monaco" => "Europe/Monaco",
+    "Europe/Moscow" => "Europe/Moscow",
+    "Europe/Nicosia" => "Europe/Nicosia",
+    "Europe/Oslo" => "Europe/Oslo",
+    "Europe/Paris" => "Europe/Paris",
+    "Europe/Podgorica" => "Europe/Podgorica",
+    "Europe/Prague" => "Europe/Prague",
+    "Europe/Riga" => "Europe/Riga",
+    "Europe/Rome" => "Europe/Rome",
+    "Europe/Samara" => "Europe/Samara",
+    "Europe/San_Marino" => "Europe/San_Marino",
+    "Europe/Sarajevo" => "Europe/Sarajevo",
+    "Europe/Simferopol" => "Europe/Simferopol",
+    "Europe/Skopje" => "Europe/Skopje",
+    "Europe/Sofia" => "Europe/Sofia",
+    "Europe/Stockholm" => "Europe/Stockholm",
+    "Europe/Tallinn" => "Europe/Tallinn",
+    "Europe/Tirane" => "Europe/Tirane",
+    "Europe/Tiraspol" => "Europe/Tiraspol",
+    "Europe/Uzhgorod" => "Europe/Uzhgorod",
+    "Europe/Vaduz" => "Europe/Vaduz",
+    "Europe/Vatican" => "Europe/Vatican",
+    "Europe/Vienna" => "Europe/Vienna",
+    "Europe/Vilnius" => "Europe/Vilnius",
+    "Europe/Volgograd" => "Europe/Volgograd",
+    "Europe/Warsaw" => "Europe/Warsaw",
+    "Europe/Zagreb" => "Europe/Zagreb",
+    "Europe/Zaporozhye" => "Europe/Zaporozhye",
+    "Europe/Zurich" => "Europe/Zurich",
+    "Indian/Antananarivo" => "Indian/Antananarivo",
+    "Indian/Chagos" => "Indian/Chagos",
+    "Indian/Christmas" => "Indian/Christmas",
+    "Indian/Cocos" => "Indian/Cocos",
+    "Indian/Comoro" => "Indian/Comoro",
+    "Indian/Kerguelen" => "Indian/Kerguelen",
+    "Indian/Mahe" => "Indian/Mahe",
+    "Indian/Maldives" => "Indian/Maldives",
+    "Indian/Mauritius" => "Indian/Mauritius",
+    "Indian/Mayotte" => "Indian/Mayotte",
+    "Indian/Reunion" => "Indian/Reunion",
+    "Pacific/Apia" => "Pacific/Apia",
+    "Pacific/Auckland" => "Pacific/Auckland",
+    "Pacific/Bougainville" => "Pacific/Bougainville",
+    "Pacific/Chatham" => "Pacific/Chatham",
+    "Pacific/Chuuk" => "Pacific/Chuuk",
+    "Pacific/Easter" => "Pacific/Easter",
+    "Pacific/Efate" => "Pacific/Efate",
+    "Pacific/Enderbury" => "Pacific/Enderbury",
+    "Pacific/Fakaofo" => "Pacific/Fakaofo",
+    "Pacific/Fiji" => "Pacific/Fiji",
+    "Pacific/Funafuti" => "Pacific/Funafuti",
+    "Pacific/Galapagos" => "Pacific/Galapagos",
+    "Pacific/Gambier" => "Pacific/Gambier",
+    "Pacific/Guadalcanal" => "Pacific/Guadalcanal",
+    "Pacific/Guam" => "Pacific/Guam",
+    "Pacific/Honolulu" => "Pacific/Honolulu",
+    "Pacific/Johnston" => "Pacific/Johnston",
+    "Pacific/Kiritimati" => "Pacific/Kiritimati",
+    "Pacific/Kosrae" => "Pacific/Kosrae",
+    "Pacific/Kwajalein" => "Pacific/Kwajalein",
+    "Pacific/Majuro" => "Pacific/Majuro",
+    "Pacific/Marquesas" => "Pacific/Marquesas",
+    "Pacific/Midway" => "Pacific/Midway",
+    "Pacific/Nauru" => "Pacific/Nauru",
+    "Pacific/Niue" => "Pacific/Niue",
+    "Pacific/Norfolk" => "Pacific/Norfolk",
+    "Pacific/Noumea" => "Pacific/Noumea",
+    "Pacific/Pago_Pago" => "Pacific/Pago_Pago",
+    "Pacific/Palau" => "Pacific/Palau",
+    "Pacific/Pitcairn" => "Pacific/Pitcairn",
+    "Pacific/Pohnpei" => "Pacific/Pohnpei",
+    "Pacific/Ponape" => "Pacific/Ponape",
+    "Pacific/Port_Moresby" => "Pacific/Port_Moresby",
+    "Pacific/Rarotonga" => "Pacific/Rarotonga",
+    "Pacific/Saipan" => "Pacific/Saipan",
+    "Pacific/Samoa" => "Pacific/Samoa",
+    "Pacific/Tahiti" => "Pacific/Tahiti",
+    "Pacific/Tarawa" => "Pacific/Tarawa",
+    "Pacific/Tongatapu" => "Pacific/Tongatapu",
+    "Pacific/Truk" => "Pacific/Truk",
+    "Pacific/Wake" => "Pacific/Wake",
+    "Pacific/Wallis" => "Pacific/Wallis",
+    "Pacific/Yap" => "Pacific/Yap",
+    "NZ" => "NZ",
+    "Brazil/Acre" => "Brazil/Acre",
+    "Brazil/DeNoronha" => "Brazil/DeNoronha",
+    "Brazil/East" => "Brazil/East",
+    "Brazil/West" => "Brazil/West",
+    "Canada/Atlantic" => "Canada/Atlantic",
+    "Canada/Central" => "Canada/Central",
+    "Canada/East-Saskatchewan" => "Canada/East-Saskatchewan",
+    "Canada/Eastern" => "Canada/Eastern",
+    "Canada/Mountain" => "Canada/Mountain",
+    "Canada/Newfoundland" => "Canada/Newfoundland",
+    "Canada/Pacific" => "Canada/Pacific",
+    "Canada/Saskatchewan" => "Canada/Saskatchewan",
+    "Canada/Yukon" => "Canada/Yukon",
+    "Chile/Continental" => "Chile/Continental",
+    "Chile/EasterIsland" => "Chile/EasterIsland",
+    "Mexico/BajaNorte" => "Mexico/BajaNorte",
+    "Mexico/BajaSur" => "Mexico/BajaSur",
+    "Mexico/GeneralUS/Alaska" => "Mexico/GeneralUS/Alaska",
+    "US/Aleutian" => "US/Aleutian",
+    "US/Arizona" => "US/Arizona",
+    "US/Central" => "US/Central",
+    "US/East-Indiana" => "US/East-Indiana",
+    "US/Eastern" => "US/Eastern",
+    "US/Hawaii" => "US/Hawaii",
+    "US/Indiana-Starke" => "US/Indiana-Starke",
+    "US/Michigan" => "US/Michigan",
+    "US/Mountain" => "US/Mountain",
+    "US/Pacific" => "US/Pacific",
+    "US/Pacific-New" => "US/Pacific-New",
+    "US/Samoa" => "US/Samoa"
+);
+define('SELECT_TIMEZONE', serialize($config));
+function convert_timezone($time, $timezone = '')
+{
+    $date      = new DateTime($time, new DateTimeZone($timezone));
+    $localtime = $date->format('Y-m-d H:i:s');
+    return $localtime;
+}
+function findcompany_currency($company_cid)
+{
+    //MongoDB
+    $mongodb        = MangoDB::instance('default');
+    $result = $mongodb->find_one(MDB_PAYMENT_GATEWAYS,array('payment_status'=> 'A','default_payment_gateway'=>1,'company_id'=>(int)$company_cid),array('currency_symbol'));
+    return (!empty($result))?$result['currency_symbol']:CURRENCY;
+}
+function findcompany_currencyformat($company_cid)
+{
+    //MongoDB
+    $mongodb        = MangoDB::instance('default');
+    $result = $mongodb->find_one(MDB_PAYMENT_GATEWAYS,array('payment_status'=> 'A','default_payment_gateway'=>1,'company_id'=>(int)$company_cid),array('currency_code'));
+    return (!empty($result))?$result['currency_code']:CURRENCY_FORMAT;
+}
+// FUNCTION FOR CURRENCY CONVERSION
+function currency_conversion($company_currency, $amt)
+{
+    try {
+        return $amt;
+        /*$from   = $company_currency; /*change it to your required currencies *
+        $to     = CURRENCY_FORMAT;
+        if($from != $to)
+        {
+        $url = 'http://finance.yahoo.com/d/quotes.csv?e=.csv&f=sl1d1t1&s='. $from . $to .'=X';
+        $handle = @fopen($url, 'r');
+        if ($handle) {
+        $result = fgets($handle, 4096);
+        fclose($handle);
+        }
+        if(!empty($result))
+        {
+        $allData = explode(',',$result); /* Get all the contents to an array *
+        $dollarValue = $allData[1];
+        $converted_amt = $dollarValue * $amt;
+        return $converted_amt;
+        }
+        else
+        {
+        Message::error(__('currency_converstion_not_applicable'));
+        $location = URL_BASE.'/admin/dashboard';
+        header("Location: $location");
+        }
+        }
+        else
+        {
+        return $amt;
+        }*/
+    }
+    catch (Kohana_Exception $e) {
+        Message::error(__('currency_converstion_not_applicable'));
+        $location = URL_BASE . '/admin/dashboard';
+        header("Location: $location");
+    }
+}
+// FUNCTION FOR CURRENCY CONVERSION to USD
+function currency_conversion_usd($company_currency, $amt)
+{
+    try {
+        return $amt;
+        /*$from   = $company_currency; /*change it to your required currencies *
+        $to     = 'USD';
+        if($from != $to)
+        {
+        $url = 'http://finance.yahoo.com/d/quotes.csv?e=.csv&f=sl1d1t1&s='. $from . $to .'=X';
+        $handle = @fopen($url, 'r');
+        if ($handle) {
+        $result = fgets($handle, 4096);
+        fclose($handle);
+        }
+        if(!empty($result))
+        {
+        $allData = explode(',',$result); /* Get all the contents to an array *
+        $dollarValue = $allData[1];
+        $converted_amt = $dollarValue * $amt;
+        return $converted_amt;
+        }
+        else
+        {
+        $converted_amt = SAR_EQUAL_USD * $amt;
+        return $converted_amt;
+        }
+        }
+        else
+        {
+        return $amt;
+        }*/
+    }
+    catch (Kohana_Exception $e) {
+        $converted_amt = SAR_EQUAL_USD * $amt;
+        return $converted_amt;
+    }
+}
+//ENCRIPTION AND DECRIPTION FUNCTION
+function encrypt_decrypt($action, $string)
+{
+    $output = false;
+    $key    = 'Taxi Application';
+    // initialization vector 
+    $iv     = md5(md5($key));
+    if ($action == 'encrypt') {
+        //$output = mcrypt_encrypt(MCRYPT_RIJNDAEL_256, md5($key), $string, MCRYPT_MODE_CBC, $iv);
+        $output = base64_encode(ENCRYPT_KEY . $string);
+    } else if ($action == 'decrypt') {
+        //$output = mcrypt_decrypt(MCRYPT_RIJNDAEL_256, md5($key), base64_decode($string), MCRYPT_MODE_CBC, $iv);
+        //$output = rtrim($output, "");
+        $decrypt_val = base64_decode($string);
+        $split       = explode('_', $decrypt_val);
+        if (count($split) > 1) {
+            $output = trim($split[1]);
+        } else {
+            $output = "";
+        }
+    }
+    return $output;
+}
+// Repeat X function
+function repeatx($data, $repeatstring, $repeatcount)
+{
+    if ($data != "") {
+        if ($repeatcount == 'All') {
+            return str_repeat($repeatstring, (strlen($data)));
+        } else {
+            return str_repeat($repeatstring, (strlen($data) - $repeatcount)) . substr($data, -$repeatcount, $repeatcount);
+        }
+    } else {
+        return 0;
+    }
+}
+// Get tell to friend referral code
+function get_tell_to_friend_referral_code($userid)
+{
+    //MongoDB
+    $mongodb        = MangoDB::instance('default');
+    $result = $mongodb->find_one(MDB_PASSENGERS,array('_id'=>(int)$userid),array('referral_code'));
+    return (!empty($result))?$result['referral_code']:'';
+}
+define("SENDGRID_HOST", 'smtp.sendgrid.net');
+define("SENDGRID_PORT", '25');
+define("SENDGRID_USERNAME", 'Taxindot9');
+define("SENDGRID_PASSWORD", 'taxisendto&6!');
+/*** Language setting for mobile application*****/
+$lang = (isset($_GET)) ? (Arr::get($_GET, 'lang')) : 'en';
+if ($lang == '') {
+    $lang = 'en';
+}
+define("LANG", $lang);
+/***********************************************/
+define("SUPERADMIN_EMAIL", "superadmin@taximobility.com");
+define('UNIT', DEFAULT_UNIT);
+if (UNIT == 1) {
+    define('UNIT_NAME', 'MILES');
+} else {
+    define('UNIT_NAME', 'KM');
+}
+if (COMPANY_CID != 0) {
+    define('FARE_CALCULATION_TYPE', COMPANY_FARE_CALCULATION_TYPE); //1 => Distance, 2 => Time, 3=> Distance / Time
+} else {
+    //define('SKIP_CREDIT_CARD',1); // 1 as Skip , 0 as No-Skip
+    define('FARE_CALCULATION_TYPE', SITE_FARE_CALCULATION_TYPE); //1 => Distance, 2 => Time, 3=> Distance / Time
+}
+define('SKIP_CREDIT_CARD', DEFAULT_SKIP_CREDIT_CARD); // 1 as Skip , 0 as No-Skip
+/****Tell to friend-App URL Display by PAID VERSION Start****/
+if (COMPANY_CID != 0) {
+     //$res = $mongodb->find(MDB_PACKAGE_REPORT,array('upgrade_companyid'=>(int)COMPANY_CID),array('upgrade_packageid','upgrade_companyid'))->sort(array('_id'=>-1))->limit(1);    
+    //$result = (!empty($result))?iterator_to_array($res):array();
+    //if (count($result) > 0) {
+       // $resultSet = recursive_array_search($result,'upgrade_companyid',COMPANY_CID);
+        //if ($resultSet[0]['upgrade_packageid'] == PAID_PACKAGE) { //6 as PAID PACKAGE
+           // $app               = explode('|', COMPANY_CUSTOMER_APP_URL);
+           // $android_passenger = isset($app[0]) ? $app[0] : "";
+           // $ios_passenger     = isset($app[1]) ? $app[1] : "";
+           // $android_driver    = COMPANY_DRIVER_APP_URL;
+            //define("ANDROID_PASSENGER_APP", $android_passenger);
+            //define("IOS_PASSENGER_APP", $ios_passenger);
+            //define("ANDROID_DRIVER_APP", $android_driver);
+        //} else {
+            define("ANDROID_PASSENGER_APP", COMMON_ANDROID_PASSENGER_APP);
+            define("IOS_PASSENGER_APP", COMMON_IOS_PASSENGER_APP);
+            define("ANDROID_DRIVER_APP", COMMON_ANDROID_DRIVER_APP);
+       // }
+    //}
+} else {
+    define("ANDROID_PASSENGER_APP", COMMON_ANDROID_PASSENGER_APP);
+    define("IOS_PASSENGER_APP", COMMON_IOS_PASSENGER_APP);
+    define("ANDROID_DRIVER_APP", COMMON_ANDROID_DRIVER_APP);
+}
+/**** Driver tracking DB initializing****/
+define('DRIVER_TRACK_DB', 'driver_tracking'); //Access Database 2
+//MongoDB Embedded document search value with assosciative array
+function recursive_array_search($array, $key, $value)
+{
+    $results = array();
+    if (is_array($array)) {
+        $arrval = (isset($array[$key])) ? trim(strtolower($array[$key])) : '';
+        if($value) $searchval = trim(strtolower($value));
+        //search other than department and role
+        if ( !empty($arrval) && (($arrval == $searchval) || (is_array($value) && in_array($arrval,$value))) ) {
+            $results[] = $array;
+        }
+        
+        foreach ($array as $subarray) {
+            $results = array_merge($results, recursive_array_search($subarray, $key, $value));
+        }
+    }
+    return $results;
+}
+?>

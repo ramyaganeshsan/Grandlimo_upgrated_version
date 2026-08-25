@@ -1,0 +1,196 @@
+<?php defined('SYSPATH') OR die("No direct access allowed."); ?>
+<div class="container_content fl clr">
+    <div class="cont_container mt15 mt10">
+       <div class="content_middle"> 
+         <form name="editcity_form" class="form" id="editcity_form" action="" method="post" enctype="multipart/form-data">
+	<table border="0" cellpadding="5" cellspacing="0" width="100%">                             
+ <?php /*
+	<tr>
+	<td valign="top" width="20%"><label><?php echo __('country_label'); ?></label><span class="star">*</span></td>        
+	<td>
+	<?php $country_field =  isset($city_details['city_countryid']) &&!array_key_exists('country_name',$postvalue)? trim($city_details['city_countryid']):$postvalue['country_name']; ?>
+
+	<div class="formRight">
+	<div class="selector" id="uniform-user_type">
+	<span><?php echo __('select_label'); ?></span>
+              <select name="country_name" id="country_name">
+              <?php foreach($country_details as $key => $listings) { ?>
+              <option value="<?php echo $listings['_id']; ?>" <?php if($country_field == $listings['_id'] ) {  echo 'selected=selected'; } ?> ><?php echo ucfirst($listings['country_name']); ?></option>
+              <?php } ?>
+              </select>
+              </div>
+              </div>
+               <?php if(isset($errors) && array_key_exists('coutry_name',$errors)){ echo "<span class='error'>".ucfirst($errors['country_name'])."</span>";}?>
+		 <input type="hidden" name="city_countryid" value="<?php echo $country_field; ?>" >
+	</td>   	
+	</tr>
+	<tr>
+	<?php $state_field =  isset($city_details['city_stateid']) &&!array_key_exists('state_name',$postvalue)? trim($city_details['city_stateid']):$postvalue['state_name']; ?>
+	<td valign="top" width="20%"><label><?php echo __('state_label'); ?></label><span class="star">*</span></td>
+	<td>
+	<div class="formRight">
+	<div class="selector" id="uniform-user_type">
+	<span><?php echo __('select_label'); ?></span>
+	<div id="state_list">
+		<select name="state_name" id="state_name" >
+		<option value="">--Select--</option>
+		<?php
+		foreach($state_details as $state_list) {  ?>
+		<option value="<?php echo $state_list['state_id']; ?>" <?php if($state_field == $state_list['state_id']) { echo 'selected=selected'; } ?> ><?php echo ucfirst($state_list["state_name"]); ?></option>
+		<?php	} ?>
+		</select>
+	</div>	
+		</div></div>
+              <?php if(isset($errors) && array_key_exists('state_name',$errors)){ echo "<span class='error'>".ucfirst($errors['state_name'])."</span>"; }?>
+	<input  type="hidden" value="<?php echo $state_field; ?>"  name="state_id"  id="state_id">         
+        </td>     
+         
+	</tr>
+	
+		*/?>
+	<tr> 
+	<td valign="top" width="20%"><label><?php echo __('city_label'); ?></label><span class="star">*</span></td>        
+	<td>
+	<div class="new_input_field">
+              <input type="text"  maxlength="30" minlength="2"  title="<?php echo __('enterthecityname'); ?>" id="city_name" name="city_name" value="<?php echo isset($city_details['city_name']) &&!array_key_exists('city_name',$postvalue)? trim($city_details['city_name']):$postvalue['city_name']; ?>" />
+              <?php if(isset($errors) && array_key_exists('city_name',$errors)){ echo "<span class='error'>".ucfirst($errors['city_name'])."</span>";}?>
+	</div>
+	</td>   	
+	</tr>
+
+	<tr>
+	<td valign="top" width="20%"><label><?php echo __('zipcode'); ?></label><span class="star">*</span></td>        
+	<td>
+	<div class="new_input_field">
+              <input type="text"  maxlength="30" minlength="2"  title="<?php echo __('enterthezipcode'); ?>" id="zipcode" name="zipcode" value="<?php echo isset($city_details['zipcode']) &&!array_key_exists('zipcode',$postvalue)? trim($city_details['zipcode']):$postvalue['zipcode']; ?>" />
+              <?php if(isset($errors) && array_key_exists('zipcode',$errors)){ echo "<span class='error'>".ucfirst($errors['zipcode'])."</span>";}?>
+	</div>
+	</td>   	
+	</tr>
+
+	<?php /* <tr>
+	<td valign="top" width="20%"><label><?php echo __('city_model_fare'); ?></label><span class="star">*</span></td>        
+	<td>
+	<div class="new_input_field">
+              <input type="text"  minlength="2"  title="<?php echo __('enter_city_model_fare'); ?>" id="city_model_fare" name="city_model_fare" value="<?php echo isset($city_details['city_model_fare']) &&!array_key_exists('city_model_fare',$postvalue)? trim($city_details['city_model_fare']):$postvalue['city_model_fare']; ?>" maxlength="5" max="100"  oncopy="return false;" onpaste="return false;" oncut="return false;" onkeypress="return onlyDotsAndNumbers(this,event)" />
+              <?php if(isset($errors) && array_key_exists('city_model_fare',$errors)){ echo "<span class='error'>".ucfirst($errors['city_model_fare'])."</span>";}?>
+	</div>
+	</td>   	
+	</tr> */ ?>
+	
+	<tr>
+	<td>&nbsp;</td>
+	<td colspan="" class="star">*<?php echo __('required_label'); ?></td>
+	</tr>                         
+                    <tr>
+			<td>&nbsp;</td>
+                        <td colspan="">
+                            <br />
+                    
+                            <div class="button blackB">     <input type="button" value="<?php echo __('button_back'); ?>" onclick="window.history.go(-1)" /></div>
+                            <div class="button dredB">   <input type="reset" onclick="change_state('<?php echo isset($city_details['city_countryid']) ? $city_details['city_countryid'] : ''; ?>','<?php echo isset($city_details['city_stateid']) ? $city_details['city_stateid'] : ''; ?>');" value="<?php echo __('button_reset'); ?>" title="<?php echo __('button_reset'); ?>" /></div>
+                            <div class="button greenB">  <input type="submit" value="<?php echo __('submit' );?>" name="submit_editcity" title="<?php echo __('submit' );?>" /></div>
+                            <div class="clr">&nbsp;</div>
+                        </td>
+                    </tr> 
+
+                </table>
+
+        </form>
+        </div>
+        <div class="content_bottom"><div class="bot_left"></div><div class="bot_center"></div><div class="bot_rgt"></div></div>
+    </div>
+</div>
+
+<script type="text/javascript">
+$(document).ready(function(){
+
+ $("#country_name").focus(); 
+ 
+	toggle(11);
+
+change_state('','');	
+
+		
+	
+});
+
+    $("#country_name").change(function() {
+
+      		var countryid= $("#country_name").val();
+      		var state_id= $("#state_id").val();
+
+		  $.ajax({
+			url:"<?php echo URL_BASE;?>add/getstatelist",
+			type:"get",
+			data:"country_id="+countryid+"&state_id="+state_id,
+			success:function(data){
+			$('#state_list').html();
+			$('#state_list').html(data);
+			},
+			error:function(data)
+			{
+				//alert(cid);
+			}
+		});	
+    });
+
+function change_state(country_id, stateid)
+{
+	
+	var countryid= $("#country_name").val();
+	var state_id= $("#state_id").val();
+	if(country_id != '' && stateid != '') {
+			countryid = country_id;
+			state_id= stateid;
+		}
+
+	  $.ajax({
+		url:"<?php echo URL_BASE;?>add/getstatelist",
+		type:"get",
+		data:"country_id="+countryid+"&state_id="+state_id,
+		success:function(data){
+		$('#state_list').html();
+		$('#state_list').html(data);
+		},
+		error:function(data)
+		{
+			//alert(cid);
+		}
+	});	
+    
+}
+
+function onlyDotsAndNumbers(txt, event) {
+    var charCode = (event.which) ? event.which : event.keyCode   
+
+	if(txt.value.length == 0) {
+		if (charCode == 46) {
+			if (txt.value.indexOf(".") < -1)
+			    return true;
+			else
+			    return false;
+		}
+
+	}
+
+    if (charCode == 46) {
+        if (txt.value.indexOf(".") < 0)
+            return true;
+        else
+            return false;
+    }
+	
+    if (txt.value.indexOf(".") > 0) {
+        var txtlen = txt.value.length;
+        var dotpos = txt.value.indexOf(".");
+        if ((txtlen - dotpos) > 2)
+            return false;
+    }
+
+    if (charCode > 31 && (charCode < 48 || charCode > 57))
+        return false;
+
+    return true;
+}    
+</script>

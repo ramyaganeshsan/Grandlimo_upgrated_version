@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@100..900&display=swap"
+      rel="stylesheet"
+    />
+    <title>Grandlimo</title>
+
+    <style>
+      * {
+        font-family: "Geist Mono", monospace;
+      }
+    </style>
+
+    <script>
+      const handleFormSubmit = () => {
+        let title = document.getElementById("title");
+        let description = document.getElementById("description");
+        let type = document.getElementById("type");
+
+        let titleError = document.getElementById("title_error");
+        let descriptionError = document.getElementById("description_error");
+        let typeError = document.getElementById("type_error");
+
+        if (
+          !title ||
+          !description ||
+          !type ||
+          !titleError ||
+          !descriptionError ||
+          !typeError
+        ) {
+          window.location.reload();
+        }
+
+        titleError.innerHTML = "Ex : Grandlimo.";
+        titleError.style.color = "black";
+
+        descriptionError.innerHTML = "Ex : What do you want to notifiy?";
+        descriptionError.style.color = "black";
+
+        typeError.innerHTML =
+          "Ex : Who do you want to send ( IOS or Android )?";
+        typeError.style.color = "black";
+
+        title = title.value;
+        description = description.value;
+        type = type.value;
+
+        let isVaild = true;
+
+        if (!title) {
+          titleError.innerHTML = "Title should not be empty.";
+          titleError.style.color = "red";
+          isVaild = false;
+        } else if (title.length <= 4) {
+          titleError.innerHTML = "Title should be greater then 4 charecters.";
+          titleError.style.color = "red";
+          isVaild = false;
+        } else if (title.length >= 100) {
+          titleError.innerHTML = "Title should be less then 100 charecters.";
+          titleError.style.color = "red";
+          isVaild = false;
+        }
+
+        if (!description) {
+          descriptionError.innerHTML = "Description should not be empty.";
+          descriptionError.style.color = "red";
+          isVaild = false;
+        } else if (description.length <= 4) {
+          descriptionError.innerHTML =
+            "Description should be greater then 4 charecters.";
+          descriptionError.style.color = "red";
+          isVaild = false;
+        } else if (description.length >= 250) {
+          descriptionError.innerHTML =
+            "Description should be less then 250 charecters.";
+          descriptionError.style.color = "red";
+          isVaild = false;
+        }
+
+        if (!type) {
+          typeError.innerHTML = "Type should not be empty.";
+          typeError.style.color = "red";
+          isVaild = false;
+        } else if (type !== "all" && type !== "android" && type !== "ios") {
+          typeError.innerHTML = "Invalid type.";
+          typeError.style.color = "red";
+          isVaild = false;
+        }
+
+        if (isVaild) {
+          openModal();
+        }
+      };
+
+      const validatePassKey = async () => {
+        let title = document.getElementById("title");
+        let description = document.getElementById("description");
+        let type = document.getElementById("type");
+
+        if (!title || !description || !type || !axios) {
+          window.location.reload();
+        }
+
+        title = title.value;
+        description = description.value;
+        type = type.value;
+
+        // Make ajax call
+        let passkey = document.getElementById("passkey");
+        let passkeyError = document.getElementById("passkey_error");
+
+        if (!passkey || !passkeyError) {
+          window.location.reload();
+          return;
+        }
+
+        passkeyError.innerHTML = "Ex : Enter your passkey?";
+        passkeyError.style.color = "black";
+        if (!passkey.value) {
+          passkeyError.innerHTML = "Passkey should not be empty.";
+          passkeyError.style.color = "red";
+          return;
+        }
+
+        let button = document.getElementById("send_notification_button");
+        button.disabled = true;
+        // Axios call
+        try {
+          let response = await axios.post(
+            "/notifications/handleSendPushNotification",
+            {
+              title,
+              description,
+              type,
+              passkey: passkey.value,
+            }
+          );
+
+          if (response && response.data) {
+            let data = response.data;
+            let message = data.message;
+
+            if (data.status) {
+              closeModal();
+              alert(message);
+              window.location.href = data.url;
+            } else {
+              alert(message);
+            }
+          } else {
+            console.error(response);
+            alert("Something went wrong. please try again later.");
+          }
+
+          console.log(response.data);
+        } catch (err) {
+          console.error(err);
+          alert("Something went wrong. please try again later.");
+        }
+        button.disabled = false;
+      };
+
+      function openModal() {
+        document.getElementById("myModal").style.display = "flex";
+      }
+
+      function closeModal() {
+        document.getElementById("myModal").style.display = "none";
+      }
+
+      window.onclick = function (event) {
+        const modal = document.getElementById("myModal");
+        if (event.target === modal) {
+          modal.style.display = "none";
+        }
+      };
+    </script>
+  </head>
+  <body>
+    <header class="px-4 py-4 border-b border-gray-300">Grandlimo</header>
+
+    <div
+      id="myModal"
+      tabindex="-1"
+      aria-hidden="true"
+      style="background: rgba(0, 0, 0, 0.4); height: 100dvh"
+      class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full"
+    >
+      <div class="relative p-4 w-full max-w-2xl max-h-full">
+        <div class="relative bg-white rounded-lg shadow-sm">
+          <div
+            class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600 border-gray-200"
+          >
+            <h3 class="font-semibold">Authentication required</h3>
+            <button
+              type="button"
+              onclick="closeModal()"
+              class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"
+              data-modal-hide="default-modal"
+            >
+              <svg
+                class="w-3 h-3"
+                aria-hidden="true"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 14 14"
+              >
+                <path
+                  stroke="currentColor"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"
+                />
+              </svg>
+              <span class="sr-only">Close modal</span>
+            </button>
+          </div>
+
+          <div class="px-6 my-4 flex flex-col gap-2 flex-1 min-w-[250px]">
+            <label class="text-sm font-semibold tracking-wider"
+              >Your passkey</label
+            >
+            <input
+              class="border px-2 py-[12px] rounded-sm text-sm outline-none border-gray-400"
+              name="passkey"
+              id="passkey"
+              type="password"
+              placeholder="Your passkey"
+              required
+            />
+            <label id="passkey_error" class="text-xs font-semibold"
+              >Ex : Enter your passkey?</label
+            >
+          </div>
+
+          <div
+            class="w-full flex items-center p-4 md:p-5 border-t border-gray-200 rounded-b dark:border-gray-600"
+          >
+            <button
+              onclick="validatePassKey()"
+              data-modal-hide="default-modal"
+              type="button"
+              id="send_notification_button"
+              class="cursor-pointer uppercase tracking-[3px] font-semibold border-none outline-none py-3 rounded-sm text-sm w-[100%] bg-black text-white"
+            >
+              Send notification
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <main class="px-8">
+      <div class="mt-4 px-6 py-6 bg-gray-300 rounded-lg">
+        Send promotional push notification.
+      </div>
+
+      <form id="notification_form" class="flex flex-wrap gap-4 mt-8 w-full">
+        <!-- Title Field -->
+        <div class="flex flex-col gap-2 flex-1 min-w-[250px]">
+          <label class="text-sm font-semibold tracking-wider"
+            >Notification title</label
+          >
+          <input
+            class="border px-2 py-[12px] rounded-sm text-sm outline-none border-gray-400"
+            name="title"
+            placeholder="Notification title"
+            value="Grandlimo"
+            required
+            id="title"
+          />
+          <label id="title_error" class="text-xs font-semibold"
+            >Ex : Grandlimo.</label
+          >
+        </div>
+
+        <!-- Description Field -->
+        <div class="flex flex-col gap-2 flex-1 min-w-[250px]">
+          <label class="text-sm font-semibold tracking-wider"
+            >Notification description</label
+          >
+          <textarea
+            rows="1"
+            class="border px-2 py-[12px] rounded-sm text-sm outline-none border-gray-400 resize-none"
+            name="description"
+            placeholder="Notification description"
+            required
+            id="description"
+          >
+Description</textarea
+          >
+          <label id="description_error" class="text-xs font-semibold"
+            >Ex : What do you want to notifiy?</label
+          >
+        </div>
+
+        <!-- Who do you want to send -->
+        <div class="flex flex-col gap-2 flex-1 min-w-[250px]">
+          <label class="text-sm font-semibold tracking-wider"
+            >Who do you want to send?</label
+          >
+          <select
+            name="type"
+            required
+            id="type"
+            class="border px-2 py-3 rounded-sm text-sm outline-none border-gray-400 resize-none"
+          >
+            <option selected value="all">All</option>
+            <option value="android">Android</option>
+            <option value="ios">IOS (Apple)</option>
+          </select>
+          <label id="type_error" class="text-xs font-semibold"
+            >Ex : Who do you want to send ( IOS or Android )?</label
+          >
+        </div>
+      </form>
+
+      <div class="mt-8 w-[100%]">
+        <button
+          onclick="handleFormSubmit()"
+          class="cursor-pointer uppercase tracking-[3px] font-semibold border-none outline-none py-3 rounded-sm text-sm w-[100%] bg-black text-white"
+          type="submit"
+        >
+          Send notification
+        </button>
+      </div>
+    </main>
+  </body>
+</html>
