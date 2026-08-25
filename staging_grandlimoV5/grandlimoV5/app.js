@@ -106,20 +106,20 @@ if (dbconfig.db_uname != "" && dbconfig.db_pwd != "") {
   var url = "mongodb://" + dbconfig.host + ":" + dbconfig.port;
 }
 
-db.connect(url, dbconfig.db, function (err) {
-  if (err) {
-    console.log("Unable to connect to Mongo.");
+(async function connectMongo() {
+  try {
+    await db.connect(url, dbconfig.db);
+    const siteinforesults = await apimodel.SiteSettings(q);
+    if (siteinforesults && siteinforesults.length > 0) {
+      global.settings = siteinforesults[0];
+    } else {
+      global.settings = {};
+    }
+  } catch (err) {
+    console.error("Unable to connect to Mongo.", err);
     process.exit(1);
-  } else {
-    apimodel.SiteSettings(q).then(function (siteinforesults) {
-      if (siteinforesults.length > 0) {
-        global.settings = siteinforesults[0];
-      } else {
-        global.settings = {};
-      }
-    });
   }
-});
+})();
 
 app.get("/access", function (req, res) {
   try {

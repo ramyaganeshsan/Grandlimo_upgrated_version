@@ -211,7 +211,7 @@ exports.insertErrorLog = async (logDetails) => {
 
 exports.isTransactionAlreadyCompleted = async (orderReferenceNumber) => {
   var collection = db.get().collection("passengers_wallet_log");
-  let response = await collection.count({
+  let response = await collection.countDocuments({
     paid_status: 1,
     orderReferenceNumber: orderReferenceNumber,
   });
