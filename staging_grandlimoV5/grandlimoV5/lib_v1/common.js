@@ -1825,7 +1825,7 @@ exports.generate_static_maps = function (q, trip_id) {
           };
           //gmAPI.staticMap(params); // return static map URL
           gmAPI.staticMap(params, function (err, binaryImage) {
-            var buf = new Buffer(binaryImage, "binary");
+            var buf = Buffer.from(binaryImage, "binary");
             fs.writeFile(
               docroot + "/public/uploads/static_maps/" + trip_id + ".png",
               buf,

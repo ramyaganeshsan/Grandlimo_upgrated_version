@@ -15,8 +15,7 @@ var uniqid = require('uniqid');
 var randomstring = require('randomstring');
 var dateformatter = require('date-format-php');
 var urlencode = require('urlencode');
-const Entities = require('html-entities').AllHtmlEntities;
-const entities = new Entities();
+const { encode } = require('html-entities');
 
 
 
@@ -72,7 +71,7 @@ exports.dynamic_page= function(q,req){
     		{
     			if(device_type == 2)
     			{
-    				details.content  = entities.encode(cmsresults[0].content);
+    				details.content  = encode(cmsresults[0].content);
     			}
     			else
     			{

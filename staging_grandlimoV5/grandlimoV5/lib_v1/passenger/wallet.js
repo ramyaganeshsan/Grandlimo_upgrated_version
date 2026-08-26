@@ -2063,7 +2063,7 @@ exports.wallet_card_list = function (q, req) {
         if (card_details.length > 0) {
           var i = 0;
           card_details.forEach(function (element) {
-            let buff = new Buffer(element.creditcard_no, "base64");
+            let buff = Buffer.from(element.creditcard_no, "base64");
             let card_no = buff.toString("ascii");
             if (element.default_card == 1) {
               default_carddetails.push({

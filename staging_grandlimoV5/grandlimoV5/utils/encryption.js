@@ -1,7 +1,7 @@
 var CryptoJS = require("crypto-js");
-var JWT = require("jsonwebtoken");
+var jsonwebtoken = require("jsonwebtoken");
 var { JWT } = require("google-auth-library");
-var request = require("request");
+var axios = require("axios");
 var serviceAccount = require("./grandlimopassenger-firebase-adminsdk-omr13-ac3adbf040.json");
 var apn = require("apn");
 const path = require("path");
@@ -22,7 +22,7 @@ exports.encrypt = (obj) => {
 };
 exports.generateToken = async (value) => {
   try {
-    var token = await JWT.sign(value, tokenScrectKey);
+    var token = await jsonwebtoken.sign(value, tokenScrectKey);
     return token;
   } catch (err) {
     return null;
@@ -40,7 +40,7 @@ const decrypt = (key) => {
 };
 const validateToken = async (token) => {
   try {
-    let decoded = await JWT.verify(token, tokenScrectKey);
+    let decoded = await jsonwebtoken.verify(token, tokenScrectKey);
     return decoded;
   } catch (err) {
     return null;
@@ -133,25 +133,19 @@ exports.tokenValidatoinMiddleware = async (req, res, next) => {
   next();
 };
 // ramya jan 28 2026 updated push notification code for ios and andriod
-function getFirebaseAccessToken() {
-  const jwtClient = new JWT(
-    serviceAccount.client_email,
-    null,
-    serviceAccount.private_key,
-    ["https://www.googleapis.com/auth/firebase.messaging"],
-    null
-  );
-
-  return new Promise((resolve, reject) => {
-    jwtClient.authorize((err, tokens) => {
-      if (err) return reject(err);
-      resolve(tokens.access_token);
-    });
+async function getFirebaseAccessToken() {
+  const jwtClient = new JWT({
+    email: serviceAccount.client_email,
+    key: serviceAccount.private_key,
+    scopes: ["https://www.googleapis.com/auth/firebase.messaging"],
   });
+  const tokens = await jwtClient.authorize();
+  return tokens.access_token;
 }
 
 exports.sendAndroidPush = async (deviceToken, pushmessage, title) => {
-  return getFirebaseAccessToken().then((accessToken) => {
+  try {
+    const accessToken = await getFirebaseAccessToken();
     const payload = {
       message: {
         token: deviceToken,
@@ -170,21 +164,22 @@ exports.sendAndroidPush = async (deviceToken, pushmessage, title) => {
       },
     };
 
-    const options = {
-      url: "https://fcm.googleapis.com/v1/projects/grandlimopassenger/messages:send",
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-        "Content-Type": "application/json",
-      },
-      json: payload,
-    };
-
-    request(options, (err, res, body) => {
-      if (err) console.error(err);
-      console.log("FCM RESPONSE:", body);
-    });
-  });
+    const response = await axios.post(
+      "https://fcm.googleapis.com/v1/projects/grandlimopassenger/messages:send",
+      payload,
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    console.log("FCM RESPONSE:", response.data);
+    return response.data;
+  } catch (err) {
+    console.error(err);
+    throw err;
+  }
 };
 
 const apnProvider = new apn.Provider({

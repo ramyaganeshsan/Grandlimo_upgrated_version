@@ -89,7 +89,7 @@ exports.get_card_list= function(q,req){
 
 					var i = 0;
 					cards_results[0].creditcard_details.forEach(function(element) {
-						let buff = new Buffer(element.creditcard_no, 'base64');
+						let buff = Buffer.from(element.creditcard_no, 'base64');
 						let card_no = buff.toString('ascii');
 						details[i].plain_creditcard_no = cc_format(card_no);
 						details[i].creditcard_cvv = "xxx";
@@ -174,7 +174,7 @@ exports.view_card= function(q,req){
 
 					var i = 0;
 					cards_results.forEach(function(element) {
-						let buff = new Buffer(element.creditcard_no, 'base64');
+						let buff = Buffer.from(element.creditcard_no, 'base64');
 						let card_no = buff.toString('ascii');
 						details[i].plain_creditcard_no = cc_format(card_no);
 						details[i].creditcard_cvv = "xxx";

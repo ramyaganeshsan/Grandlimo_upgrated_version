@@ -199,7 +199,7 @@ exports.edit_driver_profile= function(q,req){
 							profile_picture = profile_picture.replace(/^data:image\/jpg;base64,/, "");
 
 							profile_picture  +=  profile_picture.replace('+', ' ');
-							var binaryData  =   new Buffer(profile_picture, 'base64').toString('binary');
+							var binaryData  =   Buffer.from(profile_picture, 'base64').toString('binary');
 
 						fs.writeFile(upload_path+image_name, binaryData, 'binary', function(err) {
 

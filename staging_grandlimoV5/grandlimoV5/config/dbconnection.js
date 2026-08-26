@@ -1,5 +1,6 @@
 const { MongoClient } = require("mongodb");
 const { wrapDb } = require("./mongoCollection");
+const { MONGO_CLIENT_OPTIONS } = require("./mongoUrl");
 
 const state = {
   client: null,
@@ -17,7 +18,7 @@ async function connectAsync(url, dbName) {
     throw new Error("MongoDB database name is required");
   }
 
-  const client = new MongoClient(url);
+  const client = new MongoClient(url, MONGO_CLIENT_OPTIONS);
   await client.connect();
   state.client = client;
   state.db = wrapDb(client.db(dbName), client);
