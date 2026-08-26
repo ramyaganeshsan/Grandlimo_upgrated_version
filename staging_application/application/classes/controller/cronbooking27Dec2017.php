@@ -53,9 +53,9 @@ Search the driver based on current update of the every driver **/
 		$cronbooking_model = Model::factory('cronbooking');
 		$records = $cronbooking_model->get_lateral_booking();
 		
-		$array = array();
-		$result = array();
-		$transaction_id = array();
+		$array = [];
+		$result = [];
+		$transaction_id = [];
 		foreach($records as $key=>$val) {
 			foreach($val['details'] as $detail) {
 				$transaction_id[] = $detail['transaction_id'];
@@ -82,7 +82,7 @@ Search the driver based on current update of the every driver **/
 					$message         = str_replace("##NAME##", $res['passenger_name'], $message);
 					$result 		 = $api->sendSMS($to, $message);					
 				}
-				$replace_variables = array(
+				$replace_variables = [
 					REPLACE_LOGO => URL_BASE . PUBLIC_FOLDER_IMGPATH . '/logo.png',
 					REPLACE_SITENAME => $this->app_name,
 					REPLACE_USERNAME => '',
@@ -93,7 +93,7 @@ Search the driver based on current update of the every driver **/
 					REPLACE_PAY => CURRENCY.$res['tripfare'],
 					REPLACE_COPYRIGHTS => SITE_COPYRIGHT,
 					REPLACE_COPYRIGHTYEAR => COPYRIGHT_YEAR
-				);
+				];
 				if ($this->lang != 'en') {
 					if (file_exists(DOCROOT . TEMPLATEPATH . $this->lang . '/lateral-' . $this->lang . '.html')) {
 						$message = $this->emailtemplate->emailtemplate(DOCROOT . TEMPLATEPATH . $this->lang . '/lateral-' . $this->lang . '.html', $replace_variables);
@@ -196,7 +196,7 @@ Search the driver based on current update of the every driver **/
 					$message         = str_replace("##NAME##", $name, $message);
 					$result 		 = $api->sendSMS($to, $message);					
 				}
-				$replace_variables = array(
+				$replace_variables = [
 					REPLACE_LOGO => URL_BASE . PUBLIC_FOLDER_IMGPATH . '/logo.png',
 					REPLACE_SITENAME => $this->app_name,
 					REPLACE_USERNAME => '',
@@ -208,7 +208,7 @@ Search the driver based on current update of the every driver **/
 					REPLACE_EXPIRY_DATE =>  $email_date,
 					REPLACE_COPYRIGHTS => SITE_COPYRIGHT,
 					REPLACE_COPYRIGHTYEAR => COPYRIGHT_YEAR
-				);
+				];
 				if ($this->lang != 'en') {
 					if (file_exists(DOCROOT . TEMPLATEPATH . $this->lang . '/expiry_date_notification-' . $this->lang . '.html')) {
 						$message = $this->emailtemplate->emailtemplate(DOCROOT . TEMPLATEPATH . $this->lang . '/expiry_date_notification-' . $this->lang . '.html', $replace_variables);
@@ -241,7 +241,7 @@ Search the driver based on current update of the every driver **/
 	public function action_service_notification() {
 		$getServiceList = $this->cronbooking_model->getTaxiService();
 		foreach($getServiceList as $key => $list) {
-			$replace_variables = array(
+			$replace_variables = [
 				REPLACE_LOGO => URL_BASE . PUBLIC_FOLDER_IMGPATH . '/logo.png',
 				REPLACE_SITENAME => $this->app_name,
 				REPLACE_SITELINK => URL_BASE . 'users/contactinfo/',
@@ -252,7 +252,7 @@ Search the driver based on current update of the every driver **/
 				REPLACE_TAXINO =>  $list['taxi_no'],
 				REPLACE_COPYRIGHTS => SITE_COPYRIGHT,
 				REPLACE_COPYRIGHTYEAR => COPYRIGHT_YEAR
-			);
+			];
 
 			if ($this->lang != 'en') {
 				if (file_exists(DOCROOT . TEMPLATEPATH . $this->lang . '/limousine_service-' . $this->lang . '.html')) {

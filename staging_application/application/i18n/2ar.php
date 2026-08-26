@@ -1,6 +1,6 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 
-return array(
+return [
 '(or)' => '(او)',
 ':size msg' => 'وحجم الصورة لن تكون أكبر من 2M',
 ':type msg' => 'نوع الصورة يكون  .jpg, .gif, .png',
@@ -2525,4 +2525,4 @@ provided by its licensed drivers who undergo rigorous training and screening to 
 'banner_slider'=>'بانر المنزلق',
 'slider'=>'المنزلق',
 'confirmation'=>'لتأكيد الطلب'
-); 
+]; 

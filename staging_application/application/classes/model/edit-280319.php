@@ -25,46 +25,46 @@ Class Model_Edit extends Model
     /**Validating for Add company**/
     public function validate_editcompany($arr, $uid)
     {
-        $validation = Validation::factory($arr)->rule('email', 'not_empty')->rule('email', 'email')->rule('email', 'max_length', array(
+        $validation = Validation::factory($arr)->rule('email', 'not_empty')->rule('email', 'email')->rule('email', 'max_length', [
             ':value',
             '50'
-        ))->rule('email', 'Model_Edit::checkemail', array(
+        ])->rule('email', 'Model_Edit::checkemail', [
             ':value',
             $uid
-        ))->rule('firstname', 'not_empty')
+        ])->rule('firstname', 'not_empty')
         //->rule('firstname', 'alpha_dash')
-            ->rule('firstname', 'min_length', array(
+            ->rule('firstname', 'min_length', [
             ':value',
             '4'
-        ))->rule('firstname', 'max_length', array(
+        ])->rule('firstname', 'max_length', [
             ':value',
             '30'
-        ))->rule('lastname', 'not_empty')
+        ])->rule('lastname', 'not_empty')
         //->rule('lastname', 'alpha_dash')
         //->rule('lastname', 'min_length', array(':value', '4'))            
         //->rule('lastname', 'max_length', array(':value', '30'))
             ->rule('phone', 'not_empty')
         //->rule('phone', 'numeric')
-            ->rule('phone', 'min_length', array(
+            ->rule('phone', 'min_length', [
             ':value',
             '7'
-        ))->rule('phone', 'max_length', array(
+        ])->rule('phone', 'max_length', [
             ':value',
             '20'
-        ))
+        ])
         //->rule('phone', 'phone', array(':value'))
-            ->rule('phone', 'contact_phone', array(
+            ->rule('phone', 'contact_phone', [
             ':value'
-        ))->rule('phone', 'Model_Edit::checkphone', array(
+        ])->rule('phone', 'Model_Edit::checkphone', [
             ':value',
             $uid
-        ))->rule('company_name', 'not_empty')->rule('company_name', 'min_length', array(
+        ])->rule('company_name', 'not_empty')->rule('company_name', 'min_length', [
             ':value',
             '4'
-        ))->rule('company_name', 'max_length', array(
+        ])->rule('company_name', 'max_length', [
             ':value',
             '30'
-        ))
+        ])
         //->rule('company_name', 'Model_Edit::checkcompany', array(':value',$arr['country'],$arr['state'],$arr['city'],$uid))            
         //->rule('paypal_api_username','not_empty')            
         //->rule('paypal_api_password','not_empty')            
@@ -77,10 +77,10 @@ Class Model_Edit extends Model
 			->rule('company_address', 'not_empty')
 			->rule('currency_code', 'not_empty')
 			->rule('currency_symbol', 'not_empty')
-			->rule('currency_symbol', 'Model_Edit::checksite_currency', array(
+			->rule('currency_symbol', 'Model_Edit::checksite_currency', [
             ':value',
             $arr['currency_code']
-        ))->rule('time_zone', 'not_empty');
+        ])->rule('time_zone', 'not_empty');
         if ($this->user_admin_type == 'A') {
             $validation->rule('paymodstatus', 'not_empty');
         }
@@ -91,125 +91,125 @@ Class Model_Edit extends Model
     {
         return Validation::factory($arr)->rule('companyname', 'not_empty')
         //->rule('companyname', 'alpha_dash')
-            ->rule('companyname', 'min_length', array(
+            ->rule('companyname', 'min_length', [
             ':value',
             '2'
-        ))->rule('companyname', 'max_length', array(
+        ])->rule('companyname', 'max_length', [
             ':value',
             '30'
-        ))->rule('companyname', 'Model_Edit::checkmotor', array(
+        ])->rule('companyname', 'Model_Edit::checkmotor', [
             ':value',
             $uid
-        ));
+        ]);
     }
     /**Validating for Add company**/
     public function validate_editdriver($arr, $uid)
     {
         return Validation::factory($arr)->rule('firstname', 'not_empty')
         //->rule('username', 'alpha_dash')
-            ->rule('firstname', 'min_length', array(
+            ->rule('firstname', 'min_length', [
             ':value',
             '4'
-        ))->rule('firstname', 'max_length', array(
+        ])->rule('firstname', 'max_length', [
             ':value',
             '30'
-        ))->rule('lastname', 'not_empty')
+        ])->rule('lastname', 'not_empty')
         //->rule('username', 'alpha_dash')            
         //->rule('lastname', 'min_length', array(':value', '4'))            
         //->rule('lastname', 'max_length', array(':value', '30'))
             ->rule('dob', 'not_empty')->rule('phone', 'not_empty')
         //->rule('phone','Model_Add::check_valid_phone_number',array(':value','/^[0-9()-+]*$/u'))            
         //->rule('phone', 'alpha_numeric')			
-            ->rule('phone', 'min_length', array(
+            ->rule('phone', 'min_length', [
             ':value',
             '7'
-        ))->rule('phone', 'max_length', array(
+        ])->rule('phone', 'max_length', [
             ':value',
             '20'
-        ))
+        ])
         //->rule('phone', 'phone', array(':value'))
-            ->rule('phone', 'contact_phone', array(
+            ->rule('phone', 'contact_phone', [
             ':value'
-        ))
+        ])
         // Client Request
         //->rule('phone', 'Model_Edit::checkphone', array(
             //':value',
             //$uid
         //))
         // Client Request
-        ->rule('email', 'not_empty')->rule('email', 'email')->rule('email', 'max_length', array(
+        ->rule('email', 'not_empty')->rule('email', 'email')->rule('email', 'max_length', [
             ':value',
             '50'
-        ))->rule('email', 'Model_Edit::checkemail', array(
+        ])->rule('email', 'Model_Edit::checkemail', [
             ':value',
             $uid
-        ))->rule('password', 'not_empty')->rule('password', 'min_length', array(
+        ])->rule('password', 'not_empty')->rule('password', 'min_length', [
             ':value',
             '6'
-        ))->rule('password', 'max_length', array(
+        ])->rule('password', 'max_length', [
             ':value',
             '20'
-        ))->rule('password', 'valid_password', array(
+        ])->rule('password', 'valid_password', [
             ':value',
             '/^[A-Za-z0-9@#$%!^&*(){}?-_<>=+|~`\'".,:;[]+]*$/u'
-        ))->rule('repassword', 'not_empty')->rule('repassword', 'min_length', array(
+        ])->rule('repassword', 'not_empty')->rule('repassword', 'min_length', [
             ':value',
             '6'
-        ))->rule('repassword', 'max_length', array(
+        ])->rule('repassword', 'max_length', [
             ':value',
             '20'
-        ))->rule('repassword', 'valid_password', array(
+        ])->rule('repassword', 'valid_password', [
             ':value',
             '/^[A-Za-z0-9@#$%!^&*(){}?-_<>=+|~`\'".,:;[]+]*$/u'
-        ))->rule('repassword', 'matches', array(
+        ])->rule('repassword', 'matches', [
             ':validation',
             'password',
             'repassword'
-        ))->rule('driver_license_id', 'not_empty')->rule('driver_license_id', 'max_length', array(
+        ])->rule('driver_license_id', 'not_empty')->rule('driver_license_id', 'max_length', [
             ':value',
             '30'
-        ))->rule('driver_license_id', 'Model_Edit::checklicenceId', array(
+        ])->rule('driver_license_id', 'Model_Edit::checklicenceId', [
             ':value',
             $uid
-        ))->rule('driver_license_expire_date', 'not_empty')->rule('driver_pco_license_number', 'not_empty')->rule('driver_pco_license_number', 'max_length', array(
+        ])->rule('driver_license_expire_date', 'not_empty')->rule('driver_pco_license_number', 'not_empty')->rule('driver_pco_license_number', 'max_length', [
             ':value',
             '30'
-        ))->rule('driver_pco_license_number', 'Model_Edit::checkpcolicenceNo', array(
+        ])->rule('driver_pco_license_number', 'Model_Edit::checkpcolicenceNo', [
             ':value',
             $uid
-        ))->rule('driver_pco_license_expire_date', 'not_empty')->rule('driver_insurance_number', 'not_empty')->rule('driver_insurance_number', 'max_length', array(
+        ])->rule('driver_pco_license_expire_date', 'not_empty')->rule('driver_insurance_number', 'not_empty')->rule('driver_insurance_number', 'max_length', [
             ':value',
             '30'
-        ))->rule('driver_insurance_number', 'Model_Edit::checkinsuranceNo', array(
+        ])->rule('driver_insurance_number', 'Model_Edit::checkinsuranceNo', [
             ':value',
             $uid
-        ))->rule('driver_insurance_expire_date', 'not_empty')->rule('driver_national_insurance_number', 'not_empty')->rule('driver_national_insurance_number', 'max_length', array(
+        ])->rule('driver_insurance_expire_date', 'not_empty')->rule('driver_national_insurance_number', 'not_empty')->rule('driver_national_insurance_number', 'max_length', [
             ':value',
             '30'
-        ))->rule('driver_national_insurance_number', 'Model_Edit::checkNationalinsuranceNo', array(
+        ])->rule('driver_national_insurance_number', 'Model_Edit::checkNationalinsuranceNo', [
             ':value',
             $uid
-        ))->rule('driver_national_insurance_expire_date', 'not_empty')->rule('address', 'not_empty')/*->rule('country', 'not_empty')->rule('state', 'not_empty')/*->rule('company_name', 'not_empty')*/->rule('booking_limit', 'not_empty')->rule('booking_limit', 'numeric')->rule('booking_limit', 'Model_Add::check_booking_limit', array(
+        ])->rule('driver_national_insurance_expire_date', 'not_empty')->rule('address', 'not_empty')/*->rule('country', 'not_empty')->rule('state', 'not_empty')/*->rule('company_name', 'not_empty')*/->rule('booking_limit', 'not_empty')->rule('booking_limit', 'numeric')->rule('booking_limit', 'Model_Add::check_booking_limit', [
             ':value',
             $arr['booking_limit']
-        ))
+        ])
 		//->rule('city', 'not_empty')
-		->rule('profile_picture', 'Upload::type', array(
+		->rule('profile_picture', 'Upload::type', [
             ':value',
-            array(
+            [
                 'jpg',
                 'png',
                 'gif'
-            )
-        ))->rule('website_photo', 'Upload::type', array(
+            ]
+        ])->rule('website_photo', 'Upload::type', [
             ':value',
-            array(
+            [
                 'jpeg',
                 'jpg',
                 'png',
                 'gif'
-            )
-        ))->rule('facebook_account', 'url')
+            ]
+        ])->rule('facebook_account', 'url')
         ->rule('instagram_account', 'url')
         ->rule('twitter_account', 'url');
         //->rule('company_name', 'Model_Edit::checkassigneddriver',array($arr['city'],$arr['country'],$arr['state'],$arr['company_name'],$uid));
@@ -230,16 +230,16 @@ Class Model_Edit extends Model
     { 
 		$validation = Validation::factory($arr)->rule('model_name', 'not_empty')->rule('time', 'not_empty')->rule('waiting_free', 'not_empty')->rule('waiting_free', 'numeric')
         //->rule('model_name', 'alpha_dash')
-			->rule('model_name', 'min_length', array(
+			->rule('model_name', 'min_length', [
             ':value',
             '2'
-        ))->rule('model_name', 'max_length', array(
+        ])->rule('model_name', 'max_length', [
             ':value',
             '30'
-        ))->rule('model_name_ar', 'max_length', array(
+        ])->rule('model_name_ar', 'max_length', [
             ':value',
             '30'
-        ))
+        ])
         ->rule('category_name', 'not_empty')
         ->rule('airport_pickup_fare', 'not_empty')
         ->rule('airport_drop_fare', 'not_empty')
@@ -247,159 +247,159 @@ Class Model_Edit extends Model
             ':value',
             $arr['companyname'],
             $uid
-        ))*/->rule('model_size', 'not_empty')->rule('model_size', 'Model_Edit::check_fare_zero', array(
+        ))*/->rule('model_size', 'not_empty')->rule('model_size', 'Model_Edit::check_fare_zero', [
             ':value',
             $arr['model_size']
-        ))->rule('companyname', 'not_empty')->rule('waiting_time', 'not_empty')->rule('waiting_time', 'Model_Edit::check_waiting_time', array(
+        ])->rule('companyname', 'not_empty')->rule('waiting_time', 'not_empty')->rule('waiting_time', 'Model_Edit::check_waiting_time', [
             ':value',
             $arr['waiting_time']
-        ))->rule('base_fare', 'not_empty')->rule('base_fare', 'Model_Edit::check_base_fare', array(
+        ])->rule('base_fare', 'not_empty')->rule('base_fare', 'Model_Edit::check_base_fare', [
             ':value',
             $arr['base_fare']
-        ))->rule('min_km', 'not_empty')->rule('min_km', 'Model_Add::check_min_km', array(
+        ])->rule('min_km', 'not_empty')->rule('min_km', 'Model_Add::check_min_km', [
             ':value',
             $arr['min_km']
-        ))->rule('min_fare', 'not_empty')->rule('min_fare', 'Model_Edit::check_min_fare', array(
+        ])->rule('min_fare', 'not_empty')->rule('min_fare', 'Model_Edit::check_min_fare', [
             ':value',
             $arr['min_fare']
-        ))->rule('cancellation_fare', 'not_empty')->rule('cancellation_fare', 'Model_Edit::check_cancellation_fare', array(
+        ])->rule('cancellation_fare', 'not_empty')->rule('cancellation_fare', 'Model_Edit::check_cancellation_fare', [
             ':value',
             $arr['cancellation_fare']
-        ))->rule('below_and_above_km', 'not_empty')->rule('below_and_above_km', 'Model_Add::check_below_and_above_km', array(
+        ])->rule('below_and_above_km', 'not_empty')->rule('below_and_above_km', 'Model_Add::check_below_and_above_km', [
             ':value',
             $arr['min_km']
-        ))->rule('below_km', 'not_empty')->rule('below_km', 'Model_Edit::check_below_km', array(
+        ])->rule('below_km', 'not_empty')->rule('below_km', 'Model_Edit::check_below_km', [
             ':value',
             $arr['below_km']
-        ))->rule('above_km', 'not_empty')->rule('above_km', 'Model_Edit::check_above_km', array(
+        ])->rule('above_km', 'not_empty')->rule('above_km', 'Model_Edit::check_above_km', [
             ':value',
             $arr['above_km']
-        ))->rule('night_charge', 'not_empty')->rule('minutes_fare', 'not_empty')->rule('max_luggage', 'not_empty')->rule('minutes_fare', 'Model_Edit::check_minute_fare', array(
+        ])->rule('night_charge', 'not_empty')->rule('minutes_fare', 'not_empty')->rule('max_luggage', 'not_empty')->rule('minutes_fare', 'Model_Edit::check_minute_fare', [
             ':value',
             $arr['minutes_fare']
-        ))->rule('grace_km', 'not_empty')->rule('grace_km', 'numeric')->rule('grace_waiting_time', 'not_empty')->rule('grace_waiting_time', 'numeric')->rule('per_min_time', 'not_empty')->rule('per_minutes_fare', 'not_empty');
+        ])->rule('grace_km', 'not_empty')->rule('grace_km', 'numeric')->rule('grace_waiting_time', 'not_empty')->rule('grace_waiting_time', 'numeric')->rule('per_min_time', 'not_empty')->rule('per_minutes_fare', 'not_empty');
         if(!empty($arr['model_image_2']['name']))
         {
-            $validation->rule('model_image_2', 'Upload::type', array(
+            $validation->rule('model_image_2', 'Upload::type', [
                 $arr['model_image_2'],
-                array(
+                [
                     'jpg',
                     'png',
                     'gif'
-                )
-            ));
+                ]
+            ]);
         }
         if(!empty($arr['model_image_unfocus_2']['name']))
         {
-            $validation->rule('model_image_unfocus_2', 'Upload::type', array(
+            $validation->rule('model_image_unfocus_2', 'Upload::type', [
                 $arr['model_image_unfocus_2'],
-                array(
+                [
                     'jpg',
                     'png',
                     'gif'
-                )
-            ));
+                ]
+            ]);
         }
         if(!empty($arr['iconic_image_2']['name']))
         {
-            $validation->rule('iconic_image_2', 'Upload::type', array(
+            $validation->rule('iconic_image_2', 'Upload::type', [
                 $arr['iconic_image_2'],
-                array(
+                [
                     'jpg',
                     'png',
                     'gif'
-                )
-            ));
+                ]
+            ]);
         }
         if (Arr::get($arr, 'night_charge') == 1) {
             //echo "dsf";exit;
-            $validation->rule('night_timing_from', 'not_empty')->rule('night_timing_to', 'not_empty')->rule('night_fare', 'not_empty')->rule('night_fare', 'Model_Edit::check_night_fare', array(
+            $validation->rule('night_timing_from', 'not_empty')->rule('night_timing_to', 'not_empty')->rule('night_fare', 'not_empty')->rule('night_fare', 'Model_Edit::check_night_fare', [
                 ':value',
                 $arr['night_fare']
-            ));
+            ]);
         }
 		return $validation;
     }
     public function validate_editfare($arr)
     {
-        $validation = Validation::factory($arr)->rule('base_fare', 'not_empty')->rule('base_fare', 'Model_Edit::check_base_fare', array(
+        $validation = Validation::factory($arr)->rule('base_fare', 'not_empty')->rule('base_fare', 'Model_Edit::check_base_fare', [
             ':value',
             $arr['base_fare']
-        ))->rule('base_fare', 'Model_Edit::check_fare_zero', array(
+        ])->rule('base_fare', 'Model_Edit::check_fare_zero', [
             ':value',
             $arr['base_fare']
-        ))->rule('model_name', 'not_empty')->rule('model_size', 'not_empty')->rule('model_size', 'Model_Edit::check_fare_zero', array(
+        ])->rule('model_name', 'not_empty')->rule('model_size', 'not_empty')->rule('model_size', 'Model_Edit::check_fare_zero', [
             ':value',
             $arr['model_size']
-        ))->rule('min_km', 'not_empty')->rule('min_km', 'Model_Add::check_min_km', array(
+        ])->rule('min_km', 'not_empty')->rule('min_km', 'Model_Add::check_min_km', [
             ':value',
             $arr['min_km']
-        ))->rule('min_fare', 'not_empty')->rule('min_fare', 'Model_Edit::check_min_fare', array(
+        ])->rule('min_fare', 'not_empty')->rule('min_fare', 'Model_Edit::check_min_fare', [
             ':value',
             $arr['min_fare']
-        ))->rule('cancellation_fare', 'not_empty')->rule('cancellation_fare', 'Model_Edit::check_cancellation_fare', array(
+        ])->rule('cancellation_fare', 'not_empty')->rule('cancellation_fare', 'Model_Edit::check_cancellation_fare', [
             ':value',
             $arr['cancellation_fare']
-        ))->rule('below_and_above_km', 'not_empty')->rule('below_and_above_km', 'Model_Add::check_below_and_above_km', array(
+        ])->rule('below_and_above_km', 'not_empty')->rule('below_and_above_km', 'Model_Add::check_below_and_above_km', [
             ':value',
             $arr['min_km']
-        ))->rule('below_km', 'not_empty')->rule('below_km', 'Model_Edit::check_below_km', array(
+        ])->rule('below_km', 'not_empty')->rule('below_km', 'Model_Edit::check_below_km', [
             ':value',
             $arr['below_km']
-        ))->rule('below_km', 'Model_Edit::check_fare_zero', array(
+        ])->rule('below_km', 'Model_Edit::check_fare_zero', [
             ':value',
             $arr['below_km']
-        ))->rule('above_km', 'not_empty')->rule('above_km', 'Model_Edit::check_above_km', array(
+        ])->rule('above_km', 'not_empty')->rule('above_km', 'Model_Edit::check_above_km', [
             ':value',
             $arr['above_km']
-        ))->rule('above_km', 'Model_Edit::check_fare_zero', array(
+        ])->rule('above_km', 'Model_Edit::check_fare_zero', [
             ':value',
             $arr['above_km']
-        ))->rule('minutes_fare', 'not_empty')->rule('minutes_fare', 'Model_Edit::check_minute_fare', array(
+        ])->rule('minutes_fare', 'not_empty')->rule('minutes_fare', 'Model_Edit::check_minute_fare', [
             ':value',
             $arr['minutes_fare']
-        ))->rule('night_charge', 'not_empty')->rule('evening_charge', 'not_empty');
+        ])->rule('night_charge', 'not_empty')->rule('evening_charge', 'not_empty');
         if (Arr::get($arr, 'night_charge') == 1) {
             //echo "dsf";exit;
-            $validation->rule('night_timing_from', 'not_empty')->rule('night_timing_to', 'not_empty')->rule('night_fare', 'not_empty')->rule('night_fare', 'Model_Edit::check_night_fare', array(
+            $validation->rule('night_timing_from', 'not_empty')->rule('night_timing_to', 'not_empty')->rule('night_fare', 'not_empty')->rule('night_fare', 'Model_Edit::check_night_fare', [
                 ':value',
                 $arr['night_fare']
-            ))->rule('night_fare', 'Model_Admin::check_percentage', array(
+            ])->rule('night_fare', 'Model_Admin::check_percentage', [
                 ':value'
-            ));
+            ]);
         }
         if (Arr::get($arr, 'evening_charge') == 1) {
             //echo "dsf";exit;
-            $validation->rule('evening_timing_from', 'not_empty')->rule('evening_timing_to', 'not_empty')->rule('evening_fare', 'not_empty')->rule('evening_fare', 'Model_Add::check_evening_fare', array(
+            $validation->rule('evening_timing_from', 'not_empty')->rule('evening_timing_to', 'not_empty')->rule('evening_fare', 'not_empty')->rule('evening_fare', 'Model_Add::check_evening_fare', [
                 ':value',
                 $arr['evening_fare']
-            ))->rule('evening_fare', 'Model_Admin::check_percentage', array(
+            ])->rule('evening_fare', 'Model_Admin::check_percentage', [
                 ':value'
-            ));
+            ]);
         }
         return $validation;
     }
     /**Validating for Add Taxi**/
     public function validate_editfield($arr, $uid)
     {
-        $rule = Validation::factory($arr)->rule('field_labelname', 'not_empty')->rule('field_labelname', 'min_length', array(
+        $rule = Validation::factory($arr)->rule('field_labelname', 'not_empty')->rule('field_labelname', 'min_length', [
             ':value',
             '2'
-        ))->rule('field_labelname', 'max_length', array(
+        ])->rule('field_labelname', 'max_length', [
             ':value',
             '20'
-        ))->rule('field_name', 'not_empty')->rule('field_name', 'min_length', array(
+        ])->rule('field_name', 'not_empty')->rule('field_name', 'min_length', [
             ':value',
             '2'
-        ))->rule('field_name', 'max_length', array(
+        ])->rule('field_name', 'max_length', [
             ':value',
             '20'
-        ))->rule('field_name', 'small_letters', array(
+        ])->rule('field_name', 'small_letters', [
             ':value'
-        ))->rule('field_name', 'Model_Edit::checkfieldname', array(
+        ])->rule('field_name', 'Model_Edit::checkfieldname', [
             ':value',
             $uid
-        ))->rule('field_type', 'not_empty');
+        ])->rule('field_type', 'not_empty');
         if ($arr['field_type'] != 'Textbox') {
             //$rule = $rule->rule('field_value', 'not_empty');
         }
@@ -419,21 +419,21 @@ Class Model_Edit extends Model
     public function validate_edittaxi($arr, $uid)
     {
         $rule = Validation::factory($arr)->rule('taxi_no', 'not_empty')
-		->rule('taxi_no', 'min_length', array(
+		->rule('taxi_no', 'min_length', [
             ':value',
             '4'
-        ))->rule('taxi_no', 'max_length', array(
+        ])->rule('taxi_no', 'max_length', [
             ':value',
             '30'
-        ))
+        ])
         //->rule('taxi_no', 'alpha_numeric', array(':value','/^[0-9]{1,}/'))
-        ->rule('taxi_no', 'regex', array(
+        ->rule('taxi_no', 'regex', [
             ':value',
             '/^[a-z0-9A-Z -]++$/iD'
-        ))->rule('taxi_no', 'Model_Edit::check_taxino', array(
+        ])->rule('taxi_no', 'Model_Edit::check_taxino', [
             ':value',
             $uid
-        ))
+        ])
         //->rule('taxi_type', 'not_empty')
         ->rule('taxi_model', 'not_empty')
         ->rule('taxi_stream_channel', 'not_empty')
@@ -443,15 +443,15 @@ Class Model_Edit extends Model
 		->rule('taxi_colour', 'not_empty')
 		->rule('taxi_motor_expire_date', 'not_empty')
 		->rule('taxi_insurance_number', 'not_empty')
-		->rule('taxi_insurance_number', 'Model_Edit::check_taxinsurance_number', array(
+		->rule('taxi_insurance_number', 'Model_Edit::check_taxinsurance_number', [
             ':value',
             $uid
-        ))->rule('taxi_insurance_expire_date', 'not_empty')
+        ])->rule('taxi_insurance_expire_date', 'not_empty')
 		->rule('taxi_pco_licence_number', 'not_empty')
-		->rule('taxi_pco_licence_number', 'Model_Edit::check_taxipco_number', array(
+		->rule('taxi_pco_licence_number', 'Model_Edit::check_taxipco_number', [
             ':value',
             $uid
-        ))->rule('taxi_pco_licence_expire_date', 'not_empty')
+        ])->rule('taxi_pco_licence_expire_date', 'not_empty')
 		//->rule('country', 'not_empty')
 		//->rule('state', 'not_empty')
 		//->rule('city', 'not_empty')
@@ -483,46 +483,46 @@ Class Model_Edit extends Model
 		//echo $city.',' .$country.', '.$state.', '.$company_name.', '.$uid;
 		$mongodb        = MangoDB::instance('default');
 		$current_time = Commonfunction::getCurrentTimeStamp();
-		$result = $mongodb->find_one(MDB_TAXI_DRIVER_MAPPING,array('mapping_taxiid'=>(int)$uid,"\$and"=>array(array("\or"=>array("mapping_startdate"=>array(array('$gte'=>$current_time),array('$lte'=>$current_time)))),array("\or"=>array(array('mapping_companyid'=>array('$ne'=>(int)$company_name)),array('mapping_countryid'=>array('$ne'=>(int)$country)),array('mapping_stateid'=>array('$ne'=>(int)$state)),array('mapping_cityid'=>array('$ne'=>(int)$city)))))),array('_id'));
+		$result = $mongodb->find_one(MDB_TAXI_DRIVER_MAPPING,['mapping_taxiid'=>(int)$uid,"\$and"=>[["\or"=>["mapping_startdate"=>[['$gte'=>$current_time],['$lte'=>$current_time]]]],["\or"=>[['mapping_companyid'=>['$ne'=>(int)$company_name]],['mapping_countryid'=>['$ne'=>(int)$country]],['mapping_stateid'=>['$ne'=>(int)$state]],['mapping_cityid'=>['$ne'=>(int)$city]]]]]],['_id']);
 		//echo '<pre>';print_r($result);exit;
 		return ($result>0)?false:true;
     }
     /**Validating for Add Motor**/
     public function validate_editpackage($arr, $uid)
     {
-        return Validation::factory($arr)->rule('package_name', 'not_empty')->rule('package_name', 'min_length', array(
+        return Validation::factory($arr)->rule('package_name', 'not_empty')->rule('package_name', 'min_length', [
             ':value',
             '4'
-        ))->rule('package_name', 'max_length', array(
+        ])->rule('package_name', 'max_length', [
             ':value',
             '100'
-        ))->rule('package_name', 'Model_Edit::checkpackagename', array(
+        ])->rule('package_name', 'Model_Edit::checkpackagename', [
             ':value',
             $uid
-        ))->rule('package_description', 'not_empty')->rule('package_description', 'min_length', array(
+        ])->rule('package_description', 'not_empty')->rule('package_description', 'min_length', [
             ':value',
             '20'
-        ))->rule('no_of_taxi', 'not_empty')->rule('no_of_taxi', 'Model_Edit::check_fare_zero', array(
+        ])->rule('no_of_taxi', 'not_empty')->rule('no_of_taxi', 'Model_Edit::check_fare_zero', [
             ':value'
-        ))->rule('no_of_taxi', 'digit')->rule('no_of_driver', 'not_empty')->rule('no_of_driver', 'Model_Edit::check_fare_zero', array(
+        ])->rule('no_of_taxi', 'digit')->rule('no_of_driver', 'not_empty')->rule('no_of_driver', 'Model_Edit::check_fare_zero', [
             ':value'
-        ))->rule('no_of_driver', 'digit')->rule('days_expire', 'not_empty')->rule('days_expire', 'Model_Edit::check_fare_zero', array(
+        ])->rule('no_of_driver', 'digit')->rule('days_expire', 'not_empty')->rule('days_expire', 'Model_Edit::check_fare_zero', [
             ':value'
-        ))->rule('days_expire', 'digit')->rule('package_price', 'not_empty')->rule('package_price', 'numeric');
+        ])->rule('days_expire', 'digit')->rule('package_price', 'not_empty')->rule('package_price', 'numeric');
     }
     public function validate_editcompanypayment($arr, $uid)
     {
         return Validation::factory($arr)
 		->rule('description', 'not_empty')
 		->rule('currency_code', 'not_empty')
-		->rule('currency_code', 'max_length', array(
+		->rule('currency_code', 'max_length', [
             ':value',
             '3'
-        ))->rule('currency_symbol', 'not_empty')
-		->rule('currency_symbol', 'Model_Admin::checksite_currency', array(
+        ])->rule('currency_symbol', 'not_empty')
+		->rule('currency_symbol', 'Model_Admin::checksite_currency', [
             ':value',
             $arr['currency_code']
-        ))->rule('payment_method', 'not_empty')
+        ])->rule('payment_method', 'not_empty')
 		//->rule('paypal_api_username', 'not_empty')
 		//->rule('paypal_api_password', 'not_empty')
 		//->rule('paypal_api_signature', 'not_empty')
@@ -544,7 +544,7 @@ Class Model_Edit extends Model
             Commonfunction::multipleimageresize($logo_image, COMPANY_IMG_WIDTH, COMPANY_IMG_HEIGHT, $path1, $image_name, 90);
             $check = 1;
 		}
-		$people_data      = array(
+		$people_data      = [
 			'name' => $post['firstname'],
 			'lastname' => $post['lastname'],
 			'phone' => $post['phone'],
@@ -553,46 +553,46 @@ Class Model_Edit extends Model
 			'login_country' => (int)$post['country'],
 			'login_state' => (int)$post['state'],
 			'login_city' => (int)$post['city']
-		);
-		$people_result = $this->mongo_db->update(MDB_PEOPLE,array('_id'=>(int)$uid),array('$set'=>$people_data),array('upsert'=>false));
-		$company_data     = array(
+		];
+		$people_result = $this->mongo_db->update(MDB_PEOPLE,['_id'=>(int)$uid],['$set'=>$people_data],['upsert'=>false]);
+		$company_data     = [
 			'companydetails.company_name' => $post['company_name'],
 			'companydetails.company_address' => $post['company_address'],
 			'companydetails.company_country' => (int)$post['country'],
 			'companydetails.company_state' => (int)$post['state'],
 			'companydetails.company_city' => (int)$post['city'],
 			'companydetails.time_zone' => $post['time_zone']
-		);
-		$company_result = $this->mongo_db->update(MDB_COMPANY,array('_id'=>(int)$company_cid),array('$set'=>$company_data),array('upsert'=>false));
+		];
+		$company_result = $this->mongo_db->update(MDB_COMPANY,['_id'=>(int)$company_cid],['$set'=>$company_data],['upsert'=>false]);
         //Company payment settings Update
         if (isset($post['payid'])) {
             foreach ($post['payid'] as $k => $id) {
                 //print_r($id);exit;
                 $default = ($id == $post['default'][0])?1:0;
                 $paystatus = (in_array($id, $post['paymodstatus']))?1:0;
-				$payment_modules_data = array(
+				$payment_modules_data = [
                     'pay_active' => (int)$paystatus,
                     'pay_mod_default' => (int)$default
-                );
-				$pay_result = $this->mongo_db->update(MDB_COMPANY,array('_id'=>(int)$company_cid,'paymentmodule.pay_mod_id'=>(int)$id),array('$set'=>$payment_modules_data),array('upsert'=>true));
+                ];
+				$pay_result = $this->mongo_db->update(MDB_COMPANY,['_id'=>(int)$company_cid,'paymentmodule.pay_mod_id'=>(int)$id],['$set'=>$payment_modules_data],['upsert'=>true]);
             }
         }
         if ($uid != 0) {
             //Company payment module settings Update
             if (isset($post['payid_add'])) {
-                $payment_module_data = array();
+                $payment_module_data = [];
 				foreach ($post['payid_add'] as $k => $id) {
 					$default = ($id == $post['default'][0])?1:0;
 					$paystatus = (in_array($id, $post['paymodstatus']))?1:0;
-					$payment_module_data[] = array(
+					$payment_module_data[] = [
 						'pay_mod_id' => (int)$post['payid_add'][$k],
 						'pay_mod_name' => $post['paymodname'][$k],
 						'pay_mod_image' => $post['paymodimage'][$k],
 						'pay_active' => (int)$paystatus,
 						'pay_mod_default' => (int)$default
-					);
+					];
 				}
-				$pay_result = $this->mongo_db->update(MDB_COMPANY,array('_id'=>(int)$company_cid),array('$set'=>array('paymentmodule'=>$payment_module_data)),array('upsert'=>true));
+				$pay_result = $this->mongo_db->update(MDB_COMPANY,['_id'=>(int)$company_cid],['$set'=>['paymentmodule'=>$payment_module_data]],['upsert'=>true]);
             }
         }
 		return (empty($people_result['err']) && empty($company_result['err']))?1:0;
@@ -726,9 +726,9 @@ Class Model_Edit extends Model
     //To update company Functionalities 
     public static function editmotor($uid, $post)
     {
-        $result = DB::update(MOTORCOMPANY)->set(array(
+        $result = DB::update(MOTORCOMPANY)->set([
             'motor_name' => $post['companyname']
-        ))->where('motor_id', '=', $uid)->execute();
+        ])->where('motor_id', '=', $uid)->execute();
         if ($result) {
             return 1;
         } else {
@@ -738,7 +738,7 @@ Class Model_Edit extends Model
     public function editcompanypayment($uid, $post)
     {
         $company_id = $this->company_id;
-        $query      = array(
+        $query      = [
             'description' => $post['description'],
             'currency_code' => $post['currency_code'],
             'currency_symbol' => $post['currency_symbol'],
@@ -750,12 +750,12 @@ Class Model_Edit extends Model
             //'paypal_api_username' => $post['paypal_api_username'],
             //'paypal_api_password' => $post['paypal_api_password'],
            // 'paypal_api_signature' => $post['paypal_api_signature']
-        );
+        ];
         /*$result     = DB::update(PAYMENT_GATEWAYS)->set($query)->where('id', '=', $uid)->where('company_id', '=', $company_id)->execute();
         return count($result);*/
 		//print_r($query);exit;
 		//MongoDB
-		$result = $this->mongo_db->update(MDB_PAYMENT_GATEWAYS,array('_id'=>(int)$uid,'company_id'=>(int)$company_id),array('$set'=>$query),array('upsert'=>true));
+		$result = $this->mongo_db->update(MDB_PAYMENT_GATEWAYS,['_id'=>(int)$uid,'company_id'=>(int)$company_id],['$set'=>$query],['upsert'=>true]);
 		return (empty($result['err']))?1:$result['err_msg'];
     }
     //To update company Functionalities 
@@ -785,7 +785,7 @@ Class Model_Edit extends Model
             'minutes_fare' => $post['minutes_fare']
         ))->where('model_id', '=', $uid)->execute();
         return ($result)?1:0;*/
-		$query = array(
+		$query = [
             'model_name' => $post['model_name'],
             'model_name_ar' => $post['model_name_ar'],
             'category_name' => $post['category_name'],
@@ -816,62 +816,62 @@ Class Model_Edit extends Model
             'grace_waiting_time' => (int)$post['grace_waiting_time'],
             'per_min_time' => (int)$post['per_min_time'],
             'per_minutes_fare' => (float)$post['per_minutes_fare'],
-        );
-		$array1 = $array2 = $array3 = $array4 = $array5 = $array6 = array();
-        $array7 = $array8 = $array9 = $array10 = $array11 = $array12 = $array13 = array();
+        ];
+		$array1 = $array2 = $array3 = $array4 = $array5 = $array6 = [];
+        $array7 = $array8 = $array9 = $array10 = $array11 = $array12 = $array13 = [];
 
 		if(isset($post['model_image'])) {
-			$array1 = array('model_image' => $post['model_image']);
+			$array1 = ['model_image' => $post['model_image']];
 		}
 		if(isset($post['model_image_thumb'])) {
-			$array2 = array('model_image_thumb' => $post['model_image_thumb']);
+			$array2 = ['model_image_thumb' => $post['model_image_thumb']];
 		}
 		if(isset($post['iconic_image'])) {
-			$array3 = array('iconic_image' => $post['iconic_image']);
+			$array3 = ['iconic_image' => $post['iconic_image']];
 		}
 		if(isset($post['iconic_image_thumb'])) {
-			$array4 = array('iconic_image_thumb' => $post['iconic_image_thumb']);
+			$array4 = ['iconic_image_thumb' => $post['iconic_image_thumb']];
 		}
         if(isset($post['model_image_unfocus'])) {
-            $array5 = array('model_image_unfocus' => $post['model_image_unfocus']);
+            $array5 = ['model_image_unfocus' => $post['model_image_unfocus']];
         }
         if(isset($post['model_image_unfocus_thumb'])) {
-            $array6 = array('model_image_unfocus_thumb' => $post['model_image_unfocus_thumb']);
+            $array6 = ['model_image_unfocus_thumb' => $post['model_image_unfocus_thumb']];
         }
         if(isset($post['model_image_2'])) {
-            $array7 = array('model_image_2' => $post['model_image_2']);
+            $array7 = ['model_image_2' => $post['model_image_2']];
         }
         if(isset($post['model_image_thumb_2'])) {
-            $array8 = array('model_image_thumb_2' => $post['model_image_thumb_2']);
+            $array8 = ['model_image_thumb_2' => $post['model_image_thumb_2']];
         }
         if(isset($post['iconic_image_2'])) {
-            $array9 = array('iconic_image_2' => $post['iconic_image_2']);
+            $array9 = ['iconic_image_2' => $post['iconic_image_2']];
         }
         if(isset($post['iconic_image_thumb_2'])) {
-            $array10 = array('iconic_image_thumb_2' => $post['iconic_image_thumb_2']);
+            $array10 = ['iconic_image_thumb_2' => $post['iconic_image_thumb_2']];
         }
         if(isset($post['model_image_unfocus_2'])) {
-            $array11 = array('model_image_unfocus_2' => $post['model_image_unfocus_2']);
+            $array11 = ['model_image_unfocus_2' => $post['model_image_unfocus_2']];
         }
         if(isset($post['model_image_unfocus_thumb_2'])) {
-            $array12 = array('model_image_unfocus_thumb_2' => $post['model_image_unfocus_thumb_2']);
+            $array12 = ['model_image_unfocus_thumb_2' => $post['model_image_unfocus_thumb_2']];
         }
         if(isset($post['website_model_image'])) {
-            $array13 = array('website_model_image' => $post['website_model_image']);
+            $array13 = ['website_model_image' => $post['website_model_image']];
         }
 
-        $hourly_fare_list = array();
+        $hourly_fare_list = [];
 
         foreach($post["hourly_fare_list"] as $key => $val)
         {
             $hourly_fare_list[$key+1] = $val;
         }
 
-        $array14 = array("hourly_fare_list" => $hourly_fare_list);
+        $array14 = ["hourly_fare_list" => $hourly_fare_list];
 		$updateQry = array_merge($query,$array1,$array2,$array3,$array4,$array5,$array6,$array7,$array8,$array9,$array10,$array11,$array12,$array13,$array14);
 		
 		//MongoDB
-		$result = $this->mongo_db->update(MDB_MOTOR_MODEL,array('_id'=>(int)$uid),array('$set'=>$updateQry),array('upsert'=>true));
+		$result = $this->mongo_db->update(MDB_MOTOR_MODEL,['_id'=>(int)$uid],['$set'=>$updateQry],['upsert'=>true]);
 		return (empty($result['err']))?1:$result['err_msg'];
     }
     //To update company Functionalities 
@@ -899,7 +899,7 @@ Class Model_Edit extends Model
             'minutes_fare' => $post['minutes_fare']
         ))->where('company_model_fare_id', '=', $post['company_model_fare_id'])->execute();*/
 			$company_id = $this->company_id;
-			$model_fare_array = array(
+			$model_fare_array = [
 				'model_fare.$.model_name' => $post['model_name'],
 				'model_fare.$.model_size' => (int)$post['model_size'],
 				'model_fare.$.base_fare' => (float)$post['base_fare'],
@@ -919,9 +919,9 @@ Class Model_Edit extends Model
 				'model_fare.$.waiting_time' => $post['waiting_time'],
 				'model_fare.$.below_above_km' => (float)$post['below_and_above_km'],
 				'model_fare.$.minutes_fare' => (float)$post['minutes_fare']
-			);
+			];
 			$model_id = (int)$post['company_model_fare_id'];
-			$result = $this->mongo_db->update(MDB_COMPANY,array('_id'=>(int)$company_id, 'model_fare.model_id'=>(int)$model_id),array('$set'=>$model_fare_array),array('multiple'=>true));
+			$result = $this->mongo_db->update(MDB_COMPANY,['_id'=>(int)$company_id, 'model_fare.model_id'=>(int)$model_id],['$set'=>$model_fare_array],['multiple'=>true]);
 			return (empty($result['err']))?1:0;
         if ($result) {
             return 1;
@@ -936,9 +936,9 @@ Class Model_Edit extends Model
         return $result;*/
 		
 		//MongoDB
-		$result = $this->mongo_db->find_one(MDB_PAYMENT_GATEWAYS,array('_id'=>(int)$uid,'company_id'=>(int)$company_id));
+		$result = $this->mongo_db->find_one(MDB_PAYMENT_GATEWAYS,['_id'=>(int)$uid,'company_id'=>(int)$company_id]);
 		//echo '<pre>';print_r($result);exit;
-		return (!empty($result))?$result:array();
+		return (!empty($result))?$result:[];
     }
     //To update Edit field Functionalities 
     public function editfield($uid, $post)
@@ -949,12 +949,12 @@ Class Model_Edit extends Model
         if ($posted_field_name != $get_field_name) {
             DB::query(5, "ALTER TABLE taxi_additional_field CHANGE " . $get_field_name . " " . $posted_field_name . " varchar(250)  NOT NULL")->execute();
         }
-        $result = DB::update(MANAGEFIELD)->set(array(
+        $result = DB::update(MANAGEFIELD)->set([
             'field_labelname' => $post['field_labelname'],
             'field_name' => $post['field_name'],
             'field_type' => $post['field_type'],
             'field_value' => $post['field_value']
-        ))->where('field_id', '=', $uid)->execute();
+        ])->where('field_id', '=', $uid)->execute();
         if ($result) {
             return 1;
         } else {
@@ -989,7 +989,7 @@ Class Model_Edit extends Model
 		
 		//MongoDB
 		$mongodb = MangoDB::instance('default');
-		$result = $mongodb->count(MDB_PEOPLE,array('email'=>$email,'_id'=>array('$ne'=>(int)$uid)));
+		$result = $mongodb->count(MDB_PEOPLE,['email'=>$email,'_id'=>['$ne'=>(int)$uid]]);
 		//print_r($result);exit;
 		return ($result > 0)?false:true;
     }
@@ -1000,7 +1000,7 @@ Class Model_Edit extends Model
         return (count($result) > 0)?false:true;*/
 		//MongoDB
 		$mongodb = MangoDB::instance('default');
-		$result = $mongodb->count(MDB_PEOPLE,array('phone'=>$phone,'_id'=>array('$ne'=>(int)$uid)));
+		$result = $mongodb->count(MDB_PEOPLE,['phone'=>$phone,'_id'=>['$ne'=>(int)$uid]]);
 		//print_r($result);exit;
 		return ($result > 0)?false:true;
     }
@@ -1011,7 +1011,7 @@ Class Model_Edit extends Model
         return (count($result) > 0)?false:true;*/
 		//MongoDB
 		$mongodb = MangoDB::instance('default');
-		$result = $mongodb->count(MDB_PEOPLE,array('passengerdetails.email'=>$email,'_id'=>array('$ne'=>(int)$uid)));
+		$result = $mongodb->count(MDB_PEOPLE,['passengerdetails.email'=>$email,'_id'=>['$ne'=>(int)$uid]]);
 		//print_r($result);exit;
 		return ($result > 0)?false:true;
     }
@@ -1027,18 +1027,18 @@ Class Model_Edit extends Model
         return $result;*/
 		
 		//MongoDB
-		$ops = array(
-			array('$match' => array('user_type'=>'C','_id'=>(int)$uid)),
-			array(
-					'$lookup' => array(
+		$ops = [
+			['$match' => ['user_type'=>'C','_id'=>(int)$uid]],
+			[
+					'$lookup' => [
 						'from'=>MDB_COMPANY,
 						'localField'=> "company_id",
 						'foreignField' => "_id",
 						'as'=> "cdetails"
-					)
-				),
-			array(
-				'$project' => array(
+					]
+				],
+			[
+				'$project' => [
 					'company_status' => '$cdetails.companydetails.company_status',
 					'company_name' => '$cdetails.companydetails.company_name',
 					'company_address' => '$cdetails.companydetails.company_address',
@@ -1056,12 +1056,12 @@ Class Model_Edit extends Model
 					'email' => '$email',
 					'user_type' => '$user_type',
 					'id' => '$_id',
-				)
-			),
-		);
+				]
+			],
+		];
 		$result = $this->mongo_db->aggregate(MDB_PEOPLE,$ops);
 		//echo '<pre>else';print_r($result);exit;
-		return (!empty($result['result']))?$result['result']:array();
+		return (!empty($result['result']))?$result['result']:[];
     }
     // Check Whether Motor details is Already Exist or Not
     public static function motor_details($uid)
@@ -1079,9 +1079,9 @@ Class Model_Edit extends Model
         /*$result = DB::select()->from(MOTORMODEL)->join(MOTORCOMPANY, 'LEFT')->on(MOTORMODEL . '.motor_mid', '=', MOTORCOMPANY . '.motor_id')->where(MOTORMODEL . '.model_id', '=', $uid)->execute()->as_array();
         return $result;*/
 	
-		$result = $this->mongo_db->find_one(MDB_MOTOR_MODEL,array("_id"=>(int)$uid));
+		$result = $this->mongo_db->find_one(MDB_MOTOR_MODEL,["_id"=>(int)$uid]);
 		//echo '<pre>';print_r($result);exit;
-		return (!empty($result))?$result:array();
+		return (!empty($result))?$result:[];
     }
 	// Check Whether Motor details is Already Exist or Not
     public function motordetails()
@@ -1089,8 +1089,8 @@ Class Model_Edit extends Model
         /*$result = DB::select()->from(MOTORCOMPANY)->where('motor_status', '=', 'A')->order_by('motor_name', 'asc')->execute()->as_array();
         return $result;*/
 	
-		$result = $this->mongo_db->find(MDB_MOTOR_MODEL,array("model_status"=>"A"))->sort(array('model_name'=>1));
-		return (!empty($result))?iterator_to_array($result):array();
+		$result = $this->mongo_db->find(MDB_MOTOR_MODEL,["model_status"=>"A"])->sort(['model_name'=>1]);
+		return (!empty($result))?iterator_to_array($result):[];
     }
     public function model_faredetails($uid)
     {
@@ -1099,15 +1099,15 @@ Class Model_Edit extends Model
         $result     = Db::query(Database::SELECT, $query)->execute()->as_array();
         return $result;*/
 
-		$ops = 	array(
-					array('$unwind' => '$model_fare'),
-					array('$match'=>array('_id' => (int)$company_id,'model_fare.model_id' => (int)$uid)),
-					array(
-						'$project' => array(
+		$ops = 	[
+					['$unwind' => '$model_fare'],
+					['$match'=>['_id' => (int)$company_id,'model_fare.model_id' => (int)$uid]],
+					[
+						'$project' => [
 							'model_fare' => 1,
-						)
-					),
-				);
+						]
+					],
+				];
 		$results = $this->mongo_db->aggregate(MDB_COMPANY,$ops);
 		//$res = iterator_to_count($results);
 		//echo "<pre>"; print_r($results['result']); exit;
@@ -1127,9 +1127,9 @@ Class Model_Edit extends Model
         return $result;*/
 		
 		//MongoDB
-		$result = $this->mongo_db->find_one(MDB_TAXI,array('_id'=>(int)$uid));
+		$result = $this->mongo_db->find_one(MDB_TAXI,['_id'=>(int)$uid]);
 		//echo '<pre>';print_r($result);exit;
-		return (!empty($result))?$result:array();
+		return (!empty($result))?$result:[];
     }
     /** for updating taxi image **/
     public function edittaxi_image($image, $uid)
@@ -1148,14 +1148,14 @@ Class Model_Edit extends Model
         return $result;*/
 		
 		//MongoDB
-		$result = $this->mongo_db->find_one(MDB_TAXI,array('_id'=>(int)$uid),array('taxi_image'));
+		$result = $this->mongo_db->find_one(MDB_TAXI,['_id'=>(int)$uid],['taxi_image']);
 		if(!empty($result)) {
 			$id1 = $result['taxi_image'];
             if (file_exists($id1)) {
                 unlink($id1);
             }
         }
-		$res = $this->mongo_db->update(MDB_TAXI,array('_id'=>(int)$uid),array('$set'=>array('taxi_image'=>$image)),array('upsert'=>true));
+		$res = $this->mongo_db->update(MDB_TAXI,['_id'=>(int)$uid],['$set'=>['taxi_image'=>$image]],['upsert'=>true]);
 		return (empty($res['err']))?1:$res['err_msg'];
     }
     //To Edit Taxi Functionalities 
@@ -1167,7 +1167,7 @@ Class Model_Edit extends Model
         if (isset($files['updateimage']['name']) && $files['updateimage']['type'] != '') {
             foreach ($files['updateimage']['name'] as $key => $value) {
                 $nexti      = $key;
-                $file_array = array();
+                $file_array = [];
                 if (isset($files['updateimage']['name'][$key]) && $files['updateimage']['name'][$key] != '') {
                     $file_array['name']     = $files['updateimage']['name'][$key];
                     $file_array['type']     = $files['updateimage']['type'][$key];
@@ -1249,12 +1249,12 @@ Class Model_Edit extends Model
         //$post['taxi_capacity']        
         return ($result)?1:0;
 		*/
-		$taxi_arrcount = array();
+		$taxi_arrcount = [];
         if (isset($files['size']['name']) && $files['size']['type'] != '') {
             $count = count($files['size']['name']);
             $z     = 0;
             for ($j = 0; $j < $count; $j++) {
-                $file_array = array();
+                $file_array = [];
                 if ($files['size']['name'][$j] != '') {
                     $z++;
                     if ($nexti == '') {
@@ -1276,7 +1276,7 @@ Class Model_Edit extends Model
                 }
             }
 			//MongoDB
-			$uresult = $this->mongo_db->update(MDB_TAXI,array('_id'=>(int)$uid),array('$inc'=>array('taxi_sliderimage'=>(int)$z)),array('upsert'=>true));
+			$uresult = $this->mongo_db->update(MDB_TAXI,['_id'=>(int)$uid],['$inc'=>['taxi_sliderimage'=>(int)$z]],['upsert'=>true]);
         }
         
         $post['country'] = isset($post['country'])?$post['country']:DEFAULT_COUNTRY;
@@ -1284,7 +1284,7 @@ Class Model_Edit extends Model
 		$post['city'] = isset($post['city'])?$post['city']:DEFAULT_CITY;
         
 		$post['taxi_type'] = 1;
-		$query = array(
+		$query = [
             'taxi_no' => $post['taxi_no'],
             'taxi_type' => (int)$post['taxi_type'],
             'taxi_model' => (int)$post['taxi_model'],
@@ -1308,9 +1308,9 @@ Class Model_Edit extends Model
             'qrencodeString' => $encodeString,            
             'qr_image_path' => $filename,     
             'live_stream_channel' => $post['taxi_stream_channel']
-        );
+        ];
 		//MongoDB
-		$result = $this->mongo_db->update(MDB_TAXI,array('_id'=>(int)$uid),array('$set'=>$query),array('upsert'=>true));
+		$result = $this->mongo_db->update(MDB_TAXI,['_id'=>(int)$uid],['$set'=>$query],['upsert'=>true]);
 		return (empty($result['err']))?1:$result['err'];
     }
 	public function check_taxicompanyid($id)
@@ -1319,8 +1319,8 @@ Class Model_Edit extends Model
         return (count($result) > 0)?$result:0;*/
 		
 		//MongoDB
-		$result = $this->mongo_db->find_one(MDB_TAXI,array('_id'=>(int)$id),array('_id','taxi_company','taxi_state','taxi_city','taxi_country'));
-		return (!empty($result))?$result:array();
+		$result = $this->mongo_db->find_one(MDB_TAXI,['_id'=>(int)$id],['_id','taxi_company','taxi_state','taxi_city','taxi_country']);
+		return (!empty($result))?$result:[];
     }
     public static function check_taxino($name, $uid)
     {
@@ -1330,7 +1330,7 @@ Class Model_Edit extends Model
 		
 		//MongoDB
 		$mongodb = MangoDB::instance('default');
-		$result = $mongodb->count(MDB_TAXI,array('taxi_no'=>$name,'_id'=>array('$ne'=>(int)$uid)),array('taxi_no'));
+		$result = $mongodb->count(MDB_TAXI,['taxi_no'=>$name,'_id'=>['$ne'=>(int)$uid]],['taxi_no']);
 		return ($result>0)?false:true;
     }
     // To Check Motorname is Already Available or Not
@@ -1342,17 +1342,17 @@ Class Model_Edit extends Model
 		
 		//MongoDB
 		$mongodb = MangoDB::instance('default');
-		$result = $mongodb->count(MDB_MOTOR_MODEL,array("model_name" => new MongoRegex("/$name/i"),"_id"=>array('$ne'=>(int)$uid)));
+		$result = $mongodb->count(MDB_MOTOR_MODEL,["model_name" => new \MongoDB\BSON\Regex($name, 'i'),"_id"=>['$ne'=>(int)$uid]]);
 		return ($result>0)?false:true;
     }
     public function driver_details($uid)
     {
         /*$result = DB::select()->from(PEOPLE)->where('id', '=', $uid)->where('user_type', '=', 'D')->execute()->as_array();
         return $result;*/
-		$arguments = array(
-			array('$match'	=> array('_id' => (int)$uid, 'user_type' => 'D')),
-			array(
-				'$project' => array(
+		$arguments = [
+			['$match'	=> ['_id' => (int)$uid, 'user_type' => 'D']],
+			[
+				'$project' => [
 					'id' => '$_id',
 					'name'=>'$name',
 					///Driver Code///
@@ -1374,44 +1374,44 @@ Class Model_Edit extends Model
 					'driver_license_id' => '$driver_license_id',
 					'booking_limit' => '$booking_limit',
 					'profile_picture' => '$profile_picture',
-                    'facebook_account' => array('$ifNull'=>array('$facebook_account','')),
-                    'instagram_account' => array('$ifNull'=>array('$instagram_account','')),
-                    'twitter_account' => array('$ifNull'=>array('$twitter_account','')),
-                    'driver_description' => array('$ifNull'=>array('$driver_description','')),
-                    'driver_description_arabic' => array('$ifNull'=>array('$driver_description_arabic','')),
-                    'website_show' => array('$ifNull'=>array('$website_show','')),
-                    'web_image_name' => array('$ifNull'=>array('$web_image_name','')),
-				)
-			),
-		);
+                    'facebook_account' => ['$ifNull'=>['$facebook_account','']],
+                    'instagram_account' => ['$ifNull'=>['$instagram_account','']],
+                    'twitter_account' => ['$ifNull'=>['$twitter_account','']],
+                    'driver_description' => ['$ifNull'=>['$driver_description','']],
+                    'driver_description_arabic' => ['$ifNull'=>['$driver_description_arabic','']],
+                    'website_show' => ['$ifNull'=>['$website_show','']],
+                    'web_image_name' => ['$ifNull'=>['$web_image_name','']],
+				]
+			],
+		];
 		$result = $this->mongo_db->aggregate(MDB_PEOPLE,$arguments);
 		//echo "<pre>"; print_r($result['result']); exit;
-		return (!empty($result['result']))?$result['result']:array();
+		return (!empty($result['result']))?$result['result']:[];
     }
     public function manager_details($uid)
     {
         /*$result = DB::select()->from(PEOPLE)->where('id', '=', $uid)->where('user_type', '=', 'M')->execute()->as_array();
         return $result; */
-		$result = $this->mongo_db->find_one(MDB_PEOPLE,array('_id' => (int)$uid, 'user_type' => 'M'));
+		$result = $this->mongo_db->find_one(MDB_PEOPLE,['_id' => (int)$uid, 'user_type' => 'M']);
 		//print_r($result); exit;
-		$res = (!empty($result))?$result:array();
+		$res = (!empty($result))?$result:[];
         return $res;
     }
 	public function taxicompany_details()
     {
         /*$result = DB::select()->from(COMPANY)->where('company_status', '=', 'A')->order_by('company_name', 'asc')->execute()->as_array();
         return $result;*/
-		$result = $this->mongo_db->find(MDB_COMPANY,array('companydetails.company_status' => 'A'),array('_id','companydetails'))->sort(array('companydetails.company_name' => 1));
+		$result = $this->mongo_db->find(MDB_COMPANY,['companydetails.company_status' => 'A'],['_id','companydetails'])->sort(['companydetails.company_name' => 1]);
 		//echo "<pre>"; print_r(iterator_to_array($result)); exit;
-		return (!empty($result))?iterator_to_array($result):array();
+		return (!empty($result))?iterator_to_array($result):[];
     }
 	 public function peoplecompany_details($uid)
     {
         /*$result = DB::select()->from(PEOPLE)->where('id', '=', $uid)->where('user_type', '=', 'M')->execute()->as_array();
         return $result; */
-		$result = $this->mongo_db->find(MDB_PEOPLE,array('_id' => (int)$uid));
+		$result = $this->mongo_db->find(MDB_PEOPLE,['_id' => (int)$uid]);
 		//print_r(iterator_to_array($result)); exit;
-		$res = (!empty($result))?iterator_to_array($result):array();
+		$res = (!empty($result))?iterator_to_array($result):[];
         return $res;
     }
 	
@@ -1421,19 +1421,19 @@ Class Model_Edit extends Model
         return $result;*/
 		
 		//MongoDB
-		$ops = array(
-			array('$match'=>array('user_type'=>'S','_id'=>(int)$uid)),
-			array(
-				'$lookup' => array(
+		$ops = [
+			['$match'=>['user_type'=>'S','_id'=>(int)$uid]],
+			[
+				'$lookup' => [
 				'from'=>MDB_CSC,
 				'localField'=> "login_country",
 				'foreignField' => "_id",
 				'as'=> "countrydetails"
-				)
-			),
-			array('$unwind'=>'$countrydetails'),
-			array(
-				'$project' => array(
+				]
+			],
+			['$unwind'=>'$countrydetails'],
+			[
+				'$project' => [
 				'country_name' => '$countrydetails.country_name',
 				'name' => '$name',
 				'email' => '$email',
@@ -1442,12 +1442,12 @@ Class Model_Edit extends Model
 				'lastname' => '$lastname',
 				'login_country' => '$login_country',
 				'phone' => '$phone'
-				)
-			)
-		);
+				]
+			]
+		];
 		$results = $this->mongo_db->aggregate(MDB_PEOPLE,$ops);
 		//echo '<pre>';print_r($results);exit;
-		return (!empty($results['result']))?$results['result']:array();
+		return (!empty($results['result']))?$results['result']:[];
 
     }
     //to get driver's licence and insurance details from driver info table
@@ -1457,12 +1457,12 @@ Class Model_Edit extends Model
         return $result;*/
 	
 		//MongoDB
-		$arguments = array(
-			array('$match'=>array('_id'=>(int)$driver_id)),
-			array('$unwind'=>'$driverinfo'),
-			array('$unwind'=>'$loc'),
-			array(
-				'$project' => array(
+		$arguments = [
+			['$match'=>['_id'=>(int)$driver_id]],
+			['$unwind'=>'$driverinfo'],
+			['$unwind'=>'$loc'],
+			[
+				'$project' => [
 					'loc' => '$loc.coordinates',
 					'driver_license_expire_date' => '$driverinfo.driver_license_expire_date',
 					'driver_pco_license_number' => '$driverinfo.driver_pco_license_number',
@@ -1471,12 +1471,12 @@ Class Model_Edit extends Model
 					'driver_insurance_expire_date' => '$driverinfo.driver_insurance_expire_date',
 					'driver_national_insurance_number' => '$driverinfo.driver_national_insurance_number',
 					'driver_national_insurance_expire_date' => '$driverinfo.driver_national_insurance_expire_date'
-				)
-			)
-		);
+				]
+			]
+		];
 		$result = $this->mongo_db->aggregate(MDB_DRIVER_INFO,$arguments);
 		//echo '<pre>';print_r($result['result']);exit;
-		return (!empty($result['result']))?$result['result']:array();
+		return (!empty($result['result']))?$result['result']:[];
     }
     // To Check User Name is Already Available or Not
     public static function checkusername($name, $uid)
@@ -1527,7 +1527,7 @@ Class Model_Edit extends Model
 			//MongoDB
 			$result = $this->mongo_db->update(MDB_PEOPLE,array('_id'=>(int)$uid),array('$set'=>$param),array('upsert'=>false));
         } else {*/
-			$param = array(
+			$param = [
 				'name' => $post['firstname'],
 				'address' => $post['address'],
 				'login_country' => (int)$post['country'],
@@ -1549,12 +1549,12 @@ Class Model_Edit extends Model
                 'driver_description'=>$post['driver_description'],
                 'driver_description_arabic'=>$post['driver_description_arabic'],
                 'website_show'=>(int)$web_status,                
-			);
+			];
             if($web_img){
                 $param['web_image_name'] = $web_img;
             }
 			//MongoDB
-			$result = $this->mongo_db->update(MDB_PEOPLE,array('_id'=>(int)$uid),array('$set'=>$param),array('upsert'=>false));
+			$result = $this->mongo_db->update(MDB_PEOPLE,['_id'=>(int)$uid],['$set'=>$param],['upsert'=>false]);
        // }
 		/*
 		$arguments = array(array('$unwind' => '$stateinfo'),array('$unwind' => '$stateinfo.cityinfo'),
@@ -1583,16 +1583,16 @@ Class Model_Edit extends Model
         } */
         $latitude = $post['latitude'];
         $longitude = $post['longitude'];
-		$driver_data = array(
-		    'loc'=>array('type' => 'Point', 'coordinates'=>array((double)$longitude,(double)$latitude)),
-		);
+		$driver_data = [
+		    'loc'=>['type' => 'Point', 'coordinates'=>[(double)$longitude,(double)$latitude]],
+		];
 		//echo '<pre>'; 		print_r($driver_data);
 		//exit;
-		$result = $this->mongo_db->update(MDB_DRIVER_INFO,array('_id'=>(int)$uid),array('$set'=>$driver_data),array('upsert'=>false));
+		$result = $this->mongo_db->update(MDB_DRIVER_INFO,['_id'=>(int)$uid],['$set'=>$driver_data],['upsert'=>false]);
 		//Driver Info
-		$driver_info_data = array(
-			'driverinfo' => array(
-				array(
+		$driver_info_data = [
+			'driverinfo' => [
+				[
 					'driver_license_expire_date' => new \MongoDB\BSON\UTCDateTime(strtotime($post['driver_license_expire_date']) * 1000),
 					'driver_pco_license_number' => $post['driver_pco_license_number'],
 					'driver_pco_license_expire_date'=> new \MongoDB\BSON\UTCDateTime(strtotime($post['driver_pco_license_expire_date']) * 1000),
@@ -1600,10 +1600,10 @@ Class Model_Edit extends Model
 					'driver_insurance_expire_date'=> new \MongoDB\BSON\UTCDateTime(strtotime($post['driver_insurance_expire_date']) * 1000),
 					'driver_national_insurance_number'=>$post['driver_national_insurance_number'],
 					'driver_national_insurance_expire_date'=> new \MongoDB\BSON\UTCDateTime(strtotime($post['driver_national_insurance_expire_date']) * 1000)
-				)
-			)
-		);	
-		$driver_info = $this->mongo_db->update(MDB_DRIVER_INFO,array('_id'=>(int)$uid),array('$set'=>$driver_info_data),array('upsert'=>false));
+				]
+			]
+		];	
+		$driver_info = $this->mongo_db->update(MDB_DRIVER_INFO,['_id'=>(int)$uid],['$set'=>$driver_info_data],['upsert'=>false]);
         //the condition to get the response 1 if driver or driver info detials changed
         if ($result || $driver_info) {
             return 1;
@@ -1617,8 +1617,8 @@ Class Model_Edit extends Model
         return $result;*/
 		
 		//MongoDB
-		$res = $this->mongo_db->find_one(MDB_PACKAGE,array('_id'=>(int)$uid),array('_id','package_name','package_description','no_of_taxi','no_of_driver','package_price','days_expire','driver_tracking','package_status','package_type'));
-		return (!empty($res))?$res:array();
+		$res = $this->mongo_db->find_one(MDB_PACKAGE,['_id'=>(int)$uid],['_id','package_name','package_description','no_of_taxi','no_of_driver','package_price','days_expire','driver_tracking','package_status','package_type']);
+		return (!empty($res))?$res:[];
     }
     // To Check Company Name is Already Available or Not
     public static function checkpackagename($packagename, $uid)
@@ -1655,7 +1655,7 @@ Class Model_Edit extends Model
             return 0;
         }*/
 		
-		$query = array(
+		$query = [
             'package_name' => $post['package_name'],
             'package_description' => $post['package_description'],
             'no_of_taxi' => $post['no_of_taxi'],
@@ -1664,10 +1664,10 @@ Class Model_Edit extends Model
             'days_expire' => $post['days_expire'],
             'package_type' => $post['package_type'],
             'driver_tracking' => $driver_tracking
-        );
+        ];
 		
 		//MongoDB
-		$result = $this->mongo_db->update(MDB_PACKAGE,array('_id'=>(int)$uid),array('$set'=>$query),array('upsert'=>false));
+		$result = $this->mongo_db->update(MDB_PACKAGE,['_id'=>(int)$uid],['$set'=>$query],['upsert'=>false]);
 		return (empty($result['err']))?1:$result['err'];
     }
     // Check Whether Country details is Already Exist or Not
@@ -1677,8 +1677,8 @@ Class Model_Edit extends Model
         return $result;*/
 		
 		//MongoDB
-		$res = $this->mongo_db->find_one(MDB_CSC,array('_id'=>(int)$uid),array('_id','country_name','iso_country_code','telephone_code','currency_code','currency_symbol','country_status','default'));
-		return (!empty($res))?$res:array();
+		$res = $this->mongo_db->find_one(MDB_CSC,['_id'=>(int)$uid],['_id','country_name','iso_country_code','telephone_code','currency_code','currency_symbol','country_status','default']);
+		return (!empty($res))?$res:[];
     }
 	public function country_details()
     {
@@ -1686,49 +1686,49 @@ Class Model_Edit extends Model
         return $result;*/
 		
 		//MongoDB
-		$res = $this->mongo_db->find(MDB_CSC,array('country_status'=>'A'),array('_id','country_name'))->sort(array('country_name'=>1));
-		return (!empty($res))?iterator_to_array($res):array();
+		$res = $this->mongo_db->find(MDB_CSC,['country_status'=>'A'],['_id','country_name'])->sort(['country_name'=>1]);
+		return (!empty($res))?iterator_to_array($res):[];
     }
     public function validate_editcountry($arr, $uid)
     {
         return Validation::factory($arr)->rule('country_name', 'not_empty')
         //->rule('country_name', 'alpha_dash')
-            ->rule('country_name', 'Model_Edit::check_reg_countryname', array(
+            ->rule('country_name', 'Model_Edit::check_reg_countryname', [
             ':value'
-        ))->rule('country_name', 'min_length', array(
+        ])->rule('country_name', 'min_length', [
             ':value',
             '2'
-        ))->rule('country_name', 'max_length', array(
+        ])->rule('country_name', 'max_length', [
             ':value',
             '30'
-        ))->rule('country_name', 'Model_Edit::checkcountryname', array(
+        ])->rule('country_name', 'Model_Edit::checkcountryname', [
             ':value',
             $uid
-        ))->rule('iso_country_code', 'not_empty')->rule('iso_country_code', 'min_length', array(
+        ])->rule('iso_country_code', 'not_empty')->rule('iso_country_code', 'min_length', [
             ':value',
             '2'
-        ))->rule('iso_country_code', 'max_length', array(
+        ])->rule('iso_country_code', 'max_length', [
             ':value',
             '5'
-        ))->rule('iso_country_code', 'Model_Edit::checkisocountrycode', array(
+        ])->rule('iso_country_code', 'Model_Edit::checkisocountrycode', [
             ':value',
             $uid
-        ))->rule('telephone_code', 'not_empty')->rule('telephone_code', 'min_length', array(
+        ])->rule('telephone_code', 'not_empty')->rule('telephone_code', 'min_length', [
             ':value',
             '2'
-        ))->rule('telephone_code', 'max_length', array(
+        ])->rule('telephone_code', 'max_length', [
             ':value',
             '5'
-        ))->rule('currency_code', 'not_empty')->rule('currency_code', 'min_length', array(
+        ])->rule('currency_code', 'not_empty')->rule('currency_code', 'min_length', [
             ':value',
             '2'
-        ))->rule('currency_code', 'max_length', array(
+        ])->rule('currency_code', 'max_length', [
             ':value',
             '5'
-        ))->rule('currency_symbol', 'not_empty')->rule('currency_symbol', 'max_length', array(
+        ])->rule('currency_symbol', 'not_empty')->rule('currency_symbol', 'max_length', [
             ':value',
             '5'
-        ));
+        ]);
     }
     public function validate_edit_template($arr, $uid)
     {
@@ -1750,7 +1750,7 @@ Class Model_Edit extends Model
 		$cid = (int)$uid;
 		//MongoDB
 		$mongodb = MangoDB::instance('default');
-		$res = $mongodb->count(MDB_CSC,array('country_name'=>new MongoRegex("/^$name/i"),'_id'=>array('$ne'=>$cid)),array('country_name'));
+		$res = $mongodb->count(MDB_CSC,['country_name'=>new \MongoDB\BSON\Regex('^' . $name, 'i'),'_id'=>['$ne'=>$cid]],['country_name']);
 		return ($res > 0)?false:true;
     }
     public static function checkfaqtitle($faq, $fid)
@@ -1773,23 +1773,23 @@ Class Model_Edit extends Model
 		$cid = (int)$uid;
 		//MongoDB
 		$mongodb = MangoDB::instance('default');
-		$res = $mongodb->count(MDB_CSC,array('iso_country_code'=>new MongoRegex("/^$iso_country_code/i"),'_id'=>array('$ne'=>$cid)),array('iso_country_code'));
+		$res = $mongodb->count(MDB_CSC,['iso_country_code'=>new \MongoDB\BSON\Regex('^' . $iso_country_code, 'i'),'_id'=>['$ne'=>$cid]],['iso_country_code']);
 		return ($res > 0)?false:true;
     }
     public function editcountry($uid, $post)
     {
-		$query = array(
+		$query = [
             'country_name' => $post['country_name'],
             'iso_country_code' => $post['iso_country_code'],
             'telephone_code' => $post['telephone_code'],
             'currency_code' => $post['currency_code'],
             'currency_symbol' => $post['currency_symbol']
-		);
+		];
         /*$result = DB::update(COUNTRY)->set($query)->where('country_id', '=', $uid)->execute();
         return ($result)?1:0;*/
 		
 		//MongoDB
-		$result = $this->mongo_db->update(MDB_CSC,array('_id'=>(int)$uid),array('$set'=>$query),array('upsert'=>true));
+		$result = $this->mongo_db->update(MDB_CSC,['_id'=>(int)$uid],['$set'=>$query],['upsert'=>true]);
 		return (empty($result['err']))?1:$result['err'];
     }
     public function edittemplate($uid, $post)
@@ -1798,9 +1798,9 @@ Class Model_Edit extends Model
             'sms_description' => $post['sms_description']
         ))->where('sms_id', '=', $uid)->execute();
         return ($result)?1:0;*/
-		$query = array('sms_description' => $post['sms_description'], 'arabic_sms_description' => $post['arabic_sms_description']);
+		$query = ['sms_description' => $post['sms_description'], 'arabic_sms_description' => $post['arabic_sms_description']];
 		//MongoDB
-		$result = $this->mongo_db->update(MDB_SMS_TEMPLATES,array('_id'=>(int)$uid),array('$set'=>$query),array('upsert'=>true));
+		$result = $this->mongo_db->update(MDB_SMS_TEMPLATES,['_id'=>(int)$uid],['$set'=>$query],['upsert'=>true]);
 		return (empty($result['err']))?1:$result['err'];
     }
 	
@@ -1809,7 +1809,7 @@ Class Model_Edit extends Model
         //return $result = DB::select()->from(SMS_TEMPLATE)->where('sms_id','=',$id)->execute()->as_array();
 		
         //MongoDB
-        $result = $this->mongo_db->find_one(MDB_SMS_TEMPLATES, array('_id' => (int)$id),array("_id","sms_title","sms_description","arabic_sms_title","arabic_sms_description"));
+        $result = $this->mongo_db->find_one(MDB_SMS_TEMPLATES, ['_id' => (int)$id],["_id","sms_title","sms_description","arabic_sms_title","arabic_sms_description"]);
 		//echo '<pre>';print_r($response);exit;
         //$result = iterator_to_array($response);
         return $result;
@@ -1821,9 +1821,9 @@ Class Model_Edit extends Model
         return $result;*/
 	
 		//MongoDB
-        $result = $this->mongo_db->find(MDB_CSC, array('country_status' => 'A'),array("_id","country_name"));
+        $result = $this->mongo_db->find(MDB_CSC, ['country_status' => 'A'],["_id","country_name"]);
 		//echo '<pre>';print_r(iterator_to_array($result));exit;
-        $res = (!empty($result))?iterator_to_array($result):array();
+        $res = (!empty($result))?iterator_to_array($result):[];
         return $res;
     }
 	
@@ -1833,25 +1833,25 @@ Class Model_Edit extends Model
         return $result;*/
 		
 		//MongoDB
-		$ops = array(
-			array('$unwind' => '$stateinfo'),
-			array('$unwind' => '$stateinfo.cityinfo'),
+		$ops = [
+			['$unwind' => '$stateinfo'],
+			['$unwind' => '$stateinfo.cityinfo'],
 			/*array('$match' => array('stateinfo.cityinfo.city_status'=>'A','stateinfo.state_id'=>(int)DEFAULT_STATE,'_id'=>(int)DEFAULT_COUNTRY)),*/
-			array('$match' => array('stateinfo.cityinfo.city_status'=>'A')),
-			array('$project' => array('_id' => 0,
+			['$match' => ['stateinfo.cityinfo.city_status'=>'A']],
+			['$project' => ['_id' => 0,
 				'city_id' => '$stateinfo.cityinfo.city_id',
 				'city_name' => '$stateinfo.cityinfo.city_name',
-				)
-			),
-			array(
-				'$sort' => array(
+				]
+			],
+			[
+				'$sort' => [
 					'country_name' => 1
-				),
-			)
-		);
+				],
+			]
+		];
 		$result = $this->mongo_db->aggregate(MDB_CSC,$ops);
 		//echo '<pre>';print_r($result);exit;
-		return (!empty($result['result']))?$result['result']:array();
+		return (!empty($result['result']))?$result['result']:[];
     }
     public function state_details()
     {
@@ -1859,32 +1859,32 @@ Class Model_Edit extends Model
         return $result;*/
 		
 		//MongoDB
-		$ops = array(
-			array('$unwind' => '$stateinfo'),
+		$ops = [
+			['$unwind' => '$stateinfo'],
 			/*array('$match' => array('stateinfo.state_status'=>'A','_id'=>(int)DEFAULT_COUNTRY)),*/
-			array('$match' => array('stateinfo.state_status'=>'A')),
-			array('$project' => array('_id' => 0,
+			['$match' => ['stateinfo.state_status'=>'A']],
+			['$project' => ['_id' => 0,
 				'state_id' => '$stateinfo.state_id', 
 				'state_name' => '$stateinfo.state_name',
-				)
-			),
-			array(
-				'$sort' => array(
+				]
+			],
+			[
+				'$sort' => [
 					'country_name' => 1
-				),
-			)
-		);
+				],
+			]
+		];
 		$result = $this->mongo_db->aggregate(MDB_CSC,$ops);
 		//echo '<pre>';print_r($result);exit;
-		return (!empty($result['result']))?$result['result']:array();
+		return (!empty($result['result']))?$result['result']:[];
     }
     public function country_details_new()
     {
         /*$result = DB::select()->from(COUNTRY)->join(STATE)->on(STATE . '.state_countryid', '=', COUNTRY . '.country_id')->where('country_status', '=', 'A')->where('state_status', '=', 'A')->order_by('country_name', 'asc')->group_by(COUNTRY . '.country_id')->execute()->as_array();
         return $result;*/		
 		//MongoDB
-		$res = $this->mongo_db->find(MDB_CSC,array('country_status'=>'A'),array('_id','country_name'))->sort(array('country_name'=>1));
-		return (!empty($res))?iterator_to_array($res):array();
+		$res = $this->mongo_db->find(MDB_CSC,['country_status'=>'A'],['_id','country_name'])->sort(['country_name'=>1]);
+		return (!empty($res))?iterator_to_array($res):[];
     
     }
     public function city_countrydetails($countryid,$stateid,$cityid)
@@ -1909,42 +1909,42 @@ Class Model_Edit extends Model
 		return $res;*/
 		
 		//MongoDB with aggregate process only
-		$ops = array(
-			array('$unwind' => '$stateinfo'),
-			array('$unwind' => '$stateinfo.cityinfo'),
-			array('$match' => array('stateinfo.cityinfo.city_id'=>$city_id,'stateinfo.cityinfo.city_stateid'=>$state_id,'stateinfo.cityinfo.city_countryid'=>$country_id)),
-			array('$project' => array('_id' => 0,
+		$ops = [
+			['$unwind' => '$stateinfo'],
+			['$unwind' => '$stateinfo.cityinfo'],
+			['$match' => ['stateinfo.cityinfo.city_id'=>$city_id,'stateinfo.cityinfo.city_stateid'=>$state_id,'stateinfo.cityinfo.city_countryid'=>$country_id]],
+			['$project' => ['_id' => 0,
 				'city_id' => '$stateinfo.cityinfo.city_id', 
 				'city_name' => '$stateinfo.cityinfo.city_name',
 				'city_countryid' => '$stateinfo.cityinfo.city_countryid',
 				'city_stateid' => '$stateinfo.cityinfo.city_stateid',
 				'zipcode' => '$stateinfo.cityinfo.zipcode',
 				'city_model_fare' => '$stateinfo.cityinfo.city_model_fare',
-			))
-		);
+			]]
+		];
 		$result = $this->mongo_db->aggregate(MDB_CSC,$ops);
 		//echo '<pre>';print_r($result);exit;
-		return (!empty($result['result']))?$result['result'][0]:array();
+		return (!empty($result['result']))?$result['result'][0]:[];
     }
     
     public function validate_editcity($arr, $uid)
     {
         return Validation::factory($arr)->rule('city_name', 'not_empty')
         //->rule('city_name', 'alpha_dash')
-            ->rule('city_name', 'Model_Edit::check_reg_city_name', array(
+            ->rule('city_name', 'Model_Edit::check_reg_city_name', [
             ':value'
-        ))->rule('city_name', 'min_length', array(
+        ])->rule('city_name', 'min_length', [
             ':value',
             '2'
-        ))->rule('city_name', 'max_length', array(
+        ])->rule('city_name', 'max_length', [
             ':value',
             '30'
-        ))->rule('city_name', 'Model_Edit::checkcityname', array(
+        ])->rule('city_name', 'Model_Edit::checkcityname', [
             ':value',
            DEFAULT_STATE,// $arr['state_name'],
             DEFAULT_COUNTRY, //$arr['country_name'],
             $uid
-        ))->rule('zipcode', 'not_empty');
+        ])->rule('zipcode', 'not_empty');
 		//->rule('state_name', 'not_empty')
 		//->rule('country_name', 'not_empty')
 		/*->rule('city_model_fare', 'not_empty')
@@ -1966,8 +1966,8 @@ Class Model_Edit extends Model
 		$country_id = (int)$countryid;
 		$state_id = (int)$stateid;
 		$mongodb = MangoDB::instance('default');
-		$res = $mongodb->find(MDB_CSC,array( "\$and" => array(array( "stateinfo.cityinfo.city_name" => new MongoRegex("/^$name/i")) , array('stateinfo.cityinfo.city_countryid'=>array('$eq'=>$country_id)),array('stateinfo.cityinfo.city_stateid'=>array('$eq'=>$state_id)),array('stateinfo.cityinfo.city_id'=>array('$ne'=>$city_id)))),array('stateinfo.cityinfo.city_name'))->sort(array('stateinfo.cityinfo.city_id'=>-1));
-		$result = (!empty($res))?iterator_to_array($res):array();
+		$res = $mongodb->find(MDB_CSC,[ "\$and" => [[ "stateinfo.cityinfo.city_name" => new \MongoDB\BSON\Regex('^' . $name, 'i')] , ['stateinfo.cityinfo.city_countryid'=>['$eq'=>$country_id]],['stateinfo.cityinfo.city_stateid'=>['$eq'=>$state_id]],['stateinfo.cityinfo.city_id'=>['$ne'=>$city_id]]]],['stateinfo.cityinfo.city_name'])->sort(['stateinfo.cityinfo.city_id'=>-1]);
+		$result = (!empty($res))?iterator_to_array($res):[];
 		//echo '<pre>';print_r($result);
 		return (count($result) > 0)?false:true;
     }
@@ -1996,7 +1996,7 @@ Class Model_Edit extends Model
 		$city_default = $cityindex['city_default'];
 		$city_index = $cityindex['city_index'];
 		
-		$data = array(
+		$data = [
 			"city_id" => $city_id,
 			"city_status" => $city_status,
 			"default" => (int)$city_default,
@@ -2005,11 +2005,11 @@ Class Model_Edit extends Model
             'city_stateid' => $state_id,
             'city_countryid' => $country_id
             //'city_model_fare' => (float)$post['city_model_fare']
-        );
+        ];
 		$index_key = "stateinfo.".$state_index.".cityinfo.".$city_index;
 		//echo $index_key;exit;
-		$city_array = array($index_key => $data );
-		$result = $this->mongo_db->update(MDB_CSC,array('_id'=>$country_id,'stateinfo.state_id'=>$state_id,'stateinfo.cityinfo.city_id'=>$city_id),array('$set'=>$city_array),array('upsert'=>true));
+		$city_array = [$index_key => $data ];
+		$result = $this->mongo_db->update(MDB_CSC,['_id'=>$country_id,'stateinfo.state_id'=>$state_id,'stateinfo.cityinfo.city_id'=>$city_id],['$set'=>$city_array],['upsert'=>true]);
 		//echo '<pre>';print_r($result);exit;
 		return (empty($result['err']))?1:$result['errmsg'];
     }
@@ -2033,36 +2033,36 @@ Class Model_Edit extends Model
 		//print_r($res);exit;
 		return $res; */
 		//MongoDB with aggregate process only
-		$ops = array(
-			array('$unwind' => '$stateinfo'),
-			array('$match' => array('stateinfo.state_id'=>$state_id,'stateinfo.state_countryid'=>$country_id)),
-			array('$project' => array('_id' => 0,
+		$ops = [
+			['$unwind' => '$stateinfo'],
+			['$match' => ['stateinfo.state_id'=>$state_id,'stateinfo.state_countryid'=>$country_id]],
+			['$project' => ['_id' => 0,
 				'state_id' => '$stateinfo.state_id', 
 				'state_name' => '$stateinfo.state_name',
 				'state_countryid' => '$stateinfo.state_countryid',
-			))
-		);
+			]]
+		];
 		$result = $this->mongo_db->aggregate(MDB_CSC,$ops);
 		//echo '<pre>';print_r($result);exit;
-		return (!empty($result['result']))?$result['result'][0]:array();
+		return (!empty($result['result']))?$result['result'][0]:[];
     }
     public function validate_editstate($arr, $uid)
     {
         return Validation::factory($arr)->rule('state_name', 'not_empty')
         //->rule('state_name', 'alpha_dash')
-            ->rule('state_name', 'Model_Edit::check_reg_state_name', array(
+            ->rule('state_name', 'Model_Edit::check_reg_state_name', [
             ':value'
-        ))->rule('state_name', 'min_length', array(
+        ])->rule('state_name', 'min_length', [
             ':value',
             '2'
-        ))->rule('state_name', 'max_length', array(
+        ])->rule('state_name', 'max_length', [
             ':value',
             '30'
-        ))->rule('state_name', 'Model_Edit::checkstatename', array(
+        ])->rule('state_name', 'Model_Edit::checkstatename', [
             ':value',
             $arr['country_name'],
             $uid
-        ))->rule('country_name', 'not_empty');
+        ])->rule('country_name', 'not_empty');
     }
 	// Check if the state_name already exists in the database
     public static function checkstatename($name, $countryid, $uid)
@@ -2074,8 +2074,8 @@ Class Model_Edit extends Model
 		$cid = (int)$uid;
 		$sid = (int)$countryid;
 		$mongodb = MangoDB::instance('default');
-		$res = $mongodb->find(MDB_CSC,array( "\$and" => array(array( "stateinfo.state_name" => new MongoRegex("/^$name/i")) , array('_id'=>array('$eq'=>$sid)),array('stateinfo.state_id'=>array('$ne'=>$cid)))),array('stateinfo.state_name'))->sort(array('stateinfo.state_id'=>-1));
-		$result = (!empty($res))?iterator_to_array($res):array();
+		$res = $mongodb->find(MDB_CSC,[ "\$and" => [[ "stateinfo.state_name" => new \MongoDB\BSON\Regex('^' . $name, 'i')] , ['_id'=>['$eq'=>$sid]],['stateinfo.state_id'=>['$ne'=>$cid]]]],['stateinfo.state_name'])->sort(['stateinfo.state_id'=>-1]);
+		$result = (!empty($res))?iterator_to_array($res):[];
 		//echo '<pre>';print_r($result);
 		return (count($result) > 0)?false:true;
     }
@@ -2088,12 +2088,12 @@ Class Model_Edit extends Model
         return (count($result) > 0)?false:true;*/
 		
 		//MongoDB
-		$query = array(
+		$query = [
             'stateinfo.state_name' => $post['state_name'],
             'stateinfo.state_countryid' => (int)$post['country_name']
-        );
+        ];
 		$cid = (int)$post['country_name'];
-		$result = $this->mongo_db->update(MDB_CSC,array('stateinfo.state_id'=>(int)$uid,'stateinfo.state_countryid'=>(int)$cid),array('$set'=>$query),array('upsert'=>true));
+		$result = $this->mongo_db->update(MDB_CSC,['stateinfo.state_id'=>(int)$uid,'stateinfo.state_countryid'=>(int)$cid],['$set'=>$query],['upsert'=>true]);
 		return (empty($result['err']))?1:$result['errmsg'];
     }
     public function validate_editmanager($arr, $uid)
@@ -2101,39 +2101,39 @@ Class Model_Edit extends Model
         return Validation::factory($arr)
 		->rule('firstname', 'not_empty')
         //->rule('firstname', 'alpha_dash') 
-        ->rule('firstname', 'min_length', array(
+        ->rule('firstname', 'min_length', [
             ':value',
             '4'
-        ))->rule('firstname', 'max_length', array(
+        ])->rule('firstname', 'max_length', [
             ':value',
             '30'
-        ))->rule('lastname', 'not_empty')
+        ])->rule('lastname', 'not_empty')
         //->rule('lastname', 'alpha_dash')             
         //->rule('lastname', 'min_length', array(':value', '4'))            
         //->rule('lastname', 'max_length', array(':value', '30'))
         ->rule('email', 'not_empty')->rule('email', 'email')
-		->rule('email', 'max_length', array(
+		->rule('email', 'max_length', [
             ':value',
             '50'
-        ))->rule('email', 'Model_Edit::checkemail', array(
+        ])->rule('email', 'Model_Edit::checkemail', [
             ':value',
             $uid
-        ))->rule('phone', 'not_empty')
+        ])->rule('phone', 'not_empty')
         //->rule('phone', 'numeric')
-            ->rule('phone', 'min_length', array(
+            ->rule('phone', 'min_length', [
             ':value',
             '7'
-        ))->rule('phone', 'max_length', array(
+        ])->rule('phone', 'max_length', [
             ':value',
             '20'
-        ))
+        ])
         //->rule('phone', 'phone', array(':value'))
-            ->rule('phone', 'contact_phone', array(
+            ->rule('phone', 'contact_phone', [
             ':value'
-        ))->rule('phone', 'Model_Edit::checkphone', array(
+        ])->rule('phone', 'Model_Edit::checkphone', [
             ':value',
             $uid
-        ))
+        ])
         //->rule('company_name', 'not_empty')
         //->rule('company_name', 'alpha_dash')             
         //->rule('company_name', 'Model_Edit::checkmanagercompany', array(':value',$arr['city'],$arr['state'],$arr['country'],$uid))
@@ -2144,34 +2144,34 @@ Class Model_Edit extends Model
     }
     public function validate_editadmin($arr, $uid)
     {
-        return Validation::factory($arr)->rule('firstname', 'not_empty')->rule('firstname', 'min_length', array(
+        return Validation::factory($arr)->rule('firstname', 'not_empty')->rule('firstname', 'min_length', [
             ':value',
             '4'
-        ))->rule('firstname', 'max_length', array(
+        ])->rule('firstname', 'max_length', [
             ':value',
             '30'
-        ))->rule('lastname', 'not_empty')->rule('email', 'not_empty')->rule('email', 'email')->rule('email', 'max_length', array(
+        ])->rule('lastname', 'not_empty')->rule('email', 'not_empty')->rule('email', 'email')->rule('email', 'max_length', [
             ':value',
             '50'
-        ))->rule('email', 'Model_Edit::checkemail', array(
+        ])->rule('email', 'Model_Edit::checkemail', [
             ':value',
             $uid
-        ))->rule('phone', 'not_empty')
+        ])->rule('phone', 'not_empty')
         //->rule('phone', 'numeric')
-            ->rule('phone', 'min_length', array(
+            ->rule('phone', 'min_length', [
             ':value',
             '7'
-        ))->rule('phone', 'max_length', array(
+        ])->rule('phone', 'max_length', [
             ':value',
             '20'
-        ))
+        ])
         //->rule('phone', 'phone', array(':value'))
-            ->rule('phone', 'contact_phone', array(
+            ->rule('phone', 'contact_phone', [
             ':value'
-        ))->rule('phone', 'Model_Edit::checkphone', array(
+        ])->rule('phone', 'Model_Edit::checkphone', [
             ':value',
             $uid
-        ))->rule('address', 'not_empty')->rule('country', 'not_empty');
+        ])->rule('address', 'not_empty')->rule('country', 'not_empty');
     }
     public static function checkmanagercompany($companyname, $cityid, $stateid, $countryid, $uid)
     {
@@ -2208,7 +2208,7 @@ Class Model_Edit extends Model
         $post['state'] = isset($post['state'])?$post['state']:DEFAULT_STATE;
 		$post['city'] = isset($post['city'])?$post['city']:DEFAULT_CITY;
 		//MongoDB
-		$array = array(
+		$array = [
             'name' => $post['firstname'],
             'address' => $post['address'],
             'login_country' => (int)$post['country'],
@@ -2218,8 +2218,8 @@ Class Model_Edit extends Model
             'email' => $post['email'],
             'phone' => $post['phone'],
             'company_id' => (int)$post['company_name']
-        );
-		$result = $this->mongo_db->update(MDB_PEOPLE,array('_id'=>(int)$uid),array('$set'=>$array),array('upsert'=>true));
+        ];
+		$result = $this->mongo_db->update(MDB_PEOPLE,['_id'=>(int)$uid],['$set'=>$array],['upsert'=>true]);
 		return (empty($result['err']))?1:0;
     }
     public function edit_admin($post, $uid)
@@ -2234,7 +2234,7 @@ Class Model_Edit extends Model
         ))->where('id', '=', $uid)->execute();
         return ($result)?1:0;*/
 		//MongoDB
-		$data = array(
+		$data = [
             'name' => $post['firstname'],
             'address' => $post['address'],
             'login_country' => (int)$post['country'],
@@ -2242,19 +2242,19 @@ Class Model_Edit extends Model
             'email' => $post['email'],
             'phone' => (int)$post['phone'],
 			'updated_date' => $this->currentdate,
-        );
-		$result = $this->mongo_db->update(MDB_PEOPLE,array('_id'=>(int)$uid),array('$set'=>$data),array('upsert'=>true));
+        ];
+		$result = $this->mongo_db->update(MDB_PEOPLE,['_id'=>(int)$uid],['$set'=>$data],['upsert'=>true]);
 		//print_r($result);exit;
 		return (empty($result['err']))?1:$result['errmsg'];
     }
 	
     public function validate_editassigntaxi($arr, $uid)
     {
-        return Validation::factory($arr)->rule('company_name', 'not_empty')->rule('country', 'not_empty')->rule('state', 'not_empty')->rule('city', 'not_empty')->rule('driver', 'not_empty')->rule('startdate', 'not_empty')->rule('enddate', 'not_empty')->rule('enddate', 'Model_Edit::checkassigntaxi', array(
+        return Validation::factory($arr)->rule('company_name', 'not_empty')->rule('country', 'not_empty')->rule('state', 'not_empty')->rule('city', 'not_empty')->rule('driver', 'not_empty')->rule('startdate', 'not_empty')->rule('enddate', 'not_empty')->rule('enddate', 'Model_Edit::checkassigntaxi', [
             ':value',
             $arr,
             $uid
-        ))->rule('taxi', 'not_empty');
+        ])->rule('taxi', 'not_empty');
     }
    /* public static function checkassigntaxi($enddate, $post, $uid)
     {
@@ -2317,9 +2317,9 @@ Class Model_Edit extends Model
         $taxi_id         = $post['taxi'];
         $startdate       = $post['startdate'];
         $enddate         = $post['enddate'];
-		$match_query                     = array();
+		$match_query                     = [];
 		$match_query['mapping.mapping_status'] = 'A';
-		$match_query['mapping._id'] = array('$ne' =>(int)$uid);
+		$match_query['mapping._id'] = ['$ne' =>(int)$uid];
 		if ($driver_id) {
 			$match_query['mapping.mapping_driverid'] = (int)$driver_id;
 		}
@@ -2328,88 +2328,88 @@ Class Model_Edit extends Model
 		}
 		
 		if ($startdate && $enddate) {
-			$match_query['mapping.mapping_startdate'] = array('$gte' => $startdate);
-			$match_query['mapping.mapping_enddate'] = array('$lt' => $enddate);
+			$match_query['mapping.mapping_startdate'] = ['$gte' => $startdate];
+			$match_query['mapping.mapping_enddate'] = ['$lt' => $enddate];
 		}else{
 			if ($startdate) {
-				$match_query['mapping.mapping_startdate'] = array('$gte' => $startdate);
-				$match_query['mapping.mapping_enddate'] = array('$lt' => $startdate);
+				$match_query['mapping.mapping_startdate'] = ['$gte' => $startdate];
+				$match_query['mapping.mapping_enddate'] = ['$lt' => $startdate];
 			}
 			if ($enddate) {
-				$match_query['mapping.mapping_startdate'] = array('$gte' => $enddate);
-				$match_query['mapping.mapping_enddate'] = array('$lt' => $enddate);
+				$match_query['mapping.mapping_startdate'] = ['$gte' => $enddate];
+				$match_query['mapping.mapping_enddate'] = ['$lt' => $enddate];
 			}
 		}
 		//echo "<pre>"; print_r($match_query); exit;
-		$arguments = array(
-			array(
+		$arguments = [
+			[
 				'$unwind' => '$stateinfo'
-			),
-			array(
+			],
+			[
 				'$unwind' => '$stateinfo.cityinfo'
-			),
-			array(
-				'$lookup' => array(
+			],
+			[
+				'$lookup' => [
 					'from' => MDB_TAXI_DRIVER_MAPPING,
 					'localField' => 'stateinfo.cityinfo.city_id',
 					'foreignField' => 'mapping_countryid',
 					'foreignField' => 'mapping_cityid',
 					'as' => 'mapping'
-				)
-			),
-			array(
+				]
+			],
+			[
 				'$unwind' => '$mapping'
-			),
-			array(
-				'$lookup' => array(
+			],
+			[
+				'$lookup' => [
 					'from' => MDB_TAXI,
 					'localField' => 'mapping.mapping_taxiid',
 					'foreignField' => '_id',
 					'as' => 'taxi'
-				)
-			),
-			array(
+				]
+			],
+			[
 				'$unwind' => '$taxi'
-			),
-			array(
-				'$lookup' => array(
+			],
+			[
+				'$lookup' => [
 					'from' => MDB_COMPANY,
 					'localField' => 'mapping.mapping_companyid',
 					'foreignField' => '_id',
 					'as' => 'company'
-				)
-			),
-			array(
+				]
+			],
+			[
 				'$unwind' => '$company'
-			),
-			array(
-				'$lookup' => array(
+			],
+			[
+				'$lookup' => [
 					'from' => MDB_PEOPLE,
 					'localField' => 'mapping.mapping_driverid',
 					'foreignField' => '_id',
 					'as' => 'people'
-				)
-			),
-			array(
+				]
+			],
+			[
 				'$unwind' => '$people'
-			),
-			array(
+			],
+			[
 				'$match' => $match_query
-			),
-			array(
-				'$project' => array(
+			],
+			[
+				'$project' => [
 					'result' => '$mapping._id'
-				)
-			),
-			array(
-				'$group' => array(
+				]
+			],
+			[
+				'$group' => [
 					'_id' => NULL,
-					'count' => array(
+					'count' => [
 						'$sum' => 1
-					)
-				)
-			)
-		);
+					]
+				]
+			]
+		];
 		//mongo Instance
 		$mongo_db        = MangoDB::instance('default');
 		$result          = $mongo_db->aggregate(MDB_CSC, $arguments);
@@ -2418,54 +2418,54 @@ Class Model_Edit extends Model
 	
 	public function assigntaxi_details($uid)
     {
-        $match_query = array();
+        $match_query = [];
 		$match_query['mapping._id'] = (int)$uid;
-		$arguments = array(
-			array(
+		$arguments = [
+			[
 				'$unwind' => '$stateinfo'
-			),
-			array(
+			],
+			[
 				'$unwind' => '$stateinfo.cityinfo'
-			),
-			array(
-				'$lookup' => array(
+			],
+			[
+				'$lookup' => [
 					'from' => MDB_TAXI_DRIVER_MAPPING,
 					'localField' => 'stateinfo.cityinfo.city_id',
 					'foreignField' => 'mapping_countryid',
 					'foreignField' => 'mapping_cityid',
 					'as' => 'mapping'
-				)
-			),
-			array(
+				]
+			],
+			[
 				'$unwind' => '$mapping'
-			),
-			array(
-				'$lookup' => array(
+			],
+			[
+				'$lookup' => [
 					'from' => MDB_COMPANY,
 					'localField' => 'mapping.mapping_companyid',
 					'foreignField' => '_id',
 					'as' => 'company'
-				)
-			),
-			array(
+				]
+			],
+			[
 				'$unwind' => '$company'
-			),
-			array(
-				'$lookup' => array(
+			],
+			[
+				'$lookup' => [
 					'from' => MDB_PEOPLE,
 					'localField' => 'mapping.mapping_driverid',
 					'foreignField' => '_id',
 					'as' => 'people'
-				)
-			),
-			array(
+				]
+			],
+			[
 				'$unwind' => '$people'
-			),
-			array(
+			],
+			[
 				'$match' => $match_query
-			),
-			array(
-				'$project' => array(
+			],
+			[
+				'$project' => [
 					'mapping_companyid' => '$mapping.mapping_companyid',
 					'mapping_countryid' => '$mapping.mapping_countryid',
 					'mapping_stateid' => '$mapping.mapping_stateid',
@@ -2474,12 +2474,12 @@ Class Model_Edit extends Model
 					'mapping_taxiid' => '$mapping.mapping_taxiid',
 					'mapping_startdate' => '$mapping.mapping_startdate',
 					'mapping_enddate' => '$mapping.mapping_enddate',
-				)
-			),
-		);
+				]
+			],
+		];
 		$result    = $this->mongo_db->aggregate(MDB_CSC, $arguments);
 		//echo "<pre>";print_r($result['result']); exit;
-		return (!empty($result['result'])) ? $result['result'] : array();
+		return (!empty($result['result'])) ? $result['result'] : [];
     }
     //To update Edit Manager Functionalities
     /*public static function edit_assigntaxi($post, $uid)
@@ -2510,7 +2510,7 @@ Class Model_Edit extends Model
     } */
 	public function edit_assigntaxi($post, $uid)
     {       
-		$data      = array(
+		$data      = [
             'mapping_driverid' => (int)$post['driver'],
             'mapping_taxiid' => (int)$post['taxi'],
             'mapping_companyid' => (int)$post['company_name'],
@@ -2519,43 +2519,43 @@ Class Model_Edit extends Model
             'mapping_cityid' => (int)$post['city'],
             'mapping_startdate' => $post['startdate'],
             'mapping_enddate' => $post['enddate']
-		);
-		$result = $this->mongo_db->update(MDB_TAXI_DRIVER_MAPPING,array('_id'=>(int)$uid),array('$set'=>$data),array('upsert'=>false));
+		];
+		$result = $this->mongo_db->update(MDB_TAXI_DRIVER_MAPPING,['_id'=>(int)$uid],['$set'=>$data],['upsert'=>false]);
 		if ($result) {
-			$arguments = array(
-				array(
-					'$lookup' => array(
+			$arguments = [
+				[
+					'$lookup' => [
 						'from' => MDB_TAXI,
 						'localField' => 'mapping_taxiid',
 						'foreignField' => '_id',
 						'as' => 'taxi'
-					)
-				),
-				array(
+					]
+				],
+				[
 					'$unwind' => '$taxi'
-				),
-				array(
-					'$lookup' => array(
+				],
+				[
+					'$lookup' => [
 						'from' => MDB_PEOPLE,
 						'localField' => 'mapping_driverid',
 						'foreignField' => '_id',
 						'as' => 'people'
-					)
-				),
-				array(
+					]
+				],
+				[
 					'$unwind' => '$people'
-				),
-				array(
-					'$match' => array('people._id' => (int)$post['driver'] )
-				),
-				array(
-					'$project' => array(
+				],
+				[
+					'$match' => ['people._id' => (int)$post['driver'] ]
+				],
+				[
+					'$project' => [
 						'taxi_no' => '$taxi.taxi_no',
 						'name' => '$people.name',
 						'email' => '$people.email',
-					)
-				),
-			);
+					]
+				],
+			];
 			$result          = $this->mongo_db->aggregate(MDB_TAXI_DRIVER_MAPPING, $arguments);
 			$resultquery = (!empty($result['result']) && isset($result['result'])) ? $result['result']: 0; 
             return $resultquery;
@@ -2577,14 +2577,14 @@ Class Model_Edit extends Model
     }
     public function validate_unavailabledriver($arr, $uid)
     {
-        return Validation::factory($arr)->rule('reason', 'not_empty')->rule('startdate', 'not_empty')->rule('enddate', 'not_empty')->rule('enddate', 'Model_Manage::date_diff', array(
+        return Validation::factory($arr)->rule('reason', 'not_empty')->rule('startdate', 'not_empty')->rule('enddate', 'not_empty')->rule('enddate', 'Model_Manage::date_diff', [
             'value',
             $arr['startdate']
-        ))->rule('enddate', 'Model_Edit::checkunavailable', array(
+        ])->rule('enddate', 'Model_Edit::checkunavailable', [
             ':value',
             $arr,
             $uid
-        ));
+        ]);
     }
     public static function date_diff($enddate, $startdate)
     {
@@ -2626,11 +2626,11 @@ Class Model_Edit extends Model
     }
     public function edit_unavailabledriver($post, $uid)
     {
-        $result = DB::update(UNAVAILABILITY)->set(array(
+        $result = DB::update(UNAVAILABILITY)->set([
             'u_reason' => $post['reason'],
             'u_startdate' => $post['startdate'],
             'u_enddate' => $post['enddate']
-        ))->where('u_id', '=', $uid)->execute();
+        ])->where('u_id', '=', $uid)->execute();
         if ($result) {
             return 1;
         } else {
@@ -2652,34 +2652,34 @@ Class Model_Edit extends Model
     //Validate the edit menu
     public function validate_editmenu($arr, $mid)
     {
-        return Validation::factory($arr)->rule('menu_name', 'not_empty')->rule('menu_name', 'min_length', array(
+        return Validation::factory($arr)->rule('menu_name', 'not_empty')->rule('menu_name', 'min_length', [
             ':value',
             '2'
-        ))->rule('menu_name', 'max_length', array(
+        ])->rule('menu_name', 'max_length', [
             ':value',
             '30'
-        ))->rule('slug', 'not_empty')->rule('menu_name','Model_Edit::menu_name_exits',array(':value',$mid));
+        ])->rule('slug', 'not_empty')->rule('menu_name','Model_Edit::menu_name_exits',[':value',$mid]);
     }
     //selected manu 
     public function get_menu($mid)
     {
         /*$result = DB::select()->from(MENU)->where(MENU . '.menu_id', '=', $mid)->execute()->as_array();
         return $result;*/
-        $ops = array(
-					array('$match'=>array('_id'=>(int)$mid)),
-					array(
-						'$project' => array(
+        $ops = [
+					['$match'=>['_id'=>(int)$mid]],
+					[
+						'$project' => [
 						'_id' => '$_id',
 						'menu_name' => '$menu_name',
 						'arabic_menu_name' => '$arabic_menu_name',
 						'menu_link' => '$menu_link',
 						'status_post' => '$status_post',
-						)
-					),
-					array(
-						'$sort' => array("_id"=>-1)
-					),
-			);
+						]
+					],
+					[
+						'$sort' => ["_id"=>-1]
+					],
+			];
         $result = $this->mongo_db->aggregate(MDB_CMS,$ops);
         //print_r(($result));exit;
         return $result['result'];
@@ -2692,13 +2692,13 @@ Class Model_Edit extends Model
         } else if ($status == 'Unpublish') {
             $status = 'U';
         }
-        $cms_data      = array(
+        $cms_data      = [
 			'menu_name' => $post['menu_name'],
 			'arabic_menu_name' => $post['arabic_menu_name'],
 			'menu_link' => $post['slug'],
 			'status_post' => $status,
-		);
-		$cms_result = $this->mongo_db->update(MDB_CMS,array('_id'=>(int)$mid),array('$set'=>$cms_data),array('upsert'=>false));
+		];
+		$cms_result = $this->mongo_db->update(MDB_CMS,['_id'=>(int)$mid],['$set'=>$cms_data],['upsert'=>false]);
 		return (count($cms_result))?1:0;
         /*$result = DB::update(MENU)->set(array(
             'menu_name' => $post['menu_name'],
@@ -2719,7 +2719,7 @@ Class Model_Edit extends Model
             return 1;
         }*/
         $mongodb = MangoDB::instance('default');
-		$result = $mongodb->count(MDB_CMS,array('_id'=>array('$ne'=>(int)$mid),"menu_name"=>$menu_name));
+		$result = $mongodb->count(MDB_CMS,['_id'=>['$ne'=>(int)$mid],"menu_name"=>$menu_name]);
         return ($result ==1)?false:true;
     }
     //String Convert the URL format
@@ -2740,10 +2740,10 @@ Class Model_Edit extends Model
     //Validate the edit menu
     public function validate_editmile($arr, $mid)
     {
-        return Validation::factory($arr)->rule('mile', 'not_empty')->rule('mile', 'digit')->rule('mile', 'max_length', array(
+        return Validation::factory($arr)->rule('mile', 'not_empty')->rule('mile', 'digit')->rule('mile', 'max_length', [
             ':value',
             '30'
-        ));
+        ]);
     }
     //selected mile 
     public function get_mile($mid)
@@ -2753,9 +2753,9 @@ Class Model_Edit extends Model
     }
     public function update_mile($mid, $post)
     {
-        $result = DB::update(MILES)->set(array(
+        $result = DB::update(MILES)->set([
             'mile_name' => $post['mile']
-        ))->where('id', '=', $mid)->execute();
+        ])->where('id', '=', $mid)->execute();
         if ($result) {
             return 1;
         } else {
@@ -2910,22 +2910,22 @@ Class Model_Edit extends Model
         }
         if ($id > 0) {
             if (isset($image)) {
-                $query = array(
+                $query = [
                     'banner_image' => $image,
                     'type' => '2'
-                );
+                ];
             }
             $result = DB::update(COMPANY_CMS)->set($query)->where('id', '=', $id)->execute();
         } else {
-            $result = DB::insert(CMS)->columns(array(
+            $result = DB::insert(CMS)->columns([
                 'banner_image',
                 'type',
                 'status'
-            ))->values(array(
+            ])->values([
                 $image,
                 '2',
                 '1'
-            ))->execute();
+            ])->execute();
         }
         if ($result) {
             return 1;
@@ -2936,10 +2936,10 @@ Class Model_Edit extends Model
     public function update_banner_details($tag, $image_tag, $id)
     {
         $company_id = $this->company_id;
-        $query      = array(
+        $query      = [
             'alt_tags' => $tag,
             'image_tag' => $image_tag
-        );
+        ];
         $rs         = DB::update(COMPANY_CMS)->set($query)->where('company_id', '=', $company_id)->where('id', '=', $id)->execute();
         if ($rs) {
             return 1;
@@ -2955,18 +2955,18 @@ Class Model_Edit extends Model
     }
     public function validate_editfaq($arr, $fid)
     {
-        return Validation::factory($arr)->rule('faq_title', 'not_empty')->rule('faq_title', 'Model_Edit::checkfaqtitle', array(
+        return Validation::factory($arr)->rule('faq_title', 'not_empty')->rule('faq_title', 'Model_Edit::checkfaqtitle', [
             ':value',
             $fid
-        ))->rule('faq_details', 'not_empty');
+        ])->rule('faq_details', 'not_empty');
     }
     public function editfaq($post, $fid)
     {
-        $result = DB::update(PASSENGERS_FAQ)->set(array(
+        $result = DB::update(PASSENGERS_FAQ)->set([
             'faq_title' => $post['faq_title'],
             'faq_details' => $post['faq_details'],
             'status' => 'A'
-        ))->where('faq_id', '=', $fid)->execute();
+        ])->where('faq_id', '=', $fid)->execute();
         if ($result) {
             return 1;
         } else {
@@ -2989,9 +2989,9 @@ Class Model_Edit extends Model
         /*$result = DB::select()->from(COMPANY_PAYMENT_MODULES)->where('company_user_id', '=', $company_user_id)->execute()->as_array();
         return $result;*/
 		//MongoDB
-		$result = $this->mongo_db->find_one(MDB_COMPANY,array('companydetails.userid'=>(int)$company_user_id),array('paymentmodule.pay_mod_id','paymentmodule.pay_mod_image','paymentmodule.pay_mod_name','paymentmodule.pay_active','paymentmodule.pay_mod_default'));
+		$result = $this->mongo_db->find_one(MDB_COMPANY,['companydetails.userid'=>(int)$company_user_id],['paymentmodule.pay_mod_id','paymentmodule.pay_mod_image','paymentmodule.pay_mod_name','paymentmodule.pay_active','paymentmodule.pay_mod_default']);
 		//echo '<pre>';print_r($result);exit;
-		return (!empty($result['paymentmodule']))?$result['paymentmodule']:array();
+		return (!empty($result['paymentmodule']))?$result['paymentmodule']:[];
     }
     function findcompany_timezone($company_cid)
     {
@@ -3007,7 +3007,7 @@ Class Model_Edit extends Model
         $result = Db::query(Database::SELECT, $query)->execute()->as_array();
         return $result;*/
 		
-		$query = $this->mongo_db->find_one(MDB_PASSENGERS_PROMO,array('_id' => (int)$id),array('_id', 'promocode', 'promo_discount', 'start_date', 'expire_date', 'promo_limit'));
+		$query = $this->mongo_db->find_one(MDB_PASSENGERS_PROMO,['_id' => (int)$id],['_id', 'promocode', 'promo_discount', 'start_date', 'expire_date', 'promo_limit']);
 		//echo "<pre>"; print_r($query); exit;
 		return $query;
     }
@@ -3023,25 +3023,25 @@ Class Model_Edit extends Model
         /* $result = DB::select()->from(PASSENGER_PROMO)->where(PASSENGER_PROMO . '.promocode', '=', $promocode)->join(PASSENGERS)->on(PASSENGERS . '.id', '=', PASSENGER_PROMO . '.passenger_id')->where(PASSENGERS . '.user_status', '=', 'A')->execute()->as_array();
         return $result; */
 		//MongoDB
-		$arguments = array(
-			array('$lookup' => array(
+		$arguments = [
+			['$lookup' => [
 				'from'=>MDB_PASSENGERS,
 				'localField'=> "passenger_id",
 				'foreignField' => "_id",
 				'as'=> "passenger"
-				)
-			),
-			array('$match'=>array('passenger.user_status'=>"A","promocode" => $promocode)),
-			array('$unwind'=>'$passenger'),
-			array('$project' => array(
+				]
+			],
+			['$match'=>['passenger.user_status'=>"A","promocode" => $promocode]],
+			['$unwind'=>'$passenger'],
+			['$project' => [
 					'promocode' => '$promocode',
 					'name'=>'$passenger.name',
 					'email'=>'$passenger.email',
-				)
-			)
-		);
+				]
+			]
+		];
 		$results = $this->mongo_db->aggregate(MDB_PASSENGERS_PROMO,$arguments);
-		return (!empty($results['result']))?$results['result']:array();
+		return (!empty($results['result']))?$results['result']:[];
     }
     public function editpromocode($post, $promocode)
     {
@@ -3052,12 +3052,12 @@ Class Model_Edit extends Model
         ))->where('promocode', '=', $promocode)->execute();
         return 1;*/
 	
-		$data     = array(
+		$data     = [
 			'start_date' => new \MongoDB\BSON\UTCDateTime(strtotime($post['start_date']) * 1000),
             'expire_date' => new \MongoDB\BSON\UTCDateTime(strtotime( $post['expire_date']) * 1000),
             'promo_limit' => (int)$post['promo_limit']
-		);
-		$result = $this->mongo_db->update(MDB_PASSENGERS_PROMO,array('promocode'=>$promocode),array('$set'=>$data),array('upsert'=>false,'multiple'=>true));
+		];
+		$result = $this->mongo_db->update(MDB_PASSENGERS_PROMO,['promocode'=>$promocode],['$set'=>$data],['upsert'=>false,'multiple'=>true]);
 		return (empty($result['err']))?1:$result['err'];
     }
     // Check driver licence Id is Already Exist or Not
@@ -3074,11 +3074,11 @@ Class Model_Edit extends Model
         }*/
 		//MongoDB with aggregate process only
 		$mongodb        = MangoDB::instance('default');
-		$arguments = array(
-			array('$match'=>array('_id'=>array('$ne' => (int)$uid), 'driver_license_id'=> $value)),
-			array('$project' => array('pid' => '$_id')),
-			array('$group'=>array('_id' => NULL,'count' => array('$sum' => 1 ))),
-		);
+		$arguments = [
+			['$match'=>['_id'=>['$ne' => (int)$uid], 'driver_license_id'=> $value]],
+			['$project' => ['pid' => '$_id']],
+			['$group'=>['_id' => NULL,'count' => ['$sum' => 1 ]]],
+		];
 		$results = $mongodb->aggregate(MDB_PEOPLE,$arguments);
 		//print_r($results['result'][0]['count']);exit;
 		return (isset($results['result'][0]['count']) && $results['result'][0]['count'] > 0)?false:true;
@@ -3100,18 +3100,18 @@ Class Model_Edit extends Model
 		//MongoDB with aggregate process only
 		
 		$mongodb        = MangoDB::instance('default');
-		$arguments = array(
-			array('$lookup' => array(
+		$arguments = [
+			['$lookup' => [
 				'from'=>MDB_DRIVER_INFO,
 				'localField'=> "_id",
 				'foreignField' => "_id",
 				'as'=> "driver_info"
-				)
-			),
-			array('$match'=>array('_id'=>array('$ne' => (int)$uid), 'driver_info.driverinfo.driver_pco_license_number'=> $value)),
-			array('$project' => array('pid' => '$_id')),
-			array('$group'=>array('_id' => NULL,'count' => array('$sum' => 1 ))),
-		);
+				]
+			],
+			['$match'=>['_id'=>['$ne' => (int)$uid], 'driver_info.driverinfo.driver_pco_license_number'=> $value]],
+			['$project' => ['pid' => '$_id']],
+			['$group'=>['_id' => NULL,'count' => ['$sum' => 1 ]]],
+		];
 		$results = $mongodb->aggregate(MDB_PEOPLE,$arguments);
 		//print_r($results['result']);exit;
 		return (isset($results['result'][0]['count']) && $results['result'][0]['count'] > 0)?false:true;
@@ -3133,18 +3133,18 @@ Class Model_Edit extends Model
 		
 		$mongodb        = MangoDB::instance('default');
 		//MongoDB
-		$arguments = array(
-			array('$lookup' => array(
+		$arguments = [
+			['$lookup' => [
 				'from'=>MDB_DRIVER_INFO,
 				'localField'=> "_id",
 				'foreignField' => "_id",
 				'as'=> "driver_info"
-				)
-			),
-			array('$match'=>array('_id'=>array('$ne' => (int)$uid), 'driver_info.driverinfo.driver_insurance_number'=> $value)),
-			array('$project' => array('pid' => '$_id')),
-			array('$group'=>array('_id' => NULL,'count' => array('$sum' => 1 ))),
-		);
+				]
+			],
+			['$match'=>['_id'=>['$ne' => (int)$uid], 'driver_info.driverinfo.driver_insurance_number'=> $value]],
+			['$project' => ['pid' => '$_id']],
+			['$group'=>['_id' => NULL,'count' => ['$sum' => 1 ]]],
+		];
 		$results = $mongodb->aggregate(MDB_PEOPLE,$arguments);
 		//print_r($results['result']);exit;
 		return (isset($results['result'][0]['count']) && $results['result'][0]['count'] > 0)?false:true;
@@ -3164,18 +3164,18 @@ Class Model_Edit extends Model
 		
 		//MongoDB with aggregate process only
 		$mongodb        = MangoDB::instance('default');
-		$arguments = array(
-			array('$lookup' => array(
+		$arguments = [
+			['$lookup' => [
 				'from'=>MDB_DRIVER_INFO,
 				'localField'=> "_id",
 				'foreignField' => "_id",
 				'as'=> "driver_info"
-				)
-			),
-			array('$match'=>array('_id'=>array('$ne' => (int)$uid), 'driver_info.driverinfo.driver_national_insurance_number'=> $value)),
-			array('$project' => array('pid' => '$_id')),
-			array('$group'=>array('_id' => NULL,'count' => array('$sum' => 1 ))),
-		);
+				]
+			],
+			['$match'=>['_id'=>['$ne' => (int)$uid], 'driver_info.driverinfo.driver_national_insurance_number'=> $value]],
+			['$project' => ['pid' => '$_id']],
+			['$group'=>['_id' => NULL,'count' => ['$sum' => 1 ]]],
+		];
 		$results = $mongodb->aggregate(MDB_PEOPLE,$arguments);
 		//print_r($results['result']);exit;
 		return (isset($results['result'][0]['count']) && $results['result'][0]['count'] > 0)?false:true;
@@ -3191,7 +3191,7 @@ Class Model_Edit extends Model
 		
 		//MongoDB
 		$mongodb = MangoDB::instance('default');
-		$result = $mongodb->count(MDB_TAXI,array('taxi_insurance_number'=>$number,'_id'=>array('$ne'=>(int)$uid)),array('taxi_insurance_number'));
+		$result = $mongodb->count(MDB_TAXI,['taxi_insurance_number'=>$number,'_id'=>['$ne'=>(int)$uid]],['taxi_insurance_number']);
 		return ($result>0)?false:true;
     }
     // To Check taxi pco licence number is Already Available or Not
@@ -3205,7 +3205,7 @@ Class Model_Edit extends Model
 	
 		//MongoDB
 		$mongodb = MangoDB::instance('default');
-		$result = $mongodb->count(MDB_TAXI,array('taxi_pco_licence_number'=>$number,'_id'=>array('$ne'=>(int)$uid)),array('taxi_pco_licence_number'));
+		$result = $mongodb->count(MDB_TAXI,['taxi_pco_licence_number'=>$number,'_id'=>['$ne'=>(int)$uid]],['taxi_pco_licence_number']);
 		return ($result>0)?false:true;
     }
 	//To Get all payment modules
@@ -3215,8 +3215,8 @@ Class Model_Edit extends Model
 		$result = Db::query(Database::SELECT, $query2)->execute()->as_array();
 		//print_r($result);exit;*/
 		//MongoDB
-		$result = $this->mongo_db->find(MDB_PAYMENT_MODULES,array(),array());
-		return (!empty($result))?iterator_to_array($result):array();
+		$result = $this->mongo_db->find(MDB_PAYMENT_MODULES,[],[]);
+		return (!empty($result))?iterator_to_array($result):[];
 	}
 	
 	public function check_peoplecompanyid($id)
@@ -3228,7 +3228,7 @@ Class Model_Edit extends Model
             return 0;
         }*/
 		
-		$result = $this->mongo_db->find(MDB_PEOPLE,array('_id'=>(int)$id));
+		$result = $this->mongo_db->find(MDB_PEOPLE,['_id'=>(int)$id]);
 		return (!empty($result))?iterator_to_array($result):0;
 	}
 	
@@ -3236,20 +3236,20 @@ Class Model_Edit extends Model
 	//selected accounts type 
     public function get_account_type($mid)
     {
-        $ops = array(
-					array('$match'=>array('_id'=>(int)$mid)),
-					array(
-						'$project' => array(
+        $ops = [
+					['$match'=>['_id'=>(int)$mid]],
+					[
+						'$project' => [
 						'_id' => '$_id',
 						'account_type' => '$account_type',
 						'account_type_arabic' => '$account_type_arabic',
 						'status' => '$status',
-						)
-					),
-					array(
-						'$sort' => array("_id"=>-1)
-					),
-			);
+						]
+					],
+					[
+						'$sort' => ["_id"=>-1]
+					],
+			];
 		$result = $this->mongo_db->aggregate(MDB_CHILD_ACCOUNT_TYPE,$ops);		
         return $result['result'];
     }
@@ -3257,20 +3257,20 @@ Class Model_Edit extends Model
 	//Validate the edit account type
     public function validate_editaccounttype($arr, $mid)
     {
-        return Validation::factory($arr)->rule('account_type', 'not_empty')->rule('account_type', 'min_length', array(
+        return Validation::factory($arr)->rule('account_type', 'not_empty')->rule('account_type', 'min_length', [
             ':value',
             '2'
-        ))->rule('account_type', 'max_length', array(
+        ])->rule('account_type', 'max_length', [
             ':value',
             '30'
-        ))->rule('account_type','Model_Edit::account_type_exists',array(':value',$mid))->rule('account_type_arabic', 'not_empty');
+        ])->rule('account_type','Model_Edit::account_type_exists',[':value',$mid])->rule('account_type_arabic', 'not_empty');
     }
 	
 	//Check the account type already exists
     public static function account_type_exists($account_type,$mid)
     {
 		$mongodb = MangoDB::instance('default');
-		$result = $mongodb->count(MDB_CHILD_ACCOUNT_TYPE,array('_id'=>array('$ne'=>(int)$mid),'$text' => array('$search' => "\"$account_type\"")));		
+		$result = $mongodb->count(MDB_CHILD_ACCOUNT_TYPE,['_id'=>['$ne'=>(int)$mid],'$text' => ['$search' => "\"$account_type\""]]);		
 		//$result = $mongodb->count(MDB_CHILD_ACCOUNT_TYPE,array('_id'=>array('$ne'=>(int)$mid),"account_type"=>$account_type));
         return ($result ==1)?false:true;
     }
@@ -3286,12 +3286,12 @@ Class Model_Edit extends Model
             $status = 'D';
         }
         */
-        $cat_data      = array(
+        $cat_data      = [
 			'account_type' => $post['account_type'],
 			'account_type_arabic' => $post['account_type_arabic'],
 			//'status' => $status,
-		);
-		$cat_result = $this->mongo_db->update(MDB_CHILD_ACCOUNT_TYPE,array('_id'=>(int)$mid),array('$set'=>$cat_data),array('upsert'=>false));
+		];
+		$cat_result = $this->mongo_db->update(MDB_CHILD_ACCOUNT_TYPE,['_id'=>(int)$mid],['$set'=>$cat_data],['upsert'=>false]);
 		return (count($cat_result))?1:0;        
     }
     
@@ -3302,50 +3302,50 @@ Class Model_Edit extends Model
         return $result;*/
 		
 		//MongoDB
-		$res = $this->mongo_db->find_one(MDB_COUPON_PACKAGE,array('_id'=>(int)$uid),array('_id','coupon_package_name','coupon_package_description','corporate_commission','passenger_commission','coupon_package_status'));
-		return (!empty($res))?$res:array();
+		$res = $this->mongo_db->find_one(MDB_COUPON_PACKAGE,['_id'=>(int)$uid],['_id','coupon_package_name','coupon_package_description','corporate_commission','passenger_commission','coupon_package_status']);
+		return (!empty($res))?$res:[];
     }
     public function validate_editcoupon_package($arr, $uid)
     {
-        return Validation::factory($arr)->rule('coupon_package_name', 'not_empty')->rule('coupon_package_name', 'min_length', array(
+        return Validation::factory($arr)->rule('coupon_package_name', 'not_empty')->rule('coupon_package_name', 'min_length', [
             ':value',
             '4'
-        ))->rule('coupon_package_name', 'max_length', array(
+        ])->rule('coupon_package_name', 'max_length', [
             ':value',
             '100'
-        ))->rule('coupon_package_description', 'not_empty')->rule('coupon_package_description', 'min_length', array(
+        ])->rule('coupon_package_description', 'not_empty')->rule('coupon_package_description', 'min_length', [
             ':value',
             '20'
-        ))->rule('corporate_commission', 'not_empty')->rule('corporate_commission', 'digit')->rule('corporate_commission', 'Model_Edit::check_fare_zero', array(
+        ])->rule('corporate_commission', 'not_empty')->rule('corporate_commission', 'digit')->rule('corporate_commission', 'Model_Edit::check_fare_zero', [
             ':value',
             $arr['corporate_commission']
-        ))->rule('passenger_commission', 'not_empty')->rule('passenger_commission', 'digit')->rule('passenger_commission', 'Model_Edit::check_fare_zero', array(
+        ])->rule('passenger_commission', 'not_empty')->rule('passenger_commission', 'digit')->rule('passenger_commission', 'Model_Edit::check_fare_zero', [
             ':value',
             $arr['passenger_commission']
-        ));
+        ]);
     }
     
     public function edit_coupon_package($post, $uid)
     {
        
 		
-		$query = array(
+		$query = [
             'coupon_package_name' => $post['coupon_package_name'],
             'coupon_package_description' => $post['coupon_package_description'],
             'corporate_commission' =>(int) $post['corporate_commission'],
             'passenger_commission' =>(int) $post['passenger_commission']
           
-        );
+        ];
 		
 		//MongoDB
-		$result = $this->mongo_db->update(MDB_COUPON_PACKAGE,array('_id'=>(int)$uid),array('$set'=>$query),array('upsert'=>false));
+		$result = $this->mongo_db->update(MDB_COUPON_PACKAGE,['_id'=>(int)$uid],['$set'=>$query],['upsert'=>false]);
 		return (empty($result['err']))?1:$result['err'];
     }
      public static function checkcoupon_packagename($coupon_packagename)
     {
 		$mongodb = MangoDB::instance('default');
         // Check if the username already exists in the database
-		$result = $mongodb->find_one(MDB_COUPON_PACKAGE,array('coupon_package_name' => $coupon_packagename),array('_id'));
+		$result = $mongodb->find_one(MDB_COUPON_PACKAGE,['coupon_package_name' => $coupon_packagename],['_id']);
 
         if (count($result) > 0) {
             return false;
@@ -3357,10 +3357,10 @@ Class Model_Edit extends Model
     {
         /*$result = DB::select()->from(PEOPLE)->where('id', '=', $uid)->where('user_type', '=', 'D')->execute()->as_array();
         return $result;*/
-		$arguments = array(
-			array('$match'	=> array('_id' => (int)$uid, 'user_type' => 'O')),
-			array(
-				'$project' => array(
+		$arguments = [
+			['$match'	=> ['_id' => (int)$uid, 'user_type' => 'O']],
+			[
+				'$project' => [
 					'id' => '$_id',
 					'name'=>'$name',
 					'address'=>'$address',
@@ -3376,81 +3376,81 @@ Class Model_Edit extends Model
 					'login_city' => '$login_city',
 					
 					'profile_picture' => '$profile_picture'
-				)
-			),
-		);
+				]
+			],
+		];
 		$result = $this->mongo_db->aggregate(MDB_PEOPLE,$arguments);
 		//echo "<pre>"; print_r($result['result']); exit;
-		return (!empty($result['result']))?$result['result']:array();
+		return (!empty($result['result']))?$result['result']:[];
     }
       public function validate_editcorporate($arr, $uid)
     {
         return Validation::factory($arr)->rule('firstname', 'not_empty')
         //->rule('username', 'alpha_dash')
-            ->rule('firstname', 'min_length', array(
+            ->rule('firstname', 'min_length', [
             ':value',
             '4'
-        ))->rule('firstname', 'max_length', array(
+        ])->rule('firstname', 'max_length', [
             ':value',
             '30'
-        ))->rule('lastname', 'not_empty')
+        ])->rule('lastname', 'not_empty')
         //->rule('username', 'alpha_dash')            
         //->rule('lastname', 'min_length', array(':value', '4'))            
         //->rule('lastname', 'max_length', array(':value', '30'))
            ->rule('phone', 'not_empty')
         //->rule('phone','Model_Add::check_valid_phone_number',array(':value','/^[0-9()-+]*$/u'))            
         //->rule('phone', 'alpha_numeric')			
-            ->rule('phone', 'min_length', array(
+            ->rule('phone', 'min_length', [
             ':value',
             '7'
-        ))->rule('phone', 'max_length', array(
+        ])->rule('phone', 'max_length', [
             ':value',
             '20'
-        ))
+        ])
         //->rule('phone', 'phone', array(':value'))
-            ->rule('phone', 'contact_phone', array(
+            ->rule('phone', 'contact_phone', [
             ':value'
-        ))->rule('phone', 'Model_Edit::checkphone', array(
+        ])->rule('phone', 'Model_Edit::checkphone', [
             ':value',
             $uid
-        ))->rule('email', 'not_empty')->rule('email', 'email')->rule('email', 'max_length', array(
+        ])->rule('email', 'not_empty')->rule('email', 'email')->rule('email', 'max_length', [
             ':value',
             '50'
-        ))->rule('email', 'Model_Edit::checkemail', array(
+        ])->rule('email', 'Model_Edit::checkemail', [
             ':value',
             $uid
-        ))->rule('password', 'not_empty')->rule('password', 'min_length', array(
+        ])->rule('password', 'not_empty')->rule('password', 'min_length', [
             ':value',
             '6'
-        ))->rule('password', 'max_length', array(
+        ])->rule('password', 'max_length', [
             ':value',
             '20'
-        ))->rule('password', 'valid_password', array(
+        ])->rule('password', 'valid_password', [
             ':value',
             '/^[A-Za-z0-9@#$%!^&*(){}?-_<>=+|~`\'".,:;[]+]*$/u'
-        ))->rule('repassword', 'not_empty')->rule('repassword', 'min_length', array(
+        ])->rule('repassword', 'not_empty')->rule('repassword', 'min_length', [
             ':value',
             '6'
-        ))->rule('repassword', 'max_length', array(
+        ])->rule('repassword', 'max_length', [
             ':value',
             '20'
-        ))->rule('repassword', 'valid_password', array(
+        ])->rule('repassword', 'valid_password', [
             ':value',
             '/^[A-Za-z0-9@#$%!^&*(){}?-_<>=+|~`\'".,:;[]+]*$/u'
-        ))->rule('repassword', 'matches', array(
+        ])->rule('repassword', 'matches', [
             ':validation',
             'password',
             'repassword'
-        ))
+        ])
 		//->rule('city', 'not_empty')
-		->rule('profile_picture', 'Upload::type', array(
+		->rule('profile_picture', 'Upload::type', [
             ':value',
-            array(
+            [
                 'jpg',
                 'png',
                 'gif'
-            )
-        ));
+            ]
+        ]);
         //->rule('company_name', 'Model_Edit::checkassigneddriver',array($arr['city'],$arr['country'],$arr['state'],$arr['company_name'],$uid));
         //->rule('photo', 'Upload::type', array(':value', array('jpeg','jpg','png','gif')));
     }
@@ -3461,7 +3461,7 @@ Class Model_Edit extends Model
 		$post['city'] = isset($post['city'])?$post['city']:DEFAULT_CITY;
         $password = Html::chars(md5($post['password']));
         if (COMPANY_CID == 1 || SUBDOMAIN == 'demo') {
-			$param = array(
+			$param = [
 				'name' => $post['firstname'],
                 'address' => $post['address'],
                 'login_country' => (int)$post['country'],
@@ -3472,11 +3472,11 @@ Class Model_Edit extends Model
               	'password' => $password,
 				'org_password' => $post['password'],
                 'phone' => $post['phone']
-			);
+			];
 			//MongoDB
-			$result = $this->mongo_db->update(MDB_PEOPLE,array('_id'=>(int)$uid),array('$set'=>$param),array('upsert'=>false));
+			$result = $this->mongo_db->update(MDB_PEOPLE,['_id'=>(int)$uid],['$set'=>$param],['upsert'=>false]);
         } else {
-			$param = array(
+			$param = [
 				'name' => $post['firstname'],
                 'address' => $post['address'],
                 'login_country' => (int)$post['country'],
@@ -3487,9 +3487,9 @@ Class Model_Edit extends Model
               	'password' => $password,
 				'org_password' => $post['password'],
                 'phone' => $post['phone']
-			);
+			];
 			//MongoDB
-			$result = $this->mongo_db->update(MDB_PEOPLE,array('_id'=>(int)$uid),array('$set'=>$param),array('upsert'=>false));
+			$result = $this->mongo_db->update(MDB_PEOPLE,['_id'=>(int)$uid],['$set'=>$param],['upsert'=>false]);
         }
 	
 		
@@ -3501,7 +3501,7 @@ Class Model_Edit extends Model
     }
  public function update_corporateimage($image,$userid)
 {
-    $query = $this->mongo_db->find(MDB_PEOPLE,array('_id' => (int)$userid),array('profile_picture'));
+    $query = $this->mongo_db->find(MDB_PEOPLE,['_id' => (int)$userid],['profile_picture']);
     $result = iterator_to_array($query);
     
     if(isset($result[$userid]['profile_picture']) && $result[$userid]['profile_picture']!=""){
@@ -3513,12 +3513,12 @@ Class Model_Edit extends Model
         }
     }
     $mdate = $this->currentdate;
-    $query = array();
+    $query = [];
     $query['updated_date'] = $mdate;
     if(isset($image)){
         $query[ 'profile_picture' ]=$image;
     }
-    $result = $this->mongo_db->update(MDB_PEOPLE,array('_id'=>(int)$userid),array('$set'=>$query),array('upsert'=>false));
+    $result = $this->mongo_db->update(MDB_PEOPLE,['_id'=>(int)$userid],['$set'=>$query],['upsert'=>false]);
     return (empty($result['err']))?1:$result['err'];
 }
 
@@ -3529,7 +3529,7 @@ Class Model_Edit extends Model
 	// Accounts Type Module
 
      public function getratingsdetails($id){
-         $query = $this->mongo_db->find('ratings',array('ratings_no' => (int)$id));
+         $query = $this->mongo_db->find('ratings',['ratings_no' => (int)$id]);
         $result = iterator_to_array($query);
         $finrest = array_shift($result);
         //echo "<pre>";print_r($finrest);exit();
@@ -3540,8 +3540,8 @@ Class Model_Edit extends Model
     {
            $rule = Validation::factory($arr)
         ->rule('ratings_no', 'not_empty')
-         ->rule('ratings_no', 'Model_Add::check_ratingsno', array(
-            ':value',$uid))
+         ->rule('ratings_no', 'Model_Add::check_ratingsno', [
+            ':value',$uid])
             ->rule('ratings_title', 'not_empty')
             ->rule('ratings_tags', 'not_empty')
            // ->rule('moretags', 'alpha')
@@ -3556,18 +3556,18 @@ Class Model_Edit extends Model
     {
         //echo "<pre>";print_r($post);exit();
         //MongoDB
-        $array = array(
+        $array = [
             'ratings_no' => (int)$post['ratings_no'],
             'ratings_title' => $post['ratings_title'],
           //  'ratings_tags' => $post['ratings_tags'],
             'ratings_tags' => $post['ratings_tags'],
-        );
-        $result = $this->mongo_db->update('ratings',array('ratings_no'=>(int)$uid),array('$set'=>$array),array('upsert'=>true));
+        ];
+        $result = $this->mongo_db->update('ratings',['ratings_no'=>(int)$uid],['$set'=>$array],['upsert'=>true]);
         return (empty($result['err']))?1:0;
     }
 
     public function get_testimonial_details($id){
-         $query = $this->mongo_db->find(MDB_TESTIMONIAL,array('_id' => (int)$id));
+         $query = $this->mongo_db->find(MDB_TESTIMONIAL,['_id' => (int)$id]);
         $result = iterator_to_array($query);
         $finrest = array_shift($result);
         //echo "<pre>";print_r($finrest);exit();
@@ -3577,61 +3577,61 @@ Class Model_Edit extends Model
     public function validate_testimonial($arr)
     {
         return Validation::factory($arr)->rule('name', 'not_empty')       
-            ->rule('name', 'min_length', array(
+            ->rule('name', 'min_length', [
             ':value',
             '2'
-        ))->rule('name', 'max_length', array(
+        ])->rule('name', 'max_length', [
             ':value',
             '130'
-        ))->rule('skype', 'not_empty')       
-            ->rule('skype', 'min_length', array(
+        ])->rule('skype', 'not_empty')       
+            ->rule('skype', 'min_length', [
             ':value',
             '2'
-        ))->rule('skype', 'max_length', array(
+        ])->rule('skype', 'max_length', [
             ':value',
             '130'
-        ))->rule('description', 'not_empty')       
-            ->rule('description', 'min_length', array(
+        ])->rule('description', 'not_empty')       
+            ->rule('description', 'min_length', [
             ':value',
             '2'
-        ))->rule('description', 'max_length', array(
+        ])->rule('description', 'max_length', [
             ':value',
             '500'
-        ))->rule('description_arabic', 'not_empty')       
-            ->rule('description_arabic', 'min_length', array(
+        ])->rule('description_arabic', 'not_empty')       
+            ->rule('description_arabic', 'min_length', [
             ':value',
             '2'
-        ))->rule('description_arabic', 'max_length', array(
+        ])->rule('description_arabic', 'max_length', [
             ':value',
             '500'
-        ))->rule('image', 'Upload::type', array(
+        ])->rule('image', 'Upload::type', [
             ':value',
-            array(
+            [
                 'jpeg',
                 'jpg',
                 'png',
                 'gif'
-            )
-        ));
+            ]
+        ]);
     }
 
     public function update_testimonial($post,$image)
     {       
     
            $status = isset($post['status'])?$post['status']:0;
-            $data = array(
+            $data = [
                 'name'=>$post['name'],
                 'skype'=>$post['skype'],
                 'description' => $post['description'],
                 'description_arabic'=>$post['description_arabic'],
                 'status' => (int)$status,                                                   
-            );
+            ];
 
             if($image){
                 $data['image'] = $image;
             }
 
-        $result = $this->mongo_db->update(MDB_TESTIMONIAL,array('_id'=>(int)$post['id']),array('$set'=>$data),array('upsert'=>false,'multiple'=>true));
+        $result = $this->mongo_db->update(MDB_TESTIMONIAL,['_id'=>(int)$post['id']],['$set'=>$data],['upsert'=>false,'multiple'=>true]);
         return (empty($result['err']))?1:$result['err'];
     }
 

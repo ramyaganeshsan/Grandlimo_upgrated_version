@@ -1,6 +1,6 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 
-return array(
+return [
 'button_login' => 'Log In',
 'button_signup' => 'Sign Up',
 'button_update' => 'Update',
@@ -2195,4 +2195,4 @@ provided by its licensed drivers who undergo rigorous training and screening to 
 'taxi_assign_period_end' => 'Periode ditugaskan taksi telah kadaluarsa',
 'no_completed_data_month' => 'Tidak ada perjalanan selesai pada bulan ini',
 'referral_code_info_details'=>'Masukkan kode referral di sini untuk mendapatkan tumpangan gratis kupon . Catatan : Skema Referral hanya berlaku bagi pengguna yang tidak pernah memesan di '.SITE_NAME.' sebelum.',
-); 
+]; 

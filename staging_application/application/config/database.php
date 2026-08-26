@@ -1,11 +1,9 @@
 <?php defined('SYSPATH') or die('No direct access allowed.');
 
-return array
-(
-	'default' => array
-	(
+return [
+	'default' => [
 		'type'       => 'mysqli',
-		'connection' => array(
+		'connection' => [
 			/**
 			 * The following options are available for MySQL:
 			 *
@@ -30,17 +28,16 @@ return array
 			'password'   => 'ndot',
 			'persistent' => FALSE,
 			
-		),
+		],
 		'table_prefix' => '',
 		'charset'      => 'utf8',
 		'caching'      => FALSE,
 		'profiling'    => TRUE,
-	),
+	],
 	
-	'driver_tracking' => array
-	(
+	'driver_tracking' => [
 		'type'       => 'mysqli',
-		'connection' => array(
+		'connection' => [
 			'hostname'   => 'localhost',
 			'database'   => 'grandlimo_db2',
 			'username'   => 'root',
@@ -51,15 +48,15 @@ return array
 			'username'   => 'svnuser',
 			'password'   => 'pXc9nbmrnCnpXhza',
 			'persistent' => FALSE,*/
-		),
+		],
 		'table_prefix' => '',
 		'charset'      => 'utf8',
 		'caching'      => FALSE,
 		'profiling'    => TRUE,
-	),
-	'alternate' => array(
+	],
+	'alternate' => [
 		'type'       => 'pdo',
-		'connection' => array(
+		'connection' => [
 			/**
 			 * The following options are available for PDO:
 			 *
@@ -72,7 +69,7 @@ return array
 			'username'   => 'root',
 			'password'   => 'r00tdb',
 			'persistent' => FALSE,
-		),
+		],
 		/**
                  
 		 * The following extra options are available for PDO:
@@ -83,5 +80,5 @@ return array
 		'charset'      => 'utf8',
 		'caching'      => FALSE,
 		'profiling'    => TRUE,
-	),
-);
+	],
+];

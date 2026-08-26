@@ -139,7 +139,7 @@ if($total_company>0)
                         </td>
                         <input type="hidden" name="status"  maxlength="256" id="keyword" value="1" />
                         <?php
-                        $recharge_type_array = array('1'=>__('manual_pay'),'2'=>__('credit_pay'),'3'=>__('pending_pay'),'4'=> __('trip_payment'),'5'=> __('trip_pending_payment'),'6'=>__('pending_repayment'),'7'=>__('dispatcher_alteration'),'8'=>__('knet_payment'),'9'=>__('redeem_points'), '12'=> 'Tap Payment');
+                        $recharge_type_array = ['1'=>__('manual_pay'),'2'=>__('credit_pay'),'3'=>__('pending_pay'),'4'=> __('trip_payment'),'5'=> __('trip_pending_payment'),'6'=>__('pending_repayment'),'7'=>__('dispatcher_alteration'),'8'=>__('knet_payment'),'9'=>__('redeem_points'), '12'=> 'Tap Payment'];
                          ?>
 
                         <td valign="top"><label><?php echo __('recharge_type'); ?></label></td>

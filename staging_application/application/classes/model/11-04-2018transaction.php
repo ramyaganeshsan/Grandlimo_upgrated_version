@@ -60,7 +60,7 @@ Class Model_Transaction extends Model
     public function all_company_list($offset, $val)
     {
         $result  = DB::select()->from(COMPANY)->join(PEOPLE, 'LEFT')->on(PEOPLE . '.id', '=', COMPANY . '.userid')->where(PEOPLE . '.user_type', '=', 'C')->order_by('created_date', 'desc')->limit($val)->offset($offset)->execute()->as_array();
-        $details = array();
+        $details = [];
         foreach ($result as $key => $res) {
             $details[$key]['no_of_taxi']      = $this->taxicount($res['cid']);
             $details[$key]['no_of_driver']    = $this->drivercount($res['cid']);
@@ -99,10 +99,10 @@ Class Model_Transaction extends Model
         return $result->order_by('company_name', 'asc')->execute()->as_array();*/
         
         //MongoDB
-        $condition = (!empty($status))?array('companydetails.company_status'=>$status):array();
-        $result = $this->mongo_db->find(MDB_COMPANY,$condition,array('_id','companydetails.company_name'))->sort(array('companydetails.company_name'=>1));
+        $condition = (!empty($status))?['companydetails.company_status'=>$status]:[];
+        $result = $this->mongo_db->find(MDB_COMPANY,$condition,['_id','companydetails.company_name'])->sort(['companydetails.company_name'=>1]);
         //echo '<pre>';print_r(iterator_to_array($result));exit;
-        return (!empty($result))?iterator_to_array($result):array();
+        return (!empty($result))?iterator_to_array($result):[];
     }
     /**
      ****Transaction list function**
@@ -128,7 +128,7 @@ Class Model_Transaction extends Model
                 }
                 $taxi_ids = Commonfunction::mongo_format_array($tid);
             } else {
-                $taxi_ids = array();
+                $taxi_ids = [];
             }
             //echo 'taxilist=>';print_r($taxi_ids);echo '<br>';
             // Function to get driver details //
@@ -139,7 +139,7 @@ Class Model_Transaction extends Model
                 }
                 $driver_ids = Commonfunction::mongo_format_array($cdriver_id);
             } else {
-                $driver_ids = array();
+                $driver_ids = [];
             }
             //echo 'driverlist=>';print_r($driver_ids);echo '<br>';
         }
@@ -152,197 +152,197 @@ Class Model_Transaction extends Model
             }
             $passenger_ids = Commonfunction::mongo_format_array($cpassenger_id);
         } else {
-            $passenger_ids = array();
+            $passenger_ids = [];
         }
         //echo 'passengerlist=>';print_r($passenger_ids);echo '<br>';//exit;
         //echo $startdate.'xxx'.$enddate;
-        $date_condition = array();
+        $date_condition = [];
         if ($startdate != "") {
             if( $list == 'success' || $list == 'inprogress')
             {
-                $date_condition = array(
-                    'actual_pickup_time' => array(
-                        '$gte' => New MongoDate(strtotime($startdate)),
-                        '$lte' => New MongoDate(strtotime($enddate))
-                    )
-                );
+                $date_condition = [
+                    'actual_pickup_time' => [
+                        '$gte' => new \MongoDB\BSON\UTCDateTime(strtotime($startdate) * 1000),
+                        '$lte' => new \MongoDB\BSON\UTCDateTime(strtotime($enddate) * 1000)
+                    ]
+                ];
             }
             else
             {
-                $date_condition = array(
-                    'pickup_time' => array(
-                        '$gte' => New MongoDate(strtotime($startdate)),
-                        '$lte' => New MongoDate(strtotime($enddate))
-                    )
-                );
+                $date_condition = [
+                    'pickup_time' => [
+                        '$gte' => new \MongoDB\BSON\UTCDateTime(strtotime($startdate) * 1000),
+                        '$lte' => new \MongoDB\BSON\UTCDateTime(strtotime($enddate) * 1000)
+                    ]
+                ];
             }
         }
         
         // Condition to search based on transaction id //
-        $trans_condition = array();
+        $trans_condition = [];
         if ($transaction_id != '') {
-            $trans_condition = array(
+            $trans_condition = [
                 'trans._id' => (int)$transaction_id
-            );
+            ];
         }
         // Condition to search based on status //
-        $condition = array();
+        $condition = [];
         if ($list == 'all') {
-            $condition = array();
+            $condition = [];
         } else if ($list == 'success') {
-            $condition = array(
+            $condition = [
                 'travel_status' => 1,
                 'driver_reply' => 'A'
-            );
+            ];
         } else if ($list == 'upcoming') {
-            $condition = array('driver_reply' => 'A',"travel_status"=> array('$in'=>array(0,3,9)));
+            $condition = ['driver_reply' => 'A',"travel_status"=> ['$in'=>[0,3,9]]];
         } else if ($list == 'inprogress') {
-            $condition = array('driver_reply' => 'A',"travel_status"=> array('$in'=>array(5,2)));
+            $condition = ['driver_reply' => 'A',"travel_status"=> ['$in'=>[5,2]]];
         } else if ($list == 'cancelled') {
             /*$condition = array("driver_reply"=> array('$in'=>array('C','A')),"travel_status"=> array('$in'=>array(0,4)));*/
-            $condition = array("travel_status"=> array('$in'=>array(0,4,8)));
+            $condition = ["travel_status"=> ['$in'=>[0,4,8]]];
         } else if ($list == 'rejected') {
-            $condition = array(
+            $condition = [
                 'driver_reply' => 'R'
-            );
+            ];
         }
-        $pay_condition = array();
+        $pay_condition = [];
         // Condition to search based on payment type //
         if ($payment_type != 'All' && $payment_type != '') {
             if ($list != 'rejected') {
-                $pay_condition = array(
+                $pay_condition = [
                     'trans.payment_type' =>  $payment_type
-                );
+                ];
             }
         }
         // Condition to search based on company //
-        $company_condition = array();
+        $company_condition = [];
         if (($company != "") && ($company != "All")) {
-            $company_condition = array(
+            $company_condition = [
                 'company_id' => (int) $company
-            );
+            ];
         }
         // Condition to search based on taxi id //
-        $taxi_condition = array();
+        $taxi_condition = [];
         if (($taxiid != "All") && !empty($taxiid) ) {
-            $taxi_condition = array(
+            $taxi_condition = [
                 'taxi_id' => (int) $taxiid
-            );
+            ];
         } else {
             if ((($manager_id != '') && ($manager_id != 'All')) || ($usertype == 'M')) {
                 if (count($taxilist) > 0) {
-                    $taxi_condition = array(
-                        'taxi_id' => array(
+                    $taxi_condition = [
+                        'taxi_id' => [
                             '$in' => $taxi_ids
-                        )
-                    );
+                        ]
+                    ];
                 }
             }
         }
         // Condition to search based on driver id //
-        $driver_condition = array();
+        $driver_condition = [];
         if (($driverid != "All") && !empty($driverid)) {
             //echo "HELLO DRIVER".$driverid;exit;
-            $driver_condition = array(
+            $driver_condition = [
                 "driver_id" => (int) $driverid
-            );
+            ];
         } else {
             //  echo "HELLO DRIVER ELSE".$driverid;exit;
             if ((($manager_id != '') && ($manager_id != 'All')) || ($usertype == 'M')) {
                 if (count($driverlist) > 0) {
-                    $driver_condition = array(
-                        "driver_id" => array(
+                    $driver_condition = [
+                        "driver_id" => [
                             '$in' => $driver_ids
-                        )
-                    );
+                        ]
+                    ];
                 }
             }
         }
         // Condition to search based on passenger id //
-        $passengers_condition = array();
+        $passengers_condition = [];
         if (($passengerid != "") && ($passengerid != "All")) {
-            $passengers_condition = array(
+            $passengers_condition = [
                 "passengers_id" => (int) $passengerid
-            );
+            ];
         }
         
         $match_query = array_merge($date_condition, $passengers_condition, $company_condition, $taxi_condition, $driver_condition, $condition);
               
         if ($list == 'rejected') {
            // $match_query = array_merge($date_condition, $passengers_condition, $company_condition, $taxi_condition, $driver_condition, $condition);
-            $common_arguments = array(
-                array(
+            $common_arguments = [
+                [
                     '$match' => $match_query
-                ),array(
-                    '$lookup' => array(
+                ],[
+                    '$lookup' => [
                         'from' => MDB_COMPANY,
                         'localField' => "company_id",
                         'foreignField' => "_id",
                         'as' => "company"
-                    )
-                ),
-                array(
+                    ]
+                ],
+                [
                     '$unwind' => '$company'
-                ),
-                  array(
-                    '$lookup' => array(
+                ],
+                  [
+                    '$lookup' => [
                         'from' => MDB_TRANSACTION,
                         'localField' => "_id",
                         'foreignField' => "passengers_log_id",
                         'as' => "trans"
-                    )
-                ),
-                array(
+                    ]
+                ],
+                [
                     '$unwind' => '$trans'
-                ),
-                array(
+                ],
+                [
                     '$match' => $pay_condition
-                ),
-                array(
-                    '$lookup' => array(
+                ],
+                [
+                    '$lookup' => [
                         'from' => MDB_PEOPLE,
                         'localField' => "driver_id",
                         'foreignField' => "_id",
                         'as' => "people"
-                    )
-                ),
-                array(
+                    ]
+                ],
+                [
                     '$unwind' => '$people'
-                ),
-                array(
-                    '$lookup' => array(
+                ],
+                [
+                    '$lookup' => [
                         'from' => MDB_PASSENGERS,
                         'localField' => "passengers_id",
                         'foreignField' => "_id",
                         'as' => "passengers"
-                    )
-                ),
-                array(
+                    ]
+                ],
+                [
                     '$unwind' => '$passengers'
-                )
-            );
+                ]
+            ];
             if (empty($offset) && empty($val) && empty($download)) {
-                $arguments = array(
-                    array(
-                        '$project' => array(
+                $arguments = [
+                    [
+                        '$project' => [
                             '_id' => 0,
                             'id' => '$_id'
-                        )
-                    ),
-                    array(
-                        '$group' => array(
+                        ]
+                    ],
+                    [
+                        '$group' => [
                             '_id' => NULL,
-                            'count' => array(
+                            'count' => [
                                 '$sum' => 1
-                            )
-                        )
-                    )/*,
+                            ]
+                        ]
+                    ]/*,
                     array(
                         '$sort' => array(
                             '_id' => 1
                         )
                     )*/
-                );
+                ];
                 $merge_arguments = array_merge($common_arguments,$arguments);
                 //echo '<pre>';print_r($merge_arguments);exit;
 
@@ -370,16 +370,16 @@ Class Model_Transaction extends Model
                 //echo '<pre>';print_r($result);exit;
                 return (!empty($result['result']) && isset($result['result'][0]['count'])) ? $result['result'][0]['count'] : 0;
             } else { 
-                $arguments = array(
-                    array(
-                        '$project' => array(
+                $arguments = [
+                    [
+                        '$project' => [
                             '_id' => 0,
                             'id' => '$_id',
                             'driver_id' => '$people._id',
                             'driver_name' => '$people.name',
                             'driver_phone' => '$people.phone',
                           //'passenger_name' => '$passengers.name',
-                            'passenger_name' => array('$concat'=>['$passengers.name',' ','$passengers.lastname']),
+                            'passenger_name' => ['$concat'=>['$passengers.name',' ','$passengers.lastname']],
                             'passenger_email' => '$passengers.email',
                             'passenger_phone' => '$passengers.phone',
                             'company_id' => '$company_id',
@@ -394,19 +394,19 @@ Class Model_Transaction extends Model
                             'driver_reply' => '$driver_reply',
                             'driver_comments' => '$driver_comments',
                             'userid' => '$company.companydetails.userid',
-                        )
-                    )
-                );
+                        ]
+                    ]
+                ];
                 if(empty($download)){
-                     $limitarguments = array(                    
+                     $limitarguments = [                    
                                           
-                        array(
+                        [
                             '$skip' => (int) $offset
-                        ),
-                        array(
+                        ],
+                        [
                             '$limit' => (int) $val
-                        )
-                    );
+                        ]
+                    ];
                     
                     $merge_arguments = array_merge($common_arguments,$arguments,$limitarguments);
                    
@@ -438,43 +438,43 @@ Class Model_Transaction extends Model
                 //echo '<pre>';print_r($merge_arguments);exit;
                 $result    = $this->mongo_db->aggregate($table, $merge_arguments);
                 //echo '<pre>';print_r($result);exit;
-                return (!empty($result['result'])) ? $result['result'] : array();
+                return (!empty($result['result'])) ? $result['result'] : [];
             }
         } else { 
        //   $match_query = array_merge($date_condition, $passengers_condition, $company_condition, $taxi_condition,$driver_condition, $condition,$corpquery);
         $mat_query_trans = array_merge($pay_condition, $trans_condition);
 
-            $common_arguments = array(
-                array(
+            $common_arguments = [
+                [
                     '$match' => $match_query
-                ),array(
-                    '$lookup' => array(
+                ],[
+                    '$lookup' => [
                         'from' => MDB_COMPANY,
                         'localField' => "company_id",
                         'foreignField' => "_id",
                         'as' => "company"
-                    )
-                ),
-                array(
+                    ]
+                ],
+                [
                     '$unwind' => '$company'
-                ),                                
-            );
+                ],                                
+            ];
             
-            $condition_arg = array(array(
-                    '$lookup' => array(
+            $condition_arg = [[
+                    '$lookup' => [
                         'from' => MDB_TRANSACTION,
                         'localField' => "_id",
                         'foreignField' => "passengers_log_id",
                         'as' => "trans"
-                    )
-                )/*,
+                    ]
+                ]/*,
                 array(
                     '$unwind' => '$trans'
                 )*/
-            );
+            ];
              if(!empty($mat_query_trans))
                 {
-                 $mat = array(array('$match' => $mat_query_trans));
+                 $mat = [['$match' => $mat_query_trans]];
             $condition_arg = array_merge($condition_arg,$mat);
 
                 }
@@ -483,37 +483,37 @@ Class Model_Transaction extends Model
                 $common_arguments = array_merge($common_arguments,$condition_arg);
             }
             
-            $driver_arg = array(array(
-                    '$lookup' => array(
+            $driver_arg = [[
+                    '$lookup' => [
                         'from' => MDB_PEOPLE,
                         'localField' => "driver_id",
                         'foreignField' => "_id",
                         'as' => "people"
-                    )
-                )/*,
+                    ]
+                ]/*,
                 array(
                     '$unwind' => '$people'
                 )*/
-            );
+            ];
             
-            $concat_arguments = array(               
-                array(
-                    '$lookup' => array(
+            $concat_arguments = [               
+                [
+                    '$lookup' => [
                         'from' => MDB_PASSENGERS,
                         'localField' => "passengers_id",
                         'foreignField' => "_id",
                         'as' => "passengers"
-                    )
-                ),
-                array(
+                    ]
+                ],
+                [
                     '$unwind' => '$passengers'
-                )/*,                               
+                ]/*,                               
                 array(
                         '$sort' => array(
                             '_id' => -1
                         )
                     )*/
-            );
+            ];
             if($list == 'upcoming') {
                 $common_arguments = array_merge($common_arguments,$concat_arguments);
             }
@@ -528,31 +528,31 @@ Class Model_Transaction extends Model
             
             
             if (empty($offset) && empty($val) && empty($download)) {
-               $arguments = array(
-                    array(
-                        '$project' => array(
+               $arguments = [
+                    [
+                        '$project' => [
                             '_id' => 0,
                             'id' => '$_id',
                             'fare'=>'$trans.fare'
-                        )
-                    ),
-                    array('$unwind' => array('path' => '$fare', 'preserveNullAndEmptyArrays' => true )),
+                        ]
+                    ],
+                    ['$unwind' => ['path' => '$fare', 'preserveNullAndEmptyArrays' => true ]],
                    
-                    array(
-                        '$group' => array(
+                    [
+                        '$group' => [
                             '_id' => NULL,
-                            'count' => array(
+                            'count' => [
                                 '$sum' => 1
-                            ),
-                            "total_fare" => array( '$sum' => '$fare' )
-                        )
-                    )/*,
+                            ],
+                            "total_fare" => [ '$sum' => '$fare' ]
+                        ]
+                    ]/*,
                     array(
                         '$sort' => array(
                             'id' => 1
                         )
                     )*/
-                );
+                ];
                 //$options = array("allowDiskUse" => true);
                 $merge_arguments = array_merge($common_arguments,$arguments);
 		//echo "<pre>";print_r($merge_arguments);exit();
@@ -583,19 +583,19 @@ Class Model_Transaction extends Model
 
 		$result    = $this->mongo_db->aggregate($table, $merge_arguments); //,$options
 
-                return (!empty($result['result']) && isset($result['result'][0])) ? $result['result'][0] : array();
+                return (!empty($result['result']) && isset($result['result'][0])) ? $result['result'][0] : [];
             } else {
                 
-                $arguments = array(                    
-                    array(
-                        '$project' => array(
+                $arguments = [                    
+                    [
+                        '$project' => [
                            // '_id' => 0,
                             'id' => '$_id',
                             'driver_id' => '$people._id',
                             'driver_name' => '$people.name',
                             'driver_phone' => '$people.phone',
                            // 'passenger_name' => '$passengers.name',
-                            'passenger_name' => array('$concat'=>['$passengers.name',' ','$passengers.lastname']),
+                            'passenger_name' => ['$concat'=>['$passengers.name',' ','$passengers.lastname']],
 
                             'passenger_email' => '$passengers.email',
                             'passenger_phone' => '$passengers.phone',
@@ -624,32 +624,32 @@ Class Model_Transaction extends Model
                             'distance_unit' => '$trans.distance_unit',
                             'pickup_time' => '$pickup_time',
                             'dispatch_time' => '$dispatch_time',
-                            'total_fare_detail'=>array('$sum'=>'$fare_detail.value'),
+                            'total_fare_detail'=>['$sum'=>'$fare_detail.value'],
                             'fare_detail'=>'$fare_detail',
                             'cancel_reason'=>'$cancel_reason',
 
-                        )
-                    ), array(
-                        '$sort' => array(
+                        ]
+                    ], [
+                        '$sort' => [
                             '_id' => -1
-                        )
-                    )
+                        ]
+                    ]
                    
-                );
+                ];
                 $merge_arguments = array_merge($common_arguments,$arguments);
                 if(empty($download)){
                     $tot =$val+$offset;           
                     
                    // echo "string";exit();
-                     $limitarguments = array(                    
+                     $limitarguments = [                    
                                           
-                        array(
+                        [
                             '$limit' => (int) $tot
-                        ),
-                        array(
+                        ],
+                        [
                             '$skip' => (int) $offset
-                        )
-                    );
+                        ]
+                    ];
  
                  //   $merge_arguments = array_merge($common_arguments,$limitarguments,$arguments);
                     $merge_arguments = array_merge($common_arguments,$arguments,$limitarguments);
@@ -708,7 +708,7 @@ Class Model_Transaction extends Model
                         }
                     }
                     //     echo "<pre>";print_r($result['result']);exit();
-                     return (!empty($result['result'])) ? $result['result'] : array();
+                     return (!empty($result['result'])) ? $result['result'] : [];
 
              //  seg }
               
@@ -1007,84 +1007,84 @@ Class Model_Transaction extends Model
                 $state_id   = $this->state_id;
                 $city_id    = $this->city_id;
             }
-            $match_query = array(
+            $match_query = [
                 'taxi.taxi_country' => (int) $country_id,
                 'taxi.taxi_state' => (int) $state_id,
                 'taxi.taxi_city' => (int) $city_id
-            );
+            ];
             if (($company_id != "") && ($company_id != "All")) {
-                $match_query = array(
+                $match_query = [
                     'taxi.taxi_company' => (int) $company_id,
                     'taxi.taxi_country' => (int) $country_id,
                     'taxi.taxi_state' => (int) $state_id,
                     //'taxi.taxi_city' => (int) $city_id
-                );
+                ];
             }
-            $arguments = array(
-                array(
+            $arguments = [
+                [
                     '$unwind' => '$stateinfo'
-                ),
-                array(
+                ],
+                [
                     '$unwind' => '$stateinfo.cityinfo'
-                ),
-                array(
-                    '$lookup' => array(
+                ],
+                [
+                    '$lookup' => [
                         'from' => MDB_TAXI,
                         'localField' => 'stateinfo.cityinfo.city_id',
                         'foreignField' => "taxi_country",
                         'foreignField' => "taxi_state",
                         'foreignField' => "taxi_city",
                         'as' => "taxi"
-                    )
-                ),
-                array(
+                    ]
+                ],
+                [
                     '$unwind' => '$taxi'
-                ),
-                array(
+                ],
+                [
                     '$match' => $match_query
-                ),
-                array(
-                    '$project' => array(
+                ],
+                [
+                    '$project' => [
                         '_id' => 0,
                         'taxi_id' => '$taxi._id',
                         'taxi_no' => '$taxi.taxi_no'
-                    )
-                ),
-                array(
-                    '$sort' => array(
+                    ]
+                ],
+                [
+                    '$sort' => [
                         'taxi.created_date' => -1
-                    )
-                )
-            );
+                    ]
+                ]
+            ];
             $result    = $this->mongo_db->aggregate(MDB_CSC, $arguments);
             //echo "<pre>"; print_r($result);exit;
-            return (!empty($result['result']) && isset($result['result'])) ? $result['result'] : array();
+            return (!empty($result['result']) && isset($result['result'])) ? $result['result'] : [];
         } else {
             // Condition to search based on company id //
             if (($company_id != "") && ($company_id != "All")) {
-                $match_query = array(
+                $match_query = [
                     'taxi_company' => (int) $company_id,
-                );
-                $arguments   = array(
-                     array(
+                ];
+                $arguments   = [
+                     [
                         '$match' => $match_query
-                    ),
-                    array(
-                        '$project' => array(
+                    ],
+                    [
+                        '$project' => [
                             '_id' => 0,
                             'taxi_id' => '$_id',
                             'taxi_no' => '$taxi_no'
-                        )
-                    ),
-                    array(
-                        '$sort' => array(
+                        ]
+                    ],
+                    [
+                        '$sort' => [
                             'taxi_country' => -1
-                        )
-                    )
-                );
+                        ]
+                    ]
+                ];
                 $result      = $this->mongo_db->aggregate(MDB_TAXI, $arguments);
                 //echo "<pre>else"; print_r($arguments);exit;
-                return (!empty($result['result']) && isset($result['result'])) ? $result['result'] : array();
+                return (!empty($result['result']) && isset($result['result'])) ? $result['result'] : [];
             }
         }
     }
@@ -1135,84 +1135,84 @@ Class Model_Transaction extends Model
             $city_id    = $this->city_id;
         }
         if ((($manager_id != '') && ($manager_id != 'All')) || ($usertype == 'M')) {
-            $match_query = array(
+            $match_query = [
                 'people.user_type' => 'D',
                 'people.company_id' => $company_id,
                 'people.login_country' => (int) $country_id,
                 'people.login_state' => (int) $state_id,
                 'people.login_city' => (int) $city_id
-            );
-            $arguments   = array(
-                array(
+            ];
+            $arguments   = [
+                [
                     '$unwind' => '$stateinfo'
-                ),
-                array(
+                ],
+                [
                     '$unwind' => '$stateinfo.cityinfo'
-                ),
-                array(
-                    '$lookup' => array(
+                ],
+                [
+                    '$lookup' => [
                         'from' => MDB_PEOPLE,
                         'localField' => 'stateinfo.cityinfo.city_id',
                         'foreignField' => "login_country",
                         'foreignField' => "login_state",
                         'foreignField' => "login_city",
                         'as' => "people"
-                    )
-                ),
-                array(
+                    ]
+                ],
+                [
                     '$unwind' => '$people'
-                ),
-                array(
+                ],
+                [
                     '$match' => $match_query
-                ),
-                array(
-                    '$project' => array(
+                ],
+                [
+                    '$project' => [
                         '_id' => 0,
                         'id' => '$people._id',
                         'name' => '$people.name',
                         'lastname' => '$people.lastname'
-                    )
-                ),
-                array(
-                    '$sort' => array(
+                    ]
+                ],
+                [
+                    '$sort' => [
                         'created_date' => -1
-                    )
-                )
-            );
+                    ]
+                ]
+            ];
             
             $result      = $this->mongo_db->aggregate(MDB_CSC, $arguments);
             //echo "<pre>if"; print_r($arguments);exit;
-            return (!empty($result['result']) && isset($result['result'])) ? $result['result'] : array();
+            return (!empty($result['result']) && isset($result['result'])) ? $result['result'] : [];
         }
         // Condition to search based on company id //
         
         if (($company_id != "") && ($company_id != "All")) {
             
-            $match_query = array(
+            $match_query = [
                 'user_type' => 'D',
                 'company_id' => (int) $company_id,
-            );
-            $arguments   = array(
-                 array(
+            ];
+            $arguments   = [
+                 [
                     '$match' => $match_query
-                ),
-                array(
-                    '$project' => array(
+                ],
+                [
+                    '$project' => [
                         '_id' => 0,
                         'id' => '$_id',
                         'name' => '$name',
                         'lastname' => '$lastname'
-                    )
-                ),
-                array(
-                    '$sort' => array(
+                    ]
+                ],
+                [
+                    '$sort' => [
                         'created_date' => -1
-                    )
-                )
-            );
+                    ]
+                ]
+            ];
             $result      = $this->mongo_db->aggregate(MDB_PEOPLE, $arguments);
             //echo "<pre>else"; print_r($result['result']);exit;
-            return (!empty($result['result'])) ? $result['result'] : array();
+            return (!empty($result['result'])) ? $result['result'] : [];
         }
     }
     /************* Function to get Manager Details ******************/
@@ -1222,16 +1222,16 @@ Class Model_Transaction extends Model
         $results = Db::query(Database::SELECT, $query)->execute()->as_array();
         return $results;*/
         //MongoDB
-        $result = $this->mongo_db->find_one(MDB_PEOPLE, array(
+        $result = $this->mongo_db->find_one(MDB_PEOPLE, [
             'user_type' => 'M',
             '_id' => (int) $manager_id
-        ), array(
+        ], [
             'login_country',
             'login_state',
             'login_city',
             'company_id'
-        ));
-        return (!empty($result)) ? $result : array();
+        ]);
+        return (!empty($result)) ? $result : [];
     }
     /************* Get Taxi List ******************/
     public function getmanager_taxidetails($company_id, $manager_id)
@@ -1259,49 +1259,49 @@ Class Model_Transaction extends Model
         
          //MongoDB
         $cid = (($company_id != "") && ($company_id != "All"))?$company_id:$manager_cmid;
-        $match_query = array(
+        $match_query = [
             'taxi.taxi_company' => (int) $cid,
             'taxi.taxi_country' => (int) $country_id,
             'taxi.taxi_state' => (int) $state_id,
             'taxi.taxi_city' => (int) $city_id
-        );
-        $arguments = array(
-            array(
+        ];
+        $arguments = [
+            [
                 '$unwind' => '$stateinfo'
-            ),
-            array(
+            ],
+            [
                 '$unwind' => '$stateinfo.cityinfo'
-            ),
-            array(
-                '$lookup' => array(
+            ],
+            [
+                '$lookup' => [
                     'from' => MDB_TAXI,
                     'localField' => 'stateinfo.cityinfo.city_id',
                     'foreignField' => "taxi_city",
                     'as' => "taxi"
-                )
-            ),
-            array(
+                ]
+            ],
+            [
                 '$unwind' => '$taxi'
-            ),
-            array(
+            ],
+            [
                 '$match' => $match_query
-            ),
-            array(
-                '$project' => array(
+            ],
+            [
+                '$project' => [
                     '_id' => 0,
                     'taxi_id' => '$taxi._id',
                     'taxi_no' => '$taxi.taxi_no'
-                )
-            ),
-            array(
-                '$sort' => array(
+                ]
+            ],
+            [
+                '$sort' => [
                     '_id' => -1
-                )
-            )
-        );
+                ]
+            ]
+        ];
         $result    = $this->mongo_db->aggregate(MDB_CSC, $arguments);
         //echo "<pre>"; print_r($result['result']);exit;
-        return (!empty($result['result']) && isset($result['result'])) ? $result['result'] : array();
+        return (!empty($result['result']) && isset($result['result'])) ? $result['result'] : [];
         
     }
     /************* Get Driver List ******************/
@@ -1331,52 +1331,52 @@ Class Model_Transaction extends Model
         
         $cid = ($company_id != "") && ($company_id != "All")?$company_id:$manager_cmid;
         //MongoDB
-        $match_query = array(
+        $match_query = [
             'people.user_type' => 'D',
             'people.company_id' => (int)$cid,
             'people.login_country' => (int) $country_id,
             'people.login_state' => (int) $state_id,
             'people.login_city' => (int) $city_id
-        );
-        $arguments   = array(
-            array(
+        ];
+        $arguments   = [
+            [
                 '$unwind' => '$stateinfo'
-            ),
-            array(
+            ],
+            [
                 '$unwind' => '$stateinfo.cityinfo'
-            ),
-            array(
-                '$lookup' => array(
+            ],
+            [
+                '$lookup' => [
                     'from' => MDB_PEOPLE,
                     'localField' => 'stateinfo.cityinfo.city_id',
                     'foreignField' => "login_city",
                     'as' => "people"
-                )
-            ),
-            array(
+                ]
+            ],
+            [
                 '$unwind' => '$people'
-            ),
-            array(
+            ],
+            [
                 '$match' => $match_query
-            ),
-            array(
-                '$project' => array(
+            ],
+            [
+                '$project' => [
                     '_id' => 0,
                     'id' => '$people._id',
                     'name' => '$people.name',
                     'lastname' => '$people.lastname'
-                )
-            ),
-            array(
-                '$sort' => array(
+                ]
+            ],
+            [
+                '$sort' => [
                     '_id' => -1
-                )
-            )
-        );
+                ]
+            ]
+        ];
         
         $result      = $this->mongo_db->aggregate(MDB_CSC, $arguments);
         //echo "<pre>if"; print_r($result['result']);exit;
-        return (!empty($result['result']) && isset($result['result'])) ? $result['result'] : array();
+        return (!empty($result['result']) && isset($result['result'])) ? $result['result'] : [];
     }
     /************* Get Manager List ******************/
     public function getmanagerdetails($company_id)
@@ -1401,78 +1401,78 @@ Class Model_Transaction extends Model
         return $results;*/
         // Condition to search based on state, city, company id and usertype //
         if ($usertype == 'M') {
-            $match_query = array(
+            $match_query = [
                 'people.user_type' => 'M',
                 'people.login_country' => (int) $country_id,
                 'people.login_state' => (int) $state_id,
                 'people.login_city' => (int) $city_id
-            );
-            $arguments   = array(
-                array(
+            ];
+            $arguments   = [
+                [
                     '$unwind' => '$stateinfo'
-                ),
-                array(
+                ],
+                [
                     '$unwind' => '$stateinfo.cityinfo'
-                ),
-                array(
-                    '$lookup' => array(
+                ],
+                [
+                    '$lookup' => [
                         'from' => MDB_PEOPLE,
                         'localField' => 'stateinfo.cityinfo.city_id',
                         'foreignField' => "login_city",
                         'as' => "people"
-                    )
-                ),
-                array(
+                    ]
+                ],
+                [
                     '$unwind' => '$people'
-                ),
-                array(
+                ],
+                [
                     '$match' => $match_query
-                ),
-                array(
-                    '$project' => array(
+                ],
+                [
+                    '$project' => [
                         '_id' => 0,
                         'id' => '$people._id',
                         'name' => '$people.name',
                         'lastname' => '$people.lastname'
-                    )
-                ),
-                array(
-                    '$sort' => array(
+                    ]
+                ],
+                [
+                    '$sort' => [
                         'people.created_date' => -1
-                    )
-                )
-            );
+                    ]
+                ]
+            ];
             $result      = $this->mongo_db->aggregate(MDB_CSC, $arguments);
             //echo "<pre>if"; print_r($result['result']);exit;
-            return (!empty($result['result']) && isset($result['result'])) ? $result['result'] : array();
+            return (!empty($result['result']) && isset($result['result'])) ? $result['result'] : [];
         }
         // Condition to search based on company id //
         if (($company_id != "") && ($company_id != "All")) {
-            $match_query = array(
+            $match_query = [
                 'user_type' => 'M',
                 'company_id' => (int) $company_id,
-            );
-            $arguments   = array(
-                 array(
+            ];
+            $arguments   = [
+                 [
                     '$match' => $match_query
-                ),
-                array(
-                    '$project' => array(
+                ],
+                [
+                    '$project' => [
                         '_id' => 0,
                         'id' => '$_id',
                         'name' => '$name',
                         'lastname' => '$lastname'
-                    )
-                ),
-                array(
-                    '$sort' => array(
+                    ]
+                ],
+                [
+                    '$sort' => [
                         'created_date' => -1
-                    )
-                )
-            );
+                    ]
+                ]
+            ];
             $result      = $this->mongo_db->aggregate(MDB_PEOPLE, $arguments);
             //echo "<pre>else"; print_r($result['result']);exit;
-            return (!empty($result['result']) && isset($result['result'])) ? $result['result'] : array();
+            return (!empty($result['result']) && isset($result['result'])) ? $result['result'] : [];
             /*$result = $this->mongo_db->find(MDB_PEOPLE, array(
                 'user_type' => 'M',
                 'company_id' => (int) $company_id
@@ -1493,46 +1493,46 @@ public function getpassengerdetails($company_id, $manager_id)
    {
        //echo $company_id;
        $usertype    = $this->user_admin_type;        
-       $match_query = array('companydetails.company_status'=>array('$ne'=>'T'));
+       $match_query = ['companydetails.company_status'=>['$ne'=>'T']];
        if (($company_id != "") && ($company_id != "All")) {
-           $match_query = array(
+           $match_query = [
                'passengers.passenger_cid' => (int) $company_id
-           );
+           ];
        }
-       $match_query = array('passengers.name' => array('$ne' => ''));
+       $match_query = ['passengers.name' => ['$ne' => '']];
       
-       $arguments = array(
-           array(
-               '$lookup' => array(
+       $arguments = [
+           [
+               '$lookup' => [
                    'from' => MDB_PASSENGERS,
                    'localField' => "_id",
                    'foreignField' => "passenger_cid",
                    'as' => "passengers"
-               )
-           ),
-           array(
+               ]
+           ],
+           [
                '$unwind' => '$passengers'
-           ),
-           array(
+           ],
+           [
                '$match' => $match_query
-           ),
-           array(
-               '$project' => array(
+           ],
+           [
+               '$project' => [
                    '_id' => 0,
                    'id' => '$passengers._id',
                    'name' => '$passengers.name',
                    'company_name' => '$companydetails.company_name'
-               )
-           ),
-           array(
-               '$sort' => array(
+               ]
+           ],
+           [
+               '$sort' => [
                    'passengers.created_date' => -1
-               )
-           )
-       );
+               ]
+           ]
+       ];
        $result    = $this->mongo_db->aggregate(MDB_COMPANY, $arguments);
        //echo "<pre>"; print_r($result['result']);exit;
-       return (!empty($result['result']) && isset($result['result'])) ? $result['result'] : array();
+       return (!empty($result['result']) && isset($result['result'])) ? $result['result'] : [];
    }
     /**
      * ****export_data()****
@@ -1556,7 +1556,7 @@ public function getpassengerdetails($company_id, $manager_id)
                 $taxi_ids = Commonfunction::mongo_format_array($tid);
             } else {
                 //$taxi_ids = "";
-                $taxi_ids = array();
+                $taxi_ids = [];
             }
             //echo 'taxilist=>';print_r($taxi_ids);echo '<br>';
             // Function to get driver details //
@@ -1571,7 +1571,7 @@ public function getpassengerdetails($company_id, $manager_id)
                 $driver_ids = Commonfunction::mongo_format_array($cdriver_id);
             } else {
                 //$driver_ids = "";
-                $driver_ids = array();
+                $driver_ids = [];
             }
             //echo 'driverlist=>';print_r($driver_ids);echo '<br>';
         }
@@ -1588,171 +1588,171 @@ public function getpassengerdetails($company_id, $manager_id)
             $passenger_ids = Commonfunction::mongo_format_array($cpassenger_id);
         } else {
             //$passenger_ids = "";
-            $passenger_ids = array();
+            $passenger_ids = [];
         }
         //echo 'passengerlist=>';print_r($passenger_ids);echo '<br>';//exit;
-        $date_condition = array();
+        $date_condition = [];
         if ($startdate != "") {
             if( $list == 'success' || $list == 'inprogress')
             {
-                $date_condition = array(
-                    'actual_pickup_time' => array(
-                        '$gte' => New MongoDate(strtotime($startdate)),
-                        '$lte' => New MongoDate(strtotime($enddate))
-                    )
-                );
+                $date_condition = [
+                    'actual_pickup_time' => [
+                        '$gte' => new \MongoDB\BSON\UTCDateTime(strtotime($startdate) * 1000),
+                        '$lte' => new \MongoDB\BSON\UTCDateTime(strtotime($enddate) * 1000)
+                    ]
+                ];
             }
             else
             {
-                $date_condition = array(
-                    'pickup_time' => array(
-                        '$gte' => New MongoDate(strtotime($startdate)),
-                        '$lte' => New MongoDate(strtotime($enddate))
-                    )
-                );
+                $date_condition = [
+                    'pickup_time' => [
+                        '$gte' => new \MongoDB\BSON\UTCDateTime(strtotime($startdate) * 1000),
+                        '$lte' => new \MongoDB\BSON\UTCDateTime(strtotime($enddate) * 1000)
+                    ]
+                ];
             }
         }
         // Condition to search based on transaction id //
-        $trans_condition = array();
+        $trans_condition = [];
         if ($transaction_id != '') {
-            $trans_condition = array(
+            $trans_condition = [
                 'trans._id' => $transaction_id
-            );
+            ];
         }
         // Condition to search based on status //
-        $condition = array();
+        $condition = [];
         if ($list == 'all') {
-            $condition = array();
+            $condition = [];
         } else if ($list == 'success') {
-            $condition = array(
+            $condition = [
                 'travel_status' => 1,
                 'driver_reply' => 'A'
-            );
+            ];
         }  else if ($list == 'upcoming') {
-            $condition = array('driver_reply' => 'A',"travel_status"=> array('$in'=>array(0,3,9)));
+            $condition = ['driver_reply' => 'A',"travel_status"=> ['$in'=>[0,3,9]]];
         } else if ($list == 'inprogress') {
-            $condition = array('driver_reply' => 'A',"travel_status"=> array('$in'=>array(5,2)));
+            $condition = ['driver_reply' => 'A',"travel_status"=> ['$in'=>[5,2]]];
         } else if ($list == 'cancelled') {
-            $condition = array("driver_reply"=> array('$in'=>array('C','A')),"travel_status"=> array('$in'=>array(0,4)));
+            $condition = ["driver_reply"=> ['$in'=>['C','A']],"travel_status"=> ['$in'=>[0,4]]];
         } else if ($list == 'rejected') {
-            $condition = array(
+            $condition = [
                 'driver_reply' => 'R'
-            );
+            ];
         }
-        $pay_condition = array();
+        $pay_condition = [];
         // Condition to search based on payment type //
         if ($payment_type != 'All' && $payment_type != '') {
             if ($list != 'rejected') {
-                $pay_condition = array(
+                $pay_condition = [
                     'trans.payment_type' => (int) $payment_type
-                );
+                ];
             }
         }
         // Condition to search based on company //
-        $company_condition = array();
+        $company_condition = [];
         if (($company != "") && ($company != "All")) {
-            $company_condition = array(
+            $company_condition = [
                 'company_id' => (int) $company
-            );
+            ];
         }
         // Condition to search based on taxi id //
-        $taxi_condition = array();
+        $taxi_condition = [];
         if (($taxiid != "All") && !empty($taxiid)) {
-            $taxi_condition = array(
+            $taxi_condition = [
                 'taxi_id' => (int) $taxiid
-            );
+            ];
         } else {
             if ((($manager_id != '') && ($manager_id != 'All')) || ($usertype == 'M')) {
                 if (count($taxilist) > 0) {
-                    $taxi_condition = array(
-                        'taxi_id' => array(
+                    $taxi_condition = [
+                        'taxi_id' => [
                             '$in' => $taxi_ids
-                        )
-                    );
+                        ]
+                    ];
                 }
             }
         }
         // Condition to search based on driver id //
-        $driver_condition = array();
+        $driver_condition = [];
         if (($driver_id != "All") && !empty($driver_id)) {
-            $driver_condition = array(
+            $driver_condition = [
                 "driver_id" => (int) $driver_id
-            );
+            ];
         } else {
             if ((($manager_id != '') && ($manager_id != 'All')) || ($usertype == 'M')) {
                 if (count($driverlist) > 0) {
-                    $driver_condition = array(
-                        "driver_id" => array(
+                    $driver_condition = [
+                        "driver_id" => [
                             '$in' => $driver_ids
-                        )
-                    );
+                        ]
+                    ];
                 }
             }
         }
         // Condition to search based on passenger id //
-        $passengers_condition = array();
+        $passengers_condition = [];
         if (($passengerid != "") && ($passengerid != "All")) {
-            $passengers_condition = array(
+            $passengers_condition = [
                 "passengers_id" => (int) $passengerid
-            );
+            ];
         }
         if ($list == 'rejected') {
             $match_query = array_merge($date_condition, $passengers_condition, $company_condition, $taxi_condition, $driver_condition, $condition, $pay_condition);
             //print_r($match_query);//exit;
-             $common_arguments = array(
-                array(
-                    '$lookup' => array(
+             $common_arguments = [
+                [
+                    '$lookup' => [
                         'from' => MDB_COMPANY,
                         'localField' => "company_id",
                         'foreignField' => "_id",
                         'as' => "company"
-                    )
-                ),
-                array(
+                    ]
+                ],
+                [
                     '$unwind' => '$company'
-                ),
-                  array(
-                    '$lookup' => array(
+                ],
+                  [
+                    '$lookup' => [
                         'from' => MDB_TRANSACTION,
                         'localField' => "_id",
                         'foreignField' => "passengers_log_id",
                         'as' => "trans"
-                    )
-                ),
-                array(
+                    ]
+                ],
+                [
                     '$unwind' => '$trans'
-                ),
-                array(
-                    '$lookup' => array(
+                ],
+                [
+                    '$lookup' => [
                         'from' => MDB_PEOPLE,
                         'localField' => "driver_id",
                         'foreignField' => "_id",
                         'as' => "people"
-                    )
-                ),
-                array(
+                    ]
+                ],
+                [
                     '$unwind' => '$people'
-                ),
-                array(
-                    '$lookup' => array(
+                ],
+                [
+                    '$lookup' => [
                         'from' => MDB_PASSENGERS,
                         'localField' => "passengers_id",
                         'foreignField' => "_id",
                         'as' => "passengers"
-                    )
-                ),
-                array(
+                    ]
+                ],
+                [
                     '$unwind' => '$passengers'
-                ),
-                 array(
+                ],
+                 [
                     '$match' => $match_query
-                )
-            );
+                ]
+            ];
 
 
-              $arguments = array(
-                    array(
-                        '$project' => array(
+              $arguments = [
+                    [
+                        '$project' => [
                             '_id' => 0,
                             'id' => '$_id',
                             'driver_id' => '$people._id',
@@ -1772,20 +1772,20 @@ public function getpassengerdetails($company_id, $manager_id)
                             'driver_reply' => '$driver_reply',
                             'driver_comments' => '$driver_comments',
                             'userid' => '$company.companydetails.userid',
-                        )
-                    ),
-                    array(
-                        '$sort' => array(
+                        ]
+                    ],
+                    [
+                        '$sort' => [
                             '_id' => 1
-                        )
-                    ),
-                    array(
+                        ]
+                    ],
+                    [
                         '$skip' => (int) $offset
-                    ),
-                    array(
+                    ],
+                    [
                         '$limit' => (int) $val
-                    )
-                );
+                    ]
+                ];
                 $merge_arguments = array_merge($common_arguments,$arguments);
                 //echo '<pre>';print_r($merge_arguments);exit;
 
@@ -1809,83 +1809,83 @@ public function getpassengerdetails($company_id, $manager_id)
                 }                
                 $result    = $this->mongo_db->aggregate($table, $merge_arguments);
                 //echo '<pre>';print_r($result);exit;
-                return (!empty($result['result'])) ? $result['result'] : array();
+                return (!empty($result['result'])) ? $result['result'] : [];
         } else {
             $match_query = array_merge($date_condition, $passengers_condition, $company_condition, $taxi_condition, $driver_condition, $condition, $pay_condition, $trans_condition);
-             $common_arguments = array(
-                array(
-                    '$lookup' => array(
+             $common_arguments = [
+                [
+                    '$lookup' => [
                         'from' => MDB_COMPANY,
                         'localField' => "company_id",
                         'foreignField' => "_id",
                         'as' => "company"
-                    )
-                ),
-                array(
+                    ]
+                ],
+                [
                     '$unwind' => '$company'
-                ),                                
-            );
+                ],                                
+            ];
             
-            $condition_arg = array(array(
-                    '$lookup' => array(
+            $condition_arg = [[
+                    '$lookup' => [
                         'from' => MDB_TRANSACTION,
                         'localField' => "_id",
                         'foreignField' => "passengers_log_id",
                         'as' => "trans"
-                    )
-                ),
-                array(
+                    ]
+                ],
+                [
                     '$unwind' => '$trans'
-                )
-            );
+                ]
+            ];
             
             if($list != 'inprogress' && $list != 'upcoming') {
                 $common_arguments = array_merge($common_arguments,$condition_arg);
             }
             
-            $driver_arg = array(array(
-                    '$lookup' => array(
+            $driver_arg = [[
+                    '$lookup' => [
                         'from' => MDB_PEOPLE,
                         'localField' => "driver_id",
                         'foreignField' => "_id",
                         'as' => "people"
-                    )
-                ),
-                array(
+                    ]
+                ],
+                [
                     '$unwind' => '$people'
-                )
-            );
+                ]
+            ];
             
-            $concat_arguments = array(               
-                array(
-                    '$lookup' => array(
+            $concat_arguments = [               
+                [
+                    '$lookup' => [
                         'from' => MDB_PASSENGERS,
                         'localField' => "passengers_id",
                         'foreignField' => "_id",
                         'as' => "passengers"
-                    )
-                ),
-                array(
+                    ]
+                ],
+                [
                     '$unwind' => '$passengers'
-                ),                               
-                array(
+                ],                               
+                [
                     '$match' => $match_query
-                ),
-                array(
-                        '$sort' => array(
+                ],
+                [
+                        '$sort' => [
                             '_id' => 1
-                        )
-                    )
-            );
+                        ]
+                    ]
+            ];
             if($list == 'upcoming') {
                 $common_arguments = array_merge($common_arguments,$concat_arguments);
             } else {
                 $common_arguments = array_merge($driver_arg,$common_arguments,$concat_arguments);
             }
 
-             $arguments = array(                    
-                   array(
-                    '$project' => array(
+             $arguments = [                    
+                   [
+                    '$project' => [
                         '_id' => 0,
                         'id' => '$_id',
                         'driver_id' => '$people._id',
@@ -1919,14 +1919,14 @@ public function getpassengerdetails($company_id, $manager_id)
                         'company_tax' => '$company_tax',
                         'pickup_time' => '$pickup_time'
 
-                    )
-                    ),
-                    array(
-                        '$sort' => array(
+                    ]
+                    ],
+                    [
+                        '$sort' => [
                             'id' => -1
-                        )
-                    )
-                );
+                        ]
+                    ]
+                ];
                 $merge_arguments = array_merge($common_arguments,$arguments);
 
                 $table = MDB_PASSENGERS_LOGS;        
@@ -1954,7 +1954,7 @@ public function getpassengerdetails($company_id, $manager_id)
   $result['result'][$i]['pickup_time'] = Commonfunction::convertphpdate('Y-m-d',$result['result'][$i]['pickup_time']);
                 }
            // echo '<pre>else';print_r($result['result']);exit;
-            return (!empty($result['result'])) ? $result['result'] : array();
+            return (!empty($result['result'])) ? $result['result'] : [];
         }
     }
     /**
@@ -2086,7 +2086,7 @@ public function getpassengerdetails($company_id, $manager_id)
                 $taxi_ids = Commonfunction::mongo_format_array($tid);
             } else {
                 //$taxi_ids = "";
-                $taxi_ids = array();
+                $taxi_ids = [];
             }
             //echo 'taxilist=>';print_r($taxi_ids);echo '<br>';
             // Function to get driver details //
@@ -2101,7 +2101,7 @@ public function getpassengerdetails($company_id, $manager_id)
                 $driver_ids = Commonfunction::mongo_format_array($cdriver_id);
             } else {
                 //$driver_ids = "";
-                $driver_ids = array();
+                $driver_ids = [];
             }
             //echo 'driverlist=>';print_r($driver_ids);echo '<br>';
         }
@@ -2118,165 +2118,165 @@ public function getpassengerdetails($company_id, $manager_id)
             $passenger_ids = Commonfunction::mongo_format_array($cpassenger_id);
         } else {
             //$passenger_ids = "";
-            $passenger_ids = array();
+            $passenger_ids = [];
         }
         //echo 'passengerlist=>';print_r($passenger_ids);echo '<br>';//exit;
-        $date_condition = array();
+        $date_condition = [];
         if ($startdate != "") {
             //$date_condition = array('createdate'=>array('$lte'=>$enddate));
             //$date_condition = array('createdate'=>array(array('$gte'=>$startdate),array('$lte'=>$enddate)));
-            $date_condition = array(
-                   'createdate' => array(
+            $date_condition = [
+                   'createdate' => [
                     '$gte' => new \MongoDB\BSON\UTCDateTime(strtotime($startdate) * 1000),
                     '$lte' => new \MongoDB\BSON\UTCDateTime(strtotime($enddate) * 1000)
-                )
-            );
+                ]
+            ];
         }
         // Condition to search based on transaction id //
-        $trans_condition = array();
+        $trans_condition = [];
         if ($transaction_id != '') {
-            $trans_condition = array(
+            $trans_condition = [
                 'trans._id' => $transaction_id
-            );
+            ];
         }
         // Condition to search based on status //
-        $condition = array();
+        $condition = [];
         if ($list == 'all') {
-            $condition = array();
+            $condition = [];
         } else if ($list == 'success') {
-            $condition = array(
+            $condition = [
                 'travel_status' => 1,
                 'driver_reply' => 'A'
-            );
+            ];
         } else if ($list == 'cancelled') {
-            $condition = array(
-                "\$or" => array(
-                    array(
+            $condition = [
+                "\$or" => [
+                    [
                         'travel_status' => 4,
                         'driver_reply' => 'A'
-                    ),
-                    array(
+                    ],
+                    [
                         'travel_status' => 0,
                         'driver_reply' => 'C'
-                    )
-                )
-            );
+                    ]
+                ]
+            ];
         } else if ($list == 'rejected') {
-            $condition = array(
+            $condition = [
                 'driver_reply' => 'R'
-            );
+            ];
         }
-        $pay_condition = array();
+        $pay_condition = [];
         // Condition to search based on payment type //
         if ($payment_type != 'All' && $payment_type != '') {
             if ($list != 'rejected') {
-                $pay_condition = array(
+                $pay_condition = [
                     'payment_type' => (int) $payment_type
-                );
+                ];
             }
         }
         // Condition to search based on company //
-        $company_condition = array();
+        $company_condition = [];
         if (($company != "") && ($company != "All")) {
-            $company_condition = array(
+            $company_condition = [
                 'company_id' => (int) $company
-            );
+            ];
         }
         // Condition to search based on taxi id //
-        $taxi_condition = array();
+        $taxi_condition = [];
         if (($taxiid != "All") && !empty($taxiid)) {
-            $taxi_condition = array(
+            $taxi_condition = [
                 'taxi_id' => (int) $taxiid
-            );
+            ];
         } else {
             if ((($manager_id != '') && ($manager_id != 'All')) || ($usertype == 'M')) {
                 if (count($taxilist) > 0) {
-                    $taxi_condition = array(
-                        'taxi_id' => array(
+                    $taxi_condition = [
+                        'taxi_id' => [
                             '$in' => $taxi_ids
-                        )
-                    );
+                        ]
+                    ];
                 }
             }
         }
         // Condition to search based on driver id //
-        $driver_condition = array();
+        $driver_condition = [];
         if (($driver_id != "All") && !empty($driver_id)) {
-            $driver_condition = array(
+            $driver_condition = [
                 "driver_id" => (int) $driver_id
-            );
+            ];
         } else {
             if ((($manager_id != '') && ($manager_id != 'All')) || ($usertype == 'M')) {
                 if (count($driverlist) > 0) {
-                    $driver_condition = array(
-                        "driver_id" => array(
+                    $driver_condition = [
+                        "driver_id" => [
                             '$in' => $driver_ids
-                        )
-                    );
+                        ]
+                    ];
                 }
             }
         }
         // Condition to search based on passenger id //
-        $passengers_condition = array();
+        $passengers_condition = [];
         if (($passengerid != "") && ($passengerid != "All")) {
-            $passengers_condition = array(
+            $passengers_condition = [
                 "passengers_id" => (int) $passengerid
-            );
+            ];
         }
         if ($list == 'rejected') {
             $match_query = array_merge($date_condition, $passengers_condition, $company_condition, $taxi_condition, $driver_condition, $condition, $pay_condition);
             //print_r($match_query);//exit;
-            $arguments = array(
-                array(
-                    '$lookup' => array(
+            $arguments = [
+                [
+                    '$lookup' => [
                         'from' => MDB_COMPANY,
                         'localField' => "company_id",
                         'foreignField' => "_id",
                         'as' => "company"
-                    )
-                ),
-                array(
+                    ]
+                ],
+                [
                     '$unwind' => '$company'
-                ),
+                ],
                 
-                array(
-                    '$lookup' => array(
+                [
+                    '$lookup' => [
                         'from' => MDB_PEOPLE,
                         'localField' => "driver_id",
                         'foreignField' => "_id",
                         'as' => "people"
-                    )
-                ),
-                array(
+                    ]
+                ],
+                [
                     '$unwind' => '$people'
-                ),
-                 array(
-                    '$lookup' => array(
+                ],
+                 [
+                    '$lookup' => [
                         'from' => MDB_TRANSACTION,
                         'localField' => "_id",
                         'foreignField' => "passengers_log_id",
                         'as' => "trans"
-                    )
-                ),
-                array(
+                    ]
+                ],
+                [
                     '$unwind' => '$trans'
-                ),
-                array(
-                    '$lookup' => array(
+                ],
+                [
+                    '$lookup' => [
                         'from' => MDB_PASSENGERS,
                         'localField' => "passengers_id",
                         'foreignField' => "_id",
                         'as' => "passengers"
-                    )
-                ),
-                array(
+                    ]
+                ],
+                [
                     '$unwind' => '$passengers'
-                ),
-                array(
+                ],
+                [
                     '$match' => $match_query
-                ),
-                array(
-                    '$project' => array(
+                ],
+                [
+                    '$project' => [
                         '_id' => 0,
                         'id' => '$_id',
                         'driver_id' => '$people._id',
@@ -2306,14 +2306,14 @@ public function getpassengerdetails($company_id, $manager_id)
                         'driver_comments' => '$driver_comments',
                         'distance_unit' => '$trans.distance_unit',
                         'rating' => '$rating',
-                    )
-                ),
-                array(
-                    '$sort' => array(
+                    ]
+                ],
+                [
+                    '$sort' => [
                         '_id' => 1
-                    )
-                ),
-            );
+                    ]
+                ],
+            ];
 
             $table = MDB_PASSENGERS_LOGS;        
 
@@ -2337,61 +2337,61 @@ public function getpassengerdetails($company_id, $manager_id)
             $result    = $this->mongo_db->aggregate($table, $arguments);
             
             //echo '<pre>';print_r($result);exit;
-            return (!empty($result['result'])) ? $result['result'] : array();
+            return (!empty($result['result'])) ? $result['result'] : [];
         } else {
             $match_query = array_merge($date_condition, $passengers_condition, $company_condition, $taxi_condition, $driver_condition, $condition, $pay_condition, $trans_condition);
            // print_r($match_query);exit;
-            $arguments = array(
-                array(
-                    '$lookup' => array(
+            $arguments = [
+                [
+                    '$lookup' => [
                         'from' => MDB_COMPANY,
                         'localField' => "company_id",
                         'foreignField' => "_id",
                         'as' => "company"
-                    )
-                ),
-                array(
+                    ]
+                ],
+                [
                     '$unwind' => '$company'
-                ),
-                array(
-                    '$lookup' => array(
+                ],
+                [
+                    '$lookup' => [
                         'from' => MDB_PEOPLE,
                         'localField' => "driver_id",
                         'foreignField' => "_id",
                         'as' => "people"
-                    )
-                ),
-                array(
+                    ]
+                ],
+                [
                     '$unwind' => '$people'
-                ),
-                 array(
-                    '$lookup' => array(
+                ],
+                 [
+                    '$lookup' => [
                         'from' => MDB_TRANSACTION,
                         'localField' => "_id",
                         'foreignField' => "passengers_log_id",
                         'as' => "trans"
-                    )
-                ),
-                array(
+                    ]
+                ],
+                [
                     '$unwind' => '$trans'
-                ),
-                array(
-                    '$lookup' => array(
+                ],
+                [
+                    '$lookup' => [
                         'from' => MDB_PASSENGERS,
                         'localField' => "passengers_id",
                         'foreignField' => "_id",
                         'as' => "passengers"
-                    )
-                ),
-                array(
+                    ]
+                ],
+                [
                     '$unwind' => '$passengers'
-                ),
+                ],
                 
-                array(
+                [
                     '$match' => $match_query
-                ),
-                array(
-                    '$project' => array(
+                ],
+                [
+                    '$project' => [
                         '_id' => 0,
                         'id' => '$_id',
                         'driver_id' => '$people._id',
@@ -2423,14 +2423,14 @@ public function getpassengerdetails($company_id, $manager_id)
                         'comments' => '$comments',
                         'rating' => '$rating',
                         'company_tax' => '$company_tax',
-                    )
-                ),
-                array(
-                    '$sort' => array(
+                    ]
+                ],
+                [
+                    '$sort' => [
                         '_id' => 1
-                    )
-                ),
-            );
+                    ]
+                ],
+            ];
 
             $table = MDB_PASSENGERS_LOGS;        
 
@@ -2456,7 +2456,7 @@ public function getpassengerdetails($company_id, $manager_id)
                     $result['result'][$i]['createdate'] = Commonfunction::convertphpdate('Y-m-d H:i:s',$result['result'][$i]['createdate']);
                 }
            // echo '<pre>else';print_r($result['result']);exit;
-            return (!empty($result['result'])) ? $result['result'] : array();
+            return (!empty($result['result'])) ? $result['result'] : [];
         }
     }
     public function accountexport_data($list, $company, $manager_id, $taxiid, $driver_id, $passengerid, $startdate, $enddate, $transaction_id)
@@ -2577,7 +2577,7 @@ public function getpassengerdetails($company_id, $manager_id)
                 }
                 $taxi_ids = Commonfunction::mongo_format_array($tid);
             } else {
-                $taxi_ids = array();
+                $taxi_ids = [];
             }
             $driverlist = $this->getdriverdetails($company, $manager_id);
             if (count($driverlist) > 0) {
@@ -2586,7 +2586,7 @@ public function getpassengerdetails($company_id, $manager_id)
                 }
                 $driver_ids = Commonfunction::mongo_format_array($cdriver_id);
             } else {
-                $driver_ids = array();
+                $driver_ids = [];
             }
         }
         // Function to get passenger details //
@@ -2598,198 +2598,198 @@ public function getpassengerdetails($company_id, $manager_id)
             }
             $passenger_ids = Commonfunction::mongo_format_array($cpassenger_id);
         } else {
-            $passenger_ids = array();
+            $passenger_ids = [];
         }
-        $date_condition = array();
+        $date_condition = [];
         if ($startdate != "") {
-            $date_condition = array(
- 'createdate' => array(
+            $date_condition = [
+ 'createdate' => [
                     '$gte' => new \MongoDB\BSON\UTCDateTime(strtotime($startdate) * 1000),
                     '$lte' => new \MongoDB\BSON\UTCDateTime(strtotime($enddate) * 1000)
-                )
-            );
+                ]
+            ];
         }
-           $pickdate_condition = array();
+           $pickdate_condition = [];
         if ($pickupstart != "") {
             if( $list == 'success' || $list == 'inprogress')
             {
-                $pickdate_condition = array(
-                    'actual_pickup_time' => array(
-                        '$gte' => New MongoDate(strtotime($pickupstart)),
-                        '$lte' => New MongoDate(strtotime($pickupend))
-                    )
-                );
+                $pickdate_condition = [
+                    'actual_pickup_time' => [
+                        '$gte' => new \MongoDB\BSON\UTCDateTime(strtotime($pickupstart) * 1000),
+                        '$lte' => new \MongoDB\BSON\UTCDateTime(strtotime($pickupend) * 1000)
+                    ]
+                ];
             }
             else
             {
-                $pickdate_condition = array(
-                    'pickup_time' => array(
-                        '$gte' => New MongoDate(strtotime($pickupstart)),
-                        '$lte' => New MongoDate(strtotime($pickupend))
-                    )
-                );
+                $pickdate_condition = [
+                    'pickup_time' => [
+                        '$gte' => new \MongoDB\BSON\UTCDateTime(strtotime($pickupstart) * 1000),
+                        '$lte' => new \MongoDB\BSON\UTCDateTime(strtotime($pickupend) * 1000)
+                    ]
+                ];
             }
         }
         
         // Condition to search based on transaction id //
-        $trans_condition = array();
+        $trans_condition = [];
         if ($transaction_id != '') {
-            $trans_condition = array(
+            $trans_condition = [
                 'trans._id' => $transaction_id
-            );
+            ];
         }
         // Condition to search based on status //
-        $condition = array();
+        $condition = [];
         if ($list == 'all') {
-            $condition = array();
+            $condition = [];
         } else if ($list == 'success') {
-            $condition = array(
+            $condition = [
                 'travel_status' => 1,
                 'driver_reply' => 'A'
-            );
+            ];
         } else if ($list == 'cancelled') {
-            $condition = array(
-                "\$or" => array(
-                    array(
+            $condition = [
+                "\$or" => [
+                    [
                         'travel_status' => 4,
                         'driver_reply' => 'A'
-                    ),
-                    array(
+                    ],
+                    [
                         'travel_status' => 0,
                         'driver_reply' => 'C'
-                    )
-                )
-            );
+                    ]
+                ]
+            ];
         } else if ($list == 'rejected') {
-            $condition = array(
+            $condition = [
                 'driver_reply' => 'R'
-            );
+            ];
         }
-        $pay_condition = array();
+        $pay_condition = [];
         // Condition to search based on payment type //
         if ($payment_type != 'All' && $payment_type != '') {
             if ($list != 'rejected') {
-                $pay_condition = array(
+                $pay_condition = [
                     'payment_type' => (int) $payment_type
-                );
+                ];
             }
         }
         // Condition to search based on company //
-        $company_condition = array();
+        $company_condition = [];
         if (($company != "") && ($company != "All")) {
-            $company_condition = array(
+            $company_condition = [
                 'company_id' => (int) $company
-            );
+            ];
         }
         // Condition to search based on taxi id //
-        $taxi_condition = array();
+        $taxi_condition = [];
         if (($taxiid != "All") && !empty($taxiid)) {
-            $taxi_condition = array(
+            $taxi_condition = [
                 'taxi_id' => (int) $taxiid
-            );
+            ];
         } else {
             if ((($manager_id != '') && ($manager_id != 'All')) || ($usertype == 'M')) {
                 if (count($taxilist) > 0) {
-                    $taxi_condition = array(
-                        'taxi_id' => array(
+                    $taxi_condition = [
+                        'taxi_id' => [
                             '$in' => $taxi_ids
-                        )
-                    );
+                        ]
+                    ];
                 }
             }
         }
         // Condition to search based on driver id //
-        $driver_condition = array();
+        $driver_condition = [];
         if (($driver_id != "All") && !empty($driver_id)) {
-            $driver_condition = array(
+            $driver_condition = [
                 "driver_id" => (int) $driver_id
-            );
+            ];
         } else {
             if ((($manager_id != '') && ($manager_id != 'All')) || ($usertype == 'M')) {
                 if (count($driverlist) > 0) {
-                    $driver_condition = array(
-                        "driver_id" => array(
+                    $driver_condition = [
+                        "driver_id" => [
                             '$in' => $driver_ids
-                        )
-                    );
+                        ]
+                    ];
                 }
             }
         }
         // Condition to search based on passenger id //
-        $passengers_condition = array();
+        $passengers_condition = [];
         if (($passengerid != "") && ($passengerid != "All")) {
-            $passengers_condition = array(
+            $passengers_condition = [
                 "passengers_id" => (int) $passengerid
-            );
+            ];
         }
         
          $match_query = array_merge($date_condition,$pickdate_condition,$passengers_condition, $company_condition, $taxi_condition, $driver_condition, $condition,$pay_condition);
         //$q_trans = array_merge($pay_condition, $trans_condition);
         
         //print_r($match_query);exit;
-        $arguments   = array(
-         array('$match' => $match_query),
-            array(
-                '$lookup' => array(
+        $arguments   = [
+         ['$match' => $match_query],
+            [
+                '$lookup' => [
                     'from' => MDB_COMPANY,
                     'localField' => "company_id",
                     'foreignField' => "_id",
                     'as' => "company"
-                )
-            ),
-            array(
+                ]
+            ],
+            [
                 '$unwind' => '$company'
-            ),
-            array(
-                '$lookup' => array(
+            ],
+            [
+                '$lookup' => [
                     'from' => MDB_PEOPLE,
                     'localField' => "driver_id",
                     'foreignField' => "_id",
                     'as' => "people"
-                )
-            ),
+                ]
+            ],
            /* array(
                 '$unwind' => '$people'
             ),*/
-            array(
-                '$lookup' => array(
+            [
+                '$lookup' => [
                     'from' => MDB_PASSENGERS,
                     'localField' => "passengers_id",
                     'foreignField' => "_id",
                     'as' => "passengers"
-                )
-            ),
-            array(
+                ]
+            ],
+            [
                 '$unwind' => '$passengers'
-            ),
-            array(
-                '$lookup' => array(
+            ],
+            [
+                '$lookup' => [
                     'from' => MDB_TRANSACTION,
                     'localField' => "_id",
                     'foreignField' => "passengers_log_id",
                     'as' => "trans"
-                )
-            ),
+                ]
+            ],
           /*            array('$unwind' => '$trans'),
-*/            array(
-                '$project' => array(
+*/            [
+                '$project' => [
                     '_id' => 0,
                     'createdate' => '$createdate',
                     'fare' => '$trans.fare',
-                     'year' => array('$year' => '$createdate'),
-                    'month' => array('$month' => '$createdate'),
-                    'day' => array('$dayOfMonth' => '$createdate')
-                )
-            ),
-         array('$unwind' => array('path' => '$fare', 'preserveNullAndEmptyArrays' => true )),
+                     'year' => ['$year' => '$createdate'],
+                    'month' => ['$month' => '$createdate'],
+                    'day' => ['$dayOfMonth' => '$createdate']
+                ]
+            ],
+         ['$unwind' => ['path' => '$fare', 'preserveNullAndEmptyArrays' => true ]],
                    
                    
-           array('$group' => array(
-                    '_id' => array('day' => '$day','month' => '$month','year' => '$year'),
-                    'amount' => array('$sum' => '$fare'),
-                    'trips' =>  array('$sum' => 1)
-                ))
-        );
+           ['$group' => [
+                    '_id' => ['day' => '$day','month' => '$month','year' => '$year'],
+                    'amount' => ['$sum' => '$fare'],
+                    'trips' =>  ['$sum' => 1]
+                ]]
+        ];
         //  echo "<pre>";print_r($q_trans);exit();
         //$arguments =(!empty($q_trans))?array_merge($q_trans,$arguments):$arguments;
     // echo '<pre>';print_r($arguments);exit;
@@ -2819,69 +2819,69 @@ public function getpassengerdetails($company_id, $manager_id)
 
         $result      = $this->mongo_db->aggregate($table, $arguments);
      //echo '<pre>';print_r($result);exit;
-        return (!empty($result['result'])) ? $result['result'] : array();
+        return (!empty($result['result'])) ? $result['result'] : [];
     }
     public function viewtransaction_details($log_id)
     {
         //MongoDB
-        $match_query = array(
+        $match_query = [
             '_id' => (int)$log_id
-        );
+        ];
         //print_r($match_query);exit;
-        $arguments   = array(
-            array(
+        $arguments   = [
+            [
                 '$match' => $match_query
-            ),
-            array(
-                '$lookup' => array(
+            ],
+            [
+                '$lookup' => [
                     'from' => MDB_COMPANY,
                     'localField' => "company_id",
                     'foreignField' => "_id",
                     'as' => "company"
-                )
-            ),
-            array(
+                ]
+            ],
+            [
                 '$unwind' => '$company'
-            ),
-            array(
-                '$lookup' => array(
+            ],
+            [
+                '$lookup' => [
                     'from' => MDB_PEOPLE,
                     'localField' => "driver_id",
                     'foreignField' => "_id",
                     'as' => "people"
-                )
-            ),
-            array(
-                '$unwind' => array(
+                ]
+            ],
+            [
+                '$unwind' => [
                     'path' => '$people', 'preserveNullAndEmptyArrays' => true 
-                )
-            ),
-            array(
-                '$lookup' => array(
+                ]
+            ],
+            [
+                '$lookup' => [
                     'from' => MDB_PASSENGERS,
                     'localField' => "passengers_id",
                     'foreignField' => "_id",
                     'as' => "passengers"
-                )
-            ),
-            array(
+                ]
+            ],
+            [
                 '$unwind' => '$passengers'
-            ),
-            array(
-                '$lookup' => array(
+            ],
+            [
+                '$lookup' => [
                     'from' => MDB_TRANSACTION,
                     'localField' => "_id",
                     'foreignField' => "passengers_log_id",
                     'as' => "trans"
-                )
-            ),
-            array('$unwind' => array('path' => '$trans', 'preserveNullAndEmptyArrays' => true )),
-            array(
-                '$project' => array(
+                ]
+            ],
+            ['$unwind' => ['path' => '$trans', 'preserveNullAndEmptyArrays' => true ]],
+            [
+                '$project' => [
                     '_id' => 0,
                     'id' => '$_id',
                     'driver_id' => '$people._id',
-                    'driver_name' =>  array('$ifNull'=>array('$people.name','')),
+                    'driver_name' =>  ['$ifNull'=>['$people.name','']],
                     'driver_phone' => '$people.phone',
                     'passenger_name' => '$passengers.name',
                     'passenger_email' => '$passengers.email',
@@ -2893,7 +2893,7 @@ public function getpassengerdetails($company_id, $manager_id)
                     'company_amount' => '$trans.company_amount',
                     'transaction_id' => '$trans._id',
                     'passengers_log_id' => '$trans.passengers_log_id',
-                    'payment_type' => array('$ifNull' => array('$trans.payment_type','')),
+                    'payment_type' => ['$ifNull' => ['$trans.payment_type','']],
                     'createdate' => '$createdate',
                     'current_location' => '$current_location',
                     'drop_location' => '$drop_location',
@@ -2901,7 +2901,7 @@ public function getpassengerdetails($company_id, $manager_id)
                     'nightfare' => '$trans.nightfare',
                     'eveningfare' => '$trans.eveningfare',
                     'used_wallet_amount' => '$used_wallet_amount',
-                    'fare' => array('$ifNull' => array('$trans.fare','')),
+                    'fare' => ['$ifNull' => ['$trans.fare','']],
                     'travel_status' => '$travel_status',
                     'driver_reply' => '$driver_reply',
                     'driver_comments' => '$driver_comments',
@@ -2914,25 +2914,25 @@ public function getpassengerdetails($company_id, $manager_id)
                     'drop_time' => '$drop_time',
                     'drop_latitude' => '$drop_latitude',
                     'drop_longitude' => '$drop_longitude',
-                    'tripfare' => array('$ifNull' => array('$trans.fare','')),
+                    'tripfare' => ['$ifNull' => ['$trans.fare','']],
                     'minutes_fare' => '$trans.minutes_fare',
                     'trip_minutes' => '$trans.trip_minutes',
                     'wallet_amount_used' => '$trans.wallet_amount_used',
                     'subtotal' => '$trans.tripfare',
-                    'taxi_waiting_time' => array('$ifNull' => array('$trans.waiting_time','0')),
-                    'taxi_waiting_cost' => array('$ifNull' => array('$trans.waiting_cost','0')),
-                    'nightfare_applicable' => array('$ifNull' => array('$trans.nightfare_applicable','')),
-                    'eveningfare_applicable' => array('$ifNull' => array('$trans.eveningfare_applicable','')),
+                    'taxi_waiting_time' => ['$ifNull' => ['$trans.waiting_time','0']],
+                    'taxi_waiting_cost' => ['$ifNull' => ['$trans.waiting_cost','0']],
+                    'nightfare_applicable' => ['$ifNull' => ['$trans.nightfare_applicable','']],
+                    'eveningfare_applicable' => ['$ifNull' => ['$trans.eveningfare_applicable','']],
                      'fare_details'=>'$fare_detail',
-                    'total_edited_fare'=>array('$sum'=>'$fare_detail.value')
-                )
-            ),
-            array(
-                '$sort' => array(
+                    'total_edited_fare'=>['$sum'=>'$fare_detail.value']
+                ]
+            ],
+            [
+                '$sort' => [
                     '_id' => 1
-                )
-            )
-        );
+                ]
+            ]
+        ];
 
 
         $result  = $this->mongo_db->aggregate(MDB_PASSENGERSLOGS_COMPLETED, $arguments);
@@ -2944,7 +2944,7 @@ public function getpassengerdetails($company_id, $manager_id)
                     
         }    
 
-        return (!empty($result['result'])) ? $result['result'] : array();
+        return (!empty($result['result'])) ? $result['result'] : [];
 
     }
     public function viewdriver_tracking($trip_id)
@@ -2955,18 +2955,18 @@ public function getpassengerdetails($company_id, $manager_id)
         return (count($trip_check) > 0)?$trip_check:0;*/
         
         //MongoDB
-        $arguments = array(
-            array('$match'  => array("trip_id" => (int)$trip_id)),
-            array(
-                '$project' => array('_id'=>0,
+        $arguments = [
+            ['$match'  => ["trip_id" => (int)$trip_id]],
+            [
+                '$project' => ['_id'=>0,
                     'id' => '$_id',
                     'active_record' => '$loc',
-                )
-            )
-        );
+                ]
+            ]
+        ];
         $result = $this->mongo_db->aggregate(MDB_LOCATION_HISTORY,$arguments);
         //echo "<pre>"; print_r($result); exit;
-        return (!empty($result['result']))?$result['result']:array();
+        return (!empty($result['result']))?$result['result']:[];
     }
     public function count_accountreport_list($list = "", $company = "", $startdate = "", $enddate = "", $payment_type = "")
     {
@@ -2989,7 +2989,7 @@ public function getpassengerdetails($company_id, $manager_id)
     
      public function accountreport_details($list, $company, $startdate, $enddate, $payment_type)
     {
-        $match = array();
+        $match = [];
         $usertype        = $this->user_admin_type;
         if (($company != "") && ($company != "All") && $company != 0) {
             $match['company_id'] = (int)$company;
@@ -2997,43 +2997,43 @@ public function getpassengerdetails($company_id, $manager_id)
         //$startdate = '2015-05-01 00:00:00';
         //$enddate = '2015-05-31 12:59:59';
         if ($startdate != "") {
-            $match['createdate'] = array('$gte' => new \MongoDB\BSON\UTCDateTime(strtotime($startdate) * 1000),
-                                         '$lte' => new \MongoDB\BSON\UTCDateTime(strtotime($enddate) * 1000));
+            $match['createdate'] = ['$gte' => new \MongoDB\BSON\UTCDateTime(strtotime($startdate) * 1000),
+                                         '$lte' => new \MongoDB\BSON\UTCDateTime(strtotime($enddate) * 1000)];
         }
         if ($payment_type != 'All' && $payment_type != '') {
             $match['trans.payment_type'] = (int)$payment_type;
         }
-        $args = array(
-                array('$lookup' => array(
+        $args = [
+                ['$lookup' => [
                     'from' => MDB_TRANSACTION,
                     'localField' => '_id',
                     'foreignField' => 'passengers_log_id',
                     'as' => 'trans',
-                )),
-                array('$unwind' => '$trans'),
-                array('$lookup' => array(
+                ]],
+                ['$unwind' => '$trans'],
+                ['$lookup' => [
                     'from' => MDB_COMPANY,
                     'localField' => 'company_id',
                     'foreignField' => '_id',
                     'as' => 'company',
-                )),
-                array('$unwind' => '$company'),
-                array('$lookup' => array(
+                ]],
+                ['$unwind' => '$company'],
+                ['$lookup' => [
                     'from' => MDB_PEOPLE,
                     'localField' => 'driver_id',
                     'foreignField' => '_id',
                     'as' => 'people',
-                )),
-                array('$unwind' => '$people'),                
-                array('$lookup' => array(
+                ]],
+                ['$unwind' => '$people'],                
+                ['$lookup' => [
                     'from' => MDB_PASSENGERS,
                     'localField' => 'passengers_id',
                     'foreignField' => '_id',
                     'as' => 'passengers',
-                )),
-                array('$unwind' => '$passengers'),
-                array('$match' => $match),
-                array('$project' => array(
+                ]],
+                ['$unwind' => '$passengers'],
+                ['$match' => $match],
+                ['$project' => [
                     'passengers_log_id' => '$_id',
                     'driver_name' => '$people.name',
                     'passenger_name' => '$passengers.name',
@@ -3041,17 +3041,17 @@ public function getpassengerdetails($company_id, $manager_id)
                     'passenger_phone' => '$passengers.phone',
                     'fare' => '$trans.fare',
                     'cid' => '$company_id',
-                ))
-            );
+                ]]
+            ];
         $result = $this->mongo_db->aggregate(MDB_PASSENGERSLOGS_COMPLETED,$args);        
         //echo "<pre>";print_r($result);exit;
-        return (!empty($result['result']) ? $result['result']: array());    
+        return (!empty($result['result']) ? $result['result']: []);    
     }
    
     //public function getaccountreportvalues($list,$company,$manager_id,$taxiid,$driver_id,$passengerid,$startdate,$enddate,$transaction_id,$payment_type)
      public function getaccountreportvalues($list, $company, $startdate, $enddate, $payment_type)
     {
-        $match = array();
+        $match = [];
         $usertype        = $this->user_admin_type;
         if (($company != "") && ($company != "All") && $company != 0) {
             $match['company_id'] = (int)$company;
@@ -3059,57 +3059,57 @@ public function getpassengerdetails($company_id, $manager_id)
         //$startdate = '2015-03-01 00:00:00';
         //$enddate = '2015-03-31 00:00:00';
         if ($startdate != "") {
-            $match['createdate'] = array('$gte' => new \MongoDB\BSON\UTCDateTime(strtotime($startdate) * 1000),
-                                         '$lte' => new \MongoDB\BSON\UTCDateTime(strtotime($enddate) * 1000));
+            $match['createdate'] = ['$gte' => new \MongoDB\BSON\UTCDateTime(strtotime($startdate) * 1000),
+                                         '$lte' => new \MongoDB\BSON\UTCDateTime(strtotime($enddate) * 1000)];
         }
         if ($payment_type != 'All' && $payment_type != '') {
             $match['trans.payment_type'] = $payment_type;
         }
-        $args = array(
-                array('$lookup' => array(
+        $args = [
+                ['$lookup' => [
                     'from' => MDB_TRANSACTION,
                     'localField' => '_id',
                     'foreignField' => 'passengers_log_id',
                     'as' => 'trans',
-                )),
-                array('$unwind' => '$trans'),
-                array('$lookup' => array(
+                ]],
+                ['$unwind' => '$trans'],
+                ['$lookup' => [
                     'from' => MDB_COMPANY,
                     'localField' => 'company_id',
                     'foreignField' => '_id',
                     'as' => 'company',
-                )),
-                array('$unwind' => '$company'),
-                array('$lookup' => array(
+                ]],
+                ['$unwind' => '$company'],
+                ['$lookup' => [
                     'from' => MDB_PEOPLE,
                     'localField' => 'driver_id',
                     'foreignField' => '_id',
                     'as' => 'people',
-                )),
-                array('$unwind' => '$people'),                
-                array('$lookup' => array(
+                ]],
+                ['$unwind' => '$people'],                
+                ['$lookup' => [
                     'from' => MDB_PASSENGERS,
                     'localField' => 'passengers_id',
                     'foreignField' => '_id',
                     'as' => 'passengers',
-                )),
-                array('$unwind' => '$passengers'),
-                array('$match' => $match),
-                array('$project' => array(
+                ]],
+                ['$unwind' => '$passengers'],
+                ['$match' => $match],
+                ['$project' => [
                     'fare' => '$trans.fare',
-                    'year' => array('$year' => '$createdate'),
-                    'month' => array('$month' => '$createdate'),
-                    'day' => array('$dayOfMonth' => '$createdate')
-                )),
-                array('$group' => array(
-                    '_id' => array('day' => '$day','month' => '$month','year' => '$year'),
-                    'amount' => array('$sum' => '$fare'),
-                    'trips' =>  array('$sum' => 1)
-                ))
-            );
+                    'year' => ['$year' => '$createdate'],
+                    'month' => ['$month' => '$createdate'],
+                    'day' => ['$dayOfMonth' => '$createdate']
+                ]],
+                ['$group' => [
+                    '_id' => ['day' => '$day','month' => '$month','year' => '$year'],
+                    'amount' => ['$sum' => '$fare'],
+                    'trips' =>  ['$sum' => 1]
+                ]]
+            ];
         $result = $this->mongo_db->aggregate(MDB_PASSENGERSLOGS_COMPLETED,$args);
         
-        return (!empty($result['result']) ? $result['result']: array());        
+        return (!empty($result['result']) ? $result['result']: []);        
     }
         
     public function close_mysql_connection($instance)
@@ -3136,15 +3136,15 @@ public function getpassengerdetails($company_id, $manager_id)
             $time2 = $ttime;
         }
         // Set up intervals and diffs arrays
-        $intervals = array(
+        $intervals = [
             'year',
             'month',
             'day',
             'hour',
             'minute',
             'second'
-        );
-        $diffs     = array();
+        ];
+        $diffs     = [];
         // Loop thru all intervals
         foreach ($intervals as $interval) {
             // Create temp time from time1 and interval
@@ -3163,7 +3163,7 @@ public function getpassengerdetails($company_id, $manager_id)
             $diffs[$interval] = $looped;
         }
         $count = 0;
-        $times = array();
+        $times = [];
         // Loop thru all diffs
         foreach ($diffs as $interval => $value) {
             // Break if we have needed precission
@@ -3217,114 +3217,114 @@ public function getpassengerdetails($company_id, $manager_id)
             return $results;
         }*/
         //MongoDB
-        $date_condition = array();
+        $date_condition = [];
         if ($start_date != "") {
-            $date_condition = array(
-                'createdate' => array(
+            $date_condition = [
+                'createdate' => [
                     '$gte' => $start_date,
                     '$lte' => $end_date
-                )
-            );
+                ]
+            ];
         }
-        $company_condition = array();
+        $company_condition = [];
         if ($filter_company != '' && $filter_company != 'All') {
-            $company_condition = array(
+            $company_condition = [
                 'company_id' => (int)$filter_company
-            );
+            ];
         }
         if($company_id!=''){
-             $company_condition = array(
+             $company_condition = [
                 'company_id' => (int)$company_id
-            );
+            ];
         }
-        $keyword_condition = array();
+        $keyword_condition = [];
         if($keyword!=''){
-            $keyword_condition = array("\$or"=>array(array( 'trans.transaction_id' => (string)$keyword) , array( 'trans.passengers_log_id' => (int)$keyword )));
+            $keyword_condition = ["\$or"=>[[ 'trans.transaction_id' => (string)$keyword] , [ 'trans.passengers_log_id' => (int)$keyword ]]];
         }
-        $search_query = array(
+        $search_query = [
             'trans.payment_gateway_id' => 2,
-            'trans.payment_type'=>array('$in'=>array(2,3))
-        );
+            'trans.payment_type'=>['$in'=>[2,3]]
+        ];
         $match_query = array_merge($search_query,$company_condition,$date_condition,$keyword_condition);
         //echo '<pre>';print_r($match_query);exit;
-        $common_arguments   = array(
-            array(
-                '$lookup' => array(
+        $common_arguments   = [
+            [
+                '$lookup' => [
                     'from' => MDB_COMPANY,
                     'localField' => "company_id",
                     'foreignField' => "_id",
                     'as' => "company"
-                )
-            ),
-            array(
+                ]
+            ],
+            [
                 '$unwind' => '$company'
-            ),
-            array(
-                '$lookup' => array(
+            ],
+            [
+                '$lookup' => [
                     'from' => MDB_PEOPLE,
                     'localField' => "driver_id",
                     'foreignField' => "_id",
                     'as' => "people"
-                )
-            ),
-            array(
+                ]
+            ],
+            [
                 '$unwind' => '$people'
-            ),
-            array(
-                '$lookup' => array(
+            ],
+            [
+                '$lookup' => [
                     'from' => MDB_PASSENGERS,
                     'localField' => "passengers_id",
                     'foreignField' => "_id",
                     'as' => "passengers"
-                )
-            ),
-            array(
+                ]
+            ],
+            [
                 '$unwind' => '$passengers'
-            ),
-            array(
-                '$lookup' => array(
+            ],
+            [
+                '$lookup' => [
                     'from' => MDB_TRANSACTION,
                     'localField' => "_id",
                     'foreignField' => "passengers_log_id",
                     'as' => "trans"
-                )
-            ),
-            array('$unwind' => '$trans'),
-            array(
+                ]
+            ],
+            ['$unwind' => '$trans'],
+            [
                 '$match' => $match_query
-            )
-        );
+            ]
+        ];
         if($find_count){
-            $arguments = array(
-                array(
-                    '$project' => array(
+            $arguments = [
+                [
+                    '$project' => [
                         '_id' => 0,
                         'id' => '$_id'
-                    )
-                ),
-                array(
-                    '$group' => array(
+                    ]
+                ],
+                [
+                    '$group' => [
                         '_id' => 0,
-                        'count' => array(
+                        'count' => [
                             '$sum' => 1
-                        )
-                    )
-                ),
-                array(
-                    '$sort' => array(
+                        ]
+                    ]
+                ],
+                [
+                    '$sort' => [
                         '_id' => 1
-                    )
-                )
-            );
+                    ]
+                ]
+            ];
             $merge_arguments = array_merge($common_arguments,$arguments);
             //echo '<pre>';print_r($merge_arguments);//exit;
             $result      = $this->mongo_db->aggregate(MDB_PASSENGERS_LOGS, $merge_arguments);
             //echo '<pre>';print_r($result);exit;
             return (!empty($result['result'][0])) ? $result['result'][0]['count'] : 0;
         } else{
-            $arguments = array(
-                array(
-                    '$project' => array(
+            $arguments = [
+                [
+                    '$project' => [
                         '_id' => 0,
                         'id' => '$_id',
                         'company_name' => '$company.companydetails.company_name',
@@ -3334,21 +3334,21 @@ public function getpassengerdetails($company_id, $manager_id)
                         'trip_id' => '$trans.passengers_log_id',
                         'createdate' => '$createdate',
                         'company_id' => '$company_id',
-                    )
-                ),
-                array(
-                    '$sort' => array(
+                    ]
+                ],
+                [
+                    '$sort' => [
                         '_id' => 1
-                    )
-                )
-            );
+                    ]
+                ]
+            ];
             $merge_arguments = array_merge($common_arguments,$arguments);
             $result      = $this->mongo_db->aggregate(MDB_PASSENGERS_LOGS, $merge_arguments);
             //echo '<pre>';print_r($result);exit;
-            return (!empty($result['result'])) ? $result['result'] : array();
+            return (!empty($result['result'])) ? $result['result'] : [];
         }
     }
-    public function update_settlement_status($transaction_array = array(), $company_id = "")
+    public function update_settlement_status($transaction_array = [], $company_id = "")
     {
         if ($company_id > 0) {
             $paypal_details           = $this->common_model->company_payment_details($company_id);
@@ -3401,8 +3401,8 @@ public function getpassengerdetails($company_id, $manager_id)
                     ), 'passengers_log_id', $trip_id);*/
                     
                     //MongoDB update
-                    $update_array = array('payment_status' => str_replace('_', ' ', $result['status']));
-                    $result = $this->mongo_db->update(MDB_TRANSACTION,array('passengers_log_id'=>(int)$trip_id),array('$set'=>$update_array),array('upsert'=>false));
+                    $update_array = ['payment_status' => str_replace('_', ' ', $result['status'])];
+                    $result = $this->mongo_db->update(MDB_TRANSACTION,['passengers_log_id'=>(int)$trip_id],['$set'=>$update_array],['upsert'=>false]);
                 }
             }
             return 1;
@@ -3422,23 +3422,23 @@ public function getpassengerdetails($company_id, $manager_id)
     }
 public function getAllInvoice($passenger,$pay_status,$offset = '', $val = '')
     {
-        $p = ($passenger != '' && $passenger != 'All')?array('passenger_id' => (int)$passenger):array();
-        $s = ($pay_status != '')?array('pay_status' => $pay_status):array();
+        $p = ($passenger != '' && $passenger != 'All')?['passenger_id' => (int)$passenger]:[];
+        $s = ($pay_status != '')?['pay_status' => $pay_status]:[];
         $match_query = array_merge($p,$s);
         //print_r($match_query); die();
         
-        $look = array(
-            array('$lookup'=>array(
+        $look = [
+            ['$lookup'=>[
             'from' => PASSENGERS,
             'localField'=>'passenger_id',
             'foreignField' => '_id',
             'as' => 'p'
-                )
-                ),array('$unwind' => '$p')
-            );
+                ]
+                ],['$unwind' => '$p']
+            ];
         if(!empty($match_query))
         {
-            $mat = array((array('$match' => $match_query)));
+            $mat = [(['$match' => $match_query])];
             $args = array_merge($mat,$look);
         }
         else
@@ -3446,27 +3446,27 @@ public function getAllInvoice($passenger,$pay_status,$offset = '', $val = '')
         
         if (empty($offset) && empty($val)) 
         {
-            $arguments = array(
-                array(
-                    '$project' => array(
+            $arguments = [
+                [
+                    '$project' => [
                         '_id' => 0,
                         'id' => '$_id',
-                    )
-                ),
-                array(
-                    '$group' => array(
+                    ]
+                ],
+                [
+                    '$group' => [
                         '_id' => NULL,
-                        'count' => array(
+                        'count' => [
                             '$sum' => 1
-                        )
-                    )
-                ),
-                array(
-                    '$sort' => array(
+                        ]
+                    ]
+                ],
+                [
+                    '$sort' => [
                         'id' => -1
-                    )
-                )
-            );
+                    ]
+                ]
+            ];
             $merge_arguments = array_merge($args,$arguments);
             $result    = $this->mongo_db->aggregate('invoice_schedule_trip', $merge_arguments);
             //echo '<pre>if';print_r($result);exit;
@@ -3475,8 +3475,8 @@ public function getAllInvoice($passenger,$pay_status,$offset = '', $val = '')
         else
         {
             
-            $ar = array(
-            array('$project'=>array(
+            $ar = [
+            ['$project'=>[
             'name'=>'$p.name',
             'invoice'=>'$invoice',
             'amt'=>'$amount',
@@ -3485,20 +3485,20 @@ public function getAllInvoice($passenger,$pay_status,$offset = '', $val = '')
             'mail_status'=>'$mail_status',
             'file'=>'$file',
             'created_date'=>'$created_date'
-                )
-                ),
-            array('$sort'=>array('created_date'=> 1))
+                ]
+                ],
+            ['$sort'=>['created_date'=> 1]]
             ,
-                    array(
+                    [
                         '$skip' => (int) $offset
-                    ),
-                    array(
+                    ],
+                    [
                         '$limit' => (int) $val
-                    ));
+                    ]];
             $newarg = array_merge($args,$ar);
             //echo "<pre>";print_r($newarg); die();
             $invoices = $this->mongo_db->aggregate('invoice_schedule_trip',$newarg);
-            return (isset($invoices['result']))?$invoices['result']:array();
+            return (isset($invoices['result']))?$invoices['result']:[];
         }
         
     }

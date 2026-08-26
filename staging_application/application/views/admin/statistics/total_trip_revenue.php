@@ -24,9 +24,9 @@
 	
 	if($get_transaction){
 		
-		$fare = array();
-		$month = array();
-		$trips = array();
+		$fare = [];
+		$month = [];
+		$trips = [];
 		
 		foreach($get_transaction as $vl)
 		{
@@ -49,9 +49,9 @@
 		}
 		$display ="display:block;";
 	}else{
-		$fare = array();
-		$month = array();
-		$trips = array();
+		$fare = [];
+		$month = [];
+		$trips = [];
 		$display ="display:none;";
 	}
 ?>

@@ -37,9 +37,9 @@ Class Model_Corporate extends Model
     {
         /*$result = DB::select()->from(PEOPLE)->where('id', '=', $uid)->where('user_type', '=', 'M')->execute()->as_array();
         return $result; */
-		$result = $this->mongo_db->find_one(MDB_PEOPLE,array('_id' => (int)$uid, 'user_type' => 'O'));
+		$result = $this->mongo_db->find_one(MDB_PEOPLE,['_id' => (int)$uid, 'user_type' => 'O']);
 		//print_r($result); exit;
-		$res = (!empty($result))?$result:array();
+		$res = (!empty($result))?$result:[];
         return $res;
     }
     public function edit_corporate($post, $uid)
@@ -50,7 +50,7 @@ Class Model_Corporate extends Model
         $post['state'] = isset($post['state'])?$post['state']:DEFAULT_STATE;
 		$post['city'] = isset($post['city'])?$post['city']:DEFAULT_CITY;
 		//MongoDB
-		$array = array(
+		$array = [
             'name' => $post['firstname'],
             'address' => $post['address'],
             'login_country' => (int)$post['country'],
@@ -60,15 +60,15 @@ Class Model_Corporate extends Model
             'email' => $post['email'],
             'phone' => $post['phone'],
             'company_id' => (int)$post['company_name']
-        );
-		$result = $this->mongo_db->update(MDB_PEOPLE,array('_id'=>(int)$uid),array('$set'=>$array),array('upsert'=>true));
+        ];
+		$result = $this->mongo_db->update(MDB_PEOPLE,['_id'=>(int)$uid],['$set'=>$array],['upsert'=>true]);
 		return (empty($result['err']))?1:0;
     }
     public function get_admin_dashboard_data($company_id)
     {	
 		$count_promocode_list       = $this->manage_model->promocode_list(NULL,NULL,'', $company_id,$this->userid ,TRUE);	
 		$result["promo"] = $count_promocode_list;
-		$result["package"] = $this->mongo_db->count(MDB_COUPON_PACKAGE,array('coupon_package_status' => 'A'),array('_id'));
+		$result["package"] = $this->mongo_db->count(MDB_COUPON_PACKAGE,['coupon_package_status' => 'A'],['_id']);
 		
         return $result;
     }
@@ -78,10 +78,10 @@ Class Model_Corporate extends Model
 	// 	$options = array(
 	// 		"\$or" => array(
 	// 			array(
-	// 				'name' => new MongoRegex("/$filter/i"),
+	// 				'name' => new \MongoDB\BSON\Regex($filter, 'i'),
 	// 			),
 	// 			array(
-	// 				'phone' => new MongoRegex("/$filter/i"),
+	// 				'phone' => new \MongoDB\BSON\Regex($filter, 'i'),
 	// 			)
 	// 		),
 	// 		'user_status'=>'A',
@@ -282,22 +282,22 @@ Class Model_Corporate extends Model
 
     /* Sasidharan nov 15 2022 */
 	public function get_passengers_list($filter = "", $page = 1) {
-		$options = array(
-			"\$or" => array(
-				array(
-					'name' => new MongoRegex("/$filter/i"),
-				),
-				array(
-					'phone' => new MongoRegex("/$filter/i"),
-				)
-			),
+		$options = [
+			"\$or" => [
+				[
+					'name' => new \MongoDB\BSON\Regex($filter, 'i'),
+				],
+				[
+					'phone' => new \MongoDB\BSON\Regex($filter, 'i'),
+				]
+			],
 			'user_status'=>'A',
-		);
-		$project = array(
+		];
+		$project = [
 			"name" => 1,
 			"_id" => 1,
 			"phone" => 1
-		);
+		];
 		$totalPassengers = $this->mongo_db->count(MDB_PASSENGERS,$options);
 		$offset = 0;
 		if($page != 0 && $page != 1) {
@@ -305,21 +305,21 @@ Class Model_Corporate extends Model
 		}
 
 		$passengers = $this->mongo_db->find(MDB_PASSENGERS,$options,$project)->skip($offset)->limit(30);
-		$passengers = !empty($passengers) ? iterator_to_array($passengers) : array();
-		$passengersList = array();
+		$passengers = !empty($passengers) ? iterator_to_array($passengers) : [];
+		$passengersList = [];
 
 		foreach ($passengers as $key => $value) {
-			$newArray = array(
+			$newArray = [
 				"id" => $value['_id']."--".$value['name']."--".$value['phone'],
 				"text" => $value['name']."-".$value['phone'],
-			);
+			];
 			array_push($passengersList,$newArray);
 		}
 
-		$response = array();
+		$response = [];
 		$response['results'] = $passengersList;
 		$response['count_filtered'] = $totalPassengers;
-		$response['pagination'] = array("more" => ($totalPassengers >  ($offset + 30)));
+		$response['pagination'] = ["more" => ($totalPassengers >  ($offset + 30))];
 		return $response;
 	}
 
@@ -397,7 +397,7 @@ Class Model_Corporate extends Model
 
     public function add_corporate_group($groupDetails) {
 
-    	$rs = $this->mongo_db->find(MDB_PROMOCODE_CORPORATE_GROUP,array(),array('_id'))->sort(array('_id'=>-1))->limit(1);
+    	$rs = $this->mongo_db->find(MDB_PROMOCODE_CORPORATE_GROUP,[],['_id'])->sort(['_id'=>-1])->limit(1);
 		$res = iterator_to_array($rs);
 		reset($res);
 		$first_key = key($res);
@@ -410,41 +410,41 @@ Class Model_Corporate extends Model
     }
 
     public function countAllCorporateGroups() {
-		$result = $this->mongo_db->count(MDB_PROMOCODE_CORPORATE_GROUP,array(),array());
+		$result = $this->mongo_db->count(MDB_PROMOCODE_CORPORATE_GROUP,[],[]);
 		return $result;
     }
 
     public function get_corporate_groups($offset = 0, $limit = REC_PER_PAGE) {
-		$result = $this->mongo_db->find(MDB_PROMOCODE_CORPORATE_GROUP,array(),array('_id','group_name'))->sort(array('_id'=>1))->skip($offset)->limit($limit);
-		return (!empty($result))?iterator_to_array($result):array();	
+		$result = $this->mongo_db->find(MDB_PROMOCODE_CORPORATE_GROUP,[],['_id','group_name'])->sort(['_id'=>1])->skip($offset)->limit($limit);
+		return (!empty($result))?iterator_to_array($result):[];	
     }
 
     public function get_all_corporate_groups() {
-		$result = $this->mongo_db->find(MDB_PROMOCODE_CORPORATE_GROUP,array(),array('_id','group_name'));
-		return (!empty($result))?iterator_to_array($result):array();	
+		$result = $this->mongo_db->find(MDB_PROMOCODE_CORPORATE_GROUP,[],['_id','group_name']);
+		return (!empty($result))?iterator_to_array($result):[];	
     }
 
     public function getGroupInfo($id) {
-    	$filter = array(
-    		array('$match' => array(
+    	$filter = [
+    		['$match' => [
     			'_id' => (int)$id
-    		)),
-    		array(
-    			'$project' => array(
+    		]],
+    		[
+    			'$project' => [
     				'_id' => '$_id',
     				'group_name' => '$group_name',
-    			)
-    		),
-    	);
+    			]
+    		],
+    	];
     	$result = $this->mongo_db->aggregate(MDB_PROMOCODE_CORPORATE_GROUP,$filter);
 		return (!empty($result['result'])) ? $result['result'] : [];
     }
 
     public function update_corporate_group($groupDetails,$id) {
-    	$filter = array(
+    	$filter = [
     		"_id" => (int)$id
-    	);
-    	$result = $this->mongo_db->update(MDB_PROMOCODE_CORPORATE_GROUP,$filter,array('$set'=>$groupDetails),array('upsert'=>false));
+    	];
+    	$result = $this->mongo_db->update(MDB_PROMOCODE_CORPORATE_GROUP,$filter,['$set'=>$groupDetails],['upsert'=>false]);
 		return (!empty($result) && empty($result['err'])) ? 1 : 0;	
     }
 

@@ -50,17 +50,17 @@ class Model_Cronreminder extends Model
 	
 	public function cron_deactive_company($company_id)
 	{
-		$result1 = DB::update(PEOPLE)->set(array('status' => 'D'))
+		$result1 = DB::update(PEOPLE)->set(['status' => 'D'])
 				->and_where('company_id', '=', $company_id)
 				->and_where('user_type', '=', 'C') //Deactive Company
 				->execute();
 		
-		$result2 = DB::update(PEOPLE)->set(array('status' => 'D'))
+		$result2 = DB::update(PEOPLE)->set(['status' => 'D'])
 				->and_where('company_id', '=', $company_id)
 				->and_where('user_type', '=', 'M') //Deactive Dispatchers
 				->execute();
 				
-		$result3 = DB::update(PEOPLE)->set(array('status' => 'D'))
+		$result3 = DB::update(PEOPLE)->set(['status' => 'D'])
 				->and_where('company_id', '=', $company_id)
 				->and_where('user_type', '=', 'D') //Deactive Drivers
 				->execute();
@@ -102,71 +102,71 @@ class Model_Cronreminder extends Model
 
 	public function get_notification_passengers_list(){			
 
-            $field_arguments = array(
-                array(
-                      '$match'=>array(
+            $field_arguments = [
+                [
+                      '$match'=>[
 							// 'push_notification' => array('$ne' => 1),
 							'user_status'=>'A',
-							'device_type'=>array('$in'=>['1','2']),
-							'device_token'=>array('$ne'=>'')
-						)
-                    ),
-                array( '$project' => array('_id'=>'$_id','device_type'=>'$device_type','device_token'=>'$device_token')
-                ),            
-                array(
-                    '$sort' => array(
+							'device_type'=>['$in'=>['1','2']],
+							'device_token'=>['$ne'=>'']
+						]
+                    ],
+                [ '$project' => ['_id'=>'$_id','device_type'=>'$device_type','device_token'=>'$device_token']
+                ],            
+                [
+                    '$sort' => [
                         '_id' => -1
-                    ),
-                ),
-                array(
+                    ],
+                ],
+                [
                     '$skip' => 0
-                ),
-                array(
+                ],
+                [
                   '$limit' => 1
-                )
+                ]
 
                 
-            );
+            ];
 
         $qresult = $this->mongo_db->aggregate(MDB_PASSENGERS,$field_arguments); 
         //print_r($qresult);exit;
-        return (!empty($qresult['result']))?$qresult['result']:array();
+        return (!empty($qresult['result']))?$qresult['result']:[];
 
     }
 
     public function change_notification_status($id){
 
-    	$result = $this->mongo_db->update(MDB_NOTIFICATIONS,array('_id'=>(int)$id ),array('$set'=>array('sent_status'=>1) ) );
+    	$result = $this->mongo_db->update(MDB_NOTIFICATIONS,['_id'=>(int)$id ],['$set'=>['sent_status'=>1] ] );
     	
     	return (empty($result['err']))?1:$result['err'];
     }
 
     public function pushnotification_list(){    	
 
-		$field_arguments = array(
+		$field_arguments = [
                 // array(
                 //       '$match'=>array('sent_status' => 2)
                 //     ),
-                array( '$project' => array('_id'=>'$_id','title'=>'$title','sub_title'=>'$sub_title','message'=>'$message','image'=>'$image')
-                ),            
-                array(
-                    '$sort' => array(
+                [ '$project' => ['_id'=>'$_id','title'=>'$title','sub_title'=>'$sub_title','message'=>'$message','image'=>'$image']
+                ],            
+                [
+                    '$sort' => [
                         '_id' => -1
-                    ),
-                ),
-                array(
+                    ],
+                ],
+                [
                     '$skip' => 0
-                ),
-                array(
+                ],
+                [
                   '$limit' => 1
-                )
+                ]
 
                 
-            );
+            ];
 
         $qresult = $this->mongo_db->aggregate(MDB_NOTIFICATIONS,$field_arguments); 
         //print_r($qresult);exit;
-        return (!empty($qresult['result']))?$qresult['result']:array();
+        return (!empty($qresult['result']))?$qresult['result']:[];
 
     
     }
@@ -183,17 +183,17 @@ class Model_Cronreminder extends Model
 
                 $pushmessage = json_encode($pushmessage);               
 				
-				$fields      = array(
+				$fields      = [
                     'registration_ids' => $registrationIDs,
-                    'data' => array(
+                    'data' => [
                         "message" => $pushmessage
-                    )
-                );
+                    ]
+                ];
 
-                $headers     = array(
+                $headers     = [
                     'Authorization: Bearer ' . $apiKey,
                     'Content-Type: application/json'
-                );
+                ];
                 $ch          = curl_init();
                 curl_setopt($ch, CURLOPT_URL, $url);
                 curl_setopt($ch, CURLOPT_POST, true);
@@ -477,32 +477,32 @@ class Model_Cronreminder extends Model
 
 	      if(count($passengers_ids)){
 	                  //print_r($passengers_ids);exit;
-	            $result = $this->mongo_db->update(MDB_PASSENGERS,array('_id'=>array('$in'=>$passengers_ids)),array('$set'=>array('push_notification' => 1)),array('multiple'=>true) );
+	            $result = $this->mongo_db->update(MDB_PASSENGERS,['_id'=>['$in'=>$passengers_ids]],['$set'=>['push_notification' => 1]],['multiple'=>true] );
 	      }
     }
 
     public function update_passenger_sent_status(){
 	      
-	    $result = $this->mongo_db->update(MDB_PASSENGERS,array('_id'=>array('$ne'=>'')),array('$set'=>array('push_notification' => 0)),array('multiple'=>true) );
+	    $result = $this->mongo_db->update(MDB_PASSENGERS,['_id'=>['$ne'=>'']],['$set'=>['push_notification' => 0]],['multiple'=>true] );
 	      
     }
     
     	// 03 Feb 2020
 	public function insert_promocode($insert_array) { 		
-		$exists = $this->mongo_db->find(MDB_PASSENGERS_PROMO,array('promocode'=>$insert_array['promocode']),array('_id'))->sort(array('_id'=>-1));
+		$exists = $this->mongo_db->find(MDB_PASSENGERS_PROMO,['promocode'=>$insert_array['promocode']],['_id'])->sort(['_id'=>-1]);
 		$exists_data = iterator_to_array($exists);
 		
 		if(!empty($exists_data)) {
 			return false;
 		}
 		
-		$rs = $this->mongo_db->find(MDB_PASSENGERS_PROMO,array(),array('_id'))->sort(array('_id'=>-1))->limit(1);
+		$rs = $this->mongo_db->find(MDB_PASSENGERS_PROMO,[],['_id'])->sort(['_id'=>-1])->limit(1);
 		$res = iterator_to_array($rs);
 		reset($res);
 		$first_key = key($res);
 		$inc_id = $first_key+1;
 				
-		$query = array(
+		$query = [
 						'_id' => (int)$inc_id,
                         'company_id' =>  (int)$insert_array['company_id'],
                         'promocode' =>  $insert_array['promocode'],
@@ -516,7 +516,7 @@ class Model_Cronreminder extends Model
                         'total_applied' => 0,
                         'auto_generated_promocode' => (int)1,
                         'total_used' => 0, 
-                    );
+                    ];
                
                     
 		$result = $this->mongo_db->insert(MDB_PASSENGERS_PROMO,$query);
@@ -525,8 +525,8 @@ class Model_Cronreminder extends Model
 	
 	public function clear_all_custom_interval(){
 
-		$update_array = array('surge_pricing_custom_interval' => []);
-		$res = $this->mongo_db->update(MDB_MOTOR_MODEL,array(),array('$set'=>$update_array),array('multiple'=>true) );
+		$update_array = ['surge_pricing_custom_interval' => []];
+		$res = $this->mongo_db->update(MDB_MOTOR_MODEL,[],['$set'=>$update_array],['multiple'=>true] );
 
 		return $res;
 	}
@@ -537,7 +537,7 @@ class Model_Cronreminder extends Model
 					//print_r($passengers_ids);exit;
 					echo $field_name.$value;
 					print_r($passengers_ids);
-					$result = $this->mongo_db->update(MDB_PASSENGERS,array('_id'=>(int)$passengers_ids),array('$set'=>array('banner_notification_status' => 0)),array('multiple'=>true) );
+					$result = $this->mongo_db->update(MDB_PASSENGERS,['_id'=>(int)$passengers_ids],['$set'=>['banner_notification_status' => 0]],['multiple'=>true] );
 					print_r($result);
 			}
   	}
@@ -545,35 +545,35 @@ class Model_Cronreminder extends Model
 
 	//26 feb 2021
   	public function getDriversData(){
-  		$arguments = array(
-            array('$lookup' => array(
+  		$arguments = [
+            ['$lookup' => [
                     'from' => MDB_TAXI,
                     'localField' => 'mapping_taxiid',
                     'foreignField' => "_id",
                     'as' => "taxi"
-                )
-            ),
-            array('$unwind' => '$taxi'),
-            array('$match' => array("mapping_status"=>"A")),
-            array('$project' => array(
+                ]
+            ],
+            ['$unwind' => '$taxi'],
+            ['$match' => ["mapping_status"=>"A"]],
+            ['$project' => [
                 "_id" => 0,
                 "taxi_model" => '$taxi.taxi_model',
                 "taxi_no" => '$taxi.taxi_no'
-                )
-            ),
-            array('$group' => array(
+                ]
+            ],
+            ['$group' => [
                     '_id'=>'$taxi_model',
-                    'count'=>array('$sum'=>1)
-                )
-            )
-        );
+                    'count'=>['$sum'=>1]
+                ]
+            ]
+        ];
 		$result    = $this->mongo_db->aggregate(MDB_TAXI_DRIVER_MAPPING, $arguments);
-		return (isset($result['result']) && !empty($result['result']) ) ? $result['result'] : array();
+		return (isset($result['result']) && !empty($result['result']) ) ? $result['result'] : [];
   	}
 
   	public function update_drivers_count($id,$count){
-		$update_array = array('total_drivers' => (int)$count);
-		$res = $this->mongo_db->update(MDB_MOTOR_MODEL,array('_id'=>(int)$id),array('$set'=>$update_array),array('multiple'=>true) );
+		$update_array = ['total_drivers' => (int)$count];
+		$res = $this->mongo_db->update(MDB_MOTOR_MODEL,['_id'=>(int)$id],['$set'=>$update_array],['multiple'=>true] );
 		return $res;
 	}
 	//26 feb 2021

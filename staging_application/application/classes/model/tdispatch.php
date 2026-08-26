@@ -394,15 +394,15 @@ class Model_Tdispatch extends Model
     }
     public function validate_dispatchbooking($arr)
     {
-        return Validation::factory($arr)->rule('firstname', 'not_empty')->rule('firstname', 'min_length', array(
+        return Validation::factory($arr)->rule('firstname', 'not_empty')->rule('firstname', 'min_length', [
             ':value',
             '3'
-        ))
+        ])
         //->rule('firstname', 'max_length', array(':value', '32'))
-            ->rule('email', 'not_empty')->rule('email', 'email')->rule('email', 'max_length', array(
+            ->rule('email', 'not_empty')->rule('email', 'email')->rule('email', 'max_length', [
             ':value',
             '50'
-        ))->rule('phone', 'not_empty')->rule('current_location', 'not_empty')->rule('pickup_lat', 'not_empty')->rule('pickup_lng', 'not_empty') /*->rule('drop_location', 'not_empty')
+        ])->rule('phone', 'not_empty')->rule('current_location', 'not_empty')->rule('pickup_lat', 'not_empty')->rule('pickup_lng', 'not_empty') /*->rule('drop_location', 'not_empty')
         ->rule('drop_lat', 'not_empty')
         ->rule('drop_lng', 'not_empty')*/ 
         //->rule('luggage', 'numeric')
@@ -467,7 +467,7 @@ class Model_Tdispatch extends Model
             }
         }
         if ($post['passenger_id'] == '') {
-            $insert_passenger = DB::insert(PASSENGERS, array(
+            $insert_passenger = DB::insert(PASSENGERS, [
                 'name',
                 'email',
                 'phone',
@@ -478,7 +478,7 @@ class Model_Tdispatch extends Model
                 'user_status',
                 'passenger_cid',
                 'activation_status'
-            ))->values(array(
+            ])->values([
                 $firstname,
                 $post['email'],
                 $post['phone'],
@@ -489,7 +489,7 @@ class Model_Tdispatch extends Model
                 ACTIVE,
                 $company_id,
                 1
-            ))->execute();
+            ])->execute();
             $send_mail        = 'S';
             $passenger_id     = $insert_passenger[0];
             $user_createdby   = $_SESSION['userid'];
@@ -539,7 +539,7 @@ class Model_Tdispatch extends Model
         if ($post['recurrent'] == 1) {
             $account_id     = isset($account_id) ? $account_id : '0';
             $group_id       = isset($group_id) ? $group_id : '0';
-            $today_result   = DB::insert(PASSENGERS_LOG, array(
+            $today_result   = DB::insert(PASSENGERS_LOG, [
                 'booking_key',
                 'passengers_id',
                 'company_id',
@@ -569,7 +569,7 @@ class Model_Tdispatch extends Model
                 'company_tax',
                 'account_id',
                 'accgroup_id'
-            ))->values(array(
+            ])->values([
                 $booking_key,
                 $passenger_id,
                 $company_id,
@@ -599,7 +599,7 @@ class Model_Tdispatch extends Model
                 $post['company_tax'],
                 $account_id,
                 $group_id
-            ))->execute();
+            ])->execute();
             $pass_logid     = $today_result[0];
             $trip_id        = $pass_logid;
             $insert_booking = 'S';
@@ -641,7 +641,7 @@ class Model_Tdispatch extends Model
             $exclude_dates = '';
             $account_id    = isset($account_id) ? $account_id : '0';
             $group_id      = isset($group_id) ? $group_id : '0';
-            $insert_recurr = DB::insert(RECURR_BOOKING, array(
+            $insert_recurr = DB::insert(RECURR_BOOKING, [
                 'labelname',
                 'frmdate',
                 'todate',
@@ -671,7 +671,7 @@ class Model_Tdispatch extends Model
                 'recurrent_accountid',
                 'recurrent_groupid',
                 'recurrent_notes_driver'
-            ))->values(array(
+            ])->values([
                 $post['labelname'],
                 $post['frmdate'],
                 $post['todate'],
@@ -701,7 +701,7 @@ class Model_Tdispatch extends Model
                 $account_id,
                 $group_id,
                 $post['notes']
-            ))->execute();
+            ])->execute();
             $recurrent_id  = $insert_recurr[0];
             // Insert Recurrent Table //
             function toDate($x)
@@ -750,7 +750,7 @@ class Model_Tdispatch extends Model
                             // Insert into Passenger Log Table //	
                             $pickup_datetime   = $today_date . ' ' . $recurrent_details[0]['recurrent_pickuptime'];
                             $insert_booking    = 'S';
-                            $today_result      = DB::insert(PASSENGERS_LOG, array(
+                            $today_result      = DB::insert(PASSENGERS_LOG, [
                                 'booking_key',
                                 'passengers_id',
                                 'company_id',
@@ -779,7 +779,7 @@ class Model_Tdispatch extends Model
                                 'company_tax',
                                 'account_id',
                                 'accgroup_id'
-                            ))->values(array(
+                            ])->values([
                                 $booking_key,
                                 $recurrent_details[0]['recurrent_passengerid'],
                                 $recurrent_details[0]['companyid'],
@@ -808,7 +808,7 @@ class Model_Tdispatch extends Model
                                 $company_tax,
                                 $recurrent_details[0]['recurrent_accountid'],
                                 $recurrent_details[0]['recurrent_groupid']
-                            ))->execute();
+                            ])->execute();
                             $ins_logid         = $today_result[0];
                             $trip_id           = $ins_logid;
                             /* Create Log */
@@ -832,7 +832,7 @@ class Model_Tdispatch extends Model
                             // Insert into Passenger Log Table //	
                             $pickup_datetime   = $next_date . ' ' . $recurrent_details[0]['recurrent_pickuptime'];
                             $insert_booking    = 'S';
-                            $nextday_result    = DB::insert(PASSENGERS_LOG, array(
+                            $nextday_result    = DB::insert(PASSENGERS_LOG, [
                                 'booking_key',
                                 'passengers_id',
                                 'company_id',
@@ -861,7 +861,7 @@ class Model_Tdispatch extends Model
                                 'company_tax',
                                 'account_id',
                                 'accgroup_id'
-                            ))->values(array(
+                            ])->values([
                                 $booking_key,
                                 $recurrent_details[0]['recurrent_passengerid'],
                                 $recurrent_details[0]['companyid'],
@@ -890,7 +890,7 @@ class Model_Tdispatch extends Model
                                 $company_tax,
                                 $recurrent_details[0]['recurrent_accountid'],
                                 $recurrent_details[0]['recurrent_groupid']
-                            ))->execute();
+                            ])->execute();
                             $ins_logid         = $nextday_result[0];
                             $trip_id           = $ins_logid;
                             /* Create Log */
@@ -928,7 +928,7 @@ class Model_Tdispatch extends Model
                                 // Insert into Passenger Log Table //	
                                 $pickup_datetime   = $today_date . ' ' . $recurrent_details[0]['recurrent_pickuptime'];
                                 $insert_booking    = 'S';
-                                $today_result      = DB::insert(PASSENGERS_LOG, array(
+                                $today_result      = DB::insert(PASSENGERS_LOG, [
                                     'booking_key',
                                     'passengers_id',
                                     'company_id',
@@ -957,7 +957,7 @@ class Model_Tdispatch extends Model
                                     'company_tax',
                                     'account_id',
                                     'accgroup_id'
-                                ))->values(array(
+                                ])->values([
                                     $booking_key,
                                     $recurrent_details[0]['recurrent_passengerid'],
                                     $recurrent_details[0]['companyid'],
@@ -986,7 +986,7 @@ class Model_Tdispatch extends Model
                                     $company_tax,
                                     $recurrent_details[0]['recurrent_accountid'],
                                     $recurrent_details[0]['recurrent_groupid']
-                                ))->execute();
+                                ])->execute();
                                 $ins_logid         = $today_result[0];
                                 $trip_id           = $ins_logid;
                                 /* Create Log */
@@ -1013,7 +1013,7 @@ class Model_Tdispatch extends Model
                                 // Insert into Passenger Log Table //	
                                 $pickup_datetime   = $next_date . ' ' . $recurrent_details[0]['recurrent_pickuptime'];
                                 $insert_booking    = 'S';
-                                $today_result      = DB::insert(PASSENGERS_LOG, array(
+                                $today_result      = DB::insert(PASSENGERS_LOG, [
                                     'booking_key',
                                     'passengers_id',
                                     'company_id',
@@ -1042,7 +1042,7 @@ class Model_Tdispatch extends Model
                                     'company_tax',
                                     'account_id',
                                     'accgroup_id'
-                                ))->values(array(
+                                ])->values([
                                     $booking_key,
                                     $recurrent_details[0]['recurrent_passengerid'],
                                     $recurrent_details[0]['companyid'],
@@ -1071,7 +1071,7 @@ class Model_Tdispatch extends Model
                                     $company_tax,
                                     $recurrent_details[0]['recurrent_accountid'],
                                     $recurrent_details[0]['recurrent_groupid']
-                                ))->execute();
+                                ])->execute();
                                 $ins_logid         = $today_result[0];
                                 $trip_id           = $ins_logid;
                                 /* Create Log */
@@ -1119,7 +1119,7 @@ class Model_Tdispatch extends Model
                             // Insert into Passenger Log Table //	
                             $pickup_datetime   = $today_date . ' ' . $recurrent_details[0]['recurrent_pickuptime'];
                             $insert_booking    = 'S';
-                            $today_result      = DB::insert(PASSENGERS_LOG, array(
+                            $today_result      = DB::insert(PASSENGERS_LOG, [
                                 'booking_key',
                                 'passengers_id',
                                 'company_id',
@@ -1148,7 +1148,7 @@ class Model_Tdispatch extends Model
                                 'company_tax',
                                 'account_id',
                                 'accgroup_id'
-                            ))->values(array(
+                            ])->values([
                                 $booking_key,
                                 $recurrent_details[0]['recurrent_passengerid'],
                                 $recurrent_details[0]['companyid'],
@@ -1177,7 +1177,7 @@ class Model_Tdispatch extends Model
                                 $company_tax,
                                 $recurrent_details[0]['recurrent_accountid'],
                                 $recurrent_details[0]['recurrent_groupid']
-                            ))->execute();
+                            ])->execute();
                             $ins_logid         = $today_result[0];
                             $trip_id           = $ins_logid;
                             /* Create Log */
@@ -1201,7 +1201,7 @@ class Model_Tdispatch extends Model
                             // Insert into Passenger Log Table //	
                             $pickup_datetime   = $next_date . ' ' . $recurrent_details[0]['recurrent_pickuptime'];
                             $insert_booking    = 'S';
-                            $nextday_result    = DB::insert(PASSENGERS_LOG, array(
+                            $nextday_result    = DB::insert(PASSENGERS_LOG, [
                                 'booking_key',
                                 'passengers_id',
                                 'company_id',
@@ -1230,7 +1230,7 @@ class Model_Tdispatch extends Model
                                 'company_tax',
                                 'account_id',
                                 'accgroup_id'
-                            ))->values(array(
+                            ])->values([
                                 $booking_key,
                                 $recurrent_details[0]['recurrent_passengerid'],
                                 $recurrent_details[0]['companyid'],
@@ -1259,7 +1259,7 @@ class Model_Tdispatch extends Model
                                 $company_tax,
                                 $recurrent_details[0]['recurrent_accountid'],
                                 $recurrent_details[0]['recurrent_groupid']
-                            ))->execute();
+                            ])->execute();
                             $ins_logid         = $nextday_result[0];
                             $trip_id           = $ins_logid;
                             /* Create Log */
@@ -1386,24 +1386,24 @@ class Model_Tdispatch extends Model
 						<?php
                         /* Create Log */
                         /***** Insert the druiver details to driver request table ************/
-                        $insert_array = array(
+                        $insert_array = [
                             "trip_id" => $pass_logid,
                             "available_drivers" => $nearest_driver_id,
                             "status" => '0',
                             "rejected_timeout_drivers" => "",
                             "createdate" => $current_datetime
-                        );
+                        ];
                         //Inserting to Transaction Table 
                         $transaction  = $common_model->insert(DRIVER_REQUEST_DETAILS, $insert_array);
-                        $detail       = array(
+                        $detail       = [
                             "passenger_tripid" => $pass_logid,
                             "notification_time" => ""
-                        );
-                        $msg          = array(
+                        ];
+                        $msg          = [
                             "message" => __('api_request_confirmed_passenger'),
                             "status" => 1,
                             "detail" => $detail
-                        );
+                        ];
                     }
                 }
                 /** Auto Dispatch **/
@@ -1472,7 +1472,7 @@ class Model_Tdispatch extends Model
             }
         }
         if ($post['passenger_id'] == '') {
-            $insert_passenger = DB::insert(PASSENGERS, array(
+            $insert_passenger = DB::insert(PASSENGERS, [
                 'name',
                 'email',
                 'phone',
@@ -1483,7 +1483,7 @@ class Model_Tdispatch extends Model
                 'user_status',
                 'passenger_cid',
                 'activation_status'
-            ))->values(array(
+            ])->values([
                 $firstname,
                 $post['email'],
                 $post['phone'],
@@ -1494,7 +1494,7 @@ class Model_Tdispatch extends Model
                 ACTIVE,
                 $company_id,
                 1
-            ))->execute();
+            ])->execute();
             $send_mail        = 'S';
             $passenger_id     = $insert_passenger[0];
             /*if(!isset($post['group_id'])) {
@@ -1806,7 +1806,7 @@ class Model_Tdispatch extends Model
         $unit               = UNIT;
         $distance           = "";
         $unit_conversion    = "";
-        $remove_driver_list = array();
+        $remove_driver_list = [];
         $assigned_driver    = $this->free_availabletaxisearch_list_web($no_passengers, $request, $company_id);
         //$additional_fields = $this->taxi_additionalfields();
         $add_field          = "";
@@ -1838,7 +1838,7 @@ class Model_Tdispatch extends Model
         }
         $driver_list       = '';
         $driver_count      = '';
-        $driver_list_array = array();
+        $driver_list_array = [];
         foreach ($assigned_driver as $key => $value) {
             $driver_list_array[] = $value['id'];
         }
@@ -1943,7 +1943,7 @@ class Model_Tdispatch extends Model
             $siteinfo_details  = Db::query(Database::SELECT, $siteinfo_query)->execute()->as_array();
             $update_commission = $common_model->update_commission($passenger_log_id, $complete_total, $siteinfo_details[0]['admin_commission']);
             $faretype          = $passengerlog_result[0]['faretype'];
-            $result            = DB::insert(TRANS, array(
+            $result            = DB::insert(TRANS, [
                 'passengers_log_id',
                 'distance',
                 'actual_distance',
@@ -1956,7 +1956,7 @@ class Model_Tdispatch extends Model
                 'payment_type',
                 'amt',
                 'trans_packtype'
-            ))->values(array(
+            ])->values([
                 $passenger_log_id,
                 $complete_distance,
                 $complete_distance,
@@ -1969,7 +1969,7 @@ class Model_Tdispatch extends Model
                 $faretype,
                 $complete_total,
                 $check_package_type
-            ))->execute();
+            ])->execute();
             $updatequery       = " UPDATE " . PASSENGERS_LOG . " SET travel_status='1' wHERE passengers_log_id ='" . $data['pass_logid'] . "'";
             $updateresult      = Db::query(Database::UPDATE, $updatequery)->execute();
         }
@@ -1995,16 +1995,16 @@ class Model_Tdispatch extends Model
     }
     public function validate_addlocation($arr)
     {
-        return Validation::factory($arr)->rule('location_name', 'not_empty')->rule('location_name', 'min_length', array(
+        return Validation::factory($arr)->rule('location_name', 'not_empty')->rule('location_name', 'min_length', [
             ':value',
             '3'
-        ))->rule('location_name', 'max_length', array(
+        ])->rule('location_name', 'max_length', [
             ':value',
             '150'
-        ))->rule('location_name', 'Model_Tdispatch::checklocationname', array(
+        ])->rule('location_name', 'Model_Tdispatch::checklocationname', [
             ':value',
             $arr['location_name']
-        ))
+        ])
         //->rule('type', 'not_empty')
             
         //->rule('keywords', 'not_empty')
@@ -2031,15 +2031,15 @@ class Model_Tdispatch extends Model
         /*
         $result = DB::insert(FREQUENT_LOCATION, array('fuserid','location_name','type','keywords','location'))->values(array($user_createdby,$post['location_name'],$post['type'],$post['keywords'],$post['location']))->execute();
         */
-        $result         = DB::insert(FREQUENT_LOCATION, array(
+        $result         = DB::insert(FREQUENT_LOCATION, [
             'fuserid',
             'location_name',
             'location'
-        ))->values(array(
+        ])->values([
             $user_createdby,
             $post['location_name'],
             $post['location']
-        ))->execute();
+        ])->execute();
         if ($result) {
             return 1;
         } else {
@@ -2054,16 +2054,16 @@ class Model_Tdispatch extends Model
     }
     public function validate_editlocation($arr, $fid)
     {
-        return Validation::factory($arr)->rule('location_name', 'not_empty')->rule('location_name', 'min_length', array(
+        return Validation::factory($arr)->rule('location_name', 'not_empty')->rule('location_name', 'min_length', [
             ':value',
             '3'
-        ))->rule('location_name', 'max_length', array(
+        ])->rule('location_name', 'max_length', [
             ':value',
             '150'
-        ))->rule('location_name', 'Model_Tdispatch::edit_checklocationname', array(
+        ])->rule('location_name', 'Model_Tdispatch::edit_checklocationname', [
             ':value',
             $fid
-        ))
+        ])
         //->rule('type', 'not_empty')
             
         //->rule('keywords', 'not_empty')
@@ -2089,11 +2089,11 @@ class Model_Tdispatch extends Model
         /*
         $result=DB::update(FREQUENT_LOCATION)->set(array('fuserid'=>$user_createdby,'location_name'=>$post['location_name'],'type'=>$post['type'],'keywords'=>$post['keywords'],'location'=>$post['location']))->where('fid','=',$fid)->execute();	
         */
-        $result         = DB::update(FREQUENT_LOCATION)->set(array(
+        $result         = DB::update(FREQUENT_LOCATION)->set([
             'fuserid' => $user_createdby,
             'location_name' => $post['location_name'],
             'location' => $post['location']
-        ))->where('fid', '=', $fid)->execute();
+        ])->where('fid', '=', $fid)->execute();
         if ($result) {
             return 1;
         } else {
@@ -2126,16 +2126,16 @@ class Model_Tdispatch extends Model
     }
     public function validate_addjourney($arr)
     {
-        return Validation::factory($arr)->rule('journey_name', 'not_empty')->rule('journey_name', 'min_length', array(
+        return Validation::factory($arr)->rule('journey_name', 'not_empty')->rule('journey_name', 'min_length', [
             ':value',
             '3'
-        ))->rule('journey_name', 'max_length', array(
+        ])->rule('journey_name', 'max_length', [
             ':value',
             '150'
-        ))->rule('journey_name', 'Model_Tdispatch::checkjourneyname', array(
+        ])->rule('journey_name', 'Model_Tdispatch::checkjourneyname', [
             ':value',
             $arr['journey_name']
-        ))->rule('from_location', 'not_empty')->rule('to_location', 'not_empty');
+        ])->rule('from_location', 'not_empty')->rule('to_location', 'not_empty');
     }
     public static function checkjourneyname($journeyname)
     {
@@ -2151,17 +2151,17 @@ class Model_Tdispatch extends Model
     public static function addjourney($post)
     {
         $user_createdby = $_SESSION['userid'];
-        $result         = DB::insert(FREQUENT_JOURNEY, array(
+        $result         = DB::insert(FREQUENT_JOURNEY, [
             'fjuserid',
             'journey_name',
             'from_location',
             'to_location'
-        ))->values(array(
+        ])->values([
             $user_createdby,
             $post['journey_name'],
             $post['from_location'],
             $post['to_location']
-        ))->execute();
+        ])->execute();
         if ($result) {
             return 1;
         } else {
@@ -2176,16 +2176,16 @@ class Model_Tdispatch extends Model
     }
     public function validate_editjourney($arr, $fjid)
     {
-        return Validation::factory($arr)->rule('journey_name', 'not_empty')->rule('journey_name', 'min_length', array(
+        return Validation::factory($arr)->rule('journey_name', 'not_empty')->rule('journey_name', 'min_length', [
             ':value',
             '3'
-        ))->rule('journey_name', 'max_length', array(
+        ])->rule('journey_name', 'max_length', [
             ':value',
             '150'
-        ))->rule('journey_name', 'Model_Tdispatch::edit_checkjourneyname', array(
+        ])->rule('journey_name', 'Model_Tdispatch::edit_checkjourneyname', [
             ':value',
             $fjid
-        ))->rule('from_location', 'not_empty')->rule('to_location', 'not_empty');
+        ])->rule('from_location', 'not_empty')->rule('to_location', 'not_empty');
     }
     public static function edit_checkjourneyname($journeyname, $fjid)
     {
@@ -2200,12 +2200,12 @@ class Model_Tdispatch extends Model
     public static function editjourney($fjid, $post)
     {
         $user_createdby = $_SESSION['userid'];
-        $result         = DB::update(FREQUENT_JOURNEY)->set(array(
+        $result         = DB::update(FREQUENT_JOURNEY)->set([
             'fjuserid' => $user_createdby,
             'journey_name' => $post['journey_name'],
             'from_location' => $post['from_location'],
             'to_location' => $post['to_location']
-        ))->where('fjid', '=', $fjid)->execute();
+        ])->where('fjid', '=', $fjid)->execute();
         if ($result) {
             return 1;
         } else {
@@ -2244,19 +2244,19 @@ class Model_Tdispatch extends Model
         $Commonmodel  = Model::factory('Commonmodel');
         //$user_createdby = $_SESSION['userid'];
         $current_time = $Commonmodel->getcompany_all_currenttimestamp($company_id);
-        $result       = DB::insert(LOGS, array(
+        $result       = DB::insert(LOGS, [
             'booking_logid',
             'log_userid',
             'log_message',
             'log_booking',
             'log_createdate'
-        ))->values(array(
+        ])->values([
             $booking_logid,
             $log_userid,
             $log_message,
             $log_booking,
             $current_time
-        ))->execute();
+        ])->execute();
         return $result;
     }
     public static function booking_logdetails($pass_logid)
@@ -2287,24 +2287,24 @@ class Model_Tdispatch extends Model
     }
     public function validate_addaccounts($arr)
     {
-        return Validation::factory($arr)->rule('account_name', 'not_empty')->rule('account_name', 'min_length', array(
+        return Validation::factory($arr)->rule('account_name', 'not_empty')->rule('account_name', 'min_length', [
             ':value',
             '4'
-        ))->rule('account_name', 'max_length', array(
+        ])->rule('account_name', 'max_length', [
             ':value',
             '150'
-        ))->rule('account_name', 'Model_Tdispatch::checkaccountname', array(
+        ])->rule('account_name', 'Model_Tdispatch::checkaccountname', [
             ':value',
             $arr['account_name']
-        ))->rule('account_limit', 'numeric')->rule('account_discount', 'not_empty')->rule('account_discount', 'numeric')->rule('firstname', 'not_empty')->rule('firstname', 'min_length', array(
+        ])->rule('account_limit', 'numeric')->rule('account_discount', 'not_empty')->rule('account_discount', 'numeric')->rule('firstname', 'not_empty')->rule('firstname', 'min_length', [
             ':value',
             '4'
-        ))
+        ])
         //->rule('firstname', 'max_length', array(':value', '32'))
-            ->rule('email', 'not_empty')->rule('email', 'email')->rule('email', 'max_length', array(
+            ->rule('email', 'not_empty')->rule('email', 'email')->rule('email', 'max_length', [
             ':value',
             '50'
-        ))->rule('phone', 'not_empty');
+        ])->rule('phone', 'not_empty');
     }
     public static function checkaccountname($accountname)
     {
@@ -2327,7 +2327,7 @@ class Model_Tdispatch extends Model
         $passenger_id = $post['passenger_id'];
         $send_mail    = 'N';
         if ($passenger_id == '') {
-            $presult        = DB::insert(PASSENGERS, array(
+            $presult        = DB::insert(PASSENGERS, [
                 'name',
                 'email',
                 'password',
@@ -2338,7 +2338,7 @@ class Model_Tdispatch extends Model
                 'login_status',
                 'user_status',
                 'passenger_cid'
-            ))->values(array(
+            ])->values([
                 $post['firstname'],
                 $post['email'],
                 $password,
@@ -2349,7 +2349,7 @@ class Model_Tdispatch extends Model
                 'D',
                 ACTIVE,
                 $company_id
-            ))->execute();
+            ])->execute();
             $last_insert_id = $presult[0];
             $send_mail      = 'S';
         } else {
@@ -2357,21 +2357,21 @@ class Model_Tdispatch extends Model
         }
         $user_createdby = $_SESSION['userid'];
         $company_id     = $_SESSION['company_id'];
-        $result         = DB::insert(TBLGROUPACCOUNT, array(
+        $result         = DB::insert(TBLGROUPACCOUNT, [
             'acc_created_by',
             'acc_company_id',
             'account_name',
             'passid',
             'limit',
             'discount'
-        ))->values(array(
+        ])->values([
             $user_createdby,
             $company_id,
             $post['account_name'],
             $last_insert_id,
             $post['account_limit'],
             $post['account_discount']
-        ))->execute();
+        ])->execute();
         if ($result) {
             return $send_mail;
         } else {
@@ -2387,24 +2387,24 @@ class Model_Tdispatch extends Model
     }
     public function validate_editaccounts($arr, $aid)
     {
-        return Validation::factory($arr)->rule('account_name', 'not_empty')->rule('account_name', 'min_length', array(
+        return Validation::factory($arr)->rule('account_name', 'not_empty')->rule('account_name', 'min_length', [
             ':value',
             '4'
-        ))->rule('account_name', 'max_length', array(
+        ])->rule('account_name', 'max_length', [
             ':value',
             '150'
-        ))->rule('account_name', 'Model_Tdispatch::edit_checklocationname', array(
+        ])->rule('account_name', 'Model_Tdispatch::edit_checklocationname', [
             ':value',
             $aid
-        ))->rule('account_limit', 'not_empty')->rule('account_limit', 'numeric')->rule('account_discount', 'not_empty')->rule('account_discount', 'numeric')->rule('firstname', 'not_empty')->rule('firstname', 'min_length', array(
+        ])->rule('account_limit', 'not_empty')->rule('account_limit', 'numeric')->rule('account_discount', 'not_empty')->rule('account_discount', 'numeric')->rule('firstname', 'not_empty')->rule('firstname', 'min_length', [
             ':value',
             '4'
-        ))
+        ])
         //->rule('firstname', 'max_length', array(':value', '32'))
-            ->rule('email', 'not_empty')->rule('email', 'email')->rule('email', 'max_length', array(
+            ->rule('email', 'not_empty')->rule('email', 'email')->rule('email', 'max_length', [
             ':value',
             '50'
-        ))->rule('phone', 'not_empty');
+        ])->rule('phone', 'not_empty');
     }
     public static function edit_checkaccountname($accountname, $aid)
     {
@@ -2428,7 +2428,7 @@ class Model_Tdispatch extends Model
         $company_id     = $_SESSION['company_id'];
         $passenger_id   = $post['passenger_id'];
         if ($passenger_id == '') {
-            $presult        = DB::insert(PASSENGERS, array(
+            $presult        = DB::insert(PASSENGERS, [
                 'name',
                 'email',
                 'password',
@@ -2439,7 +2439,7 @@ class Model_Tdispatch extends Model
                 'login_status',
                 'user_status',
                 'passenger_cid'
-            ))->values(array(
+            ])->values([
                 $post['firstname'],
                 $post['email'],
                 $password,
@@ -2450,27 +2450,27 @@ class Model_Tdispatch extends Model
                 'D',
                 ACTIVE,
                 $company_id
-            ))->execute();
+            ])->execute();
             $last_insert_id = $presult[0];
             $send_mail      = 'S';
             $user_createdby = $_SESSION['userid'];
             $company_id     = $_SESSION['company_id'];
-            $result         = DB::update(TBLGROUPACCOUNT)->set(array(
+            $result         = DB::update(TBLGROUPACCOUNT)->set([
                 'acc_created_by' => $user_createdby,
                 'passid' => $last_insert_id,
                 'account_name' => $post['account_name'],
                 'limit' => $post['account_limit'],
                 'discount' => $post['account_discount']
-            ))->where('aid', '=', $aid)->where('aid', '=', $aid)->execute();
+            ])->where('aid', '=', $aid)->where('aid', '=', $aid)->execute();
         } else {
             $last_insert_id = $passenger_id;
-            $result         = DB::update(TBLGROUPACCOUNT)->set(array(
+            $result         = DB::update(TBLGROUPACCOUNT)->set([
                 'acc_created_by' => $user_createdby,
                 'passid' => $passenger_id,
                 'account_name' => $post['account_name'],
                 'limit' => $post['account_limit'],
                 'discount' => $post['account_discount']
-            ))->where('aid', '=', $aid)->execute();
+            ])->where('aid', '=', $aid)->execute();
         }
         if ($result) {
             $req_result['send_mail'] = $send_mail;
@@ -2528,7 +2528,7 @@ class Model_Tdispatch extends Model
         $group_result   = Db::query(Database::SELECT, $group_query)->execute()->as_array();
         $admin_result   = '';
         $user_result    = '';
-        $details        = array();
+        $details        = [];
         if (count($account_result) > 0) {
             $admin_id     = $account_result[0]['passid'];
             $admin_query  = " select * from " . PASSENGERS . " where id= '$admin_id' order by name asc ";
@@ -2555,36 +2555,36 @@ class Model_Tdispatch extends Model
     }
     public function validate_addgroups($arr)
     {
-        return Validation::factory($arr)->rule('group_name', 'not_empty')->rule('group_name', 'min_length', array(
+        return Validation::factory($arr)->rule('group_name', 'not_empty')->rule('group_name', 'min_length', [
             ':value',
             '4'
-        ))->rule('group_name', 'max_length', array(
+        ])->rule('group_name', 'max_length', [
             ':value',
             '150'
-        ))->rule('group_name', 'Model_Tdispatch::checkgroupname', array(
+        ])->rule('group_name', 'Model_Tdispatch::checkgroupname', [
             ':value',
             $arr['acc_id']
-        ))->rule('limit', 'numeric')->rule('limit', 'Model_Tdispatch::checkgrouplimit', array(
+        ])->rule('limit', 'numeric')->rule('limit', 'Model_Tdispatch::checkgrouplimit', [
             ':value',
             $arr['acc_id']
-        ))->rule('acc_id', 'not_empty');
+        ])->rule('acc_id', 'not_empty');
     }
     public function validate_editgroups($arr, $groupid)
     {
-        return Validation::factory($arr)->rule('group_name', 'not_empty')->rule('group_name', 'min_length', array(
+        return Validation::factory($arr)->rule('group_name', 'not_empty')->rule('group_name', 'min_length', [
             ':value',
             '4'
-        ))->rule('group_name', 'max_length', array(
+        ])->rule('group_name', 'max_length', [
             ':value',
             '150'
-        ))->rule('group_name', 'Model_Tdispatch::edit_checkgroupname', array(
+        ])->rule('group_name', 'Model_Tdispatch::edit_checkgroupname', [
             ':value',
             $arr['acc_id']
-        ))->rule('limit', 'numeric')->rule('limit', 'Model_Tdispatch::checkeditgrouplimit', array(
+        ])->rule('limit', 'numeric')->rule('limit', 'Model_Tdispatch::checkeditgrouplimit', [
             ':value',
             $arr['acc_id'],
             $groupid
-        ))->rule('acc_id', 'not_empty');
+        ])->rule('acc_id', 'not_empty');
     }
     public static function checkeditgrouplimit($limit, $acc_id, $groupid)
     {
@@ -2684,17 +2684,17 @@ class Model_Tdispatch extends Model
     public static function addgroups($post)
     {
         $companyid = $_SESSION['company_id'];
-        $result    = DB::insert(TBLGROUP, array(
+        $result    = DB::insert(TBLGROUP, [
             'aid',
             'gcompany_id',
             'limit',
             'department'
-        ))->values(array(
+        ])->values([
             $post['acc_id'],
             $companyid,
             $post['limit'],
             $post['group_name']
-        ))->execute();
+        ])->execute();
         if ($result) {
             return 1;
         } else {
@@ -2712,12 +2712,12 @@ class Model_Tdispatch extends Model
         $status         = isset($post['status']) ? $post['status'] : '0';
         $user_createdby = $_SESSION['userid'];
         $company_id     = $_SESSION['company_id'];
-        $result         = DB::update(TBLGROUP)->set(array(
+        $result         = DB::update(TBLGROUP)->set([
             'department' => $post['group_name'],
             'gcompany_id' => $company_id,
             'limit' => $post['limit'],
             'status' => $status
-        ))->where('gid', '=', $gid)->execute();
+        ])->where('gid', '=', $gid)->execute();
         if ($result) {
             return 1;
         } else {
@@ -2738,15 +2738,15 @@ class Model_Tdispatch extends Model
     }
     public function validate_addusers($arr)
     {
-        return Validation::factory($arr)->rule('firstname', 'not_empty')->rule('firstname', 'min_length', array(
+        return Validation::factory($arr)->rule('firstname', 'not_empty')->rule('firstname', 'min_length', [
             ':value',
             '4'
-        ))
+        ])
         //->rule('firstname', 'max_length', array(':value', '32'))
-            ->rule('email', 'not_empty')->rule('email', 'email')->rule('email', 'max_length', array(
+            ->rule('email', 'not_empty')->rule('email', 'email')->rule('email', 'max_length', [
             ':value',
             '50'
-        ))->rule('phone', 'not_empty')->rule('group_name', 'not_empty');
+        ])->rule('phone', 'not_empty')->rule('group_name', 'not_empty');
     }
     public function validate_dispatchsetting($arr)
     {
@@ -2761,7 +2761,7 @@ class Model_Tdispatch extends Model
         $send_mail    = 'N';
         $result       = '';
         if ($post['passenger_id'] == '') {
-            $presult        = DB::insert(PASSENGERS, array(
+            $presult        = DB::insert(PASSENGERS, [
                 'name',
                 'email',
                 'password',
@@ -2772,7 +2772,7 @@ class Model_Tdispatch extends Model
                 'login_status',
                 'user_status',
                 'passenger_cid'
-            ))->values(array(
+            ])->values([
                 $post['firstname'],
                 $post['email'],
                 $password,
@@ -2783,7 +2783,7 @@ class Model_Tdispatch extends Model
                 'D',
                 ACTIVE,
                 $company_id
-            ))->execute();
+            ])->execute();
             $last_insert_id = $presult[0];
             $send_mail      = 'S';
         } else {
@@ -2800,9 +2800,9 @@ class Model_Tdispatch extends Model
             $user_query   = " select * from " . TBLGROUP . " where FIND_IN_SET ('$check_passid',passenger_id) and gid='$groupid'";
             $user_result  = Db::query(Database::SELECT, $user_query)->execute()->as_array();
             if (count($user_result) == 0) {
-                $result = DB::update(TBLGROUP)->set(array(
+                $result = DB::update(TBLGROUP)->set([
                     'passenger_id' => $last_insert_id
-                ))->where('gid', '=', $groupid)->execute();
+                ])->where('gid', '=', $groupid)->execute();
             }
         } else {
             $check_passid = $post['passenger_id'];
@@ -2810,9 +2810,9 @@ class Model_Tdispatch extends Model
             $user_result  = Db::query(Database::SELECT, $user_query)->execute()->as_array();
             if (count($user_result) == 0) {
                 $last_insert_id = $passenger_id . ',' . $last_insert_id;
-                $result         = DB::update(TBLGROUP)->set(array(
+                $result         = DB::update(TBLGROUP)->set([
                     'passenger_id' => $last_insert_id
-                ))->where('gid', '=', $groupid)->execute();
+                ])->where('gid', '=', $groupid)->execute();
             }
         }
         $req_result['send_mail'] = $send_mail;
@@ -2835,18 +2835,18 @@ class Model_Tdispatch extends Model
             if ($find_passengerid != '') {
                 $user_list = explode(',', $find_passengerid);
                 if (count($user_list) > 1) {
-                    $user_array   = array();
+                    $user_array   = [];
                     $user_array[] = $userid;
                     $diff_array   = array_diff($user_list, $user_array);
                     $insert_array = implode(',', $diff_array);
-                    $result       = DB::update(TBLGROUP)->set(array(
+                    $result       = DB::update(TBLGROUP)->set([
                         'passenger_id' => $insert_array
-                    ))->where('gid', '=', $groupid)->execute();
+                    ])->where('gid', '=', $groupid)->execute();
                 }
             }
         }
         if ($post['passenger_id'] == '') {
-            $presult        = DB::insert(PASSENGERS, array(
+            $presult        = DB::insert(PASSENGERS, [
                 'name',
                 'email',
                 'password',
@@ -2857,7 +2857,7 @@ class Model_Tdispatch extends Model
                 'login_status',
                 'user_status',
                 'passenger_cid'
-            ))->values(array(
+            ])->values([
                 $post['firstname'],
                 $post['email'],
                 $password,
@@ -2868,7 +2868,7 @@ class Model_Tdispatch extends Model
                 'D',
                 ACTIVE,
                 $company_id
-            ))->execute();
+            ])->execute();
             $last_insert_id = $presult[0];
             $send_mail      = 'S';
         } else {
@@ -2885,9 +2885,9 @@ class Model_Tdispatch extends Model
             $user_query   = " select * from " . TBLGROUP . " where FIND_IN_SET ('$check_passid',passenger_id) and gid='$groupid'";
             $user_result  = Db::query(Database::SELECT, $user_query)->execute()->as_array();
             if (count($user_result) == 0) {
-                $result = DB::update(TBLGROUP)->set(array(
+                $result = DB::update(TBLGROUP)->set([
                     'passenger_id' => $last_insert_id
-                ))->where('gid', '=', $groupid)->execute();
+                ])->where('gid', '=', $groupid)->execute();
             }
         } else {
             $check_passid = $post['passenger_id'];
@@ -2895,9 +2895,9 @@ class Model_Tdispatch extends Model
             $user_result  = Db::query(Database::SELECT, $user_query)->execute()->as_array();
             if (count($user_result) == 0) {
                 $last_insert_id = $passenger_id . ',' . $last_insert_id;
-                $result         = DB::update(TBLGROUP)->set(array(
+                $result         = DB::update(TBLGROUP)->set([
                     'passenger_id' => $last_insert_id
-                ))->where('gid', '=', $groupid)->execute();
+                ])->where('gid', '=', $groupid)->execute();
             }
         }
         $req_result['send_mail'] = $send_mail;
@@ -2944,28 +2944,28 @@ class Model_Tdispatch extends Model
         $labelname         = isset($post['labelname']) ? implode(',', $post['labelname']) : '';
 		$interval         = isset($post['interval']) ? $post['interval'] : '';
 		if($company_id!=0){
-			$dispatch_data = $this->mongo_db->find(MDB_COMPANY,array('_id'=>(int)$company_id),array('dispatch_algorithm'=>1))->sort(array('dispatch_algorithm.aid'=>-1))->limit(1);
+			$dispatch_data = $this->mongo_db->find(MDB_COMPANY,['_id'=>(int)$company_id],['dispatch_algorithm'=>1])->sort(['dispatch_algorithm.aid'=>-1])->limit(1);
 			//echo '<pre>';print_r(iterator_to_array($dispatch_data));exit;die();
-			$companydispatch = (!empty($dispatch_data))?iterator_to_array($dispatch_data):array();
+			$companydispatch = (!empty($dispatch_data))?iterator_to_array($dispatch_data):[];
 			if (count($dispatch_data) > 0) {
-				$update_array =array(
+				$update_array =[
 					'dispatch_algorithm.alg_created_by' => $user_createdby,
 					'dispatch_algorithm.labelname' => $labelname,
 					'dispatch_algorithm.interval' => $interval
-				);
-				$result = $this->mongo_db->update(MDB_COMPANY,array('_id'=>$company_id),array('$set'=>$update_array),array('upsert'=>true));
+				];
+				$result = $this->mongo_db->update(MDB_COMPANY,['_id'=>$company_id],['$set'=>$update_array],['upsert'=>true]);
 				return (empty($result['err']))?1:0;
 			} else {
-				$insert_array =array(
+				$insert_array =[
 					'alg_created_by' => $user_createdby,
 					'labelname' => $labelname
-				);
-				$insert_data = array('dispatch_algorithm' => $insert_array);
-				$result = $this->mongo_db->update(MDB_COMPANY,array('_id'=>$company_id),array('$push'=>$insert_data),array('upsert'=>true));
+				];
+				$insert_data = ['dispatch_algorithm' => $insert_array];
+				$result = $this->mongo_db->update(MDB_COMPANY,['_id'=>$company_id],['$push'=>$insert_data],['upsert'=>true]);
 				return (empty($result['err']))?1:0;
 			}
 		} else {
-			$result = $this->mongo_db->update(MDB_SITEINFO,array('_id'=>1),array('$set'=>array('labelname'=>$labelname)),array('upsert'=>true));
+			$result = $this->mongo_db->update(MDB_SITEINFO,['_id'=>1],['$set'=>['labelname'=>$labelname]],['upsert'=>true]);
 			return (empty($result['err']))?1:0;
 		}
     }
@@ -2973,24 +2973,24 @@ class Model_Tdispatch extends Model
     {
         $company_id     = $this->company_id;
 		if($company_id!=0){
-			$dispatch_data = $this->mongo_db->find(MDB_COMPANY,array('_id'=>(int)$company_id),array('dispatch_algorithm'=>1))->limit(1);
+			$dispatch_data = $this->mongo_db->find(MDB_COMPANY,['_id'=>(int)$company_id],['dispatch_algorithm'=>1])->limit(1);
 			//echo '<pre>';print_r(iterator_to_array($dispatch_data));exit;die();
-			$companydispatch = (!empty($dispatch_data))?iterator_to_array($dispatch_data):array();
+			$companydispatch = (!empty($dispatch_data))?iterator_to_array($dispatch_data):[];
 			if (count($dispatch_data) > 0) {
                 $company_dispatch  = $companydispatch[$company_id]['dispatch_algorithm'];
 				if(count($company_dispatch)==1){
                     $result    = $company_dispatch;
                 } else {
                     $data = array_reverse($company_dispatch);
-					$result    = array(0=>$data);
+					$result    = [0=>$data];
                 }
             } else {
 				$result = $companydispatch;
 			}
 		} else {
-			$dispatch_data = $this->mongo_db->find(MDB_SITEINFO,array('_id'=>1),array('labelname'));
+			$dispatch_data = $this->mongo_db->find(MDB_SITEINFO,['_id'=>1],['labelname']);
 			//echo '<pre>';print_r($dispatch_data);exit;
-			$result = (!empty($dispatch_data))?iterator_to_array($dispatch_data):array();
+			$result = (!empty($dispatch_data))?iterator_to_array($dispatch_data):[];
 			//echo '<pre>';print_r($result);exit;
 		}
         return $result;
@@ -3013,7 +3013,7 @@ class Model_Tdispatch extends Model
     {
         $user_createdby = $_SESSION['userid'];
         $companyid      = $_SESSION['company_id'];
-        $user_array     = array();
+        $user_array     = [];
         $user_array[0]  = $userid;
         $group_query    = " select * from " . TBLGROUP . " where gcompany_id='$companyid' and gid='$groupid'";
         $group_result   = Db::query(Database::SELECT, $group_query)->execute()->as_array();
@@ -3023,9 +3023,9 @@ class Model_Tdispatch extends Model
             if (in_array($userid, $user_list)) {
                 $new_array = array_diff($user_list, $user_array);
                 $new_set   = implode(',', $new_array);
-                $result    = DB::update(TBLGROUP)->set(array(
+                $result    = DB::update(TBLGROUP)->set([
                     'passenger_id' => $new_set
-                ))->where('gid', '=', $groupid)->execute();
+                ])->where('gid', '=', $groupid)->execute();
             }
             return 1;
         }
@@ -3138,7 +3138,7 @@ class Model_Tdispatch extends Model
             }
         }
         if ($post['passenger_id'] == '') {
-            $insert_passenger = DB::insert(PASSENGERS, array(
+            $insert_passenger = DB::insert(PASSENGERS, [
                 'name',
                 'email',
                 'phone',
@@ -3149,7 +3149,7 @@ class Model_Tdispatch extends Model
                 'user_status',
                 'passenger_cid',
                 'activation_status'
-            ))->values(array(
+            ])->values([
                 $firstname,
                 $post['email'],
                 $post['phone'],
@@ -3160,7 +3160,7 @@ class Model_Tdispatch extends Model
                 ACTIVE,
                 $company_id,
                 1
-            ))->execute();
+            ])->execute();
             $send_mail        = 'S';
             $passenger_id     = $insert_passenger[0];
             $user_createdby   = $_SESSION['userid'];
@@ -3860,8 +3860,8 @@ class Model_Tdispatch extends Model
     }
     public function get_citymodel_fare_details($model_id = "", $city_name = "", $city_id = '', $company_id = '')
     {
-       $arguments = array(
-			array('$project' => array(
+       $arguments = [
+			['$project' => [
 					"_id"=>1,
 					"base_fare"=>'$base_fare',
 					"min_km" => '$min_km',
@@ -3881,13 +3881,13 @@ class Model_Tdispatch extends Model
                     "airport_pickup_fare" => '$airport_pickup_fare',
                     "airport_drop_fare" => '$airport_drop_fare',
 
-				)
-			),
-			array('$match' => array("_id"=>(int)$model_id)),
-		);
+				]
+			],
+			['$match' => ["_id"=>(int)$model_id]],
+		];
 		$result = $this->mongo_db->aggregate(MDB_MOTOR_MODEL,$arguments);
 		//echo '<pre>else';print_r($result);exit;
-		return (!empty($result['result'])) ? $result['result'][0]:array();
+		return (!empty($result['result'])) ? $result['result'][0]:[];
 		
     }
     public static function model_details()
@@ -3904,11 +3904,11 @@ class Model_Tdispatch extends Model
     }
     public function update_dispatch_status($id, $msg_status, $driver_reply, $travel_status)
     {
-        $sql_query = array(
+        $sql_query = [
             'msg_status' => $msg_status,
             'driver_reply' => $driver_reply,
             'travel_status' => $travel_status
-        );
+        ];
         //print_r($sql_query);
         $result    = DB::update(PASSENGERS_LOG)->set($sql_query)->where('passengers_log_id', '=', $id)->execute();
     }
@@ -3957,7 +3957,7 @@ class Model_Tdispatch extends Model
                     $journey_status = 1; // Waiting for Payment
                     $journey        = $this->update_dispatch_status($passenger_log_id, $msg_status, $driver_reply, $journey_status);
                     $faretype       = $passengerlog_result[0]['faretype'];
-                    $result         = DB::insert(TRANS, array(
+                    $result         = DB::insert(TRANS, [
                         'passengers_log_id',
                         'distance',
                         'actual_distance',
@@ -3971,7 +3971,7 @@ class Model_Tdispatch extends Model
                         'payment_type',
                         'amt',
                         'trans_packtype'
-                    ))->values(array(
+                    ])->values([
                         $passenger_log_id,
                         $complete_distance,
                         $complete_distance,
@@ -3985,7 +3985,7 @@ class Model_Tdispatch extends Model
                         $faretype,
                         $total_fare,
                         $check_package_type
-                    ))->execute();
+                    ])->execute();
                     return 1;
                 } else {
                     $faretype = $passengerlog_result[0]['faretype'];
@@ -3996,7 +3996,7 @@ class Model_Tdispatch extends Model
                         $journey           = $this->update_dispatch_status($passenger_log_id, $msg_status, $driver_reply, $journey_status);
                         $update_commission = $common_model->update_commission($passenger_log_id, $complete_total, $siteinfo_details[0]['admin_commission']);
                         $faretype          = $passengerlog_result[0]['faretype'];
-                        $result            = DB::insert(TRANS, array(
+                        $result            = DB::insert(TRANS, [
                             'passengers_log_id',
                             'distance',
                             'actual_distance',
@@ -4009,7 +4009,7 @@ class Model_Tdispatch extends Model
                             'payment_type',
                             'amt',
                             'trans_packtype'
-                        ))->values(array(
+                        ])->values([
                             $passenger_log_id,
                             $complete_distance,
                             $complete_distance,
@@ -4022,7 +4022,7 @@ class Model_Tdispatch extends Model
                             $faretype,
                             $complete_total,
                             $check_package_type
-                        ))->execute();
+                        ])->execute();
                         return 1;
                     } elseif ($faretype == 2) {
                         $passenger_id          = $passengerlog_result[0]['passengers_id'];
@@ -4079,7 +4079,7 @@ class Model_Tdispatch extends Model
                             $nvpstr   = $response;
                             curl_close($curl);
                             $intial   = 0;
-                            $nvpArray = array();
+                            $nvpArray = [];
                             while (strlen($nvpstr)) {
                                 //postion of Key
                                 $keypos                       = strpos($nvpstr, '=');
@@ -4115,7 +4115,7 @@ class Model_Tdispatch extends Model
                                     $updateresult        = Db::query(Database::UPDATE, $updatequery)->execute();
                                     $current_time        = date('Y-m-d H:i:s');
                                     $faretype            = $passengerlog_result[0]['faretype'];
-                                    $result              = DB::insert(TRANS, array(
+                                    $result              = DB::insert(TRANS, [
                                         'passengers_log_id',
                                         'distance',
                                         'actual_distance',
@@ -4139,7 +4139,7 @@ class Model_Tdispatch extends Model
                                         'company_amount',
                                         'trans_packtype',
                                         'nightfare'
-                                    ))->values(array(
+                                    ])->values([
                                         $passenger_log_id,
                                         $complete_distance,
                                         $complete_distance,
@@ -4163,7 +4163,7 @@ class Model_Tdispatch extends Model
                                         $company_amt,
                                         $check_package_type,
                                         $complete_nightcharge
-                                    ))->execute();
+                                    ])->execute();
                                     $msg_status          = 'R';
                                     $driver_reply        = 'A';
                                     $journey_status      = 1;
@@ -4173,7 +4173,7 @@ class Model_Tdispatch extends Model
                                     $to                  = "";
                                     $mail                = "";
                                     $this->emailtemplate = Model::factory('emailtemplate');
-                                    $replace_variables   = array(
+                                    $replace_variables   = [
                                         REPLACE_LOGO => URL_BASE . PUBLIC_FOLDER_IMGPATH . '/logo.png',
                                         REPLACE_SITENAME => SITE_NAME,
                                         REPLACE_USERNAME => $name,
@@ -4185,7 +4185,7 @@ class Model_Tdispatch extends Model
                                         REPLACE_ORDERLIST => $orderlist,
                                         REPLACE_COPYRIGHTS => SITE_COPYRIGHT,
                                         REPLACE_COPYRIGHTYEAR => COPYRIGHT_YEAR
-                                    );
+                                    ];
                                     
 									if ($this->lang != 'en') {
 										if (file_exists(DOCROOT . TEMPLATEPATH . $this->lang . '/tripcomplete-mail-' . $this->lang . '.html')) {
@@ -4319,7 +4319,7 @@ class Model_Tdispatch extends Model
                                                         $nvpstr   = $response;
                                                         curl_close($curl);
                                                         $intial   = 0;
-                                                        $nvpArray = array();
+                                                        $nvpArray = [];
                                                         while (strlen($nvpstr)) {
                                                             //postion of Key
                                                             $keypos                       = strpos($nvpstr, '=');
@@ -4355,7 +4355,7 @@ class Model_Tdispatch extends Model
                                                                 $updateresult        = Db::query(Database::UPDATE, $updatequery)->execute();
                                                                 $current_time        = date('Y-m-d H:i:s');
                                                                 $faretype            = $passengerlog_result[0]['faretype'];
-                                                                $result              = DB::insert(TRANS, array(
+                                                                $result              = DB::insert(TRANS, [
                                                                     'passengers_log_id',
                                                                     'distance',
                                                                     'actual_distance',
@@ -4381,7 +4381,7 @@ class Model_Tdispatch extends Model
                                                                     'trans_packtype',
                                                                     'nightfare',
                                                                     'credits_used'
-                                                                ))->values(array(
+                                                                ])->values([
                                                                     $passenger_log_id,
                                                                     $complete_distance,
                                                                     $complete_distance,
@@ -4407,7 +4407,7 @@ class Model_Tdispatch extends Model
                                                                     $check_package_type,
                                                                     $complete_nightcharge,
                                                                     $total_amount
-                                                                ))->execute();
+                                                                ])->execute();
                                                                 $msg_status          = 'R';
                                                                 $driver_reply        = 'A';
                                                                 $journey_status      = 1;
@@ -4417,7 +4417,7 @@ class Model_Tdispatch extends Model
                                                                 $to                  = "";
                                                                 $mail                = "";
                                                                 $this->emailtemplate = Model::factory('emailtemplate');
-                                                                $replace_variables   = array(
+                                                                $replace_variables   = [
                                                                     REPLACE_LOGO => URL_BASE . PUBLIC_FOLDER_IMGPATH . '/logo.png',
                                                                     REPLACE_SITENAME => SITE_NAME,
                                                                     REPLACE_USERNAME => $name,
@@ -4429,7 +4429,7 @@ class Model_Tdispatch extends Model
                                                                     REPLACE_ORDERLIST => $orderlist,
                                                                     REPLACE_COPYRIGHTS => SITE_COPYRIGHT,
                                                                     REPLACE_COPYRIGHTYEAR => COPYRIGHT_YEAR
-                                                                );
+                                                                ];
                                                                 //$message             = $this->emailtemplate->emailtemplate(DOCROOT . TEMPLATEPATH . 'tripcomplete-mail.html', $replace_variables);
 																if ($this->lang != 'en') {
 																	if (file_exists(DOCROOT . TEMPLATEPATH . $this->lang . '/tripcomplete-mail-' . $this->lang . '.html')) {
@@ -4587,16 +4587,16 @@ class Model_Tdispatch extends Model
 
     public function get_airport_zone($latitude,$longitude)
     {
-        $match_array = array(
+        $match_array = [
         "is_airport"=>(int)1,
-        "loc"=>array(
-            '$near'=>array(
-                '$geometry'=>array("type"=>"Point","coordinates"=>[(double)$longitude,(double)$latitude]),
+        "loc"=>[
+            '$near'=>[
+                '$geometry'=>["type"=>"Point","coordinates"=>[(double)$longitude,(double)$latitude]],
                 '$maxDistance'=>1000,
-                ),
-            ),
-        );
-        $result = $this->mongo_db->find_one(MDB_ZONES,$match_array,array("zone_name"));
+                ],
+            ],
+        ];
+        $result = $this->mongo_db->find_one(MDB_ZONES,$match_array,["zone_name"]);
         if(count($result) > 0){
             return true;
         } else {
@@ -4606,15 +4606,15 @@ class Model_Tdispatch extends Model
 
     public function check_zones($latitude,$longitude,$is_drop)
     {
-        $match_array = array(
+        $match_array = [
         "is_airport"=>(int)0,
-        "loc"=>array(
-            '$near'=>array(
-                '$geometry'=>array("type"=>"Point","coordinates"=>[(double)$longitude,(double)$latitude]),
+        "loc"=>[
+            '$near'=>[
+                '$geometry'=>["type"=>"Point","coordinates"=>[(double)$longitude,(double)$latitude]],
                 '$maxDistance'=>1000,
-                ),
-            ),
-        );
+                ],
+            ],
+        ];
 
         if($is_drop){
             $match_array['is_drop'] = (int)1;
@@ -4622,18 +4622,18 @@ class Model_Tdispatch extends Model
             $match_array['is_pickup'] = (int)1;
         }
 
-        $result = $this->mongo_db->find_one(MDB_ZONES,$match_array,array("zone_name","_id"));
+        $result = $this->mongo_db->find_one(MDB_ZONES,$match_array,["zone_name","_id"]);
         return $result;
         
     }
 
     public function get_zone_fare($zone_id,$model_id)
     {
-        $match_array = array(
+        $match_array = [
         "zone_id"=>(int)$zone_id,
         "model_id"=>(int)$model_id,
-        );
-        $result = $this->mongo_db->find_one(MDB_ZONE_FARE,$match_array,array("zone_fixed_fare","_id"));
+        ];
+        $result = $this->mongo_db->find_one(MDB_ZONE_FARE,$match_array,["zone_fixed_fare","_id"]);
         return isset($result['zone_fixed_fare'])?$result['zone_fixed_fare']:0;
         
     }

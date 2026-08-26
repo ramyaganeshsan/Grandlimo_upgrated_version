@@ -2,7 +2,7 @@
 defined('SYSPATH') OR die("No direct access allowed.");
 //print_r($site_settings);
 
-$home_page = isset($website_content['features_page'])?$website_content['features_page']:array();
+$home_page = isset($website_content['features_page'])?$website_content['features_page']:[];
 //print_r($home_page);exit;
 ?>
 <script type="text/javascript" src="<?php echo URL_BASE;?>public/js/validation/jquery-1.6.3.min.js"></script>

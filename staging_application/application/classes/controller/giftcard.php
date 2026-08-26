@@ -63,10 +63,10 @@ class Controller_Giftcard extends Controller_Siteadmin
 
     public static function checkBalance($card_number)
     { 
-        $headers = array(
+        $headers = [
             'Content-Type: application/json',
             sprintf('Authorization: Bearer %s', GIFT_CARD_TOKEN)
-          );
+          ];
         
           $curl = curl_init(GIFT_CARD_URL."/balance_check?card_number=".$card_number."&vendor_id=".GIFT_CARD_VENDOR);
         

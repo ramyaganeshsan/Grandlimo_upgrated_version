@@ -32,9 +32,9 @@ Class Controller_Emailnotification extends Controller_Website
 						$follow_cont=$this->emailtemplate->get_template_content(WISHLIST_SERVICE);
 						$subject=$follow_cont[0]['email_subject'];
 						$content=$follow_cont[0]['email_content'];
-						$replace_variables=array(REPLACE_LOGO=>EMAILTEMPLATELOGO,USERNAME=>isset($service_detail[0]['name'])?$service_detail[0]['name']:'',SERVICE_NAME=>isset($service_detail[0]['title'])?$service_detail[0]['title']:'',WISH_USERNAME=>isset($user_detail[0]['name'])?$user_detail[0]['name']:'',REPLACE_SITENAME=>$this->app_name,REPLACE_SITELINK=>URL_BASE.'users/contactinfo/',REPLACE_SITEEMAIL=>$this->siteemail,REPLACE_SITEURL=>URL_BASE,SITE_DESCRIPTION=>$this->app_description,REPLACE_COPYRIGHTS=>SITE_COPYRIGHT,REPLACE_COPYRIGHTYEAR=>COPYRIGHT_YEAR);
+						$replace_variables=[REPLACE_LOGO=>EMAILTEMPLATELOGO,USERNAME=>isset($service_detail[0]['name'])?$service_detail[0]['name']:'',SERVICE_NAME=>isset($service_detail[0]['title'])?$service_detail[0]['title']:'',WISH_USERNAME=>isset($user_detail[0]['name'])?$user_detail[0]['name']:'',REPLACE_SITENAME=>$this->app_name,REPLACE_SITELINK=>URL_BASE.'users/contactinfo/',REPLACE_SITEEMAIL=>$this->siteemail,REPLACE_SITEURL=>URL_BASE,SITE_DESCRIPTION=>$this->app_description,REPLACE_COPYRIGHTS=>SITE_COPYRIGHT,REPLACE_COPYRIGHTYEAR=>COPYRIGHT_YEAR];
 						$message=$this->emailtemplate->emailtemplate(DOCROOT.TEMPLATEPATH.'mail_template.html',$replace_variables,$content);
-						$mail=array("to" => isset($service_detail[0]['email'])?$service_detail[0]['email']:'',"from"=>$this->siteemail,"subject"=>$subject,"message"=>$message);									
+						$mail=["to" => isset($service_detail[0]['email'])?$service_detail[0]['email']:'',"from"=>$this->siteemail,"subject"=>$subject,"message"=>$message];									
 						$emailstatus=$this->email_send($mail,'smtp');	  
 				    }               
 		   exit;
@@ -54,9 +54,9 @@ Class Controller_Emailnotification extends Controller_Website
 						$follow_cont=$this->emailtemplate->get_template_content(WISHLIST_SERVICE);
 						$subject=$follow_cont[0]['email_subject'];
 						$content=$follow_cont[0]['email_content'];
-						$replace_variables=array(REPLACE_LOGO=>EMAILTEMPLATELOGO,USERNAME=>isset($service_detail[0]['name'])?$service_detail[0]['name']:'',SERVICE_NAME=>isset($service_detail[0]['title'])?$service_detail[0]['title']:'',WISH_USERNAME=>isset($user_detail[0]['name'])?$user_detail[0]['name']:'',REPLACE_SITENAME=>$this->app_name,REPLACE_SITELINK=>URL_BASE.'users/contactinfo/',REPLACE_SITEEMAIL=>$this->siteemail,REPLACE_SITEURL=>URL_BASE,SITE_DESCRIPTION=>$this->app_description,REPLACE_COPYRIGHTS=>SITE_COPYRIGHT,REPLACE_COPYRIGHTYEAR=>COPYRIGHT_YEAR);
+						$replace_variables=[REPLACE_LOGO=>EMAILTEMPLATELOGO,USERNAME=>isset($service_detail[0]['name'])?$service_detail[0]['name']:'',SERVICE_NAME=>isset($service_detail[0]['title'])?$service_detail[0]['title']:'',WISH_USERNAME=>isset($user_detail[0]['name'])?$user_detail[0]['name']:'',REPLACE_SITENAME=>$this->app_name,REPLACE_SITELINK=>URL_BASE.'users/contactinfo/',REPLACE_SITEEMAIL=>$this->siteemail,REPLACE_SITEURL=>URL_BASE,SITE_DESCRIPTION=>$this->app_description,REPLACE_COPYRIGHTS=>SITE_COPYRIGHT,REPLACE_COPYRIGHTYEAR=>COPYRIGHT_YEAR];
 						$message=$this->emailtemplate->emailtemplate(DOCROOT.TEMPLATEPATH.'mail_template.html',$replace_variables,$content);
-						$mail=array("to" => isset($service_detail[0]['email'])?$service_detail[0]['email']:'',"from"=>$this->siteemail,"subject"=>$subject,"message"=>$message);									
+						$mail=["to" => isset($service_detail[0]['email'])?$service_detail[0]['email']:'',"from"=>$this->siteemail,"subject"=>$subject,"message"=>$message];									
 						$emailstatus=$this->email_send($mail,'smtp');	  
 				    }               
 		   exit;
@@ -76,9 +76,9 @@ Class Controller_Emailnotification extends Controller_Website
 						$follow_cont=$this->emailtemplate->get_template_content(WISHLIST_SERVICE);
 						$subject=$follow_cont[0]['email_subject'];
 						$content=$follow_cont[0]['email_content'];
-						$replace_variables=array(REPLACE_LOGO=>EMAILTEMPLATELOGO,USERNAME=>isset($service_detail[0]['name'])?$service_detail[0]['name']:'',SERVICE_NAME=>isset($service_detail[0]['title'])?$service_detail[0]['title']:'',WISH_USERNAME=>isset($user_detail[0]['name'])?$user_detail[0]['name']:'',REPLACE_SITENAME=>$this->app_name,REPLACE_SITELINK=>URL_BASE.'users/contactinfo/',REPLACE_SITEEMAIL=>$this->siteemail,REPLACE_SITEURL=>URL_BASE,SITE_DESCRIPTION=>$this->app_description,REPLACE_COPYRIGHTS=>SITE_COPYRIGHT,REPLACE_COPYRIGHTYEAR=>COPYRIGHT_YEAR);
+						$replace_variables=[REPLACE_LOGO=>EMAILTEMPLATELOGO,USERNAME=>isset($service_detail[0]['name'])?$service_detail[0]['name']:'',SERVICE_NAME=>isset($service_detail[0]['title'])?$service_detail[0]['title']:'',WISH_USERNAME=>isset($user_detail[0]['name'])?$user_detail[0]['name']:'',REPLACE_SITENAME=>$this->app_name,REPLACE_SITELINK=>URL_BASE.'users/contactinfo/',REPLACE_SITEEMAIL=>$this->siteemail,REPLACE_SITEURL=>URL_BASE,SITE_DESCRIPTION=>$this->app_description,REPLACE_COPYRIGHTS=>SITE_COPYRIGHT,REPLACE_COPYRIGHTYEAR=>COPYRIGHT_YEAR];
 						$message=$this->emailtemplate->emailtemplate(DOCROOT.TEMPLATEPATH.'mail_template.html',$replace_variables,$content);
-						$mail=array("to" => isset($service_detail[0]['email'])?$service_detail[0]['email']:'',"from"=>$this->siteemail,"subject"=>$subject,"message"=>$message);									
+						$mail=["to" => isset($service_detail[0]['email'])?$service_detail[0]['email']:'',"from"=>$this->siteemail,"subject"=>$subject,"message"=>$message];									
 						$emailstatus=$this->email_send($mail,'smtp');	  
 				    }               
 		   exit;
@@ -98,9 +98,9 @@ Class Controller_Emailnotification extends Controller_Website
 						$follow_cont=$this->emailtemplate->get_template_content(WISHLIST_SERVICE);
 						$subject=$follow_cont[0]['email_subject'];
 						$content=$follow_cont[0]['email_content'];
-						$replace_variables=array(REPLACE_LOGO=>EMAILTEMPLATELOGO,USERNAME=>isset($service_detail[0]['name'])?$service_detail[0]['name']:'',SERVICE_NAME=>isset($service_detail[0]['title'])?$service_detail[0]['title']:'',WISH_USERNAME=>isset($user_detail[0]['name'])?$user_detail[0]['name']:'',REPLACE_SITENAME=>$this->app_name,REPLACE_SITELINK=>URL_BASE.'users/contactinfo/',REPLACE_SITEEMAIL=>$this->siteemail,REPLACE_SITEURL=>URL_BASE,SITE_DESCRIPTION=>$this->app_description,REPLACE_COPYRIGHTS=>SITE_COPYRIGHT,REPLACE_COPYRIGHTYEAR=>COPYRIGHT_YEAR);
+						$replace_variables=[REPLACE_LOGO=>EMAILTEMPLATELOGO,USERNAME=>isset($service_detail[0]['name'])?$service_detail[0]['name']:'',SERVICE_NAME=>isset($service_detail[0]['title'])?$service_detail[0]['title']:'',WISH_USERNAME=>isset($user_detail[0]['name'])?$user_detail[0]['name']:'',REPLACE_SITENAME=>$this->app_name,REPLACE_SITELINK=>URL_BASE.'users/contactinfo/',REPLACE_SITEEMAIL=>$this->siteemail,REPLACE_SITEURL=>URL_BASE,SITE_DESCRIPTION=>$this->app_description,REPLACE_COPYRIGHTS=>SITE_COPYRIGHT,REPLACE_COPYRIGHTYEAR=>COPYRIGHT_YEAR];
 						$message=$this->emailtemplate->emailtemplate(DOCROOT.TEMPLATEPATH.'mail_template.html',$replace_variables,$content);
-						$mail=array("to" => isset($service_detail[0]['email'])?$service_detail[0]['email']:'',"from"=>$this->siteemail,"subject"=>$subject,"message"=>$message);									
+						$mail=["to" => isset($service_detail[0]['email'])?$service_detail[0]['email']:'',"from"=>$this->siteemail,"subject"=>$subject,"message"=>$message];									
 						$emailstatus=$this->email_send($mail,'smtp');	  
 				    }               
 		   exit;
@@ -121,9 +121,9 @@ Class Controller_Emailnotification extends Controller_Website
 						$follow_cont=$this->emailtemplate->get_template_content(WISHLIST_SERVICE);
 						$subject=$follow_cont[0]['email_subject'];
 						$content=$follow_cont[0]['email_content'];
-						$replace_variables=array(REPLACE_LOGO=>EMAILTEMPLATELOGO,USERNAME=>isset($service_detail[0]['name'])?$service_detail[0]['name']:'',SERVICE_NAME=>isset($service_detail[0]['title'])?$service_detail[0]['title']:'',WISH_USERNAME=>isset($user_detail[0]['name'])?$user_detail[0]['name']:'',REPLACE_SITENAME=>$this->app_name,REPLACE_SITELINK=>URL_BASE.'users/contactinfo/',REPLACE_SITEEMAIL=>$this->siteemail,REPLACE_SITEURL=>URL_BASE,SITE_DESCRIPTION=>$this->app_description,REPLACE_COPYRIGHTS=>SITE_COPYRIGHT,REPLACE_COPYRIGHTYEAR=>COPYRIGHT_YEAR);
+						$replace_variables=[REPLACE_LOGO=>EMAILTEMPLATELOGO,USERNAME=>isset($service_detail[0]['name'])?$service_detail[0]['name']:'',SERVICE_NAME=>isset($service_detail[0]['title'])?$service_detail[0]['title']:'',WISH_USERNAME=>isset($user_detail[0]['name'])?$user_detail[0]['name']:'',REPLACE_SITENAME=>$this->app_name,REPLACE_SITELINK=>URL_BASE.'users/contactinfo/',REPLACE_SITEEMAIL=>$this->siteemail,REPLACE_SITEURL=>URL_BASE,SITE_DESCRIPTION=>$this->app_description,REPLACE_COPYRIGHTS=>SITE_COPYRIGHT,REPLACE_COPYRIGHTYEAR=>COPYRIGHT_YEAR];
 						$message=$this->emailtemplate->emailtemplate(DOCROOT.TEMPLATEPATH.'mail_template.html',$replace_variables,$content);
-						$mail=array("to" => isset($service_detail[0]['email'])?$service_detail[0]['email']:'',"from"=>$this->siteemail,"subject"=>$subject,"message"=>$message);									
+						$mail=["to" => isset($service_detail[0]['email'])?$service_detail[0]['email']:'',"from"=>$this->siteemail,"subject"=>$subject,"message"=>$message];									
 						$emailstatus=$this->email_send($mail,'smtp');	  
 				    }               
 		   exit;

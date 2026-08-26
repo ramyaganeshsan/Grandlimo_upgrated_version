@@ -1,6 +1,6 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 
-return array(
+return [
 'button_login' => 'Log In',
 'button_signup' => 'Sign Up',
 'button_update' => 'Update',
@@ -2099,4 +2099,4 @@ provided by its licensed drivers who undergo rigorous training and screening to 
 'taxi_assign_period_end' => 'Taxi période a été attribué expiré',
 'no_completed_data_month' => 'Il n\'y a aucune voyage achevée en ce mois',
 'referral_code_info_details'=>'Entrez le code de référence ici pour obtenir des coupons de free ride . Remarque: système d\'orientation est applicable uniquement pour les utilisateurs qui ne sont jamais réservé sur '.SITE_NAME.' avant.',
-); 
+]; 

@@ -1,6 +1,6 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 
-return array(
+return [
 'button_login' => 'Войти',
 'button_signup' => 'Подписаться',
 'button_update' => 'обновление',
@@ -2102,4 +2102,4 @@ return array(
 'taxi_assign_period_end' => 'Такси заданного периода истекли',
 'no_completed_data_month' => 'Там нет завершил поездку в этом месяце',
 'referral_code_info_details'=>'Введите код рефералов здесь, чтобы заработать бесплатный проезд купоны . Примечание : Направление схема применима только для пользователей, которые никогда не бронировали на '.SITE_NAME.' до.',
-); 
+]; 

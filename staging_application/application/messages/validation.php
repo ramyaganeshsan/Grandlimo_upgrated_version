@@ -1,6 +1,6 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 
-return array(
+return [
 
 	'alpha_spaces'  => ':field must contain only letters and spaces',
 	'alpha'         => ':field' .' '. __('validate.letters'), //must contain only letters',
@@ -146,4 +146,4 @@ return array(
    	'Model_Add::check_ratingsno' => __('validate.check_ratingsno'), 
 
 
-);
+];

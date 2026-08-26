@@ -1,6 +1,6 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 
-return array(
+return [
 'button_login' => 'Log In',
 'button_signup' => 'Sign Up',
 'button_update' => 'Update',
@@ -3204,4 +3204,4 @@ provided by its licensed drivers who undergo rigorous training and screening to 
 'is_pickup'=>'Is Pickup Only?',
 'trip_analytics'=>'Trip Analytics',
 'advance_customers_report'=>'Advance Customers Report'
-); 
+]; 

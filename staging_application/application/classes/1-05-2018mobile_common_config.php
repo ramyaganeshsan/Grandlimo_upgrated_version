@@ -20,10 +20,10 @@ $default_currency = DB::select('currency_code','currency_symbol')->from(PAYMENT_
 		->as_array();		
 */		
 $mongoDB    = MangoDB::instance('default');
-$condition = array("_id"=> (int)1);
-$arguments = array(
-	array('$match' => $condition),
-	array('$project' =>array(
+$condition = ["_id"=> (int)1];
+$arguments = [
+	['$match' => $condition],
+	['$project' =>[
 			'_id' => 0,
 			'pagination_settings' => '$pagination_settings',
 			'price_settings' => '$price_settings',
@@ -78,27 +78,27 @@ $arguments = array(
 			'version_name'=>'$version_name',
 			'is_mandatory_update'=>'$is_mandatory_update',
 
-		)
-	),
-	array('$limit' => 1)
-);
+		]
+	],
+	['$limit' => 1]
+];
 $res = $mongoDB->aggregate(MDB_SITEINFO, $arguments);
 $result = $res['result'];
 /*$siteresult = $mongoDB->find(MDB_SITEINFO,array('_id'=>1));
 $result = array_values(iterator_to_array($siteresult));
 */
 
-$condition = array("default_payment_gateway"=> (int)1, 'company_id' => (int)1);
-$arguments = array(
-	array('$match' => $condition),
-	array('$project' =>array(
+$condition = ["default_payment_gateway"=> (int)1, 'company_id' => (int)1];
+$arguments = [
+	['$match' => $condition],
+	['$project' =>[
 			'_id' => 0,
 			'currency_code' => '$currency_code',
 			'currency_symbol' => '$currency_symbol',					
-		)
-	),
-	array('$limit' => 1)
-);
+		]
+	],
+	['$limit' => 1]
+];
 $default_currency = $mongoDB->aggregate(MDB_PAYMENT_GATEWAYS, $arguments);
 $default_currency = $default_currency['result'];
 
@@ -469,11 +469,11 @@ function findcompanyid($subdomain)
 {
 	//MongoDB
     $mongodb        = MangoDB::instance('default');
-    $rs = $mongodb->find_one(MDB_COMPANY,array('companyinfo.company_domain'=>'q8grandlimo'),array('_id'));
+    $rs = $mongodb->find_one(MDB_COMPANY,['companyinfo.company_domain'=>'q8grandlimo'],['_id']);
 	return (count($rs)>0)?$rs['_id']:0;
 }
  $mongodb        = MangoDB::instance('default');
-$company_currency = $mongodb->find_one(MDB_PAYMENT_GATEWAYS,array('default_payment_gateway'=>1,'company_id'=>(int)COMPANY_CID),array('currency_code','currency_symbol'));
+$company_currency = $mongodb->find_one(MDB_PAYMENT_GATEWAYS,['default_payment_gateway'=>1,'company_id'=>(int)COMPANY_CID],['currency_code','currency_symbol']);
 
 $company_curency_symbol = isset($company_currency['currency_symbol']) ? $company_currency['currency_symbol'] : CURRENCY;
 $company_curency_code   = isset($company_currency['currency_code']) ? $company_currency['currency_code'] : CURRENCY_FORMAT;
@@ -481,18 +481,18 @@ $company_curency_code   = isset($company_currency['currency_code']) ? $company_c
 	if(COMPANY_CID!=0)
 	{
 		 //MongoDB
-    $ops = array(
-        array('$match' => array('user_type'=>'A','company_id'=>(int)COMPANY_CID)),
-        array(
-            '$lookup' => array(
+    $ops = [
+        ['$match' => ['user_type'=>'A','company_id'=>(int)COMPANY_CID]],
+        [
+            '$lookup' => [
                 'from'=>MDB_COMPANY,
                 'localField'=> "company_id",
                 'foreignField' => "_id",
                 'as'=> "cdetails"
-            )
-        ),
-        array('$project' =>
-            array('_id' => 0,
+            ]
+        ],
+        ['$project' =>
+            ['_id' => 0,
                 'company_logo' => '$cdetails.companyinfo.company_logo', 
                 'company_favicon' => '$cdetails.companyinfo.company_favicon',
                 'company_facebook_share' => '$cdetails.companyinfo.company_facebook_share',
@@ -527,12 +527,12 @@ $company_curency_code   = isset($company_currency['currency_code']) ? $company_c
                 'login_city' => '$login_city',
                 'login_state' => '$login_state',
                 'login_country' => '$login_country',
-            )
-        ),
-        array(
+            ]
+        ],
+        [
           '$limit' => 1
-        )
-    );
+        ]
+    ];
     
    
   $res = $mongodb->aggregate(MDB_PEOPLE,$ops);
@@ -608,18 +608,18 @@ $company_curency_code   = isset($company_currency['currency_code']) ? $company_c
 	
     if(!empty(COMPANY_LOGIN_CITY) && !empty(COMPANY_LOGIN_STATE) && !empty(COMPANY_LOGIN_COUNTRY)){
         //MongoDB with aggregate process only
-		$ops = array(
-			array('$unwind' => '$stateinfo'),
-			array('$unwind' => '$stateinfo.cityinfo'),
-			array('$match' => array('stateinfo.cityinfo.city_id'=>(int)COMPANY_LOGIN_CITY,'stateinfo.cityinfo.city_stateid'=>(int)COMPANY_LOGIN_STATE,'stateinfo.cityinfo.city_countryid'=>(int)COMPANY_LOGIN_COUNTRY)),
-			array('$project' => array('_id' => 0,
+		$ops = [
+			['$unwind' => '$stateinfo'],
+			['$unwind' => '$stateinfo.cityinfo'],
+			['$match' => ['stateinfo.cityinfo.city_id'=>(int)COMPANY_LOGIN_CITY,'stateinfo.cityinfo.city_stateid'=>(int)COMPANY_LOGIN_STATE,'stateinfo.cityinfo.city_countryid'=>(int)COMPANY_LOGIN_COUNTRY]],
+			['$project' => ['_id' => 0,
                     'state_name' => '$stateinfo.state_name', 
                     'city_name' => '$stateinfo.cityinfo.city_name',
                     'zipcode' => '$stateinfo.cityinfo.zipcode',
                     'iso_country_code' => '$iso_country_code',
-                )
-            )
-		);
+                ]
+            ]
+		];
 		$res = $mongodb->aggregate(MDB_CSC,$ops);
 		$result = $res['result'];
         define("COMPANY_LOGIN_CITY_NAME", $result[0]['city_name']);
@@ -840,7 +840,7 @@ $company_curency_code   = isset($company_currency['currency_code']) ? $company_c
 
 	define('WALLET_ADVANCE_LIMIT','-10000');
 
-	$wallet_amt_list = array('5','10','20','30');
+	$wallet_amt_list = ['5','10','20','30'];
 	define('WALLET_AMOUNT_LIST',json_encode($wallet_amt_list));
 
 	define( "USER_SELECTED_TIMEZONE", 'Asia/Kuwait' );

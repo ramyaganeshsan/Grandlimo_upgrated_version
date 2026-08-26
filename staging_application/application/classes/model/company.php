@@ -30,53 +30,53 @@ Class Model_Company extends Model
         return Validation::factory($arr) /*->rule('company_username', 'not_empty')
         ->rule('company_username', 'min_length', array(':value', '4'))
         ->rule('company_username', 'max_length', array(':value', '32'))
-        ->rule('company_username','alpha_dash')*/ ->rule('firstname', 'not_empty')->rule('firstname', 'min_length', array(
+        ->rule('company_username','alpha_dash')*/ ->rule('firstname', 'not_empty')->rule('firstname', 'min_length', [
             ':value',
             '4'
-        ))->rule('firstname', 'max_length', array(
+        ])->rule('firstname', 'max_length', [
             ':value',
             '32'
-        ))->rule('lastname', 'not_empty')->rule('lastname', 'max_length', array(
+        ])->rule('lastname', 'not_empty')->rule('lastname', 'max_length', [
             ':value',
             '32'
-        ))->rule('email', 'not_empty')->rule('email', 'email')->rule('email', 'max_length', array(
+        ])->rule('email', 'not_empty')->rule('email', 'email')->rule('email', 'max_length', [
             ':value',
             '100'
-        ))->rule('companyname', 'not_empty')->rule('companyname', 'alpha_dash')->rule('companyname', 'min_length', array(
+        ])->rule('companyname', 'not_empty')->rule('companyname', 'alpha_dash')->rule('companyname', 'min_length', [
             ':value',
             '4'
-        ))->rule('companyname', 'max_length', array(
+        ])->rule('companyname', 'max_length', [
             ':value',
             '30'
-        ))->rule('country', 'not_empty')->rule('city', 'not_empty')->rule('state', 'not_empty')->rule('address', 'not_empty')->rule('companyaddress', 'not_empty')->rule('mobile', 'not_empty')->rule('mobile', 'min_length', array(
+        ])->rule('country', 'not_empty')->rule('city', 'not_empty')->rule('state', 'not_empty')->rule('address', 'not_empty')->rule('companyaddress', 'not_empty')->rule('mobile', 'not_empty')->rule('mobile', 'min_length', [
             ':value',
             '4'
-        ))->rule('mobile', 'max_length', array(
+        ])->rule('mobile', 'max_length', [
             ':value',
             '36'
-        ))->rule('password', 'valid_password', array(
+        ])->rule('password', 'valid_password', [
             ':value',
             '/^[A-Za-z0-9@#$%!^&*(){}?-_<>=+|~`\'".,:;[]+]*$/u'
-        ))->rule('password', 'not_empty')->rule('password', 'min_length', array(
+        ])->rule('password', 'not_empty')->rule('password', 'min_length', [
             ':value',
             '4'
-        ))->rule('password', 'max_length', array(
+        ])->rule('password', 'max_length', [
             ':value',
             '36'
-        ))->rule('confirm_password', 'not_empty')->rule('confirm_password', 'min_length', array(
+        ])->rule('confirm_password', 'not_empty')->rule('confirm_password', 'min_length', [
             ':value',
             '4'
-        ))->rule('confirm_password', 'valid_password', array(
+        ])->rule('confirm_password', 'valid_password', [
             ':value',
             '/^[A-Za-z0-9@#$%!^&*(){}?-_<>=+|~`\'".,:;[]+]*$/u'
-        ))->rule('confirm_password', 'matches', array(
+        ])->rule('confirm_password', 'matches', [
             ':validation',
             'password',
             'confirm_password'
-        ))->rule('confirm_password', 'max_length', array(
+        ])->rule('confirm_password', 'max_length', [
             ':value',
             '36'
-        ));
+        ]);
         //->rule('terms', 'not_empty');
     }
     /**User Signup**/
@@ -85,7 +85,7 @@ Class Model_Company extends Model
         //$company_username = Html::chars($sign['company_username']);
         $org_password    = Html::chars($sign['password']);
         $password        = Html::chars(md5($sign['confirm_password']));
-        $result          = DB::insert(PEOPLE, array(
+        $result          = DB::insert(PEOPLE, [
             'name',
             'lastname',
             'email',
@@ -101,7 +101,7 @@ Class Model_Company extends Model
             'user_type',
             'account_type',
             'status'
-        ))->values(array(
+        ])->values([
             $sign['firstname'],
             $sign['lastname'],
             $sign['email'],
@@ -117,12 +117,12 @@ Class Model_Company extends Model
             'C',
             '0',
             'A'
-        ))->execute();
+        ])->execute();
         $last_insert_id  = $result[0];
-        $update_people   = DB::update(PEOPLE)->set(array(
+        $update_people   = DB::update(PEOPLE)->set([
             'company_id' => $result['0']
-        ))->where('id', '=', $last_insert_id)->execute();
-        $cresult         = DB::insert(COMPANY, array(
+        ])->where('id', '=', $last_insert_id)->execute();
+        $cresult         = DB::insert(COMPANY, [
             'company_name',
             'company_address',
             'company_country',
@@ -130,7 +130,7 @@ Class Model_Company extends Model
             'company_city',
             'userid',
             'company_status'
-        ))->values(array(
+        ])->values([
             $sign['companyname'],
             $sign['companyaddress'],
             $sign['country'],
@@ -138,7 +138,7 @@ Class Model_Company extends Model
             $sign['city'],
             $last_insert_id,
             'A'
-        ))->execute();
+        ])->execute();
         $upgrade_package = $sign['upgrade_package'];
         $upgrade_packid  = $sign['pack'];
         $add_company     = Model::factory('company');
@@ -151,7 +151,7 @@ Class Model_Company extends Model
             $amount             = $get_packagedetails[0]['package_price'];
             $userid             = $last_insert_id;
             $expirydate         = Commonfunction::getExpiryTimeStamp($days);
-            $packageresult      = DB::insert(PACKAGE_REPORT, array(
+            $packageresult      = DB::insert(PACKAGE_REPORT, [
                 'upgrade_userid',
                 'upgrade_packageid',
                 'upgrade_packagename',
@@ -163,7 +163,7 @@ Class Model_Company extends Model
                 'upgrade_amount',
                 'upgrade_type',
                 'upgrade_by'
-            ))->values(array(
+            ])->values([
                 $result[0],
                 $upgrade_packid,
                 $package_name,
@@ -175,7 +175,7 @@ Class Model_Company extends Model
                 $amount,
                 'D',
                 $userid
-            ))->execute();
+            ])->execute();
         }
         if ($result && $cresult && $update_people && $packageresult)
             return $result[0];
@@ -256,19 +256,19 @@ Class Model_Company extends Model
     }
     public function validate_company_login($arr)
     {
-        return Validation::factory($arr)->rule('company_email', 'not_empty')->rule('company_email', 'email')->rule('company_email', 'max_length', array(
+        return Validation::factory($arr)->rule('company_email', 'not_empty')->rule('company_email', 'email')->rule('company_email', 'max_length', [
             ':value',
             '100'
-        ))->rule('company_password', 'valid_password', array(
+        ])->rule('company_password', 'valid_password', [
             ':value',
             '/^[A-Za-z0-9@#$%!^&*(){}?-_<>=+|~`\'".,:;[]+]*$/u'
-        ))->rule('company_password', 'not_empty')->rule('company_password', 'min_length', array(
+        ])->rule('company_password', 'not_empty')->rule('company_password', 'min_length', [
             ':value',
             '4'
-        ))->rule('company_password', 'max_length', array(
+        ])->rule('company_password', 'max_length', [
             ':value',
             '36'
-        ));
+        ]);
     }
     public function package_details()
     {
@@ -302,7 +302,7 @@ Class Model_Company extends Model
         $company_id  = (int)$this->company_id;
 		$currentdate = date('Y-m-d H:i:s');
         $enddate     = date('Y-m-d') . ' 23:59:59';
-		$match_query = array();
+		$match_query = [];
         $match_query['people.status'] = 'A';
         $match_query['driver.status'] = 'A';
 		$match_query['mapping.mapping_status'] = 'A';
@@ -314,63 +314,63 @@ Class Model_Company extends Model
 			$match_query['company._id'] = $company_id;
 		}
 		if ($currentdate!="" && $enddate!="") {
-			$match_query['mapping.mapping_startdate'] = array('$gte' => $currentdate);
-			$match_query['mapping.mapping_enddate'] = array('$lt' => $enddate);
+			$match_query['mapping.mapping_startdate'] = ['$gte' => $currentdate];
+			$match_query['mapping.mapping_enddate'] = ['$lt' => $enddate];
 		}
 		//echo "<pre>"; print_r($match_query); exit;
-		$common_arguments = array(
-            array(
-				'$lookup' => array(
+		$common_arguments = [
+            [
+				'$lookup' => [
 					'from' => MDB_COMPANY,
 					'localField' => 'taxi_company',
 					'foreignField' => '_id',
 					'as' => 'company'
-				)
-			),
-			array(
+				]
+			],
+			[
 				'$unwind' => '$company'
-			),
-			array(
-				'$lookup' => array(
+			],
+			[
+				'$lookup' => [
 					'from' => MDB_TAXI_DRIVER_MAPPING,
 					'localField' => '_id',
 					'foreignField' => 'mapping_taxiid',
 					'as' => 'mapping'
-				)
-			),
-			array(
+				]
+			],
+			[
 				'$unwind' => '$mapping'
-			),
+			],
 			
-			array(
-				'$lookup' => array(
+			[
+				'$lookup' => [
 					'from' => MDB_PEOPLE,
 					'localField' => 'mapping.mapping_driverid',
 					'foreignField' => '_id',
 					'as' => 'people'
-				)
-			),
-			array(
+				]
+			],
+			[
 				'$unwind' => '$people'
-			),
-			array(
-				'$lookup' => array(
+			],
+			[
+				'$lookup' => [
 					'from' => MDB_DRIVER_INFO,
 					'localField' => 'mapping.mapping_driverid',
 					'foreignField' => '_id',
 					'as' => 'driver'
-				)
-			),
-			array(
+				]
+			],
+			[
 				'$unwind' => '$driver'
-			),
-			array(
+			],
+			[
 				'$match' => $match_query
-			),
-        );
+			],
+        ];
         if($find_count == TRUE){
-			$count_arguments = array( 
-                    array( '$project' => array(
+			$count_arguments = [ 
+                    [ '$project' => [
                         'taxi_id' => '$_id',
                         'taxi_no'=>'$taxi_no',
                         'userid'=>'$companydetails.userid',
@@ -378,24 +378,24 @@ Class Model_Company extends Model
                         'driver_id'=>'$driver._id',
                         'name'=>'$people.name',
                         'phone'=>'$people.phone',
-                    )
-                ),
-                array(
-                    '$group' => array(
+                    ]
+                ],
+                [
+                    '$group' => [
                         '_id' => NULL,
-                        'count' => array(
+                        'count' => [
                             '$sum' => 1
-                        )
-                    )
-                )  
-            );
+                        ]
+                    ]
+                ]  
+            ];
             $arguments = array_merge($common_arguments,$count_arguments);
             $result          = $this->mongo_db->aggregate(MDB_CSC, $arguments);
             //echo "<pre>";print_r($result['result']); exit;
             return (!empty($result['result']) && isset($result['result'][0]['count'])) ? $result['result'][0]['count'] : 0;
         }else{
-            $count_arguments = array( 
-                    array( '$project' => array(
+            $count_arguments = [ 
+                    [ '$project' => [
                         'taxi_id' => '$_id',
                         'taxi_no'=>'$taxi_no',
                         'userid'=>'$companydetails.userid',
@@ -403,15 +403,15 @@ Class Model_Company extends Model
                         'driver_id'=>'$driver._id',
                         'name'=>'$people.name',
                         'phone'=>'$people.phone',
-                    )
-                ),
-                array('$skip' => 0),
-                array('$limit' => 10)
-            );
+                    ]
+                ],
+                ['$skip' => 0],
+                ['$limit' => 10]
+            ];
             $arguments = array_merge($common_arguments,$count_arguments);
             $result          = $this->mongo_db->aggregate(MDB_TAXI, $arguments);
             //echo "<pre>";print_r($result['result']); exit;
-            return (!empty($result['result']) && isset($result['result'])) ? $result['result']:array();
+            return (!empty($result['result']) && isset($result['result'])) ? $result['result']:[];
         }
     }
     
@@ -431,48 +431,48 @@ Class Model_Company extends Model
     public function get_manager_list()
     {
         $company_id  = (int)$this->company_id;
-		$match_query = array();
+		$match_query = [];
 		$match_query['people.user_type'] = 'M';
 
         if ($company_id!="" && $company_id!=0) {
 			$match_query['people.company_id'] = $company_id;
 		}
 		//echo "<pre>"; print_r($match_query); exit;
-		$arguments = array(
-			array(
+		$arguments = [
+			[
 				'$unwind' => '$stateinfo'
-			),
-			array(
+			],
+			[
 				'$unwind' => '$stateinfo.cityinfo'
-			),
-            array(
-				'$lookup' => array(
+			],
+            [
+				'$lookup' => [
 					'from' => MDB_PEOPLE,
 					'localField' => 'stateinfo.cityinfo.city_id',
 					'foreignField' => 'login_country',
 					'foreignField' => 'login_city',
 					'as' => 'people'
-				)
-			),
-			array(
+				]
+			],
+			[
 				'$unwind' => '$people'
-			),
-			array(
-				'$lookup' => array(
+			],
+			[
+				'$lookup' => [
 					'from' => MDB_COMPANY,
 					'localField' => 'people.company_id',
 					'foreignField' => '_id',
 					'as' => 'company'
-				)
-			),
-			array(
+				]
+			],
+			[
 				'$unwind' => '$company'
-			),
-			array(
+			],
+			[
 				'$match' => $match_query
-			),
-			array(
-				'$project' => array(
+			],
+			[
+				'$project' => [
 					'id' => '$people._id',
                     'name'=>'$people.name',
                     'phone'=>'$people.phone',
@@ -481,9 +481,9 @@ Class Model_Company extends Model
                     'country_name'=>'$country_name',
                     'state_name'=>'$stateinfo.state_name',
                     'city_name'=>'$stateinfo.cityinfo.city_name',
-				)
-			),
-		);
+				]
+			],
+		];
 		$result          = $this->mongo_db->aggregate(MDB_CSC, $arguments);
 		//echo "<pre>";print_r($result['result']); exit;
 		return (!empty($result['result']) && isset($result['result'])) ? $result['result'] : 0;
@@ -518,7 +518,7 @@ Class Model_Company extends Model
     {
         $company_id  = (int)$this->company_id;
 		$assigned_driver = $this->free_availabletaxi_list();
-		$match_query = $driver_list = array();
+		$match_query = $driver_list = [];
 		$match_query['user_type'] = 'D';
 		$match_query['status'] = 'A';
 		$match_query['availability_status'] = 'A';
@@ -526,70 +526,70 @@ Class Model_Company extends Model
             foreach ($assigned_driver as $key => $value) {
                 $driver_list[] = (int)$value['id'];
             }
-			$match_query['_id'] = array('$nin' => $driver_list);
+			$match_query['_id'] = ['$nin' => $driver_list];
         }
 		
 		//echo "<pre>"; print_r($match_query); exit;
-		$common_arguments = array(
-			array(
-				'$lookup' => array(
+		$common_arguments = [
+			[
+				'$lookup' => [
 					'from' => MDB_COMPANY,
 					'localField' => 'company_id',
 					'foreignField' => '_id',
 					'as' => 'company'
-				)
-			),
-			array(
+				]
+			],
+			[
 				'$unwind' => '$company'
-			),
-			array(
+			],
+			[
 				'$match' => $match_query
-			),
-        );
+			],
+        ];
         if($find_count==TRUE){
-            $count_arguments = array(
-                array(
-                    '$project' => array(
+            $count_arguments = [
+                [
+                    '$project' => [
                         'result' => '$_id'
-                    )
-                ),
-                array(
-                    '$group' => array(
+                    ]
+                ],
+                [
+                    '$group' => [
                         '_id' => NULL,
-                        'count' => array(
+                        'count' => [
                             '$sum' => 1
-                        )
-                    )
-                )
-            );
+                        ]
+                    ]
+                ]
+            ];
             $arguments = array_merge($common_arguments,$count_arguments);
             $result    = $this->mongo_db->aggregate(MDB_PEOPLE, $arguments);
             //echo "<pre>"; print_r($result); exit;
             return (!empty($result['result']) && isset($result['result'][0]['count'])) ? $result['result'][0]['count'] : 0;        
         }else{
-            $field_arguments = array(
-                array(
-                    '$project' => array(
+            $field_arguments = [
+                [
+                    '$project' => [
                         'id' => '$_id',
                         'name' => '$name',
                         'userid' => '$company.companydetails.userid',
                         'company_name' => '$company.companydetails.company_name',
-                    )
-                ),
-                array(
-                    '$sort' => array('_id' => 1)
-                ),
-                array(
+                    ]
+                ],
+                [
+                    '$sort' => ['_id' => 1]
+                ],
+                [
                     '$skip'=>0
-                ),
-                array(
+                ],
+                [
                     '$limit' => 10
-                )
-            );
+                ]
+            ];
             $arguments = array_merge($common_arguments,$field_arguments);
             $result    = $this->mongo_db->aggregate(MDB_PEOPLE, $arguments);
             //echo "<pre>"; print_r($result); exit;
-            return (!empty($result['result']) && isset($result['result'])) ? $result['result']:array();
+            return (!empty($result['result']) && isset($result['result'])) ? $result['result']:[];
         }
         
     }
@@ -634,7 +634,7 @@ Class Model_Company extends Model
     public function free_taxi_list($find_count=false)
     {        
         $company_id = (int)$this->company_id;
-		$match_query = $taxi_list = array();
+		$match_query = $taxi_list = [];
 		$match_query['taxi_status'] = 'A';
 		$match_query['taxi_availability'] = 'A';
 		$booked_driver = $this->free_availabletaxi_list();
@@ -642,72 +642,72 @@ Class Model_Company extends Model
             foreach ($booked_driver as $key => $value) {
                 $taxi_list[] = (int)$value['id'];
             }
-			$match_query['_id'] = array('$nin' => $taxi_list);
+			$match_query['_id'] = ['$nin' => $taxi_list];
         }
         if (!empty($company_id) && $company_id!=0) {
 			$match_query['taxi_company'] = $company_id;
         }
 		//echo "<pre>"; print_r($match_query); exit;
-		$common_arguments = array(
-			array(
-				'$lookup' => array(
+		$common_arguments = [
+			[
+				'$lookup' => [
 					'from' => MDB_COMPANY,
 					'localField' => 'taxi_company',
 					'foreignField' => '_id',
 					'as' => 'company'
-				)
-			),
-			array(
+				]
+			],
+			[
 				'$unwind' => '$company'
-			),
-			array(
+			],
+			[
 				'$match' => $match_query
-			),
-        );    
+			],
+        ];    
         if($find_count==TRUE){
-            $count_arguments = array(
-                array(
-                    '$project' => array(
+            $count_arguments = [
+                [
+                    '$project' => [
                         'result' => '$_id'
-                    )
-                ),
-                array(
-                    '$group' => array(
+                    ]
+                ],
+                [
+                    '$group' => [
                         '_id' => NULL,
-                        'count' => array(
+                        'count' => [
                             '$sum' => 1
-                        )
-                    )
-                )
-            );
+                        ]
+                    ]
+                ]
+            ];
             $arguments = array_merge($common_arguments,$count_arguments);
             $result    = $this->mongo_db->aggregate(MDB_TAXI, $arguments);
             //echo "<pre>"; print_r($result); exit;
             return (!empty($result['result']) && isset($result['result'][0]['count'])) ? $result['result'][0]['count'] : 0;
         }else{
-            $field_arguments = array(
-                array(
-                    '$project' => array(
+            $field_arguments = [
+                [
+                    '$project' => [
                         'taxi_id' => '$_id',
                         'taxi_no' => '$taxi_no',
                         'userid' => '$company.companydetails.userid',
                         'company_name' => '$company.companydetails.company_name',
-                    )
-                ),
-                array(
-                    '$sort' => array('_id' => 1)
-                ),
-                array(
+                    ]
+                ],
+                [
+                    '$sort' => ['_id' => 1]
+                ],
+                [
                     '$skip'=>0
-                ),
-                array(
+                ],
+                [
                     '$limit' => 10
-                )
-            );
+                ]
+            ];
             $arguments = array_merge($common_arguments,$field_arguments);
             $result    = $this->mongo_db->aggregate(MDB_TAXI, $arguments);
             //echo "<pre>"; print_r($result); exit;
-            return (!empty($result['result']) && isset($result['result'])) ? $result['result'] : array();
+            return (!empty($result['result']) && isset($result['result'])) ? $result['result'] : [];
         }
 	}
     
@@ -760,70 +760,70 @@ Class Model_Company extends Model
 		$company_id  = (int)$this->company_id;
 		$cuurentdate = date('Y-m-d H:i:s');
         $enddate     = date('Y-m-d') . ' 23:59:59';
-		$match_query = array();
+		$match_query = [];
 		$match_query['people.status'] = 'A';
 		$match_query['mapping.mapping_status'] = 'A';
 		if ($company_id!="" && $company_id!=0) {
 			$match_query['taxi_company'] = $company_id;
 		}
 		if ($cuurentdate!="" && $enddate!="") {
-			$match_query['mapping.mapping_startdate'] = array('$gte' => $cuurentdate);
-			$match_query['mapping.mapping_enddate'] = array('$lt' => $enddate);
+			$match_query['mapping.mapping_startdate'] = ['$gte' => $cuurentdate];
+			$match_query['mapping.mapping_enddate'] = ['$lt' => $enddate];
 		}
 		//echo "<pre>"; print_r($match_query); exit;
-		$arguments = array(
-			array(
-				'$lookup' => array(
+		$arguments = [
+			[
+				'$lookup' => [
 					'from' => MDB_TAXI_DRIVER_MAPPING,
 					'localField' => '_id',
 					'foreignField' => 'mapping_taxiid',
 					'as' => 'mapping'
-				)
-			),
-			array(
+				]
+			],
+			[
 				'$unwind' => '$mapping'
-			),
-			array(
-				'$lookup' => array(
+			],
+			[
+				'$lookup' => [
 					'from' => MDB_COMPANY,
 					'localField' => 'taxi_company',
 					'foreignField' => '_id',
 					'as' => 'company'
-				)
-			),
-			array(
+				]
+			],
+			[
 				'$unwind' => '$company'
-			),
-			array(
-				'$lookup' => array(
+			],
+			[
+				'$lookup' => [
 					'from' => MDB_PEOPLE,
 					'localField' => 'mapping.mapping_driverid',
 					'foreignField' => '_id',
 					'as' => 'people'
-				)
-			),
-			array(
+				]
+			],
+			[
 				'$unwind' => '$people'
-			),
-			array(
+			],
+			[
 				'$match' => $match_query
-			),
-			array(
-				'$project' => array(
+			],
+			[
+				'$project' => [
 					'id' => '$people._id',
 					'taxi_id' => '$_id'
-				)
-			),
-			array(
+				]
+			],
+			[
 				'$skip' => 0
-			),
-			array(
+			],
+			[
 				'$limit' => 10
-			),
-		);
+			],
+		];
 		$result    = $this->mongo_db->aggregate(MDB_TAXI, $arguments);
 		//echo "<pre>"; print_r($result['result']); exit;
-		return (!empty($result['result']) && isset($result['result'])) ? $result['result'] : array();
+		return (!empty($result['result']) && isset($result['result'])) ? $result['result'] : [];
     }
     
     public function dashboard_driverdetails($cid = '')
@@ -841,41 +841,41 @@ Class Model_Company extends Model
     }    
     public function changedashboard_driverdetails($cid = '', $startdate = '', $enddate = '')
     {
-        $match_query = array();
+        $match_query = [];
         $match_query['user_type'] = 'M';
         if($cid!="" && $cid!=0){
             $match_query['company_id'] = (int)$cid;    
         }
         if ($startdate!="" && $enddate!="") {
-			$match_query['created_date'] = array('$gte' => $startdate);
-			$match_query['created_date'] = array('$lte' => $enddate);
+			$match_query['created_date'] = ['$gte' => $startdate];
+			$match_query['created_date'] = ['$lte' => $enddate];
 		}
-		$arguments = array(
-			array(
-				'$lookup' => array(
+		$arguments = [
+			[
+				'$lookup' => [
 					'from' => MDB_COMPANY,
 					'localField' => 'company_id',
 					'foreignField' => '_id',
 					'as' => 'company'
-				)
-			),
-			array(
+				]
+			],
+			[
 				'$unwind' => '$company'
-			),
-			array(
+			],
+			[
 				'$match' => $match_query
-			),
-			array(
-				'$project' => array(
+			],
+			[
+				'$project' => [
 					'result' => '$_id',
-				)
-			),
-			array(
-                  '$group' =>array('_id' => NULL,'count' => array('$sum' => 1),)
-			),
-		);
+				]
+			],
+			[
+                  '$group' =>['_id' => NULL,'count' => ['$sum' => 1],]
+			],
+		];
 		$result    = $this->mongo_db->aggregate(MDB_PEOPLE, $arguments);
-		$result = (!empty($result['result']) && isset($result['result'])) ? $result['result'] : array();
+		$result = (!empty($result['result']) && isset($result['result'])) ? $result['result'] : [];
 		$result_val   = "";
 		if(count( $result ) > 0){
 			foreach ($result as $res) {
@@ -903,41 +903,41 @@ Class Model_Company extends Model
     
     public function changedashboard_managerdetails($cid = '', $startdate = '', $enddate = '')
     {
-        $match_query = array();
+        $match_query = [];
         $match_query['user_type'] = 'M';
         if($cid!="" && $cid!=0){
             $match_query['company_id'] = (int)$cid;    
         }
         if ($startdate!="" && $enddate!="") {
-			$match_query['created_date'] = array('$gte' => $startdate);
-			$match_query['created_date'] = array('$lte' => $enddate);
+			$match_query['created_date'] = ['$gte' => $startdate];
+			$match_query['created_date'] = ['$lte' => $enddate];
 		}
-		$arguments = array(
-			array(
-				'$lookup' => array(
+		$arguments = [
+			[
+				'$lookup' => [
 					'from' => MDB_COMPANY,
 					'localField' => 'company_id',
 					'foreignField' => '_id',
 					'as' => 'company'
-				)
-			),
-			array(
+				]
+			],
+			[
 				'$unwind' => '$company'
-			),
-			array(
+			],
+			[
 				'$match' => $match_query
-			),
-			array(
-				'$project' => array(
+			],
+			[
+				'$project' => [
 					'result' => '$_id',
-				)
-			),
-			array(
-                  '$group' =>array('_id' => NULL,'count' => array('$sum' => 1),)
-			),
-		);
+				]
+			],
+			[
+                  '$group' =>['_id' => NULL,'count' => ['$sum' => 1],]
+			],
+		];
 		$result    = $this->mongo_db->aggregate(MDB_PEOPLE, $arguments);
-		$result = (!empty($result['result']) && isset($result['result'])) ? $result['result'] : array();
+		$result = (!empty($result['result']) && isset($result['result'])) ? $result['result'] : [];
 		$result_val   = "";
 		if(count( $result ) > 0){
 			foreach ($result as $res) {
@@ -965,24 +965,24 @@ Class Model_Company extends Model
     
     public function changedashboard_taxidetails($cid = '', $startdate = '', $enddate = '')
     {
-        $match_query = array();
-        $match_query['_id'] = array('$gt' => 0);
+        $match_query = [];
+        $match_query['_id'] = ['$gt' => 0];
         if($cid!="" && $cid!=0){
             $match_query['taxi_company'] = (int)$cid;    
         }
         if ($startdate!="" && $enddate!="") {
-			$match_query['taxi_createdate'] = array('$gte' => $startdate);
-			$match_query['taxi_createdate'] = array('$lte' => $enddate);
+			$match_query['taxi_createdate'] = ['$gte' => $startdate];
+			$match_query['taxi_createdate'] = ['$lte' => $enddate];
 		}
-		$arguments = array(
-			array(
+		$arguments = [
+			[
 				'$match' => $match_query
-			),
-			array('$project' => array('result' => '$_id')),
-			array('$group' =>array('_id' => NULL,'count' => array('$sum' => 1))),
-		);
+			],
+			['$project' => ['result' => '$_id']],
+			['$group' =>['_id' => NULL,'count' => ['$sum' => 1]]],
+		];
 		$result    = $this->mongo_db->aggregate(MDB_TAXI, $arguments);
-		$result = (!empty($result['result']) && isset($result['result'])) ? $result['result'] : array();
+		$result = (!empty($result['result']) && isset($result['result'])) ? $result['result'] : [];
 		$result_val   = "";
 		if(count( $result ) > 0){
 			foreach ($result as $res) {
@@ -1008,38 +1008,38 @@ Class Model_Company extends Model
     
     public function transactionbycompanydriver($cid = '')
     {
-        $match_query = array();
+        $match_query = [];
         $match_query['people.user_type'] = 'D';
         if($cid!="" && $cid!=0){
             $match_query['people.company_id'] = (int)$cid;    
         }
-		$arguments = array(
-			array(
-				'$lookup' => array(
+		$arguments = [
+			[
+				'$lookup' => [
 					'from' => MDB_PEOPLE,
 					'localField' => 'driver_id',
 					'foreignField' => '_id',
 					'as' => 'people'
-				)
-			),
-			array(
+				]
+			],
+			[
 				'$unwind' => '$people'
-			),
-			array(
+			],
+			[
 				'$match' => $match_query
-			),
-			array(
-				'$project' => array(
+			],
+			[
+				'$project' => [
                     'driver_id' => '$driver_id',
                     'name' => '$people.name',
-				)
-			),
-			array(
-                  '$group' =>array('_id' => array('driver_id' => '$driver_id','name' => '$name'),'count' => array('$sum' => 1))
-			),
-		);
+				]
+			],
+			[
+                  '$group' =>['_id' => ['driver_id' => '$driver_id','name' => '$name'],'count' => ['$sum' => 1]]
+			],
+		];
 		$result    = $this->mongo_db->aggregate(MDB_PASSENGERSLOGS_COMPLETED, $arguments);
-		$result = (!empty($result['result']) && isset($result['result'])) ? $result['result'] : array();
+		$result = (!empty($result['result']) && isset($result['result'])) ? $result['result'] : [];
 		$result_val   = "";
 		if(count( $result ) > 0){
 			foreach ($result as $res) {   
@@ -1055,19 +1055,19 @@ Class Model_Company extends Model
     public function validate_fundrequest_amount($arr)
     {
         $total_pending_request = $this->fund_req_calc();
-        return Validation::factory($arr)->rule('amount', 'not_empty')->rule('amount', 'max_length', array(
+        return Validation::factory($arr)->rule('amount', 'not_empty')->rule('amount', 'max_length', [
             ':value',
             '3'
-        ))->rule('amount', 'numeric')->rule('amount', 'must_greaterthan', array(
+        ])->rule('amount', 'numeric')->rule('amount', 'must_greaterthan', [
             $arr['amount'],
             MIN_FUND
-        ))->rule('amount', 'must_lessertotal', array(
+        ])->rule('amount', 'must_lessertotal', [
             $arr['amount'],
             $total_pending_request
-        ))->rule('amount', 'must_lesserthan', array(
+        ])->rule('amount', 'must_lesserthan', [
             $arr['amount'],
             MAX_FUND
-        ));
+        ]);
     }
     public function get_payment_gateways()
     {
@@ -1078,17 +1078,17 @@ Class Model_Company extends Model
     /** Insert Fund Request Details **/
     public function insert_fundrequest_amount($details)
     {
-        $result = DB::insert(REQUEST_FUND, array(
+        $result = DB::insert(REQUEST_FUND, [
             'company_ownerid',
             'company_id',
             'amount',
             'status'
-        ))->values(array(
+        ])->values([
             $_SESSION['userid'],
             $details['company_id'],
             $details['amount'],
             '1'
-        ))->execute();
+        ])->execute();
         if ($result) {
             return 1;
         } else {
@@ -1137,55 +1137,55 @@ Class Model_Company extends Model
         $result = Db::query(Database::SELECT, $query)->execute()->as_array();
         return $result;*/
         
-        $result = $this->mongo_db->find(MDB_PEOPLE,array('_id'=>(int)$user_id,'user_type' => 'C'),array('account_balance'))->sort(array('_id' => 1));
+        $result = $this->mongo_db->find(MDB_PEOPLE,['_id'=>(int)$user_id,'user_type' => 'C'],['account_balance'])->sort(['_id' => 1]);
         //print_r(iterator_to_array($result)); exit;
-        return (!empty($result))?iterator_to_array($result):array();
+        return (!empty($result))?iterator_to_array($result):[];
     }
     public function admin_tot_current_bal()
     {
       /*  $query = "SELECT pl.account_balance FROM " . PEOPLE . " as pl where user_type='A' and status='A' order by pl.id";
         return $result = Db::query(Database::SELECT, $query)->execute()->as_array();*/
     
-        $result = $this->mongo_db->find(MDB_PEOPLE,array('status'=>'A','user_type' => 'A'),array('account_balance'))->sort(array('_id' => 1));
+        $result = $this->mongo_db->find(MDB_PEOPLE,['status'=>'A','user_type' => 'A'],['account_balance'])->sort(['_id' => 1]);
         //print_r(iterator_to_array($result)); exit;
-        return (!empty($result))?iterator_to_array($result):array();
+        return (!empty($result))?iterator_to_array($result):[];
     }
     /** validating the site info settings **/
     public function validate_updatesiteinfo($arr = "")
     {
-        return Validation::factory($arr)->rule('company_tax', 'not_empty')->rule('company_tax', 'numeric')->rule('company_tax', 'Model_Company::check_percentage', array(
+        return Validation::factory($arr)->rule('company_tax', 'not_empty')->rule('company_tax', 'numeric')->rule('company_tax', 'Model_Company::check_percentage', [
             ':value'
-        ))->rule('default_unit', 'not_empty')->rule('skip_credit_card', 'not_empty')->rule('fare_calculation', 'not_empty')->rule('cancellation_fare', 'not_empty')->rule('company_copyrights', 'not_empty')
+        ])->rule('default_unit', 'not_empty')->rule('skip_credit_card', 'not_empty')->rule('fare_calculation', 'not_empty')->rule('cancellation_fare', 'not_empty')->rule('company_copyrights', 'not_empty')
         //->rule('company_logo', 'Upload::not_empty',array($files_value_array['company_logo']))
-            ->rule('company_logo', 'Upload::type', array(
+            ->rule('company_logo', 'Upload::type', [
             ':value',
-            array(
+            [
                 'jpeg',
                 'jpg',
                 'png',
                 'gif'
-            )
-        ))
+            ]
+        ])
         //->rule('email_site_logo', 'Upload::not_empty',array($files_value_array['email_site_logo']))
-            ->rule('email_site_logo', 'Upload::type', array(
+            ->rule('email_site_logo', 'Upload::type', [
             ':value',
-            array(
+            [
                 'jpeg',
                 'jpg',
                 'png',
                 'gif'
-            )
-        ))
+            ]
+        ])
         //->rule('company_favicon', 'Upload::not_empty',array($files_value_array['company_favicon']))
-            ->rule('company_favicon', 'Upload::type', array(
+            ->rule('company_favicon', 'Upload::type', [
             ':value',
-            array(
+            [
                 'jpeg',
                 'jpg',
                 'png',
                 'gif'
-            )
-        ));
+            ]
+        ]);
         /*->rule('customer_app_android', 'not_empty')
         ->rule('customer_app_android', 'max_length', array(':value', '450'))
         ->rule('customer_app_android', 'url')
@@ -1250,13 +1250,13 @@ Class Model_Company extends Model
         $company_id     = $_SESSION['company_id'];
         $payment_status = DB::select()->from(PAYMENT_GATEWAYS)->where('id', '=', $id)->execute();
         if ($payment_status[0]['payment_status'] == 'A') {
-            $result = DB::update(PAYMENT_GATEWAYS)->set(array(
+            $result = DB::update(PAYMENT_GATEWAYS)->set([
                 'default_payment_gateway' => '1'
-            ))->where('id', '=', $id)->execute();
+            ])->where('id', '=', $id)->execute();
             if ($result == 1) {
-                $result1 = DB::update(PAYMENT_GATEWAYS)->set(array(
+                $result1 = DB::update(PAYMENT_GATEWAYS)->set([
                     'default_payment_gateway' => '0'
-                ))->where('id', '!=', $id)->where('company_id', '=', $company_id)->execute();
+                ])->where('id', '!=', $id)->where('company_id', '=', $company_id)->execute();
             }
             return $result;
         } else {
@@ -1268,11 +1268,11 @@ Class Model_Company extends Model
     {
         /*$sql     = "select company_logo from " . COMPANYINFO . " where company_cid=$cid";
         $results = Db::query( Database::SELECT, $sql )->execute()->as_array();*/
-        $result = $this->mongo_db->find(MDB_COMPANY, array(
+        $result = $this->mongo_db->find(MDB_COMPANY, [
             "_id" => (int) $cid
-        ), array(
+        ], [
             "companyinfo.company_logo"
-        ));
+        ]);
         $res    = iterator_to_array($result);
         if (!empty($res[$cid]['companyinfo']['company_logo'])) {
             $id1 = $res[$cid]['companyinfo']['company_logo'];
@@ -1280,19 +1280,19 @@ Class Model_Company extends Model
                 unlink($id1);
             }
         }
-        $query  = array(
+        $query  = [
             'companyinfo.company_logo' => $image
-        );
+        ];
         /*$result = DB::update( COMPANYINFO )->set( $query )->where( 'company_cid', '=', $cid )->execute();
         return $result;*/
         //MongoDB
-        $result = $this->mongo_db->update(MDB_COMPANY, array(
+        $result = $this->mongo_db->update(MDB_COMPANY, [
             '_id' => (int) $cid
-        ), array(
+        ], [
             '$set' => $query
-        ), array(
+        ], [
             'upsert' => false
-        ));
+        ]);
         return (empty($result['err'])) ? 1 : $result['err'];
     }
     /** site favicon image **/
@@ -1301,11 +1301,11 @@ Class Model_Company extends Model
     {
         /*$sql     = "select company_favicon from " . COMPANYINFO . " where id=$cid";
         $results = Db::query( Database::SELECT, $sql )->execute()->as_array();*/
-        $result = $this->mongo_db->find(MDB_COMPANY, array(
+        $result = $this->mongo_db->find(MDB_COMPANY, [
             "_id" => (int) $cid
-        ), array(
+        ], [
             "companyinfo.company_favicon"
-        ));
+        ]);
         $res    = iterator_to_array($result);
         if (!empty($res[$cid]['companyinfo']['company_favicon'])) {
             $id1 = $res[$cid]['companyinfo']['company_favicon'];
@@ -1313,19 +1313,19 @@ Class Model_Company extends Model
                 unlink($id1);
             }
         }
-        $query  = array(
+        $query  = [
             'companyinfo.company_favicon' => $image
-        );
+        ];
         /*$result = DB::update( COMPANYINFO )->set( $query )->where( 'company_cid', '=', $cid )->execute();
         return $result; */
         //MongoDB
-        $result = $this->mongo_db->update(MDB_COMPANY, array(
+        $result = $this->mongo_db->update(MDB_COMPANY, [
             '_id' => (int) $cid
-        ), array(
+        ], [
             '$set' => $query
-        ), array(
+        ], [
             'upsert' => false
-        ));
+        ]);
         return (empty($result['err'])) ? 1 : $result['err'];
     }
     public function updatesiteinfo($post_value_array, $cid)
@@ -1366,23 +1366,23 @@ Class Model_Company extends Model
         ->execute();
         //echo $result; exit;
         return $result;*/
-        $query  = array(
+        $query  = [
             'companyinfo.company_tax' => $post_value_array['company_tax'],
             'companyinfo.default_unit' => $post_value_array['default_unit'],
             'companyinfo.fare_calculation_type' => $post_value_array['fare_calculation'],
             'companyinfo.cancellation_fare' => $post_value_array['cancellation_fare'],
             'companyinfo.company_copyrights' => $post_value_array['company_copyrights'],
             'companyinfo.skip_credit_card' => $post_value_array['skip_credit_card']
-        );
+        ];
 
         //MongoDB
-        $result = $this->mongo_db->update(MDB_COMPANY, array(
+        $result = $this->mongo_db->update(MDB_COMPANY, [
             '_id' => (int) $cid
-        ), array(
+        ], [
             '$set' => $query
-        ), array(
+        ], [
             'upsert' => true
-        ));
+        ]);
         // print_r($result);exit;
         return (empty($result['err'])) ? 1 : $result['err'];
     }
@@ -1396,9 +1396,9 @@ Class Model_Company extends Model
         ->where('company_cid', '=', $id)
         ->execute()
         ->as_array(); */
-        $results = $this->mongo_db->find(MDB_COMPANY, array(
+        $results = $this->mongo_db->find(MDB_COMPANY, [
             "_id" => (int) $id
-        ), array(
+        ], [
             "companydetails.time_zone",
             "companyinfo.cancellation_fare",
             "companyinfo.fare_calculation_type",
@@ -1408,9 +1408,9 @@ Class Model_Company extends Model
             "companyinfo.company_favicon",
             "companyinfo.default_unit",
             "companyinfo.skip_credit_card"
-        ));
+        ]);
         $res     = iterator_to_array($results);
-        return (!empty($res)) ? $res : array();
+        return (!empty($res)) ? $res : [];
     }
     public function validate_update_socialinfo($arr = "")
     {
@@ -1418,14 +1418,14 @@ Class Model_Company extends Model
     }
     public function update_socialinfo($post_value_array, $cid)
     {
-        $query  = array(
+        $query  = [
             'company_facebook_key' => $post_value_array['facebook_key'],
             'company_facebook_secretkey' => $post_value_array['facebook_secretkey'],
             'company_facebook_share' => $post_value_array['facebook_share'],
             'company_twitter_share' => $post_value_array['twitter_share'],
             'company_google_share' => $post_value_array['google_share'],
             'company_linkedin_share' => $post_value_array['linkedin_share']
-        );
+        ];
         $result = DB::update(COMPANYINFO)->set($query)->where('company_cid', '=', $cid)->execute();
         return $result;
     }
@@ -1441,11 +1441,11 @@ Class Model_Company extends Model
     }
     public function update_layoutinfo($post_value_array, $cid)
     {
-        $query  = array(
+        $query  = [
             'header_bgcolor' => '#' . $post_value_array['header_bg'],
             'menu_color' => '#' . $post_value_array['menu_bg'],
             'mouseover_color' => '#' . $post_value_array['mover_bg']
-        );
+        ];
         $result = DB::update(COMPANY)->set($query)->where('cid', '=', $cid)->execute();
         return $result;
     }
@@ -1454,84 +1454,84 @@ Class Model_Company extends Model
         /*$sql    = "SELECT upgrade_packageid FROM package_report WHERE upgrade_companyid=$company_id ORDER BY  `upgrade_id` desc LIMIT 0 , 1";
         $result = Db::query( Database::SELECT, $sql )->execute()->as_array();
         return $result;*/
-        $result = $this->mongo_db->find(MDB_PACKAGE_REPORT, array(
+        $result = $this->mongo_db->find(MDB_PACKAGE_REPORT, [
             "upgrade_companyid" => (int) $company_id
-        ), array(
+        ], [
             "upgrade_packageid"
-        ));
+        ]);
         $res    = iterator_to_array($result);
-        return (!empty($res)) ? $res : array();
+        return (!empty($res)) ? $res : [];
     }
     /** validating the banners images **/
     public function validate_update_module($arr = "", $files_value_array = "")
     {
         return Validation::factory($arr) /*->rule('member', 'not_empty')
-        ->rule('member', 'max_length', array(':value', '2'))*/ ->rule('file', 'Upload::not_empty', array(
+        ->rule('member', 'max_length', array(':value', '2'))*/ ->rule('file', 'Upload::not_empty', [
             $files_value_array['banner_image1']
-        ))->rule('file', 'Upload::type', array(
+        ])->rule('file', 'Upload::type', [
             $files_value_array['banner_image1'],
-            array(
+            [
                 'jpg',
                 'jpeg',
                 'png',
                 'gif'
-            )
-        ))->rule('file', 'Upload::size', array(
+            ]
+        ])->rule('file', 'Upload::size', [
             $files_value_array['banner_image1'],
             '2M'
-        ))->rule('file', 'Upload::not_empty', array(
+        ])->rule('file', 'Upload::not_empty', [
             $files_value_array['banner_image2']
-        ))->rule('file', 'Upload::type', array(
+        ])->rule('file', 'Upload::type', [
             $files_value_array['banner_image2'],
-            array(
+            [
                 'jpg',
                 'jpeg',
                 'png',
                 'gif'
-            )
-        ))->rule('file', 'Upload::size', array(
+            ]
+        ])->rule('file', 'Upload::size', [
             $files_value_array['banner_image2'],
             '2M'
-        ))->rule('file', 'Upload::not_empty', array(
+        ])->rule('file', 'Upload::not_empty', [
             $files_value_array['banner_image3']
-        ))->rule('file', 'Upload::type', array(
+        ])->rule('file', 'Upload::type', [
             $files_value_array['banner_image3'],
-            array(
+            [
                 'jpg',
                 'jpeg',
                 'png',
                 'gif'
-            )
-        ))->rule('file', 'Upload::size', array(
+            ]
+        ])->rule('file', 'Upload::size', [
             $files_value_array['banner_image3'],
             '2M'
-        ))->rule('file', 'Upload::not_empty', array(
+        ])->rule('file', 'Upload::not_empty', [
             $files_value_array['banner_image4']
-        ))->rule('file', 'Upload::type', array(
+        ])->rule('file', 'Upload::type', [
             $files_value_array['banner_image4'],
-            array(
+            [
                 'jpg',
                 'jpeg',
                 'png',
                 'gif'
-            )
-        ))->rule('file', 'Upload::size', array(
+            ]
+        ])->rule('file', 'Upload::size', [
             $files_value_array['banner_image4'],
             '2M'
-        ))->rule('file', 'Upload::not_empty', array(
+        ])->rule('file', 'Upload::not_empty', [
             $files_value_array['banner_image5']
-        ))->rule('file', 'Upload::type', array(
+        ])->rule('file', 'Upload::type', [
             $files_value_array['banner_image5'],
-            array(
+            [
                 'jpg',
                 'jpeg',
                 'png',
                 'gif'
-            )
-        ))->rule('file', 'Upload::size', array(
+            ]
+        ])->rule('file', 'Upload::size', [
             $files_value_array['banner_image5'],
             '2M'
-        ));
+        ]);
     }
     /** Updating the banner images **/
     public function update_module_settings_images($image, $id)
@@ -1545,19 +1545,19 @@ Class Model_Company extends Model
                 unlink($id1);
             }
         }
-        $query  = array(
+        $query  = [
             'banner_image' => $image
-        );
+        ];
         $result = DB::update(COMPANY_CMS)->set($query)->where('id', '=', $id)->execute();
         return $result;
     }
     /** Updating the banner images **/
     public function update_module_settings_tags($tag, $image_tag, $id)
     {
-        $query  = array(
+        $query  = [
             'alt_tags' => $tag,
             'image_tag' => $image_tag
-        );
+        ];
         $result = DB::update(COMPANY_CMS)->set($query)->where('id', '=', $id)->execute();
         return $result;
     }
@@ -1573,13 +1573,13 @@ Class Model_Company extends Model
         /*$rs = DB::select()->from( COMPANYINFO )->where( 'company_cid', '=', $cid )->execute()->as_array();
         return $rs;*/
         //MongoDB
-        $result = $this->mongo_db->find(MDB_COMPANY, array(
+        $result = $this->mongo_db->find(MDB_COMPANY, [
             '_id' => (int) $cid
-        ), array(
+        ], [
             "companyinfo.company_domain"
-        ));
+        ]);
         //echo '<pre>'; print_r(iterator_to_array($result));exit;
-        return (!empty($result)) ? iterator_to_array($result) : array();
+        return (!empty($result)) ? iterator_to_array($result) : [];
     }
     // List Company Users
     public function count_passenger_list_history($cid)
@@ -1591,70 +1591,70 @@ Class Model_Company extends Model
     public function all_passenger_list_history($cid, $offset, $val, $find_count = FALSE)
     {
         if ($find_count == TRUE) {
-			$match_query = array();
-			$match_query['name'] = array('$ne' => '');
-            $arguments = array(
+			$match_query = [];
+			$match_query['name'] = ['$ne' => ''];
+            $arguments = [
               /*  array(
                     '$unwind' => '$passengerdetails'
                 ),*/
-                array(
-				'$lookup' => array(
+                [
+				'$lookup' => [
 					'from' => MDB_CHILD_ACCOUNT_TYPE,
 					'localField' => 'account_type',
 					'foreignField' => '_id',
 					'as' => 'account'
-				)
-				),
+				]
+				],
                 /*
 				array(
                     '$unwind' => '$account'
                 ),*/
-				array(
+				[
 					'$match' => $match_query	  
-				),
-                array(
-                    '$project' => array(
+				],
+                [
+                    '$project' => [
                         'id' => '$_id'
-                    )
-                ),
+                    ]
+                ],
 				
-				array(
-                    '$sort' => array(
+				[
+                    '$sort' => [
                         'created_date' => -1
-                    )
-                ),
-                array(
-                    '$group' => array(
+                    ]
+                ],
+                [
+                    '$group' => [
                         '_id' => NULL,
-                        'count' => array(
+                        'count' => [
                             '$sum' => 1
-                        )
-                    )
-                )
-            );
+                        ]
+                    ]
+                ]
+            ];
 			$result    = $this->mongo_db->aggregate(MDB_PASSENGERS, $arguments);
             //echo "<pre>"; print_r($result['result'][0]['count']); exit;
             return (!empty($result['result']) && isset($result['result'][0]['count'])) ? $result['result'][0]['count'] : 0;
         } else {
-			$match_query = array();
-			$match_query['name'] = array('$ne' => '');
-            $arguments = array(
+			$match_query = [];
+			$match_query['name'] = ['$ne' => ''];
+            $arguments = [
               /*  array(
                     '$unwind' => '$passengerdetails'
                 ),*/
-                array(
-				'$lookup' => array(
+                [
+				'$lookup' => [
 					'from' => MDB_CHILD_ACCOUNT_TYPE,
 					'localField' => 'account_type',
 					'foreignField' => '_id',
 					'as' => 'account'
-				)
-				),/*
+				]
+				],/*
 				array(
                     '$unwind' => '$account'
                 ),*/
-				array(
-                    '$project' => array(
+				[
+                    '$project' => [
 						'_id' => '$_id',
 						'country_code' => '$country_code',
 						'phone' => '$phone',
@@ -1669,26 +1669,26 @@ Class Model_Company extends Model
 						'parent_id' => '$parent_id',
 						'account_type' => '$account_type',
 						'account_type_name' => '$account.account_type',
-                    )
-                ),
-				array(
+                    ]
+                ],
+				[
 					'$match' => $match_query	  
-				),
-                array(
-                    '$sort' => array(
+				],
+                [
+                    '$sort' => [
                         'created_date' => -1
-                    )
-                ),
-                array(
+                    ]
+                ],
+                [
                     '$skip' => (int) $offset
-                ),
-                array(
+                ],
+                [
                     '$limit' => (int) $val
-                )
-            );
+                ]
+            ];
             $result    = $this->mongo_db->aggregate(MDB_PASSENGERS, $arguments);
             //echo "<pre>"; print_r($result['result']); exit;
-            return (!empty($result['result'])) ? $result['result'] : array();
+            return (!empty($result['result'])) ? $result['result'] : [];
         }
     }
     /** for getting passenger listing search count **/
@@ -1717,61 +1717,61 @@ Class Model_Company extends Model
         $keyword    = str_replace("%", "!%", $keyword);
         $keyword    = str_replace("_", "!_", $keyword);
         //MongoDB
-        $srch_query = array(
+        $srch_query = [
             'passenger_cid' => (int) $company
-        );
+        ];
         if ((!empty($keyword)) && (!empty($status))) {
-            $srch_query = array(
-                "\$and" => array(
-                    array(
+            $srch_query = [
+                "\$and" => [
+                    [
                         'passenger_cid' => (int) $company
-                    ),
-                    array(
+                    ],
+                    [
                         "user_status" => $status
-                    ),
-                    array(
-                        "\$or" => array(
-                            array(
-                                'name' => new MongoRegex("/$keyword/i")
-                            ),
-                            array(
-                                'email' => new MongoRegex("/$keyword/i")
-                            )
-                        )
-                    )
-                )
-            );
+                    ],
+                    [
+                        "\$or" => [
+                            [
+                                'name' => new \MongoDB\BSON\Regex($keyword, 'i')
+                            ],
+                            [
+                                'email' => new \MongoDB\BSON\Regex($keyword, 'i')
+                            ]
+                        ]
+                    ]
+                ]
+            ];
         } else if (!empty($keyword)) {
-            $srch_query = array(
-                "\$and" => array(
-                    array(
+            $srch_query = [
+                "\$and" => [
+                    [
                         'passenger_cid' => (int) $company
-                    ),
-                    array(
-                        "\$or" => array(
-                            array(
-                                'name' => new MongoRegex("/$keyword/i")
-                            ),
-                            array(
-                                'email' => new MongoRegex("/$keyword/i")
-                            )
-                        )
-                    )
-                )
-            );
+                    ],
+                    [
+                        "\$or" => [
+                            [
+                                'name' => new \MongoDB\BSON\Regex($keyword, 'i')
+                            ],
+                            [
+                                'email' => new \MongoDB\BSON\Regex($keyword, 'i')
+                            ]
+                        ]
+                    ]
+                ]
+            ];
         } else if (!empty($status)) {
-            $srch_query = array(
+            $srch_query = [
                 'passenger_cid' => (int) $company,
                 "user_status" => $status
-            );
+            ];
         }
         if ($find_count == TRUE) {
-            $res = $this->mongo_db->count(MDB_PASSENGERS, $srch_query, array(
+            $res = $this->mongo_db->count(MDB_PASSENGERS, $srch_query, [
                 '_id'
-            ));
+            ]);
             return $res;
         } else {
-            $result = $this->mongo_db->find(MDB_PASSENGERS, $srch_query, array(
+            $result = $this->mongo_db->find(MDB_PASSENGERS, $srch_query, [
                 '_id',
                 'name',
                 'email',
@@ -1779,11 +1779,11 @@ Class Model_Company extends Model
                 'address',
                 'created_date',
                 'user_status'
-            ))->sort(array(
+            ])->sort([
                 'created_date' => -1
-            ))->skip($offset)->limit($val);
+            ])->skip($offset)->limit($val);
             //echo "<pre>"; print_r(iterator_to_array($result)); exit;
-            return (!empty($result)) ? iterator_to_array($result) : array();
+            return (!empty($result)) ? iterator_to_array($result) : [];
         }
     }
     /** for getting passenger listing search **/
@@ -1823,7 +1823,7 @@ Class Model_Company extends Model
         //$budget=isset($post['budget'])?$post['budget']:'-';
         //$message="Budget: ".$budget."   -    Message: ".$post['message'];
         $message = " (FREE TRAIL REQUEST)   " . ucfirst($post_value_array['message']);
-        $result  = DB::insert(GET_FREE_QUOTES, array(
+        $result  = DB::insert(GET_FREE_QUOTES, [
             'name',
             'email',
             'mobile_no',
@@ -1833,7 +1833,7 @@ Class Model_Company extends Model
             'city_name',
             'message',
             'createdate'
-        ))->values(array(
+        ])->values([
             $post['g_name'],
             $post['g_email'],
             $post['g_phone'],
@@ -1843,7 +1843,7 @@ Class Model_Company extends Model
             $post['city'],
             $message,
             $post['createdate']
-        ))->execute();
+        ])->execute();
         return $result;
     }
     public function save_moderator_trial($post)
@@ -1851,7 +1851,7 @@ Class Model_Company extends Model
         //$budget=isset($post['budget'])?$post['budget']:'-';
         //$message="Budget: ".$budget."   -    Message: ".$post['message'];
         $message = " (FREE TRAIL REQUEST)   " . ucfirst($post['message']);
-        $result  = DB::insert(GET_FREE_QUOTES, array(
+        $result  = DB::insert(GET_FREE_QUOTES, [
             'name',
             'email',
             'mobile_no',
@@ -1861,7 +1861,7 @@ Class Model_Company extends Model
             'city_name',
             'message',
             'createdate'
-        ))->values(array(
+        ])->values([
             $post['name'],
             trim($post['email']),
             $post['phone'],
@@ -1871,7 +1871,7 @@ Class Model_Company extends Model
             $post['city'],
             $message,
             $post['createdate']
-        ))->execute();
+        ])->execute();
         return $result;
     }
     public function validate_update_smssettings($arr = "")
@@ -1885,49 +1885,49 @@ Class Model_Company extends Model
     }
     public function update_sms_settings($post_value_array, $id, $sms_id)
     {
-        $query = array(
+        $query = [
             'sms_account_id' => $post_value_array['sms_account_id'],
             'sms_auth_token' => $post_value_array['sms_auth_token'],
             'sms_from_number' => $post_value_array['sms_from_number']
-        );
+        ];
         if ($sms_id != '') {
             $result = DB::update(SMS_SETTINGS)->set($query)->where('company_id', '=', $id)->execute();
         } else {
-            $result = $result = DB::insert(SMS_SETTINGS, array(
+            $result = $result = DB::insert(SMS_SETTINGS, [
                 'sms_account_id',
                 'sms_auth_token',
                 'sms_from_number',
                 'company_id'
-            ))->values(array(
+            ])->values([
                 $query['sms_account_id'],
                 $query['sms_auth_token'],
                 $query['sms_from_number'],
                 $id
-            ))->execute();
+            ])->execute();
         }
         return $result;
     }
     
     public function get_admin_dashboard_data($company_id)
     {
-		$result["general_users"] = $this->mongo_db->count(MDB_PASSENGERS,array('user_status' => 'A'),array('_id'));        
-		$result["driver"] = $this->mongo_db->count(MDB_PEOPLE,array('user_type' => 'D','status' => 'A','company_id' => (int)$company_id),array('_id'));
+		$result["general_users"] = $this->mongo_db->count(MDB_PASSENGERS,['user_status' => 'A'],['_id']);        
+		$result["driver"] = $this->mongo_db->count(MDB_PEOPLE,['user_type' => 'D','status' => 'A','company_id' => (int)$company_id],['_id']);
         
-		$result["manager"] = $this->mongo_db->count(MDB_PEOPLE,array('user_type' => 'M','status' => 'A'),array('_id'));
-		$result["taxi"] = $this->mongo_db->count(MDB_TAXI,array('taxi_status' => 'A','taxi_company' => (int)$company_id),array('_id'));
-		$result["country"] = $this->mongo_db->count(MDB_CSC,array('country_status' => 'A'),array('_id'));
-		$arguments = array(array('$unwind' => '$stateinfo'),
-			array('$match'=> array('stateinfo.state_status' => 'A')),
-			array('$project' => array('id' 	=> '$stateinfo.state_id')),
-			array('$group' =>array('_id' => NULL,'count' => array('$sum' => 1))),
-		);
+		$result["manager"] = $this->mongo_db->count(MDB_PEOPLE,['user_type' => 'M','status' => 'A'],['_id']);
+		$result["taxi"] = $this->mongo_db->count(MDB_TAXI,['taxi_status' => 'A','taxi_company' => (int)$company_id],['_id']);
+		$result["country"] = $this->mongo_db->count(MDB_CSC,['country_status' => 'A'],['_id']);
+		$arguments = [['$unwind' => '$stateinfo'],
+			['$match'=> ['stateinfo.state_status' => 'A']],
+			['$project' => ['id' 	=> '$stateinfo.state_id']],
+			['$group' =>['_id' => NULL,'count' => ['$sum' => 1]]],
+		];
 		$state_count = $this->mongo_db->aggregate(MDB_CSC,$arguments);
         $result["state"] = (isset($state_count['result'][0]['count']))?$state_count['result'][0]['count']:0;
-		$arguments = array(array('$unwind' => '$stateinfo'),array('$unwind' => '$stateinfo.cityinfo'),
-			array('$match'=> array('stateinfo.cityinfo.city_status' => 'A')),
-			array('$project' => array('id' 	=> '$stateinfo.cityinfo.city_id')),
-			array('$group' =>array('_id' => NULL,'count' => array('$sum' => 1))),
-		);
+		$arguments = [['$unwind' => '$stateinfo'],['$unwind' => '$stateinfo.cityinfo'],
+			['$match'=> ['stateinfo.cityinfo.city_status' => 'A']],
+			['$project' => ['id' 	=> '$stateinfo.cityinfo.city_id']],
+			['$group' =>['_id' => NULL,'count' => ['$sum' => 1]]],
+		];
 		$city_count = $this->mongo_db->aggregate(MDB_CSC,$arguments);
         $result["city"] = (isset($city_count['result'][0]['count']))?$city_count['result'][0]['count']:0;
         return $result;
@@ -1954,7 +1954,7 @@ Class Model_Company extends Model
     {
         /*$results = DB::select()->from(PASSENGERS)->where('login_status', '=', 'A')->where('passenger_cid', '=', $company_id)->order_by('last_login', 'desc')->execute()->as_array();
         return count($results); */
-        $results = $this->mongo_db->count(MDB_PASSENGERS,array('login_status' => 'A','passenger_cid'=> $company_id),array('_id'));
+        $results = $this->mongo_db->count(MDB_PASSENGERS,['login_status' => 'A','passenger_cid'=> $company_id],['_id']);
         return $results;
     }
     public static function addcompanydetails($post)
@@ -1986,7 +1986,7 @@ Class Model_Company extends Model
             $post['g_email'] = ($post['email']) ? $post['email'] : $post['g_email'];
             $post['g_phone'] = ($post['phone']) ? $post['phone'] : $post['g_phone'];
         }
-        $result                    = DB::insert(PEOPLE, array(
+        $result                    = DB::insert(PEOPLE, [
             'name',
             'address',
             'lastname',
@@ -2001,7 +2001,7 @@ Class Model_Company extends Model
             'created_date',
             'user_type',
             'status'
-        ))->values(array(
+        ])->values([
             $post['g_name'],
             '',
             '',
@@ -2016,9 +2016,9 @@ Class Model_Company extends Model
             $current_date,
             'C',
             ACTIVE
-        ))->execute();
+        ])->execute();
         $company_userid            = $result[0];
-        $in_company                = DB::insert(COMPANY, array(
+        $in_company                = DB::insert(COMPANY, [
             'company_name',
             'company_address',
             'company_country',
@@ -2029,7 +2029,7 @@ Class Model_Company extends Model
             'header_bgcolor',
             'menu_color',
             'mouseover_color'
-        ))->values(array(
+        ])->values([
             $post['company_name'],
             '',
             $country_id,
@@ -2040,9 +2040,9 @@ Class Model_Company extends Model
             '#FFFFFF',
             '#000000',
             '#FFD800'
-        ))->execute();
+        ])->execute();
         $reg_companyid             = $in_company[0];
-        $insert_tdispatchalogrithm = DB::insert(TBLALGORITHM, array(
+        $insert_tdispatchalogrithm = DB::insert(TBLALGORITHM, [
             'labelname',
             'alg_created_by',
             'alg_company_id',
@@ -2050,7 +2050,7 @@ Class Model_Company extends Model
             'hide_customer',
             'hide_droplocation',
             'hide_fare'
-        ))->values(array(
+        ])->values([
             2,
             $company_userid,
             $reg_companyid,
@@ -2058,7 +2058,7 @@ Class Model_Company extends Model
             0,
             0,
             0
-        ))->execute();
+        ])->execute();
         $key                       = "";
         $charset                   = "abcdefghijklmnopqrstuvwxyz";
         $charset .= "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
@@ -2066,7 +2066,7 @@ Class Model_Company extends Model
         $length = mt_rand(30, 35);
         for ($i = 0; $i < $length; $i++)
             $key .= $charset[(mt_rand(0, (strlen($charset) - 1)))];
-        DB::insert(COMPANYINFO, array(
+        DB::insert(COMPANYINFO, [
             'company_cid',
             'company_domain',
             'company_phone_number',
@@ -2079,7 +2079,7 @@ Class Model_Company extends Model
             'company_paypal_signature',
             'company_notification_settings',
             'company_api_key'
-        ))->values(array(
+        ])->values([
             $reg_companyid,
             trim($post['domain_name']),
             '9000000000',
@@ -2092,68 +2092,68 @@ Class Model_Company extends Model
             'A0YqGlJEML24al4qg2LnV2U.g2ThAfXD37NEiWIVcgjl1pxlygg-XaVs',
             '20',
             $key
-        ))->execute();
-        $cms      = DB::insert(COMPANY_CMS, array(
+        ])->execute();
+        $cms      = DB::insert(COMPANY_CMS, [
             'company_id',
             'menu_name',
             'title',
             'content',
             'page_url',
             'type'
-        ));
+        ]);
         //$banner_image=DB::insert(COMPANY_CMS, array('company_id','image_tag','alt_tags','banner_image','type'));
         //$pages=array('About us','Features','Terms and Conditions','Tutorials','Contact us');
         //$page_url=array('about-us','features','termsconditions','tutorials','contact-us');
-        $pages    = array(
+        $pages    = [
             'About us',
             'Privacy policy',
             'Servicing for Excellence',
             'Terms and Conditions',
             'Help'
-        );
-        $page_url = array(
+        ];
+        $page_url = [
             'aboutus',
             'privacypolicy',
             'service-area',
             'termsconditions',
             'help'
-        );
+        ];
         for ($i = 0; $i < 5; $i++) {
-            $cms->values(array(
+            $cms->values([
                 $reg_companyid,
                 $pages[$i],
                 $pages[$i],
                 $pages[$i],
                 $page_url[$i],
                 1
-            ));
+            ]);
             if ($i == 0) {
                 $srcfile = DOCROOT . PUBLIC_IMAGES_FOLDER . 'header_banner_bg.jpg';
                 $dstfile = DOCROOT . PUBLIC_UPLOAD_BANNER_FOLDER . $reg_companyid . '_header_banner_bg.jpg';
                 copy($srcfile, $dstfile);
                 $image_name   = $reg_companyid . '_header_banner_bg.jpg';
-                $banner_image = DB::insert(COMPANY_CMS, array(
+                $banner_image = DB::insert(COMPANY_CMS, [
                     'company_id',
                     'image_tag',
                     'alt_tags',
                     'banner_image',
                     'type'
-                ));
-                $banner_image->values(array(
+                ]);
+                $banner_image->values([
                     $reg_companyid,
                     "image1",
                     "image1",
                     $image_name,
                     2
-                ));
+                ]);
                 $banner_image->execute();
             }
         }
         $cms->execute();
         //$banner_image->execute();
-        $update_people = DB::update(PEOPLE)->set(array(
+        $update_people = DB::update(PEOPLE)->set([
             'company_id' => $reg_companyid
-        ))->where('id', '=', $company_userid)->execute();
+        ])->where('id', '=', $company_userid)->execute();
         if ($upgrade_package == 'N') {
             $get_packagedetails = $add_company->payment_packagedetails($upgrade_packid);
 
@@ -2168,7 +2168,7 @@ Class Model_Company extends Model
             } else {
                 $expirydate = Commonfunction::getExpiryTimeStamp($current_time, TRAILEXPIRY);
             }
-            $result = DB::insert(PACKAGE_REPORT, array(
+            $result = DB::insert(PACKAGE_REPORT, [
                 'upgrade_companyid',
                 'upgrade_packageid',
                 'upgrade_packagename',
@@ -2182,7 +2182,7 @@ Class Model_Company extends Model
                 'upgrade_by',
                 'check_expirydate',
                 'check_package_type'
-            ))->values(array(
+            ])->values([
                 $in_company[0],
                 $upgrade_packid,
                 $package_name,
@@ -2196,7 +2196,7 @@ Class Model_Company extends Model
                 1,
                 $expirydate,
                 $package_type
-            ))->execute();
+            ])->execute();
         }
         // Convert Time
         $domain        = trim($post['domain_name']);
@@ -2208,7 +2208,7 @@ Class Model_Company extends Model
             $driver_email    = $domain . $i . '@' . $domain . '.com';
             $driver_name     = $domain . $i;
             $driver_mobile   = $reg_companyid . date('ymd') . $i;
-            $fieldname_array = array(
+            $fieldname_array = [
                 'name',
                 'email',
                 'password',
@@ -2225,8 +2225,8 @@ Class Model_Company extends Model
                 'updated_date',
                 'company_id',
                 'booking_limit'
-            );
-            $values_array    = array(
+            ];
+            $values_array    = [
                 $driver_name,
                 $driver_email,
                 md5("qwerty"),
@@ -2243,7 +2243,7 @@ Class Model_Company extends Model
                 $current_time,
                 $reg_companyid,
                 '100'
-            );
+            ];
             $result          = DB::insert(PEOPLE, $fieldname_array)->values($values_array)->execute();
             $driver_id       = '';
             if ($result) {
@@ -2251,7 +2251,7 @@ Class Model_Company extends Model
                 $driver_id = $email[0]['id'];
             }
             /***** Passenger login creation ************/
-            $p_fieldname_array      = array(
+            $p_fieldname_array      = [
                 'name',
                 'salutation',
                 'lastname',
@@ -2265,8 +2265,8 @@ Class Model_Company extends Model
                 'updated_date',
                 'passenger_cid',
                 'skip_credit_card'
-            );
-            $passenger_values_array = array(
+            ];
+            $passenger_values_array = [
                 $driver_name,
                 'Mr',
                 $driver_name,
@@ -2280,12 +2280,12 @@ Class Model_Company extends Model
                 $current_time,
                 $reg_companyid,
                 '1'
-            );
+            ];
             $p_values_array         = $passenger_values_array;
             $passenger_result       = DB::insert(PASSENGERS, $p_fieldname_array)->values($p_values_array)->execute();
             /***** Taxi  creation ************/
             $taxi_image             = 'taxi_' . $i . '.png';
-            $taxi_result            = DB::insert(TAXI, array(
+            $taxi_result            = DB::insert(TAXI, [
                 'taxi_no',
                 'taxi_type',
                 'taxi_model',
@@ -2296,7 +2296,7 @@ Class Model_Company extends Model
                 'taxi_city',
                 'taxi_capacity',
                 'taxi_speed'
-            ))->values(array(
+            ])->values([
                 $domain . $i,
                 $taxi_type,
                 '1',
@@ -2307,27 +2307,27 @@ Class Model_Company extends Model
                 $city_id,
                 '5',
                 '100'
-            ))->execute();
+            ])->execute();
             $taxi_id                = mysql_insert_id();
             /*$taxi_additional_result = DB::insert(ADDFIELD, array('taxi_id'))
             ->values(array($taxi_id))
             ->execute();*/
             /***** Driver location creation ************/
-            $driver_status_result   = DB::insert(DRIVER, array(
+            $driver_status_result   = DB::insert(DRIVER, [
                 'driver_id',
                 'latitude',
                 'longitude',
                 'status',
                 'shift_status'
-            ))->values(array(
+            ])->values([
                 $driver_id,
                 LOCATION_LATI,
                 LOCATION_LONG,
                 'F',
                 'OUT'
-            ))->execute();
+            ])->execute();
             /** Insert Taxi Mappning Details *******/
-            $taxi_mapping_result    = DB::insert(TAXIMAPPING, array(
+            $taxi_mapping_result    = DB::insert(TAXIMAPPING, [
                 'mapping_driverid',
                 'mapping_taxiid',
                 'mapping_companyid',
@@ -2337,7 +2337,7 @@ Class Model_Company extends Model
                 'mapping_startdate',
                 'mapping_enddate',
                 'mapping_createdby'
-            ))->values(array(
+            ])->values([
                 $driver_id,
                 $taxi_id,
                 $reg_companyid,
@@ -2347,7 +2347,7 @@ Class Model_Company extends Model
                 $start_time,
                 $expirydate,
                 1
-            ))->execute();
+            ])->execute();
         }
         /*** Insert Model fare for the company ***********/
         $adminmodeldata = DB::select('*')->from(MOTORMODEL)->where(MOTORMODEL . '.model_id', '=', $taxi_model)->execute()->as_array();
@@ -2369,7 +2369,7 @@ Class Model_Company extends Model
                 $night_fare        = $values['night_fare'];
                 $waiting_time      = $values['waiting_time'];
             }
-            $result = DB::insert(COMPANY_MODEL_FARE, array(
+            $result = DB::insert(COMPANY_MODEL_FARE, [
                 'model_id',
                 'company_cid',
                 'motor_mid',
@@ -2386,7 +2386,7 @@ Class Model_Company extends Model
                 'below_above_km',
                 'waiting_time',
                 'model_name'
-            ))->values(array(
+            ])->values([
                 $model_id,
                 $reg_companyid,
                 $motor_mid,
@@ -2403,7 +2403,7 @@ Class Model_Company extends Model
                 $below_above_km,
                 $waiting_time,
                 $model_name
-            ))->execute();
+            ])->execute();
         }
         if ($result) {
             return $reg_companyid;
@@ -2488,39 +2488,39 @@ Class Model_Company extends Model
     {       
        //MongoDB
         $company_id = $this->company_id;
-        $match_query = array();
+        $match_query = [];
         $match_query['travel_status'] = 1;
-        $match_query['pickup_time'] = array('$gte' => $start,'$lt'=> $end);
+        $match_query['pickup_time'] = ['$gte' => $start,'$lt'=> $end];
         if($company_id!="" && $company_id!=0){
             $match_query['company_id'] = (int)$company_id;
         }
        //echo "<pre>"; print_r($match_query); exit;
-       $arguments = array(
-            array('$match'	=> $match_query),
-            array('$lookup' 		=> array(
+       $arguments = [
+            ['$match'	=> $match_query],
+            ['$lookup' 		=> [
                     'from'			=>	MDB_TRANSACTION,
                     'localField'	=> '_id',
                     'foreignField'	=> "passengers_log_id",
                     'as'			=> "trans"
-                )
-            ),
-            array('$unwind'=>'$trans'),
-            array(
-                '$project' => array(
+                ]
+            ],
+            ['$unwind'=>'$trans'],
+            [
+                '$project' => [
                     'fare' => '$trans.fare',
-                    "month" => array( '$substr' => array( '$pickup_time', 5, 2 ) ),
-                    "day" => array( '$substr'=> array( '$pickup_time', 8, 2 ) ),
-                )
-            ),
-            array('$group' => array("_id" => array("date" => '$day',"month" => '$month'),
-                    "fare" => array( '$sum' => '$fare' ),
-                    "trips" => array( '$sum' => 1 ),
-                    )
-            ),
-        );
+                    "month" => [ '$substr' => [ '$pickup_time', 5, 2 ] ],
+                    "day" => [ '$substr'=> [ '$pickup_time', 8, 2 ] ],
+                ]
+            ],
+            ['$group' => ["_id" => ["date" => '$day',"month" => '$month'],
+                    "fare" => [ '$sum' => '$fare' ],
+                    "trips" => [ '$sum' => 1 ],
+                    ]
+            ],
+        ];
         $result = $this->mongo_db->aggregate(MDB_PASSENGERSLOGS_COMPLETED,$arguments);
         //echo "<pre>"; print_r($result); exit;
-        return (!empty($result['result']))?$result['result']:array();
+        return (!empty($result['result']))?$result['result']:[];
     }
     
     /**************Dashboard Trip Details Chart***************/
@@ -2551,10 +2551,10 @@ Class Model_Company extends Model
                 } else {
                     $paystatus = '';
                 }
-                $result3 = DB::update(COMPANY_PAYMENT_MODULES)->set(array(
+                $result3 = DB::update(COMPANY_PAYMENT_MODULES)->set([
                     'pay_active' => $paystatus,
                     'pay_mod_default' => $default
-                ))->where('compay_payment_id', '=', $id)->execute();
+                ])->where('compay_payment_id', '=', $id)->execute();
             }
         }
         /***Company payment settings Insert***/
@@ -2570,7 +2570,7 @@ Class Model_Company extends Model
                 } else {
                     $paystatus = '';
                 }
-                $pay_result = DB::insert('company_payment_module', array(
+                $pay_result = DB::insert('company_payment_module', [
                     'company_id',
                     'company_user_id',
                     'pay_mod_id',
@@ -2578,7 +2578,7 @@ Class Model_Company extends Model
                     'pay_mod_image',
                     'pay_active',
                     'pay_mod_default'
-                ))->values(array(
+                ])->values([
                     $company_id,
                     $uid,
                     $post_value_array['payid_add'][$k],
@@ -2586,7 +2586,7 @@ Class Model_Company extends Model
                     $post_value_array['paymodimage'][$k],
                     $paystatus,
                     $default
-                ))->execute();
+                ])->execute();
             }
         }
         if (isset($pay_result) || isset($result3)) {

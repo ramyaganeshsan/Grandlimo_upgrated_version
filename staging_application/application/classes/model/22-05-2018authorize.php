@@ -17,9 +17,9 @@ class Model_Authorize extends Model
     public function login_validate($arr)
     {
         return Validation::factory($arr)
-        ->rule('email', 'not_empty', array(  ':value', 'Email' ))
-        ->rule('email', 'email', array(':value','Email' ))
-        ->rule('password', 'not_empty', array(':value','Password'));
+        ->rule('email', 'not_empty', [  ':value', 'Email' ])
+        ->rule('email', 'email', [':value','Email' ])
+        ->rule('password', 'not_empty', [':value','Password']);
     }
     public function adminlogin_details($email, $password, $need_count = FALSE, $status = ACTIVE)
     {
@@ -32,13 +32,13 @@ class Model_Authorize extends Model
         return $result;*/
         
         //MongoDB
-        $condition = array('email'=>$email,'password'=>$password,'status'=>ACTIVE,"\$or"=>array(array('user_type'=>'A'),array('user_type'=>'S')));
+        $condition = ['email'=>$email,'password'=>$password,'status'=>ACTIVE,"\$or"=>[['user_type'=>'A'],['user_type'=>'S']]];
         if($need_count){
             $result = $this->mongo_db->count(MDB_PEOPLE,$condition);
             return $result;
         } else {
-            $result = $this->mongo_db->find_one(MDB_PEOPLE,$condition,array('user_type','name','username','email','company_id','login_city','login_state','login_country'));
-            return (!empty($result))?$result:array();
+            $result = $this->mongo_db->find_one(MDB_PEOPLE,$condition,['user_type','name','username','email','company_id','login_city','login_state','login_country']);
+            return (!empty($result))?$result:[];
         }
     }
     public function companylogin_details($email, $password, $need_count = FALSE, $status = ACTIVE)
@@ -53,65 +53,65 @@ class Model_Authorize extends Model
         return $result;*/
         
         //MongoDB
-        $match_query = array('email'=>$email,'password'=>$password,'status'=>ACTIVE,'user_type'=>'C','company.companyinfo.company_domain'=>SUBDOMAIN);
-        $common_arguments = array(
-			array(
-				'$lookup' => array(
+        $match_query = ['email'=>$email,'password'=>$password,'status'=>ACTIVE,'user_type'=>'C','company.companyinfo.company_domain'=>SUBDOMAIN];
+        $common_arguments = [
+			[
+				'$lookup' => [
 					'from' => MDB_COMPANY,
 					'localField' => 'company_id',
 					'foreignField' => '_id',
 					'as' => 'company'
-				)
-			),
-			array(
+				]
+			],
+			[
 				'$unwind' => '$company'
-			),
-			array(
-				'$lookup' => array(
+			],
+			[
+				'$lookup' => [
 					'from' => PACKAGE_REPORT,
 					'localField' => 'company_id',
 					'foreignField' => 'upgrade_companyid',
 					'as' => 'package_report'
-				)
-			),
-			array(
+				]
+			],
+			[
 				'$unwind' => '$package_report'
-			),
-			array(
+			],
+			[
 				'$match' => $match_query
-			)
-		);
+			]
+		];
         if($need_count){
-            $count_arguments = array(
-                array(
-					'$sort' => array( 
+            $count_arguments = [
+                [
+					'$sort' => [ 
 						'package_report._id' => -1
-					),
-				),
-               array('$limit'	=> 1 ),
-                array(
-                    '$group' => array(
+					],
+				],
+               ['$limit'	=> 1 ],
+                [
+                    '$group' => [
                         '_id' => NULL,
-                        'count' => array(
+                        'count' => [
                             '$sum' => 1
-                        )
-                    )
-                )
-            );
+                        ]
+                    ]
+                ]
+            ];
 			$merge_arguments = array_merge($common_arguments, $count_arguments);
 			$result          = $this->mongo_db->aggregate(MDB_PEOPLE, $merge_arguments);
 			//echo "<pre>if";print_r($merge_arguments);exit;
 			return (!empty($result['result']) && isset($result['result'][0]['count'])) ? $result['result'][0]['count'] : 0;
         } else {
-            $count_arguments = array(
-                array(
-					'$sort' => array( 
+            $count_arguments = [
+                [
+					'$sort' => [ 
 						'package_report._id' => -1
-					),
-				),
-                array('$limit'	=> 1 ),
-                array(
-                    '$project' => array('_id'=>0,
+					],
+				],
+                ['$limit'	=> 1 ],
+                [
+                    '$project' => ['_id'=>0,
                         'id' => '$_id',
                         'user_type' => '$user_type',
                         'name' => '$name',
@@ -124,13 +124,13 @@ class Model_Authorize extends Model
                         'company_status' => '$company.companydetails.company_status',
                         'upgrade_packageid' => '$package_report.upgrade_packageid',
                         'upgrade_expirydate' => '$package_report.upgrade_expirydate',
-                    )
-                )
-            );
+                    ]
+                ]
+            ];
 			$merge_arguments = array_merge($common_arguments, $count_arguments);
 			$result          = $this->mongo_db->aggregate(MDB_PEOPLE, $merge_arguments);
             //echo "<pre>else";print_r($result['result']);exit;
-            return (!empty($result['result'])) ? $result['result'] : array();
+            return (!empty($result['result'])) ? $result['result'] : [];
         }
     }
     public function managerlogin_details($email, $password, $need_count = FALSE, $status = ACTIVE)
@@ -144,42 +144,42 @@ class Model_Authorize extends Model
         return $result;*/
 		
 		//MongoDB
-        $match_query = array('email'=>$email,'password'=>$password,'status'=>ACTIVE,'user_type'=>'M');
-        $common_arguments = array(
-			array(
-				'$lookup' => array(
+        $match_query = ['email'=>$email,'password'=>$password,'status'=>ACTIVE,'user_type'=>'M'];
+        $common_arguments = [
+			[
+				'$lookup' => [
 					'from' => MDB_COMPANY,
 					'localField' => 'company_id',
 					'foreignField' => '_id',
 					'as' => 'company'
-				)
-			),
-			array(
+				]
+			],
+			[
 				'$unwind' => '$company'
-			),
-			array(
+			],
+			[
 				'$match' => $match_query
-			)
-		);
+			]
+		];
         if($need_count){
-            $count_arguments = array(
-                array(
-                    '$group' => array(
+            $count_arguments = [
+                [
+                    '$group' => [
                         '_id' => NULL,
-                        'count' => array(
+                        'count' => [
                             '$sum' => 1
-                        )
-                    )
-                )
-            );
+                        ]
+                    ]
+                ]
+            ];
 			$merge_arguments = array_merge($common_arguments, $count_arguments);
 			$result          = $this->mongo_db->aggregate(MDB_PEOPLE, $merge_arguments);
 			//echo "<pre>if";print_r($result);exit;
 			return (!empty($result['result']) && isset($result['result'][0]['count'])) ? $result['result'][0]['count'] : 0;
         } else {
-            $count_arguments = array(
-                array(
-                    '$project' => array('_id'=>0,
+            $count_arguments = [
+                [
+                    '$project' => ['_id'=>0,
                         'id' => '$_id',
                         'user_type' => '$user_type',
                         'name' => '$name',
@@ -190,13 +190,13 @@ class Model_Authorize extends Model
                         'login_state' => '$login_state',
                         'login_country' => '$login_country',
                         'company_status' => '$company.companydetails.company_status',
-                    )
-                )
-            );
+                    ]
+                ]
+            ];
 			$merge_arguments = array_merge($common_arguments, $count_arguments);
 			$result          = $this->mongo_db->aggregate(MDB_PEOPLE, $merge_arguments);
             //echo "<pre>else";print_r($result['result']);exit;
-            return (!empty($result['result'])) ? $result['result'] : array();
+            return (!empty($result['result'])) ? $result['result'] : [];
         }
     }
     public function login_details($email, $password, $need_count = FALSE, $status = ACTIVE)
@@ -213,63 +213,63 @@ class Model_Authorize extends Model
     {
         //MongoDB
         $mongodb = MangoDB::instance('default');
-        $result = $mongodb->count(MDB_PEOPLE,array('email'=>$email,'user_type'=>ADMIN));
+        $result = $mongodb->count(MDB_PEOPLE,['email'=>$email,'user_type'=>ADMIN]);
         return ($result>0)?TRUE:FALSE;
     }
     public static function forgotpassword_emailcompanycheck($email)
     {
         //MongoDB
         $mongodb = MangoDB::instance('default');
-        $result = $mongodb->count(MDB_PEOPLE,array('email'=>$email,'user_type'=>'C'));
+        $result = $mongodb->count(MDB_PEOPLE,['email'=>$email,'user_type'=>'C']);
         return ($result>0)?TRUE:FALSE;
     }
     public static function forgotpassword_emailmanagercheck($email)
     {
         //MongoDB
         $mongodb = MangoDB::instance('default');
-        $result = $mongodb->count(MDB_PEOPLE,array('email'=>$email,'user_type'=>'M'));
+        $result = $mongodb->count(MDB_PEOPLE,['email'=>$email,'user_type'=>'M']);
         return ($result>0)?TRUE:FALSE;
     }
     public function forgotpassword_validate($arr)
     {
-        $validate = Validation::factory($arr)->rule('email', 'not_empty', array(
+        $validate = Validation::factory($arr)->rule('email', 'not_empty', [
             ':value',
             'Email'
-        ))->rule('email', 'email_domain', array(
+        ])->rule('email', 'email_domain', [
             ':value',
             'Email'
-        ))->rule('email', 'Model_Authorize::forgotpassword_emailcheck', array(
+        ])->rule('email', 'Model_Authorize::forgotpassword_emailcheck', [
             ':value',
             'Email'
-        ));
+        ]);
         return $validate;
     }
     public function forgotpassword_companyvalidate($arr)
     {
-        $validate = Validation::factory($arr)->rule('email', 'not_empty', array(
+        $validate = Validation::factory($arr)->rule('email', 'not_empty', [
             ':value',
             'Email'
-        ))->rule('email', 'email_domain', array(
+        ])->rule('email', 'email_domain', [
             ':value',
             'Email'
-        ))->rule('email', 'Model_Authorize::forgotpassword_emailcompanycheck', array(
+        ])->rule('email', 'Model_Authorize::forgotpassword_emailcompanycheck', [
             ':value',
             'Email'
-        ));
+        ]);
         return $validate;
     }
     public function forgotpassword_managervalidate($arr)
     {
-        $validate = Validation::factory($arr)->rule('email', 'not_empty', array(
+        $validate = Validation::factory($arr)->rule('email', 'not_empty', [
             ':value',
             'Email'
-        ))->rule('email', 'email_domain', array(
+        ])->rule('email', 'email_domain', [
             ':value',
             'Email'
-        ))->rule('email', 'Model_Authorize::forgotpassword_emailmanagercheck', array(
+        ])->rule('email', 'Model_Authorize::forgotpassword_emailmanagercheck', [
             ':value',
             'Email'
-        ));
+        ]);
         return $validate;
     }
     public static function check_password($password, $userid)
@@ -281,40 +281,40 @@ class Model_Authorize extends Model
     {
         return Validation::factory($arr)->rule('firstname', 'not_empty')
             //->rule('firstname', 'alpha_dash')
-            ->rule('firstname', 'min_length', array(
+            ->rule('firstname', 'min_length', [
             ':value',
             '3'
-        ))->rule('firstname', 'max_length', array(
+        ])->rule('firstname', 'max_length', [
             ':value',
             '30'
-        ))->rule('lastname', 'not_empty')
+        ])->rule('lastname', 'not_empty')
         //->rule('lastname', 'alpha_dash')            
         //->rule('lastname', 'min_length', array(':value', '4'))            
         //->rule('lastname', 'max_length', array(':value', '30'))
             ->rule('email', 'not_empty')
             ->rule('email', 'email')
-            ->rule('email', 'max_length', array(
+            ->rule('email', 'max_length', [
             ':value',
             '100'
-        ))->rule('email', 'Model_Edit::checkemail', array(
+        ])->rule('email', 'Model_Edit::checkemail', [
             ':value',
             $uid
-        ))->rule('phone', 'not_empty')
+        ])->rule('phone', 'not_empty')
         //->rule('phone', 'numeric')
-            ->rule('phone', 'min_length', array(
+            ->rule('phone', 'min_length', [
             ':value',
             '7'
-        ))->rule('phone', 'max_length', array(
+        ])->rule('phone', 'max_length', [
             ':value',
             '20'
-        ))
+        ])
         //->rule('phone', 'phone', array(':value'))
-            ->rule('phone', 'contact_phone', array(
+            ->rule('phone', 'contact_phone', [
             ':value'
-        ))->rule('phone', 'Model_Edit::checkphone', array(
+        ])->rule('phone', 'Model_Edit::checkphone', [
             ':value',
             $uid
-        ))->rule('address', 'not_empty');
+        ])->rule('address', 'not_empty');
         //->rule('country', 'not_empty')
         //->rule('state', 'not_empty')
         //->rule('city', 'not_empty');
@@ -325,74 +325,74 @@ class Model_Authorize extends Model
         return Validation::factory($arr)
         ->rule('name', 'not_empty')
         ->rule('name', 'alpha_dash')
-        ->rule('name', 'min_length', array(
+        ->rule('name', 'min_length', [
             ':value',
             '3'
-        ))->rule('name', 'max_length', array(
+        ])->rule('name', 'max_length', [
             ':value',
             '30'
-        ))->rule('email', 'not_empty')
+        ])->rule('email', 'not_empty')
         ->rule('email', 'email')
-        ->rule('email', 'max_length', array(
+        ->rule('email', 'max_length', [
             ':value',
             '100'
-        ))->rule('email', 'Model_Edit::check_passengeremail', array(
+        ])->rule('email', 'Model_Edit::check_passengeremail', [
             ':value',
             $uid
-        ))->rule('phone', 'not_empty')
+        ])->rule('phone', 'not_empty')
         //->rule('phone', 'numeric')            
         //->rule('phone','Model_Add::check_valid_phone_number',array(':value','/^[0-9()-+]*$/u'))
-        ->rule('phone', 'min_length', array(
+        ->rule('phone', 'min_length', [
             ':value',
             '7'
-        ))->rule('phone', 'max_length', array(
+        ])->rule('phone', 'max_length', [
             ':value',
             '20'
-        ))->rule('phone', 'phone', array(
+        ])->rule('phone', 'phone', [
             ':value'
-        ))->rule('pay_by', 'not_empty');
+        ])->rule('pay_by', 'not_empty');
     }
     public function changepassword_validate($arr, $id)
     {
         return Validation::factory($arr)
         ->rule('oldpassword', 'not_empty')
-        ->rule('oldpassword', 'valid_password', array(
+        ->rule('oldpassword', 'valid_password', [
             ':value',
             '/^[A-Za-z0-9@#$%!^&*(){}?-_<>=+|~`\'".,:;[]+]*$/u'
-        ))->rule('oldpassword', 'max_length', array(
+        ])->rule('oldpassword', 'max_length', [
             ':value',
             '16'
-        ))->rule('oldpassword', 'Model_Authorize::check_pass', array(
+        ])->rule('oldpassword', 'Model_Authorize::check_pass', [
             ':value',
             $id
-        ))->rule('password', 'not_empty')->rule('password', 'valid_password', array(
+        ])->rule('password', 'not_empty')->rule('password', 'valid_password', [
             ':value',
             '/^[A-Za-z0-9@#$%!^&*(){}?-_<>=+|~`\'".,:;[]+]*$/u'
-        ))->rule('password', 'max_length', array(
+        ])->rule('password', 'max_length', [
             ':value',
             '16'
-        ))->rule('repassword', 'not_empty')->rule('repassword', 'valid_password', array(
+        ])->rule('repassword', 'not_empty')->rule('repassword', 'valid_password', [
             ':value',
             '/^[A-Za-z0-9@#$%!^&*(){}?-_<>=+|~`\'".,:;[]+]*$/u'
-        ))->rule('repassword', 'matches', array(
+        ])->rule('repassword', 'matches', [
             ':validation',
             'password',
             'repassword'
-        ))->rule('repassword', 'max_length', array(
+        ])->rule('repassword', 'max_length', [
             ':value',
             '16'
-        ));
+        ]);
     }
     public function changepassword($password, $userid)
     {
         $org_password = $password;
         $password     = md5($password);
-        $set_array = array(
+        $set_array = [
             "password" => $password,
             "org_password" => $org_password
-        );
+        ];
         //MongoDB
-        $result = $this->mongo_db->update(MDB_PEOPLE,array('_id'=>(int)$userid),array('$set'=>$set_array),array('upsert'=>true));
+        $result = $this->mongo_db->update(MDB_PEOPLE,['_id'=>(int)$userid],['$set'=>$set_array],['upsert'=>true]);
         return (empty($result['err']))?1:0;
     }
     public function select_users_exists($email, $status = ADMIN)
@@ -409,9 +409,9 @@ class Model_Authorize extends Model
     public function select_users_byemail($email)
     {
         //MongoDB
-        $result = $this->mongo_db->find_one(MDB_PEOPLE,array('email'=>$email),array('_id','name','email'));
+        $result = $this->mongo_db->find_one(MDB_PEOPLE,['email'=>$email],['_id','name','email']);
         //echo '<pre>';print_r($result);exit;
-        return (!empty($result)) ? $result : array();
+        return (!empty($result)) ? $result : [];
     }
     public function select_user_details_by_idall($userid)
     {
@@ -455,7 +455,7 @@ class Model_Authorize extends Model
         $post['country'] = isset($post['country'])?$post['country']:DEFAULT_COUNTRY;
         $post['state'] = isset($post['state'])?$post['state']:DEFAULT_STATE;
 		$post['city'] = isset($post['city'])?$post['city']:DEFAULT_CITY;
-        $data_set = array(
+        $data_set = [
             'name' => $post['firstname'],
             'address' => $post['address'],
             'login_country' => (int)$post['country'],
@@ -464,9 +464,9 @@ class Model_Authorize extends Model
             'lastname' => $post['lastname'],
             'email' => $post['email'],
             'phone' => $post['phone']
-        );
+        ];
 		
-        $result = $this->mongo_db->update(MDB_PEOPLE,array('_id'=>(int)$uid),array('$set'=>$data_set),array('upsert'=>true));
+        $result = $this->mongo_db->update(MDB_PEOPLE,['_id'=>(int)$uid],['$set'=>$data_set],['upsert'=>true]);
         return (empty($result['err'])) ? 1 : $result['errmsg'];
     }
     /** edit passengers details**/
@@ -488,7 +488,7 @@ class Model_Authorize extends Model
 			$enddate = date( "Y-m-d", strtotime( "$startdate +30 day" ) );
 		}
 		if($post['pay_by'] != 3) {
-			$data = array(
+			$data = [
 				'name' => $post['name'],
 				//'address' => $post['address'],
 				'email' => $post['email'],
@@ -502,9 +502,9 @@ class Model_Authorize extends Model
                 'trip_amt_limit' =>$post['trip_amt_limit'],
                 'notes' =>$post['notes'],
                 'wallet_block'=>(int)$post['wallet_block'],
-			);	
+			];	
 		} else {
-			$data = array(
+			$data = [
 				'name' => $post['name'],
 				//'address' => $post['address'],
 				'email' => $post['email'],
@@ -515,24 +515,24 @@ class Model_Authorize extends Model
                 'vip_user' => (int)$post['vip_user'],
                 'notes' =>isset($post['notes'])?$post['notes']:'',
                 'wallet_block'=>(int)$post['wallet_block'],
-			);
+			];
 		}
         
-        $result = $this->mongo_db->update(MDB_PASSENGERS,array('_id'=>(int)$uid),array('$set'=>$data),array('upsert'=>true));
+        $result = $this->mongo_db->update(MDB_PASSENGERS,['_id'=>(int)$uid],['$set'=>$data],['upsert'=>true]);
         //print_r($result);exit;
         return (empty($result['err']))?1:$result['errmsg'];
     }
 	
 	public function getPayBy() {
-	   $result = $this->mongo_db->find(MDB_PAY_BY,array('status'=>'A'),array('_id','type','days'));
-	   return (!empty($result)) ? iterator_to_array($result) : array();       
+	   $result = $this->mongo_db->find(MDB_PAY_BY,['status'=>'A'],['_id','type','days']);
+	   return (!empty($result)) ? iterator_to_array($result) : [];       
 	}
     //update user photo null 
     public function update_user_photo($userid)
     {
-        $sql_query = array(
+        $sql_query = [
             'photo' => ""
-        );
+        ];
         $result    = DB::update(PEOPLE)->set($sql_query)->where('id', '=', $userid)->execute();
         return 1;
     }
@@ -547,9 +547,9 @@ class Model_Authorize extends Model
         return $query;*/
         
         //MongoDB
-        $result = $this->mongo_db->find_one(MDB_PEOPLE,array('_id'=>(int)$userid),array('_id','name','lastname','email','address','login_country','login_state','login_city','status','phone'));
+        $result = $this->mongo_db->find_one(MDB_PEOPLE,['_id'=>(int)$userid],['_id','name','lastname','email','address','login_country','login_state','login_city','status','phone']);
        //print_r($result);exit;
-        return (!empty($result)) ? $result : array();
+        return (!empty($result)) ? $result : [];
     }
     /** get passenger id */
     public function login_details_by_passengerid($userid)
@@ -558,8 +558,8 @@ class Model_Authorize extends Model
         return $query;*/
         
         //MongoDB
-        $result = $this->mongo_db->find_one(MDB_PASSENGERS,array('_id'=>(int)$userid),array('_id','name','lastname','email','address','phone','discount','pay_by','trip_amt_limit','vip_user','notes','wallet_block'));
-        return (!empty($result)) ? $result : array();
+        $result = $this->mongo_db->find_one(MDB_PASSENGERS,['_id'=>(int)$userid],['_id','name','lastname','email','address','phone','discount','pay_by','trip_amt_limit','vip_user','notes','wallet_block']);
+        return (!empty($result)) ? $result : [];
     }
     public function select_user_details_by_id($userid)
     {
@@ -567,9 +567,9 @@ class Model_Authorize extends Model
         return $query;*/
        
         //MongoDB
-        $result = $this->mongo_db->find_one(MDB_PEOPLE,array('_id'=>(int)$userid,'status'=>ACTIVE),array('_id','user_type','email','name'));
+        $result = $this->mongo_db->find_one(MDB_PEOPLE,['_id'=>(int)$userid,'status'=>ACTIVE],['_id','user_type','email','name']);
         //echo '<pre>';print_r($result);exit;
-        return (!empty($result)) ? $result : array();
+        return (!empty($result)) ? $result : [];
     }
     public function select_alluser_details($id)
     {
@@ -577,9 +577,9 @@ class Model_Authorize extends Model
         return $query;*/
     
         //MongoDB
-        $result = $this->mongo_db->find(MDB_PEOPLE,array('_id'=>array('$ne'=>(int)$id)));
+        $result = $this->mongo_db->find(MDB_PEOPLE,['_id'=>['$ne'=>(int)$id]]);
         //echo '<pre>';print_r($result);exit;
-        return (!empty($result)) ? iterator_to_array($result) : array();
+        return (!empty($result)) ? iterator_to_array($result) : [];
     }
     /**
      * Check inline textbox label not empty for javscript on focus and on blur
@@ -590,16 +590,16 @@ class Model_Authorize extends Model
     }
     public static function unique_email($email)
     {
-        return !DB::select(array(
+        return !DB::select([
             DB::expr('COUNT(email)'),
             'total'
-        ))->from(PEOPLE)->where('email', '=', $email)->execute()->get('total');
+        ])->from(PEOPLE)->where('email', '=', $email)->execute()->get('total');
     }
     public function user_list()
     {
 		// MongoDB
-		$result = $this->mongo_db->find(MDB_PEOPLE,array('user_type'=>array('$ne'=>'N'),'user_type'=>array('$ne'=>'A'),'status'=>array('$ne'=>'T')))->sort(array('created_date'=>-1));
-		return (!empty($result))?iterator_to_array($result):array();
+		$result = $this->mongo_db->find(MDB_PEOPLE,['user_type'=>['$ne'=>'N'],'user_type'=>['$ne'=>'A'],'status'=>['$ne'=>'T']])->sort(['created_date'=>-1]);
+		return (!empty($result))?iterator_to_array($result):[];
     }
     public function all_user_list($offset = '', $val = '',$find_count = false)
     {
@@ -613,51 +613,51 @@ class Model_Authorize extends Model
 		
 		// MongoDB
 		if($find_count){
-			$result = $this->mongo_db->count(MDB_PEOPLE,array('user_type'=>array('$ne'=>'A'),'status'=>array('$ne'=>'T')));
+			$result = $this->mongo_db->count(MDB_PEOPLE,['user_type'=>['$ne'=>'A'],'status'=>['$ne'=>'T']]);
 			return $result;
 		} else {
-			$result = $this->mongo_db->find(MDB_PEOPLE,array('user_type'=>array('$ne'=>'A'),'status'=>array('$ne'=>'T')),array('_id','name','lastname','email','phone','address','created_date','user_type','status'))->sort(array('created_date'=>-1))->skip($offset)->limit($val);
-			return (!empty($result))?iterator_to_array($result):array();
+			$result = $this->mongo_db->find(MDB_PEOPLE,['user_type'=>['$ne'=>'A'],'status'=>['$ne'=>'T']],['_id','name','lastname','email','phone','address','created_date','user_type','status'])->sort(['created_date'=>-1])->skip($offset)->limit($val);
+			return (!empty($result))?iterator_to_array($result):[];
 		}
     }
     public function validate_user_form($arr)
     {
         $arr['name']  = trim($arr['name']);
         $arr['email'] = trim($arr['email']);
-        return Validation::factory($arr)->rule('name', 'not_empty')->rule('name', 'min_length', array(
+        return Validation::factory($arr)->rule('name', 'not_empty')->rule('name', 'min_length', [
             ':value',
             '5'
-        ))->rule('name', 'min_length', array(
+        ])->rule('name', 'min_length', [
             ':value',
             '32'
-        ))->rule('password', 'not_empty')->rule('password', 'min_length', array(
+        ])->rule('password', 'not_empty')->rule('password', 'min_length', [
             ':value',
             '5'
-        ))->rule('file', 'Upload::type', array(
+        ])->rule('file', 'Upload::type', [
             $files_value_array['photo'],
-            array(
+            [
                 'jpg',
                 'jpeg',
                 'png',
                 'gif'
-            )
-        ))->rule('file', 'Upload::size', array(
+            ]
+        ])->rule('file', 'Upload::size', [
             $files_value_array['photo'],
             '2M'
-        ))->rule('email', 'not_empty')->rule('email', 'email')->rule('country_id', 'not_empty')->rule('paypal_account', 'email')->rule('username', 'not_empty')->rule('username', 'min_length', array(
+        ])->rule('email', 'not_empty')->rule('email', 'email')->rule('country_id', 'not_empty')->rule('paypal_account', 'email')->rule('username', 'not_empty')->rule('username', 'min_length', [
             ':value',
             '4'
-        ))->rule('username', 'max_length', array(
+        ])->rule('username', 'max_length', [
             ':value',
             '30'
-        ));
+        ]);
     }
     public function add_users($validator, $post_value_array, $image_name, $activation_key)
     {
         $randomkey = Commonfunction::admin_random_user_password_generator();
         $email     = $post_value_array['email'];
         $status    = isset($post_value_array['status']) ? "A" : "I";
-        $rs        = DB::insert(USERS)->columns(array(
+        $rs        = DB::insert(USERS)->columns([
             'firstname',
             'lastname',
             'email',
@@ -669,7 +669,7 @@ class Model_Authorize extends Model
             'activation_code',
             'created_date',
             'country_id'
-        ))->values(array(
+        ])->values([
             $post_value_array['firstname'],
             $post_value_array['lastname'],
             $post_value_array['email'],
@@ -681,7 +681,7 @@ class Model_Authorize extends Model
             $randomkey,
             $this->mdate,
             $post_value_array['country_id']
-        ))->execute();
+        ])->execute();
         if ($rs) {
             $email = DB::select()->from(USERS)->where('email', '=', $email)->execute()->as_array();
             return $email;
@@ -721,8 +721,8 @@ class Model_Authorize extends Model
         //MongoDB
         $mongodb = MangoDB::instance('default');
         $pass     = md5($pass);
-        $condition = array('_id'=>(int)$userid);
-        $result = $mongodb->find_one(MDB_PEOPLE,$condition,array('password'));
+        $condition = ['_id'=>(int)$userid];
+        $result = $mongodb->find_one(MDB_PEOPLE,$condition,['password']);
         $password = $result["password"];
         return ($password == $pass)?true:false;
     }
@@ -761,9 +761,9 @@ class Model_Authorize extends Model
         } else if ($status == 'I') {
             $update_status = 'A';
         }
-        $rs = DB::update(PEOPLE)->set(array(
+        $rs = DB::update(PEOPLE)->set([
             "status" => $update_status
-        ))->where('id', '=', $chguserid)->execute();
+        ])->where('id', '=', $chguserid)->execute();
         if ($rs)
             $update = 1;
         else
@@ -784,9 +784,9 @@ class Model_Authorize extends Model
         } else if ($status == 'I') {
             $update_status = 'A';
         }
-        $rs = DB::update(PASSENGERS)->set(array(
+        $rs = DB::update(PASSENGERS)->set([
             "user_status" => $update_status
-        ))->where('id', '=', $chguserid)->execute();
+        ])->where('id', '=', $chguserid)->execute();
         if ($rs)
             $update = 1;
         else
@@ -807,26 +807,26 @@ class Model_Authorize extends Model
     /** passenger list **/
     public function all_passenger_list_history($offset, $val, $find_count = FALSE)
     {
-		$match_query = array('user_type'=>'O', 'status' => "A" );
+		$match_query = ['user_type'=>'O', 'status' => "A" ];
         if ($find_count == TRUE) {
-            $arguments = array(
+            $arguments = [
                /* array(
                     '$unwind' => '$passengerdetails'
                 ),*/
-                array(
-                    '$project' => array(
+                [
+                    '$project' => [
                         'pid' => '$_id'
-                    )
-                ),
-                array(
-                    '$group' => array(
+                    ]
+                ],
+                [
+                    '$group' => [
                         '_id' => NULL,
-                        'count' => array(
+                        'count' => [
                             '$sum' => 1
-                        )
-                    )
-                )
-            );
+                        ]
+                    ]
+                ]
+            ];
             $result    = $this->mongo_db->aggregate(MDB_PEOPLE, $arguments);
             //echo "<pre>"; print_r($result['result'][0]['count']); exit;
             return (!empty($result['result']) && isset($result['result'][0]['count'])) ? $result['result'][0]['count'] : 0;
@@ -836,30 +836,30 @@ class Model_Authorize extends Model
             ->execute()
             ->as_array();
             return $result;*/
-            $arguments = array(
+            $arguments = [
                /* array(
                     '$unwind' => '$passengerdetails'
                 ),*/
-                array(
+                [
 				'$match' => $match_query
-				),
-                array(
-                    '$project' => array(
+				],
+                [
+                    '$project' => [
                         'pid' => '$_id'
-                    )
-                ),
-                array(
-                    '$sort' => array(
+                    ]
+                ],
+                [
+                    '$sort' => [
                         'created_date' => -1
-                    )
-                ),
-                array(
+                    ]
+                ],
+                [
                     '$skip' => (int) $offset
-                ),
-                array(
+                ],
+                [
                     '$limit' => (int) $val
-                )
-            );
+                ]
+            ];
             $result    = $this->mongo_db->aggregate(MDB_PEOPLE, $arguments);
             //echo "<pre>"; print_r($result['result']); exit;
             return (!empty($result['result'])) ? $result['result'] : 0;
@@ -878,42 +878,42 @@ class Model_Authorize extends Model
         return $result;*/
 		
 		//MongoDB
-        $match_query = array('email'=>$email,'password'=>$password,'status'=>ACTIVE,'user_type'=>'O');
-        $common_arguments = array(
-			array(
-				'$lookup' => array(
+        $match_query = ['email'=>$email,'password'=>$password,'status'=>ACTIVE,'user_type'=>'O'];
+        $common_arguments = [
+			[
+				'$lookup' => [
 					'from' => MDB_COMPANY,
 					'localField' => 'company_id',
 					'foreignField' => '_id',
 					'as' => 'company'
-				)
-			),
-			array(
+				]
+			],
+			[
 				'$unwind' => '$company'
-			),
-			array(
+			],
+			[
 				'$match' => $match_query
-			)
-		);
+			]
+		];
         if($need_count){
-            $count_arguments = array(
-                array(
-                    '$group' => array(
+            $count_arguments = [
+                [
+                    '$group' => [
                         '_id' => NULL,
-                        'count' => array(
+                        'count' => [
                             '$sum' => 1
-                        )
-                    )
-                )
-            );
+                        ]
+                    ]
+                ]
+            ];
 			$merge_arguments = array_merge($common_arguments, $count_arguments);
 			$result          = $this->mongo_db->aggregate(MDB_PEOPLE, $merge_arguments);
 			//echo "<pre>if";print_r($result);exit;
 			return (!empty($result['result']) && isset($result['result'][0]['count'])) ? $result['result'][0]['count'] : 0;
         } else {
-            $count_arguments = array(
-                array(
-                    '$project' => array('_id'=>0,
+            $count_arguments = [
+                [
+                    '$project' => ['_id'=>0,
                         'id' => '$_id',
                         'user_type' => '$user_type',
                         'name' => '$name',
@@ -925,35 +925,35 @@ class Model_Authorize extends Model
                         'login_state' => '$login_state',
                         'login_country' => '$login_country',
                         'company_status' => '$company.companydetails.company_status',
-                    )
-                )
-            );
+                    ]
+                ]
+            ];
 			$merge_arguments = array_merge($common_arguments, $count_arguments);
 			$result          = $this->mongo_db->aggregate(MDB_PEOPLE, $merge_arguments);
             //echo "<pre>else";print_r($result['result']);exit;
-            return (!empty($result['result'])) ? $result['result'] : array();
+            return (!empty($result['result'])) ? $result['result'] : [];
         }
     }
     
      public function forgotpassword_corporatevalidate($arr)
     {
-        $validate = Validation::factory($arr)->rule('email', 'not_empty', array(
+        $validate = Validation::factory($arr)->rule('email', 'not_empty', [
             ':value',
             'Email'
-        ))->rule('email', 'email_domain', array(
+        ])->rule('email', 'email_domain', [
             ':value',
             'Email'
-        ))->rule('email', 'Model_Authorize::forgotpassword_emailcorporatecheck', array(
+        ])->rule('email', 'Model_Authorize::forgotpassword_emailcorporatecheck', [
             ':value',
             'Email'
-        ));
+        ]);
         return $validate;
     }
      public static function forgotpassword_emailcorporatecheck($email)
     {
         //MongoDB
         $mongodb = MangoDB::instance('default');
-        $result = $mongodb->count(MDB_PEOPLE,array('email'=>$email,'user_type'=>'O'));
+        $result = $mongodb->count(MDB_PEOPLE,['email'=>$email,'user_type'=>'O']);
         return ($result>0)?TRUE:FALSE;
     }
     /* CORPORATE PORTAL */

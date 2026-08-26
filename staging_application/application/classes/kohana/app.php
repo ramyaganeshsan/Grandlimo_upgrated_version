@@ -49,7 +49,7 @@ class Kohana_App {
         return false;
     }
 
-    public static function t($string,$replace = array())
+    public static function t($string,$replace = [])
     {
         return __($string,$replace);
     }

@@ -1,6 +1,6 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 
-return array(
+return [
 'button_login' => 'Log In',
 'button_signup' => 'Sign Up',
 'button_update' => 'Update',
@@ -3193,4 +3193,4 @@ provided by its licensed drivers who undergo rigorous training and screening to 
 'time_interval_greater' => 'The To Time Should Be Always Greater Then From Time',
 'aware_of_the_form_session' => 'Please be aware of the changes',
 'image_only'=>'Is Content Have Only Image ?'
-); 
+]; 

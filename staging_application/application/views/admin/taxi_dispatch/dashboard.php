@@ -664,7 +664,7 @@ if ($_SESSION['user_type'] == "O") {
                                                 <option value=""><?php echo __('select_the_promocode'); ?></option>
                                                 <?php if (count($promo_res_edit)) {
 
-                                                    $promo_arr = array();
+                                                    $promo_arr = [];
                                                     foreach ($promo_res_edit as $val) {
 
                                                         if (!in_array($val['promocode'], $promo_arr)) {
@@ -1004,7 +1004,7 @@ foreach($model_details as $list) { ?>
                             <div class="tab-pane" id="total-earnings" style="display:block;visibility:visible;">
                                 <?php
                                 $day_number = date("d");
-                                $ends = array('th', 'st', 'nd', 'rd', 'th', 'th', 'th', 'th', 'th', 'th');
+                                $ends = ['th', 'st', 'nd', 'rd', 'th', 'th', 'th', 'th', 'th', 'th'];
                                 if (($day_number % 100) >= 11 && ($day_number % 100) <= 13)
                                     $day_abbreviation = $day_number . 'th';
                                 else

@@ -30,7 +30,7 @@
 		</script>
 		*/ ?>
 		<?php 
-			$alert_message = array('email_exists' => 'Email already exists','phone_exists'=>'Phone number already exists');
+			$alert_message = ['email_exists' => 'Email already exists','phone_exists'=>'Phone number already exists'];
 			$encoded_message = json_encode($alert_message);
 		?>
 		

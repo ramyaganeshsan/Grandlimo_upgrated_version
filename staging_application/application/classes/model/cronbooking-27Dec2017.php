@@ -134,9 +134,9 @@ class Model_Cronbooking extends Model
 
 						$insert_booking = 'S';
 
-						$today_result = DB::insert(PASSENGERS_LOG, array('booking_key','passengers_id','company_id','current_location','pickup_latitude','pickup_longitude','drop_location','drop_latitude','drop_longitude',
+						$today_result = DB::insert(PASSENGERS_LOG, ['booking_key','passengers_id','company_id','current_location','pickup_latitude','pickup_longitude','drop_location','drop_latitude','drop_longitude',
 						'pickup_time','no_passengers','approx_distance','approx_duration','approx_fare','search_city','notes_driver','faretype','fixedprice','luggage','bookby',
-						'operator_id','additional_fields','travel_status','taxi_modelid','recurrent_type','recurrent_id','company_tax','account_id','accgroup_id'))->values(array($booking_key,$booking_details[0]['recurrent_passengerid'],$booking_details[0]['companyid'],$booking_details[0]['recurrent_pickuplocation'],$booking_details[0]['recurrent_pickuplatitude'],$booking_details[0]['recurrent_pickuplongitude'],$booking_details[0]['recurrent_droplocation'],$booking_details[0]['recurrent_droplatitude'],$booking_details[0]['recurrent_droplongitude'],$pickup_datetime,$booking_details[0]['recurrent_noofpassengers'],$booking_details[0]['recurrent_approxdistance'],$booking_details[0]['recurrent_approxduration'],$booking_details[0]['recurrent_approxfare'],$booking_details[0]['recurrent_city'],$booking_details[0]['recurrent_notes_driver'],$booking_details[0]['recurrent_faretype'],$booking_details[0]['recurrent_fixedprice'],$booking_details[0]['recurrent_luggage'],'2',$booking_details[0]['recurrent_operatorid'],$booking_details[0]['recurrent_additionalfields'],'0',$booking_details[0]['recurrent_modelid'],'2',$recurrent_id,$company_tax,$booking_details[0]['recurrent_accountid'],$booking_details[0]['recurrent_groupid']))->execute();	
+						'operator_id','additional_fields','travel_status','taxi_modelid','recurrent_type','recurrent_id','company_tax','account_id','accgroup_id'])->values([$booking_key,$booking_details[0]['recurrent_passengerid'],$booking_details[0]['companyid'],$booking_details[0]['recurrent_pickuplocation'],$booking_details[0]['recurrent_pickuplatitude'],$booking_details[0]['recurrent_pickuplongitude'],$booking_details[0]['recurrent_droplocation'],$booking_details[0]['recurrent_droplatitude'],$booking_details[0]['recurrent_droplongitude'],$pickup_datetime,$booking_details[0]['recurrent_noofpassengers'],$booking_details[0]['recurrent_approxdistance'],$booking_details[0]['recurrent_approxduration'],$booking_details[0]['recurrent_approxfare'],$booking_details[0]['recurrent_city'],$booking_details[0]['recurrent_notes_driver'],$booking_details[0]['recurrent_faretype'],$booking_details[0]['recurrent_fixedprice'],$booking_details[0]['recurrent_luggage'],'2',$booking_details[0]['recurrent_operatorid'],$booking_details[0]['recurrent_additionalfields'],'0',$booking_details[0]['recurrent_modelid'],'2',$recurrent_id,$company_tax,$booking_details[0]['recurrent_accountid'],$booking_details[0]['recurrent_groupid']])->execute();	
 
 
 						$ins_logid = $today_result[0];
@@ -219,9 +219,9 @@ class Model_Cronbooking extends Model
 
 							$insert_booking = 'S';
 
-							$today_result = DB::insert(PASSENGERS_LOG, array('booking_key','passengers_id','company_id','current_location','pickup_latitude','pickup_longitude','drop_location','drop_latitude','drop_longitude',
+							$today_result = DB::insert(PASSENGERS_LOG, ['booking_key','passengers_id','company_id','current_location','pickup_latitude','pickup_longitude','drop_location','drop_latitude','drop_longitude',
 							'pickup_time','no_passengers','approx_distance','approx_duration','approx_fare','search_city','faretype','fixedprice','luggage','bookby',
-							'operator_id','additional_fields','travel_status','taxi_modelid','recurrent_type','recurrent_id','company_tax','account_id','accgroup_id'))->values(array($booking_key,$booking_details[0]['recurrent_passengerid'],$booking_details[0]['companyid'],$booking_details[0]['recurrent_pickuplocation'],$booking_details[0]['recurrent_pickuplatitude'],$booking_details[0]['recurrent_pickuplongitude'],$booking_details[0]['recurrent_droplocation'],$booking_details[0]['recurrent_droplatitude'],$booking_details[0]['recurrent_droplongitude'],$pickup_datetime,$booking_details[0]['recurrent_noofpassengers'],$booking_details[0]['recurrent_approxdistance'],$booking_details[0]['recurrent_approxduration'],$booking_details[0]['recurrent_approxfare'],$booking_details[0]['recurrent_city'],$booking_details[0]['recurrent_faretype'],$booking_details[0]['recurrent_fixedprice'],$booking_details[0]['recurrent_luggage'],'2',$booking_details[0]['recurrent_operatorid'],$booking_details[0]['recurrent_additionalfields'],'0',$booking_details[0]['recurrent_modelid'],'2',$recurrent_id,$company_tax,$booking_details[0]['recurrent_accountid'],$booking_details[0]['recurrent_groupid']))->execute();	
+							'operator_id','additional_fields','travel_status','taxi_modelid','recurrent_type','recurrent_id','company_tax','account_id','accgroup_id'])->values([$booking_key,$booking_details[0]['recurrent_passengerid'],$booking_details[0]['companyid'],$booking_details[0]['recurrent_pickuplocation'],$booking_details[0]['recurrent_pickuplatitude'],$booking_details[0]['recurrent_pickuplongitude'],$booking_details[0]['recurrent_droplocation'],$booking_details[0]['recurrent_droplatitude'],$booking_details[0]['recurrent_droplongitude'],$pickup_datetime,$booking_details[0]['recurrent_noofpassengers'],$booking_details[0]['recurrent_approxdistance'],$booking_details[0]['recurrent_approxduration'],$booking_details[0]['recurrent_approxfare'],$booking_details[0]['recurrent_city'],$booking_details[0]['recurrent_faretype'],$booking_details[0]['recurrent_fixedprice'],$booking_details[0]['recurrent_luggage'],'2',$booking_details[0]['recurrent_operatorid'],$booking_details[0]['recurrent_additionalfields'],'0',$booking_details[0]['recurrent_modelid'],'2',$recurrent_id,$company_tax,$booking_details[0]['recurrent_accountid'],$booking_details[0]['recurrent_groupid']])->execute();	
 
 
 							$ins_logid = $today_result[0];
@@ -311,9 +311,9 @@ class Model_Cronbooking extends Model
 
 						$insert_booking = 'S';
 
-						$today_result = DB::insert(PASSENGERS_LOG, array('booking_key','passengers_id','company_id','current_location','pickup_latitude','pickup_longitude','drop_location','drop_latitude','drop_longitude',
+						$today_result = DB::insert(PASSENGERS_LOG, ['booking_key','passengers_id','company_id','current_location','pickup_latitude','pickup_longitude','drop_location','drop_latitude','drop_longitude',
 						'pickup_time','no_passengers','approx_distance','approx_duration','approx_fare','search_city','faretype','fixedprice','luggage','bookby',
-						'operator_id','additional_fields','travel_status','taxi_modelid','recurrent_type','recurrent_id','company_tax','account_id','accgroup_id'))->values(array($booking_key,$booking_details[0]['recurrent_passengerid'],$booking_details[0]['companyid'],$booking_details[0]['recurrent_pickuplocation'],$booking_details[0]['recurrent_pickuplatitude'],$booking_details[0]['recurrent_pickuplongitude'],$booking_details[0]['recurrent_droplocation'],$booking_details[0]['recurrent_droplatitude'],$booking_details[0]['recurrent_droplongitude'],$pickup_datetime,$booking_details[0]['recurrent_noofpassengers'],$booking_details[0]['recurrent_approxdistance'],$booking_details[0]['recurrent_approxduration'],$booking_details[0]['recurrent_approxfare'],$booking_details[0]['recurrent_city'],$booking_details[0]['recurrent_faretype'],$booking_details[0]['recurrent_fixedprice'],$booking_details[0]['recurrent_luggage'],'2',$booking_details[0]['recurrent_operatorid'],$booking_details[0]['recurrent_additionalfields'],'0',$booking_details[0]['recurrent_modelid'],'2',$recurrent_id,$company_tax,$booking_details[0]['recurrent_accountid'],$booking_details[0]['recurrent_groupid']))->execute();	
+						'operator_id','additional_fields','travel_status','taxi_modelid','recurrent_type','recurrent_id','company_tax','account_id','accgroup_id'])->values([$booking_key,$booking_details[0]['recurrent_passengerid'],$booking_details[0]['companyid'],$booking_details[0]['recurrent_pickuplocation'],$booking_details[0]['recurrent_pickuplatitude'],$booking_details[0]['recurrent_pickuplongitude'],$booking_details[0]['recurrent_droplocation'],$booking_details[0]['recurrent_droplatitude'],$booking_details[0]['recurrent_droplongitude'],$pickup_datetime,$booking_details[0]['recurrent_noofpassengers'],$booking_details[0]['recurrent_approxdistance'],$booking_details[0]['recurrent_approxduration'],$booking_details[0]['recurrent_approxfare'],$booking_details[0]['recurrent_city'],$booking_details[0]['recurrent_faretype'],$booking_details[0]['recurrent_fixedprice'],$booking_details[0]['recurrent_luggage'],'2',$booking_details[0]['recurrent_operatorid'],$booking_details[0]['recurrent_additionalfields'],'0',$booking_details[0]['recurrent_modelid'],'2',$recurrent_id,$company_tax,$booking_details[0]['recurrent_accountid'],$booking_details[0]['recurrent_groupid']])->execute();	
 
 
 						$ins_logid = $today_result[0];
@@ -376,30 +376,30 @@ class Model_Cronbooking extends Model
 			//exit;
 			$match_query['company.dispatch_algorithm.labelname'] = '1';
 		    $match_query['driver_id']    =(int)0;
-		    $match_query['pickup_time']    = array('$gte' => new \MongoDB\BSON\UTCDateTime(strtotime($start_datetime) * 1000),'$lte' => new \MongoDB\BSON\UTCDateTime(strtotime($end_datetime) * 1000));
+		    $match_query['pickup_time']    = ['$gte' => new \MongoDB\BSON\UTCDateTime(strtotime($start_datetime) * 1000),'$lte' => new \MongoDB\BSON\UTCDateTime(strtotime($end_datetime) * 1000)];
 			
-				$field_arguments = array(
-					array(
-					'$lookup' => array(
+				$field_arguments = [
+					[
+					'$lookup' => [
 						'from' => MDB_COMPANY,
 						'localField' => 'company_id',
 						'foreignField' => '_id',
 						'as' => 'company'
-					)
-				),
-				array(
+					]
+				],
+				[
 					'$unwind' => '$company'
-				),
-				array(
+				],
+				[
 					'$unwind' => '$company.dispatch_algorithm'
-				),
+				],
 				
 				
-				array(
+				[
 				'$match' => $match_query
-				),
-				array(
-					'$project' => array(
+				],
+				[
+					'$project' => [
 						'id' => '$_id',
 						'company_id' => '$company_id',
 						'pickup_latitude' => '$pickup_latitude',
@@ -412,10 +412,10 @@ class Model_Cronbooking extends Model
 						
 						
 						
-					)
-				)
+					]
+				]
 			
-			);
+			];
 			$result    = $mongo_db->aggregate(MDB_PASSENGERS_LOGS, $field_arguments);
 			//echo '<pre>';print_r($result);
 			//exit;
@@ -525,7 +525,7 @@ class Model_Cronbooking extends Model
 							
 							
 							//MongoDB
-							$updatequery = array(
+							$updatequery = [
 								'driver_id'=>(int)$driver_id,
 								'taxi_id'=>(int)$taxi_id,
 								'travel_status'=>7,
@@ -533,8 +533,8 @@ class Model_Cronbooking extends Model
 								'msg_status'=>'U',
 								'comments' => '',
 								'dispatch_time'=>$current_datetime
-							);
-							$updateresult = $mongo_db->update(MDB_PASSENGERS_LOGS,array('_id'=>(int)$pass_logid),array('$set'=>$updatequery),array('upsert'=>true));
+							];
+							$updateresult = $mongo_db->update(MDB_PASSENGERS_LOGS,['_id'=>(int)$pass_logid],['$set'=>$updatequery],['upsert'=>true]);
        
 							
 							/** UPDATE QUERY FOR MONGO **/
@@ -599,7 +599,7 @@ class Model_Cronbooking extends Model
 						$transaction = $common_model->insert(DRIVER_REQUEST_DETAILS,$insert_array);	 */
 						
 								$id = $api->get_insert_id(MDB_REQUEST_HISTORY);
-									$insert_array = array(
+									$insert_array = [
                                         "_id" => (int)$id,
                                         "trip_id" => (int)$pass_logid,
                                         "available_drivers" => "".$driver_id."",
@@ -607,14 +607,14 @@ class Model_Cronbooking extends Model
                                         "rejected_timeout_drivers" => "",
                                         "selected_driver" => "".$driver_id."",
                                         "createdate" => new \MongoDB\BSON\UTCDateTime(strtotime($current_datetime) * 1000)
-                                    );
+                                    ];
                                     //Inserting to Transaction Table 
                         $transaction  = $this->commonmodel->insert(MDB_REQUEST_HISTORY, $insert_array);
 						
 						
 						
-						$detail = array("passenger_tripid"=>$pass_logid,"notification_time"=>"");
-						$msg = array("message" => __('api_request_confirmed_passenger'),"status" => 1,"detail"=>$detail);
+						$detail = ["passenger_tripid"=>$pass_logid,"notification_time"=>""];
+						$msg = ["message" => __('api_request_confirmed_passenger'),"status" => 1,"detail"=>$detail];
 
 						//Message::success(__('save_booking_success'));
 
@@ -648,7 +648,7 @@ class Model_Cronbooking extends Model
 			$unit = 1;
 			$distance = "";
 			$unit_conversion = "";
-			$remove_driver_list = array();
+			$remove_driver_list = [];
 			/*if($sub_log_id !='')
 			{
 				$get_passenger_driverid = $this->unset_driver_list($sub_log_id);
@@ -700,7 +700,7 @@ class Model_Cronbooking extends Model
 			
 			$driver_list = '';
 			$driver_count = '';
-			$driver_list_array = array();
+			$driver_list_array = [];
 
 			foreach($assigned_driver as $key => $value)
 			{
@@ -796,11 +796,11 @@ class Model_Cronbooking extends Model
         $current_date      = explode(' ', $current_time);
         $start_time        = $current_date[0] . ' 00:00:01';
         $end_time          = $current_date[0] . ' 23:59:59';
-        $match_query = array();
+        $match_query = [];
 		
 		if(($no_passengers != null) && ($no_passengers != 0))
 		{
-			$match_query['taxi_capacity'] = array('$gte' => (int)$no_passengers);
+			$match_query['taxi_capacity'] = ['$gte' => (int)$no_passengers];
 		}    
        
         if ($company_id != "" && $company_id != 0) {
@@ -819,36 +819,36 @@ class Model_Cronbooking extends Model
         $match_query['company.companydetails.company_status'] = 'A';
         //$match_query['report.check_package_type'] = 'T';
         //$match_query['report.upgrade_expirydate'] = array('$gte'=>new \MongoDB\BSON\UTCDateTime(strtotime($current_time) * 1000));
-        $match_query['people.booking_limit'] = array('$gt' => $this->mongo_db->count(MDB_PASSENGERS_LOGS,array('createdate'=>array('$gte'=>$start_time),'driver_id'=>'people._id','travel_status'=>1,'booking_from' => array('$ne'=>2))));
+        $match_query['people.booking_limit'] = ['$gt' => $this->mongo_db->count(MDB_PASSENGERS_LOGS,['createdate'=>['$gte'=>$start_time],'driver_id'=>'people._id','travel_status'=>1,'booking_from' => ['$ne'=>2]])];
         //echo '<pre>';print_r($match_query);
-        $ops = array(
-            array(
-                '$lookup' => array(
+        $ops = [
+            [
+                '$lookup' => [
                     'from'=>MDB_COMPANY,
                     'localField'=> "taxi_company",
                     'foreignField' => "_id",
                     'as'=> "company"
-                )
-            ),
-            array('$unwind' => '$company'),
-            array(
-                '$lookup' => array(
+                ]
+            ],
+            ['$unwind' => '$company'],
+            [
+                '$lookup' => [
                     'from'=>MDB_TAXI_DRIVER_MAPPING,
                     'localField'=> "_id",
                     'foreignField' => "mapping_taxiid",
                     'as'=> "mapping"
-                )
-            ),
-            array('$unwind' => '$mapping'),
-            array(
-                '$lookup' => array(
+                ]
+            ],
+            ['$unwind' => '$mapping'],
+            [
+                '$lookup' => [
                     'from'=>MDB_PEOPLE,
                     'localField'=> "mapping.mapping_driverid",
                     'foreignField' => "_id",
                     'as'=> "people"
-                )
-            ),
-            array('$project' => array(
+                ]
+            ],
+            ['$project' => [
                 'taxi_status' => 1,
                 'taxi_availability' => 1,
                 'taxi_company' => 1,
@@ -859,22 +859,22 @@ class Model_Cronbooking extends Model
                 'mapping' => 1,
                 'report' => 1,
                 'people' => 1,
-                'people' => array('$cond' => array(array('$eq'=>array(array('$size'=>'$people'),0)),null,'$people'))
-                )
-            ),
-            array('$unwind'=>'$people'),
-            array('$match' => $match_query),
-            array('$group'=>array("_id"=>array("taxi_id"=>'$_id',
+                'people' => ['$cond' => [['$eq'=>[['$size'=>'$people'],0]],null,'$people']]
+                ]
+            ],
+            ['$unwind'=>'$people'],
+            ['$match' => $match_query],
+            ['$group'=>["_id"=>["taxi_id"=>'$_id',
                         "id"=>'$people._id',
                         "booking_limit" => '$people.booking_limit'
-                    ),
-                )
-            ),
-            array('$sort'=>array('_id.id'=>1)),
-        );
+                    ],
+                ]
+            ],
+            ['$sort'=>['_id.id'=>1]],
+        ];
         $result = $this->mongo_db->aggregate(MDB_TAXI,$ops);
         //echo '<pre>';print_r($result);exit;
-        return (!empty($result))?$result['result']:array();
+        return (!empty($result))?$result['result']:[];
     }
 
 		public static function taxi_additionalfields()
@@ -893,42 +893,42 @@ class Model_Cronbooking extends Model
         }
         $match_array['_id'] = (int) $pass_logid;
         //echo "<pre>";  print_r($match_array); exit;
-        $arguments = array(
-            array(
-                '$lookup' => array(
+        $arguments = [
+            [
+                '$lookup' => [
                     'from' => COMPANY,
                     'localField' => 'company_id',
                     'foreignField' => "_id",
                     'as' => "company"
-                )
-            ),
-            array(
-                '$lookup' => array(
+                ]
+            ],
+            [
+                '$lookup' => [
                     'from' => MDB_PASSENGERS,
                     'localField' => 'passengers_id',
                     'foreignField' => "_id",
                     'as' => "passengers"
-                )
-            ),
-            array(
+                ]
+            ],
+            [
                 '$unwind' => '$passengers'
-            ),
-            array(
-                '$lookup' => array(
+            ],
+            [
+                '$lookup' => [
                     'from' => MDB_MOTOR_MODEL,
                     'localField' => 'taxi_modelid',
                     'foreignField' => "_id",
                     'as' => "motormodel"
-                )
-            ),
-            array(
+                ]
+            ],
+            [
                 '$unwind' => '$motormodel'
-            ),
-            array(
+            ],
+            [
                 '$match' => $match_array
-            ),
-            array(
-                '$project' => array(
+            ],
+            [
+                '$project' => [
                     'pass_logid' => '$_id',
                     'passenger_name' => '$passengers.name',
                     'passenger_email' => '$passengers.email',
@@ -941,13 +941,13 @@ class Model_Cronbooking extends Model
                     'taxi_modelid' => '$motormodel._id',
                     'luggage' => '$luggage',
                     'company_id' => '$company_id',
-                )
-            ),
-        );
+                ]
+            ],
+        ];
         //echo "<pre>"; print_r($arguments);
         $result    = $this->mongo_db->aggregate(MDB_PASSENGERS_LOGS, $arguments);
         echo "<pre>"; print_r($result['result']); exit;
-        return (!empty($result['result'])) ? $result['result'] : array();
+        return (!empty($result['result'])) ? $result['result'] : [];
     }
 		public function get_bookingdetails_old($pass_logid,$company_id)
 		{
@@ -974,8 +974,8 @@ class Model_Cronbooking extends Model
 			$current_time = $Commonmodel->getcompany_all_currenttimestamp($company_id);
 
 
-			$result = DB::insert(LOGS, array('booking_logid','log_userid','log_message','log_booking','log_createdate'))
-				->values(array($booking_logid,$log_userid,$log_message,$log_booking,$current_time))
+			$result = DB::insert(LOGS, ['booking_logid','log_userid','log_message','log_booking','log_createdate'])
+				->values([$booking_logid,$log_userid,$log_message,$log_booking,$current_time])
 				->execute();
 
 			return $result;
@@ -1017,7 +1017,7 @@ class Model_Cronbooking extends Model
 		$result = Db::query(Database::SELECT, $query)
 				->execute();
  
-		$r=array();
+		$r=[];
 		$trip_id="";
 		if(count($result)>0){
 			foreach($result as $p){
@@ -1040,7 +1040,7 @@ class Model_Cronbooking extends Model
 		//echo $query;exit;
 		$result = Db::query(Database::SELECT, $query)
 				  ->execute();
-		$r=array();
+		$r=[];
 		$log_id="";
 		if(count($result)>0){
 			foreach($result as $p){
@@ -1083,39 +1083,39 @@ class Model_Cronbooking extends Model
 
 	public function up_passdata($id,$phone)
 	{
-		$result=DB::update(PEOPLE)->set(array('org_password' => $phone,'password' => md5($phone)))
+		$result=DB::update(PEOPLE)->set(['org_password' => $phone,'password' => md5($phone)])
 					->where('id','=',$id)
 					->execute();
 		return $result;
 	}
 	
 	public function get_lateral_booking() {
-		$match_query = array(
+		$match_query = [
 							'payment_type'=> "4",
 							'notify_status'=> (int)0,
-							'pass.pay_by' => array('$ne' => 3)
-						);
+							'pass.pay_by' => ['$ne' => 3]
+						];
 		$match_query1['createdate1'] = true;
 		$match_query1['createdate2'] = true;
 		
 		$mongo_db = MangoDB::instance('default'); 
-		$arguments = array(
-						array('$lookup'=>array(
+		$arguments = [
+						['$lookup'=>[
 							'from'=>"passengers_log",
 							'localField'=>"passengers_log_id",
 							'foreignField'=>"_id",
 							 'as'=>"plog"        
-						)),
-						array('$unwind'=>'$plog'),
-						array('$lookup'=>array(
+						]],
+						['$unwind'=>'$plog'],
+						['$lookup'=>[
 							'from'=>"passengers",
 							'localField'=>"plog.passengers_id",
 							'foreignField'=>"_id",
 							 'as'=>"pass"        
-						)),
-						array('$unwind'=>'$pass'),
-						array('$match'=>$match_query),
-						array('$project' => array(
+						]],
+						['$unwind'=>'$pass'],
+						['$match'=>$match_query],
+						['$project' => [
 							'trip_id' => '$plog._id',
 							'transaction_id' => '$_id',
 							'passenger_name' => '$pass.name',
@@ -1128,10 +1128,10 @@ class Model_Cronbooking extends Model
 							'tripfare' => '$tripfare',
 							'start_date' => '$pass.lateral_start_date',
 							'end_date' => '$pass.lateral_end_date'
-						)),
-						array('$project' => array(
-							'createdate1' => array('$gte'=> array('$createdate','$start_date')),
-							'createdate2' => array('$lte'=> array('$createdate','$end_date')),
+						]],
+						['$project' => [
+							'createdate1' => ['$gte'=> ['$createdate','$start_date']],
+							'createdate2' => ['$lte'=> ['$createdate','$end_date']],
 							'trip_id' => '$trip_id',
 							'transaction_id' => '$transaction_id',
 							'passenger_name' => '$passenger_name',
@@ -1144,14 +1144,14 @@ class Model_Cronbooking extends Model
 							'tripfare' => '$tripfare',
 							'start_date' => '$start_date',
 							'end_date' => '$end_date'
-						)),
-						array('$match'=>$match_query1),
-						array('$group' => array("_id" => array('passengers_id'=>'$passengers_id'),
-								"details" => array( '$push' => array('passenger_name'=>'$passenger_name','passenger_phone' => '$passenger_phone','passenger_email' => '$passenger_email','passenger_pay' => '$passenger_pay','start_date' => '$start_date','end_date' => '$end_date','trip_id' => '$trip_id','transaction_id' => '$transaction_id') ),			
-								"total_fare" => array( '$sum' => '$tripfare' )
-							)
-						)											
-					);
+						]],
+						['$match'=>$match_query1],
+						['$group' => ["_id" => ['passengers_id'=>'$passengers_id'],
+								"details" => [ '$push' => ['passenger_name'=>'$passenger_name','passenger_phone' => '$passenger_phone','passenger_email' => '$passenger_email','passenger_pay' => '$passenger_pay','start_date' => '$start_date','end_date' => '$end_date','trip_id' => '$trip_id','transaction_id' => '$transaction_id'] ],			
+								"total_fare" => [ '$sum' => '$tripfare' ]
+							]
+						]											
+					];
         $result = $mongo_db->aggregate(MDB_TRANSACTION,$arguments);
 		//print "<pre>";
 		//print_r($result);exit;
@@ -1161,51 +1161,51 @@ class Model_Cronbooking extends Model
 	
 	public function updateLateral($pid,$startdate,$enddate) {
 		$mongo_db = MangoDB::instance('default'); 
-		$data = array(
+		$data = [
 				'lateral_start_date' => new \MongoDB\BSON\UTCDateTime(strtotime($startdate) * 1000),
 				'lateral_end_date' => new \MongoDB\BSON\UTCDateTime(strtotime($enddate) * 1000)
-		);
-		$result = $mongo_db->update(MDB_PASSENGERS,array('_id'=>(int)$pid),array('$set'=>$data),array('upsert'=>true));
+		];
+		$result = $mongo_db->update(MDB_PASSENGERS,['_id'=>(int)$pid],['$set'=>$data],['upsert'=>true]);
 	}
 	
 	public function updateTransaction($ids) {
 		$mongo_db = MangoDB::instance('default');
 		foreach($ids as $id) {
-			$data = array('notify_status'=>(int)1);
-			$result = $mongo_db->update(MDB_TRANSACTION,array('_id'=>(int)$id),array('$set'=>$data),array('upsert'=>false));
+			$data = ['notify_status'=>(int)1];
+			$result = $mongo_db->update(MDB_TRANSACTION,['_id'=>(int)$id],['$set'=>$data],['upsert'=>false]);
 		}
 	}
 
 	public function get_all_drivers(){
 		$mongo_db = MangoDB::instance('default'); 
-	    $match_query                     = array();
+	    $match_query                     = [];
 		$match_query['user_type'] = 'D';
-		$match_query['status']    = array('$ne' => 'T');
-		$field_arguments = array(
-				array(
-				'$lookup' => array(
+		$match_query['status']    = ['$ne' => 'T'];
+		$field_arguments = [
+				[
+				'$lookup' => [
 					'from' => MDB_DRIVER_INFO,
 					'localField' => '_id',
 					'foreignField' => '_id',
 					'as' => 'driver'
-				)
-			),
-			array(
+				]
+			],
+			[
 				'$unwind' => '$driver'
-			),
-			array(
+			],
+			[
 				'$unwind' => '$driver.driverinfo'
-			),
-				array(
-					'$sort' => array( 
+			],
+				[
+					'$sort' => [ 
 						'people.created_date' => -1
-					),
-				),
-				array(
+					],
+				],
+				[
 				'$match' => $match_query
-				),
-				array(
-					'$project' => array(
+				],
+				[
+					'$project' => [
 						'id' => '$_id',
 						'name' => '$name',
 						'phone' => '$phone',
@@ -1220,64 +1220,64 @@ class Model_Cronbooking extends Model
 						'driver_national_insurance_expire_date' => '$driver.driverinfo.driver_national_insurance_expire_date'
 						
 						
-					)
-				)
+					]
+				]
 			
-			);
+			];
 			$result    = $mongo_db->aggregate(MDB_PEOPLE, $field_arguments);
 			//echo "<pre>";print_r($result); exit;
-			return (!empty($result['result'])) ? $result['result'] : array();
+			return (!empty($result['result'])) ? $result['result'] : [];
 		}
 		
 		public function getTaxiService() {
 			$mongo_db = MangoDB::instance('default'); 
-			$match_query = array();
-			$match_query['km_reach_status'] = array('$eq' => true);
+			$match_query = [];
+			$match_query['km_reach_status'] = ['$eq' => true];
 			$match_query['service_status']  = 'D';
-			$field_arguments = array(
-				array(
-					'$lookup' => array(
+			$field_arguments = [
+				[
+					'$lookup' => [
 						'from' => MDB_TAXI,
 						'localField' => 'taxi_id',
 						'foreignField' => '_id',
 						'as' => 'taxi'
-					)
-				),
-				array(
+					]
+				],
+				[
 					'$unwind' => '$taxi'
-				),
-				array(
-					'$lookup' => array(
+				],
+				[
+					'$lookup' => [
 						'from' => MDB_TAXI_SERVICE_RANGE,
 						'localField' => 'taxi_service_id',
 						'foreignField' => '_id',
 						'as' => 'service'
-					)
-				),
-				array(
+					]
+				],
+				[
 					'$unwind' => '$service'
-				),				
-				array(
-					'$sort' => array( 
+				],				
+				[
+					'$sort' => [ 
 						'createdate' => -1
-					),
-				),
-				array(
+					],
+				],
+				[
 					'$match' => $match_query
-				),
-				array(
-					'$project' => array(
+				],
+				[
+					'$project' => [
 						'id' => '$_id',
 						'taxi_no' => '$taxi.taxi_no',
 						'current_km' => '$taxi.starting_km',
 						'milestone_km' => '$service.km',						
 						'milestone_label' => '$service.label',						
-					)
-				),
-				array('$limit' => 5)			
-			);
+					]
+				],
+				['$limit' => 5]			
+			];
 			$result    = $mongo_db->aggregate(MDB_SHIFT_HISTORY, $field_arguments);
-			return isset($result['result']) ? $result['result'] : array();
+			return isset($result['result']) ? $result['result'] : [];
 		}
 		
 		/************** Later Booking Auto Dispatch()***************/
@@ -1302,17 +1302,17 @@ class Model_Cronbooking extends Model
 			print_r($get_dispatch_details);
 			//exit;
 			$new_id = Commonfunction::get_auto_id('cron');
-			$cron_array = array(
+			$cron_array = [
 							"_id" => (int)$new_id,
 							"cron" => "Auto Dispatch",
 							"status" => "Running",
 							"createdate" => new \MongoDB\BSON\UTCDateTime(strtotime($current_time) * 1000),
 							"current_time" => $current_time,
-						);
+						];
 			$cron = $this->mongo_db->Insert('cron',$cron_array);
 						
 			//~ exit;
-			$driver_details = array();
+			$driver_details = [];
 			if(!empty($get_dispatch_details)) {
 			foreach($get_dispatch_details as $trips) {
 				$pass_logid = $trips['passengers_log_id'];
@@ -1321,7 +1321,7 @@ class Model_Cronbooking extends Model
 					$driver_details = $this->search_nearest_drivers($trips['pickup_latitude'],$trips['pickup_longitude'],$trips['no_passengers'],$trips['taxi_model'],$trips['luggage'],$pass_logid,$trips['company_id']);
 					
 					if(count($driver_details) > 0) {
-						$nearestdriveridArr = array();
+						$nearestdriveridArr = [];
 						$nearest_count = 1;
 						foreach($driver_details as $key => $value) {
 							//to check the driver has trip already

@@ -11,7 +11,7 @@ if($lang=='ar'){
     $country = WEB_COUNTRY;
 }
 
-$how_its_work_pages = isset($how_its_work_page[0])?$how_its_work_page[0]:array();
+$how_its_work_pages = isset($how_its_work_page[0])?$how_its_work_page[0]:[];
 ?>
 <!-- <script type="text/javascript" src="public/js/fullpage.js"></script> -->
 <link rel='stylesheet'   href='public/css/animate.min.css?ver=4.9.3' type='text/css' media='all' />

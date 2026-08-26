@@ -70,15 +70,15 @@ class Controller_Tdispatch extends Controller_Siteadmin
         if ($page_no == 0 || $page_no == 'index')
             $page_no = PAGE_NO;
         $offset                     = REC_PER_PAGE * ($page_no - 1);
-        $pag_data                   = Pagination::factory(array(
-            'current_page' => array(
+        $pag_data                   = Pagination::factory([
+            'current_page' => [
                 'source' => 'query_string',
                 'key' => 'page'
-            ),
+            ],
             'items_per_page' => REC_PER_PAGE,
             'total_items' => $count_transaction_list,
             'view' => 'pagination/punbb'
-        ));
+        ]);
         $all_transaction_list       = $this->tdispatch_model->bookings_details($list, 'All', 'All', 'All', 'All', 'All', '', '', $offset, REC_PER_PAGE, '', '');
         //****pagination ends here***//
         //send data to view file 
@@ -133,15 +133,15 @@ class Controller_Tdispatch extends Controller_Siteadmin
         if ($page_no == 0 || $page_no == 'index')
             $page_no = PAGE_NO;
         $offset                     = REC_PER_PAGE * ($page_no - 1);
-        $pag_data                   = Pagination::factory(array(
-            'current_page' => array(
+        $pag_data                   = Pagination::factory([
+            'current_page' => [
                 'source' => 'query_string',
                 'key' => 'page'
-            ),
+            ],
             'items_per_page' => REC_PER_PAGE,
             'total_items' => $count_transaction_list,
             'view' => 'pagination/punbb'
-        ));
+        ]);
         $all_transaction_list       = $this->tdispatch_model->bookings_details($list, $company, $manager_id, $taxiid, $driver_id, $passengerid, $startdate, $enddate, $offset, REC_PER_PAGE, $transaction_id, $payment_type);
         $grpahdata                  = $this->transaction_model->getgraphvalues($list, $company, $manager_id, $taxiid, $driver_id, $passengerid, $startdate, $enddate, $transaction_id, $payment_type);
         $gateway_details            = $this->commonmodel->gateway_details();
@@ -176,14 +176,14 @@ class Controller_Tdispatch extends Controller_Siteadmin
         $get_suggestedlocation = $this->tdispatch_model->get_suggestedlocation();
         $get_suggestedjourney  = $this->tdispatch_model->get_suggestedjourney();
         $get_gatewaydetails    = $this->tdispatch_model->get_gatewaydetails();
-        $errors                = array();
-        $post_values           = array();
+        $errors                = [];
+        $post_values           = [];
         if (($create_submit || $dispatch_submit) && Validation::factory($_POST)) {
             $post_values = $_POST;
             //print_r($post_values);exit;
             $post        = Arr::map('trim', $this->request->post());
             //$validator = $this->tdispatch_model->validate_dispatchbooking(arr::extract($post,array('firstname','email','phone','current_location','pickup_lat','pickup_lng','drop_location','drop_lat','drop_lng','pickup_date','pickup_time','luggage','no_passengers','taxi_model','recurrent','lablename','frmdate','todate','total_fare','notes')));
-            $validator   = $this->tdispatch_model->validate_dispatchbooking(arr::extract($post, array(
+            $validator   = $this->tdispatch_model->validate_dispatchbooking(arr::extract($post, [
                 'firstname',
                 'email',
                 'phone',
@@ -202,7 +202,7 @@ class Controller_Tdispatch extends Controller_Siteadmin
                 'todate',
                 'total_fare',
                 'notes'
-            )));
+            ]));
             if ($validator->check()) {
                 $random_key      = text::random($type = 'alnum', $length = 10);
                 $password        = text::random($type = 'alnum', $length = 6);
@@ -236,7 +236,7 @@ class Controller_Tdispatch extends Controller_Siteadmin
                         $replace_variables=array(REPLACE_LOGO=>EMAILTEMPLATELOGO,REPLACE_SITENAME=>$this->app_name,REPLACE_NAME=>ucfirst($_POST['firstname']),REPLACE_SITELINK=>URL_BASE.'users/contactinfo/',REPLACE_SITEEMAIL=>$this->siteemail,REPLACE_SITEURL=>URL_BASE,REPLACE_ACTLINK=>$link);
                         $message=$this->emailtemplate->emailtemplate(DOCROOT.TEMPLATEPATH.'customer_activation.html',$replace_variables);
                         */
-                        $replace_variables = array(
+                        $replace_variables = [
                             REPLACE_LOGO => EMAILTEMPLATELOGO,
                             REPLACE_SITENAME => $this->app_name,
                             REPLACE_USERNAME => $post['firstname'],
@@ -247,7 +247,7 @@ class Controller_Tdispatch extends Controller_Siteadmin
                             REPLACE_SITEURL => URL_BASE,
                             REPLACE_COPYRIGHTS => SITE_COPYRIGHT,
                             REPLACE_COPYRIGHTYEAR => COPYRIGHT_YEAR
-                        );
+                        ];
 						
                         //$message           = $this->emailtemplate->emailtemplate(DOCROOT . TEMPLATEPATH . 'passenger-register.html', $replace_variables);
 						if ($this->lang != 'en') {
@@ -382,13 +382,13 @@ class Controller_Tdispatch extends Controller_Siteadmin
         $get_suggestedlocation = $this->tdispatch_model->get_suggestedlocation();
         $get_suggestedjourney  = $this->tdispatch_model->get_suggestedjourney();
         $get_gatewaydetails    = $this->tdispatch_model->get_gatewaydetails();
-        $errors                = array();
-        $post_values           = array();
+        $errors                = [];
+        $post_values           = [];
         if (($create_submit || $dispatch_submit) && Validation::factory($_POST)) {
             $post_values = $_POST;
             $post        = Arr::map('trim', $this->request->post());
             //$validator = $this->tdispatch_model->validate_dispatchbooking(arr::extract($post,array('firstname','email','phone','current_location','pickup_lat','pickup_lng','drop_location','drop_lat','drop_lng','pickup_date','pickup_time','luggage','no_passengers','taxi_model','recurrent','lablename','frmdate','todate','total_fare','notes')));
-            $validator   = $this->tdispatch_model->validate_dispatchbooking(arr::extract($post, array(
+            $validator   = $this->tdispatch_model->validate_dispatchbooking(arr::extract($post, [
                 'firstname',
                 'email',
                 'phone',
@@ -407,7 +407,7 @@ class Controller_Tdispatch extends Controller_Siteadmin
                 'todate',
                 'total_fare',
                 'notes'
-            )));
+            ]));
             if ($validator->check()) {
                 $random_key      = text::random($type = 'alnum', $length = 10);
                 $password        = text::random($type = 'alnum', $length = 6);
@@ -441,7 +441,7 @@ class Controller_Tdispatch extends Controller_Siteadmin
                         $replace_variables=array(REPLACE_LOGO=>EMAILTEMPLATELOGO,REPLACE_SITENAME=>$this->app_name,REPLACE_NAME=>ucfirst($_POST['firstname']),REPLACE_SITELINK=>URL_BASE.'users/contactinfo/',REPLACE_SITEEMAIL=>$this->siteemail,REPLACE_SITEURL=>URL_BASE,REPLACE_ACTLINK=>$link);
                         $message=$this->emailtemplate->emailtemplate(DOCROOT.TEMPLATEPATH.'customer_activation.html',$replace_variables);
                         */
-                        $replace_variables = array(
+                        $replace_variables = [
                             REPLACE_LOGO => EMAILTEMPLATELOGO,
                             REPLACE_SITENAME => $this->app_name,
                             REPLACE_USERNAME => $post['firstname'],
@@ -452,7 +452,7 @@ class Controller_Tdispatch extends Controller_Siteadmin
                             REPLACE_SITEURL => URL_BASE,
                             REPLACE_COPYRIGHTS => SITE_COPYRIGHT,
                             REPLACE_COPYRIGHTYEAR => COPYRIGHT_YEAR
-                        );
+                        ];
                         //$message           = $this->emailtemplate->emailtemplate(DOCROOT . TEMPLATEPATH . 'passenger-register.html', $replace_variables);
 						if ($this->lang != 'en') {
 							if (file_exists(DOCROOT . TEMPLATEPATH . $this->lang . '/passenger-register-' . $this->lang . '.html')) {
@@ -604,7 +604,7 @@ class Controller_Tdispatch extends Controller_Siteadmin
     }
     public function action_firstname_load_new()
     {
-        $name             = array();
+        $name             = [];
         $like_q           = arr::get($_REQUEST, 'q');
         $like_q           = urlencode($like_q);
         $getmodel_details = $this->tdispatch_model->getuser_details($like_q, '1');
@@ -722,7 +722,7 @@ class Controller_Tdispatch extends Controller_Siteadmin
         if (($update_submit || $dispatch_submit) && Validation::factory($_POST)) {
             $post_values = $_POST;
             $post        = Arr::map('trim', $this->request->post());
-            $validator   = $this->tdispatch_model->validate_dispatchbooking(arr::extract($post, array(
+            $validator   = $this->tdispatch_model->validate_dispatchbooking(arr::extract($post, [
                 'firstname',
                 'email',
                 'phone',
@@ -742,7 +742,7 @@ class Controller_Tdispatch extends Controller_Siteadmin
                 'frmdate',
                 'todate',
                 'total_fare'
-            )));
+            ]));
             if ($validator->check()) {
                 $random_key      = text::random($type = 'alnum', $length = 10);
                 $password        = text::random($type = 'alnum', $length = 6);
@@ -766,7 +766,7 @@ class Controller_Tdispatch extends Controller_Siteadmin
                         $replace_variables=array(REPLACE_LOGO=>EMAILTEMPLATELOGO,REPLACE_SITENAME=>$this->app_name,REPLACE_NAME=>ucfirst($_POST['firstname']),REPLACE_SITELINK=>URL_BASE.'users/contactinfo/',REPLACE_SITEEMAIL=>$this->siteemail,REPLACE_SITEURL=>URL_BASE,REPLACE_ACTLINK=>$link);
                         $message=$this->emailtemplate->emailtemplate(DOCROOT.TEMPLATEPATH.'passenger-register.html',$replace_variables);
                         */
-                        $replace_variables = array(
+                        $replace_variables = [
                             REPLACE_LOGO => EMAILTEMPLATELOGO,
                             REPLACE_SITENAME => $this->app_name,
                             REPLACE_USERNAME => $post['firstname'],
@@ -777,7 +777,7 @@ class Controller_Tdispatch extends Controller_Siteadmin
                             REPLACE_SITEURL => URL_BASE,
                             REPLACE_COPYRIGHTS => SITE_COPYRIGHT,
                             REPLACE_COPYRIGHTYEAR => COPYRIGHT_YEAR
-                        );
+                        ];
                         //$message           = $this->emailtemplate->emailtemplate(DOCROOT . TEMPLATEPATH . 'passenger-register.html', $replace_variables);
 						if ($this->lang != 'en') {
 							if (file_exists(DOCROOT . TEMPLATEPATH . $this->lang . '/passenger-register-' . $this->lang . '.html')) {
@@ -826,15 +826,15 @@ class Controller_Tdispatch extends Controller_Siteadmin
         if ($page_no == 0 || $page_no == 'index')
             $page_no = PAGE_NO;
         $offset                     = REC_PER_PAGE * ($page_no - 1);
-        $pag_data                   = Pagination::factory(array(
-            'current_page' => array(
+        $pag_data                   = Pagination::factory([
+            'current_page' => [
                 'source' => 'query_string',
                 'key' => 'page'
-            ),
+            ],
             'items_per_page' => REC_PER_PAGE,
             'total_items' => $count_booking_list,
             'view' => 'pagination/punbb'
-        ));
+        ]);
         $all_booking_list           = $this->tdispatch_model->all_booking_list($offset, REC_PER_PAGE);
         $all_company_map_list       = $this->admin_modelall_driver_map_list();
         //****pagination ends here***//
@@ -856,7 +856,7 @@ class Controller_Tdispatch extends Controller_Siteadmin
         if ($_REQUEST) {
             $post_values = $_REQUEST;
             $post        = Arr::map('trim', $this->request->post());
-            $validator   = $this->tdispatch_model->validate_dispatchbooking(arr::extract($post, array(
+            $validator   = $this->tdispatch_model->validate_dispatchbooking(arr::extract($post, [
                 'firstname',
                 'email',
                 'phone',
@@ -877,7 +877,7 @@ class Controller_Tdispatch extends Controller_Siteadmin
                 'todate',
                 'total_fare',
                 'notes'
-            )));
+            ]));
             if ($validator->check()) {
                 $random_key      = text::random($type = 'alnum', $length = 10);
                 $password        = text::random($type = 'alnum', $length = 6);
@@ -901,7 +901,7 @@ class Controller_Tdispatch extends Controller_Siteadmin
                         $replace_variables=array(REPLACE_LOGO=>EMAILTEMPLATELOGO,REPLACE_SITENAME=>$this->app_name,REPLACE_NAME=>ucfirst($_POST['firstname']),REPLACE_SITELINK=>URL_BASE.'users/contactinfo/',REPLACE_SITEEMAIL=>$this->siteemail,REPLACE_SITEURL=>URL_BASE,REPLACE_ACTLINK=>$link);
                         $message=$this->emailtemplate->emailtemplate(DOCROOT.TEMPLATEPATH.'passenger-register.html',$replace_variables);
                         */
-                        $replace_variables = array(
+                        $replace_variables = [
                             REPLACE_LOGO => EMAILTEMPLATELOGO,
                             REPLACE_SITENAME => $this->app_name,
                             REPLACE_USERNAME => $post['firstname'],
@@ -912,7 +912,7 @@ class Controller_Tdispatch extends Controller_Siteadmin
                             REPLACE_SITEURL => URL_BASE,
                             REPLACE_COPYRIGHTS => SITE_COPYRIGHT,
                             REPLACE_COPYRIGHTYEAR => COPYRIGHT_YEAR
-                        );
+                        ];
                         //$message           = $this->emailtemplate->emailtemplate(DOCROOT . TEMPLATEPATH . 'passenger-register.html', $replace_variables);
 						if ($this->lang != 'en') {
 							if (file_exists(DOCROOT . TEMPLATEPATH . $this->lang . '/passenger-register-' . $this->lang . '.html')) {
@@ -978,15 +978,15 @@ class Controller_Tdispatch extends Controller_Siteadmin
         //-------------------------
         if ($page_no)
             $offset = REC_PER_PAGE * ($page_no - 1);
-        $pag_data = Pagination::factory(array(
-            'current_page' => array(
+        $pag_data = Pagination::factory([
+            'current_page' => [
                 'source' => 'query_string',
                 'key' => 'page'
-            ),
+            ],
             'items_per_page' => REC_PER_PAGE,
             'total_items' => $count_booking_list,
             'view' => 'pagination/punajax'
-        ));
+        ]);
         if (isset($_REQUEST['filter_date'])) {
             $post_values      = $_REQUEST;
             $all_booking_list = $this->tdispatch_model->all_bookingsearch_list($post_values['search_txt'], $post_values['filter_date'], $post_values['to_date'], $post_values['sort_type'], $post_values['sort_by'], $post_values['booking_filter'], $offset, REC_PER_PAGE);
@@ -2981,7 +2981,7 @@ class Controller_Tdispatch extends Controller_Siteadmin
             $trip_details      = '';
             $trip_details      = ' <p>' . __('create_date') . ' : ' . $booking_details[0]['createdate'] . '</p>' . '<p>' . __('pictup_datetime') . ' : ' . $booking_details[0]['pickup_time'] . '</p>' . '<p>' . __('Current_Location') . ' : ' . $booking_details[0]['current_location'] . '</p>' . '<p>' . __('Drop_Location') . ' : ' . $booking_details[0]['drop_location'] . '</p>' . '<p>' . __('total_cost') . ' : ' . $booking_details[0]['approx_fare'] . '</p>' . '<p>' . __('duration') . ' : ' . $booking_details[0]['approx_duration'] . '</p>' . '<p>' . __('distance') . ' : ' . $booking_details[0]['approx_distance'] . '</p>' . '<p>' . __('No_Passengers') . ' : ' . $booking_details[0]['no_passengers'] . '</p>' . '<p>' . __('luggage') . ' : ' . $booking_details[0]['luggage'] . '</p>';
             $mail              = "";
-            $replace_variables = array(
+            $replace_variables = [
                 REPLACE_LOGO => EMAILTEMPLATELOGO,
                 REPLACE_SITENAME => $this->app_name,
                 REPLACE_SHAREDUSER => ucfirst($this->username),
@@ -2996,7 +2996,7 @@ class Controller_Tdispatch extends Controller_Siteadmin
                 REPLACE_TRIPDETAILS => $trip_details,
                 REPLACE_COPYRIGHTS => SITE_COPYRIGHT,
                 REPLACE_COPYRIGHTYEAR => COPYRIGHT_YEAR
-            );
+            ];
             $message           = $this->emailtemplate->emailtemplate(DOCROOT . TEMPLATEPATH . 'sharebooking.html', $replace_variables);
             $to                = $post['share_email'];
             $from              = $this->siteemail;
@@ -3722,15 +3722,15 @@ class Controller_Tdispatch extends Controller_Siteadmin
         if ($page_no == 0 || $page_no == 'index')
             $page_no = PAGE_NO;
         $offset                     = REC_PER_PAGE * ($page_no - 1);
-        $pag_data                   = Pagination::factory(array(
-            'current_page' => array(
+        $pag_data                   = Pagination::factory([
+            'current_page' => [
                 'source' => 'query_string',
                 'key' => 'page'
-            ),
+            ],
             'items_per_page' => REC_PER_PAGE,
             'total_items' => $count_accounts,
             'view' => 'pagination/punbb'
-        ));
+        ]);
         $all_accounts               = $this->tdispatch_model->all_accounts($offset, REC_PER_PAGE);
         //****pagination ends here***//
         //send data to view file 
@@ -3749,19 +3749,19 @@ class Controller_Tdispatch extends Controller_Siteadmin
         
         /**To get the form submit button name**/
         $addaccounts_submit = arr::get($_REQUEST, 'submit_addaccounts');
-        $errors             = array();
-        $post_values        = array();
+        $errors             = [];
+        $post_values        = [];
         if ($addaccounts_submit && Validation::factory($_POST)) {
             $post_values = $_POST;
             $post        = Arr::map('trim', $this->request->post());
-            $validator   = $this->tdispatch_model->validate_addaccounts(arr::extract($post, array(
+            $validator   = $this->tdispatch_model->validate_addaccounts(arr::extract($post, [
                 'account_name',
                 'account_limit',
                 'account_discount',
                 'firstname',
                 'email',
                 'phone'
-            )));
+            ]));
             if ($validator->check()) {
                 $app_name   = $this->app_name;
                 $siteemail  = $this->siteemail;
@@ -3771,7 +3771,7 @@ class Controller_Tdispatch extends Controller_Siteadmin
                     /** Mail to new user **/
                     $mail              = "";
                     $link              = URL_BASE . 'passengers/activateaccount/?key=' . $random_key;
-                    $replace_variables = array(
+                    $replace_variables = [
                         REPLACE_LOGO => EMAILTEMPLATELOGO,
                         REPLACE_SITENAME => $app_name,
                         REPLACE_NAME => ucfirst($_POST['firstname']),
@@ -3781,7 +3781,7 @@ class Controller_Tdispatch extends Controller_Siteadmin
                         REPLACE_ACTLINK => $link,
                         REPLACE_COPYRIGHTS => SITE_COPYRIGHT,
                         REPLACE_COPYRIGHTYEAR => COPYRIGHT_YEAR
-                    );
+                    ];
                     //$message           = $this->emailtemplate->emailtemplate(DOCROOT . TEMPLATEPATH . 'customer_activation.html', $replace_variables);
 					if ($this->lang != 'en') {
 						if (file_exists(DOCROOT . TEMPLATEPATH . $this->lang . '/customer_activation-' . $this->lang . '.html')) {
@@ -3857,19 +3857,19 @@ class Controller_Tdispatch extends Controller_Siteadmin
             Message::success(__('invalid_accounts'));
             $this->request->redirect("tdispatch/accounts");
         }
-        $errors      = array();
-        $post_values = array();
+        $errors      = [];
+        $post_values = [];
         if ($editaccount_submit && Validation::factory($_POST)) {
             $post_values = $_POST;
             $post        = Arr::map('trim', $this->request->post());
-            $validator   = $this->tdispatch_model->validate_editaccounts(arr::extract($post, array(
+            $validator   = $this->tdispatch_model->validate_editaccounts(arr::extract($post, [
                 'account_name',
                 'account_limit',
                 'account_discount',
                 'firstname',
                 'email',
                 'phone'
-            )), $aid);
+            ]), $aid);
             if ($validator->check()) {
                 if ($account_details[0]['limit'] > $post['account_limit']) {
                     Message::error(__('account_limit_not_updated'));
@@ -3883,7 +3883,7 @@ class Controller_Tdispatch extends Controller_Siteadmin
                         /** Mail to new user **/
                         $mail              = "";
                         $link              = URL_BASE . 'passengers/activateaccount/?key=' . $random_key;
-                        $replace_variables = array(
+                        $replace_variables = [
                             REPLACE_LOGO => EMAILTEMPLATELOGO,
                             REPLACE_SITENAME => $app_name,
                             REPLACE_NAME => ucfirst($_POST['firstname']),
@@ -3893,7 +3893,7 @@ class Controller_Tdispatch extends Controller_Siteadmin
                             REPLACE_ACTLINK => $link,
                             REPLACE_COPYRIGHTS => SITE_COPYRIGHT,
                             REPLACE_COPYRIGHTYEAR => COPYRIGHT_YEAR
-                        );
+                        ];
                         $message           = $this->emailtemplate->emailtemplate(DOCROOT . TEMPLATEPATH . 'customer_activation.html', $replace_variables);
                         $to                = $_POST['email'];
                         $from              = $this->siteemail;
@@ -4016,16 +4016,16 @@ class Controller_Tdispatch extends Controller_Siteadmin
         }
         /**To get the form submit button name**/
         $addaccounts_submit = arr::get($_REQUEST, 'submit_addgroups');
-        $errors             = array();
-        $post_values        = array();
+        $errors             = [];
+        $post_values        = [];
         if ($addaccounts_submit && Validation::factory($_POST)) {
             $post_values = $_POST;
             $post        = Arr::map('trim', $this->request->post());
-            $validator   = $this->tdispatch_model->validate_addgroups(arr::extract($post, array(
+            $validator   = $this->tdispatch_model->validate_addgroups(arr::extract($post, [
                 'acc_id',
                 'group_name',
                 'limit'
-            )));
+            ]));
             if ($validator->check()) {
                 $added       = $this->tdispatch_model->addgroups($post);
                 /* Create Log */
@@ -4069,17 +4069,17 @@ class Controller_Tdispatch extends Controller_Siteadmin
             Message::success(__('invalid_accounts'));
             $this->request->redirect("tdispatch/accounts");
         }
-        $errors      = array();
-        $post_values = array();
+        $errors      = [];
+        $post_values = [];
         if ($editaccount_submit && Validation::factory($_POST)) {
             $post_values = $_POST;
             $accountid   = $_POST['acc_id'];
             $post        = Arr::map('trim', $this->request->post());
-            $validator   = $this->tdispatch_model->validate_editgroups(arr::extract($post, array(
+            $validator   = $this->tdispatch_model->validate_editgroups(arr::extract($post, [
                 'acc_id',
                 'group_name',
                 'limit'
-            )), $groupid);
+            ]), $groupid);
             if ($validator->check()) {
                 if ($post['limit'] < $groupdetails[0]['limit']) {
                     Message::error(__('group_limit_not_updated'));
@@ -4148,17 +4148,17 @@ class Controller_Tdispatch extends Controller_Siteadmin
         $getgroup_details   = $this->tdispatch_model->getgroup_details_for_user($accountid);
         /**To get the form submit button name**/
         $addaccounts_submit = arr::get($_REQUEST, 'submit_addusers');
-        $errors             = array();
-        $post_values        = array();
+        $errors             = [];
+        $post_values        = [];
         if ($addaccounts_submit && Validation::factory($_POST)) {
             $post_values = $_POST;
             $post        = Arr::map('trim', $this->request->post());
-            $validator   = $this->tdispatch_model->validate_addusers(arr::extract($post, array(
+            $validator   = $this->tdispatch_model->validate_addusers(arr::extract($post, [
                 'firstname',
                 'email',
                 'phone',
                 'group_name'
-            )));
+            ]));
             if ($validator->check()) {
                 $random_key  = text::random($type = 'alnum', $length = 10);
                 $req_result  = $this->tdispatch_model->addusers($post, $random_key);
@@ -4177,7 +4177,7 @@ class Controller_Tdispatch extends Controller_Siteadmin
                     /** Mail to new User **/
                     $mail              = "";
                     $link              = URL_BASE . 'passengers/activateaccount/?key=' . $random_key;
-                    $replace_variables = array(
+                    $replace_variables = [
                         REPLACE_LOGO => EMAILTEMPLATELOGO,
                         REPLACE_SITENAME => $this->app_name,
                         REPLACE_NAME => ucfirst($_POST['firstname']),
@@ -4187,7 +4187,7 @@ class Controller_Tdispatch extends Controller_Siteadmin
                         REPLACE_ACTLINK => $link,
                         REPLACE_COPYRIGHTS => SITE_COPYRIGHT,
                         REPLACE_COPYRIGHTYEAR => COPYRIGHT_YEAR
-                    );
+                    ];
                     //$message           = $this->emailtemplate->emailtemplate(DOCROOT . TEMPLATEPATH . 'customer_activation.html', $replace_variables);
 					if ($this->lang != 'en') {
 						if (file_exists(DOCROOT . TEMPLATEPATH . $this->lang . '/customer_activation-' . $this->lang . '.html')) {
@@ -4313,17 +4313,17 @@ class Controller_Tdispatch extends Controller_Siteadmin
         if ($usertype == 'A' && $usertype == 'S') {
             $this->request->redirect("admin/login");
         }
-        $errors          = array();
+        $errors          = [];
         $submit_settings = arr::get($_REQUEST, 'submit_settings');
-        $errors          = array();
-        $post_values     = array();
+        $errors          = [];
+        $post_values     = [];
         if ($submit_settings && Validation::factory($this->request->post())) {
             //$post_values = $_POST;
             $post      = Arr::map('trim', $this->request->post());
-            $validator = $this->tdispatch_model->validate_dispatchsetting(arr::extract($post, array(
+            $validator = $this->tdispatch_model->validate_dispatchsetting(arr::extract($post, [
                 'labelname',
 				'interval'
-            )));
+            ]));
             if ($validator->check()) {
                 $status = $this->tdispatch_model->update_dispatchsetting($post);
                 //echo $status;exit;
@@ -4369,17 +4369,17 @@ class Controller_Tdispatch extends Controller_Siteadmin
         }
         /**To get the form submit button name**/
         $addaccounts_submit = arr::get($_REQUEST, 'submit_addusers');
-        $errors             = array();
-        $post_values        = array();
+        $errors             = [];
+        $post_values        = [];
         if ($addaccounts_submit && Validation::factory($_POST)) {
             $post_values = $_POST;
             $post        = Arr::map('trim', $this->request->post());
-            $validator   = $this->tdispatch_model->validate_addusers(arr::extract($post, array(
+            $validator   = $this->tdispatch_model->validate_addusers(arr::extract($post, [
                 'firstname',
                 'email',
                 'phone',
                 'group_name'
-            )));
+            ]));
             if ($validator->check()) {
                 $random_key  = text::random($type = 'alnum', $length = 10);
                 $req_result  = $this->tdispatch_model->editusers($post, $random_key, $userid);
@@ -4398,7 +4398,7 @@ class Controller_Tdispatch extends Controller_Siteadmin
                     /** Mail to new User **/
                     $mail              = "";
                     $link              = URL_BASE . 'passengers/activateaccount/?key=' . $random_key;
-                    $replace_variables = array(
+                    $replace_variables = [
                         REPLACE_LOGO => EMAILTEMPLATELOGO,
                         REPLACE_SITENAME => $this->app_name,
                         REPLACE_NAME => ucfirst($_POST['firstname']),
@@ -4408,7 +4408,7 @@ class Controller_Tdispatch extends Controller_Siteadmin
                         REPLACE_ACTLINK => $link,
                         REPLACE_COPYRIGHTS => SITE_COPYRIGHT,
                         REPLACE_COPYRIGHTYEAR => COPYRIGHT_YEAR
-                    );
+                    ];
                     //$message           = $this->emailtemplate->emailtemplate(DOCROOT . TEMPLATEPATH . 'customer_activation.html', $replace_variables);
 					if ($this->lang != 'en') {
 						if (file_exists(DOCROOT . TEMPLATEPATH . $this->lang . '/customer_activation-' . $this->lang . '.html')) {
@@ -4553,15 +4553,15 @@ class Controller_Tdispatch extends Controller_Siteadmin
         if ($page_no == 0 || $page_no == 'index')
             $page_no = PAGE_NO;
         $offset                     = REC_PER_PAGE * ($page_no - 1);
-        $pag_data                   = Pagination::factory(array(
-            'current_page' => array(
+        $pag_data                   = Pagination::factory([
+            'current_page' => [
                 'source' => 'query_string',
                 'key' => 'page'
-            ),
+            ],
             'items_per_page' => REC_PER_PAGE,
             'total_items' => $count_recurrent_booking,
             'view' => 'pagination/punbb'
-        ));
+        ]);
         $all_recurrent_booking      = $this->tdispatch_model->all_recurrent_booking($offset, REC_PER_PAGE);
         //****pagination ends here***//
         //send data to view file 
@@ -4578,8 +4578,8 @@ class Controller_Tdispatch extends Controller_Siteadmin
             $this->request->redirect("admin/dashboard");
         }
         //Page Title
-        $post_values               = array();
-        $errors                    = array();
+        $post_values               = [];
+        $errors                    = [];
         $this->page_title          = __('recurrent_booking');
         $this->selected_page_title = __('recurrent_booking');
         $company_id                = $this->company_id;
@@ -4614,7 +4614,7 @@ class Controller_Tdispatch extends Controller_Siteadmin
                 $replace_variables=array(REPLACE_LOGO=>EMAILTEMPLATELOGO,REPLACE_SITENAME=>$this->app_name,REPLACE_NAME=>ucfirst($_POST['firstname']),REPLACE_SITELINK=>URL_BASE.'users/contactinfo/',REPLACE_SITEEMAIL=>$this->siteemail,REPLACE_SITEURL=>URL_BASE,REPLACE_ACTLINK=>$link);
                 $message=$this->emailtemplate->emailtemplate(DOCROOT.TEMPLATEPATH.'customer_activation.html',$replace_variables);
                 */
-                $replace_variables = array(
+                $replace_variables = [
                     REPLACE_LOGO => EMAILTEMPLATELOGO,
                     REPLACE_SITENAME => $this->app_name,
                     REPLACE_USERNAME => $post_values['firstname'],
@@ -4625,7 +4625,7 @@ class Controller_Tdispatch extends Controller_Siteadmin
                     REPLACE_SITEURL => URL_BASE,
                     REPLACE_COPYRIGHTS => SITE_COPYRIGHT,
                     REPLACE_COPYRIGHTYEAR => COPYRIGHT_YEAR
-                );
+                ];
                 //$message           = $this->emailtemplate->emailtemplate(DOCROOT . TEMPLATEPATH . 'passenger-register.html', $replace_variables);
 				if ($this->lang != 'en') {
 					if (file_exists(DOCROOT . TEMPLATEPATH . $this->lang . '/passenger-register-' . $this->lang . '.html')) {

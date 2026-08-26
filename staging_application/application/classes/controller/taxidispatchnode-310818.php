@@ -54,8 +54,8 @@ class Controller_Taxidispatchnode extends Controller_Dispatchadminnode
         
         $model_details     = $this->tdispatch_model->model_details();
         $promo_res_edit = $this->tdispatch_model->get_promocodes();
-        $errors            = array();
-        $post_values       = array();
+        $errors            = [];
+        $post_values       = [];
         $passenger_logid = '';//addedby
         $recurrent_id = '';//addedby
       //  echo $create_submit;exit();
@@ -63,7 +63,7 @@ class Controller_Taxidispatchnode extends Controller_Dispatchadminnode
       //  print_r($_POST);exit;
         if ($create_submit || $dispatch_submit) {
             $post_values = Arr::map('trim', $this->request->post());
-            $validator   = $this->tdispatch_model->validate_dispatchbooking(arr::extract($post_values, array(
+            $validator   = $this->tdispatch_model->validate_dispatchbooking(arr::extract($post_values, [
                 'firstname',
                 'email',
                 'country_code',
@@ -84,7 +84,7 @@ class Controller_Taxidispatchnode extends Controller_Dispatchadminnode
                 'total_fare',
                 'notes',
                 'promo_code',
-            )));
+            ]));
             if ($validator->check()) {
                 //print_r($post_values);exit;
                 $random_key      = text::random($type = 'alnum', $length = 10);
@@ -115,7 +115,7 @@ class Controller_Taxidispatchnode extends Controller_Dispatchadminnode
                         /** Mail to new User **/
                         $mail              = "";
                         $pass_phNo         = $post_values['country_code'].$post_values['phone'];
-                        $replace_variables = array(
+                        $replace_variables = [
                             REPLACE_LOGO => EMAILTEMPLATELOGO,
                             REPLACE_SITENAME => $this->app_name,
                             REPLACE_USERNAME => $post_values['firstname'],
@@ -126,7 +126,7 @@ class Controller_Taxidispatchnode extends Controller_Dispatchadminnode
                             REPLACE_SITEURL => URL_BASE,
                             REPLACE_COPYRIGHTS => SITE_COPYRIGHT,
                             REPLACE_COPYRIGHTYEAR => COPYRIGHT_YEAR
-                        );
+                        ];
                         //$message           = $this->emailtemplate->emailtemplate(DOCROOT . TEMPLATEPATH . 'passenger-register.html', $replace_variables);
                         if ($this->lang != 'en') {
                             if (file_exists(DOCROOT . TEMPLATEPATH . $this->lang . '/passenger-register-' . $this->lang . '.html')) {
@@ -226,7 +226,7 @@ class Controller_Taxidispatchnode extends Controller_Dispatchadminnode
             }
         } elseif (($update_submit || $update_dispatch || ($dispatch_type == 1) || $_POST) && Validation::factory($_POST)) {
             $post_values = Arr::map('trim', $this->request->post());
-            $validator   = $this->tdispatch_model->validate_dispatchbooking_edit(arr::extract($post_values, array(
+            $validator   = $this->tdispatch_model->validate_dispatchbooking_edit(arr::extract($post_values, [
                 'edit_firstname',
                 'edit_email',
                 'edit_country_code',
@@ -248,7 +248,7 @@ class Controller_Taxidispatchnode extends Controller_Dispatchadminnode
                 'todate',
                 'total_fare',
                 'edit_promo_code',
-            )));
+            ]));
             if ($validator->check() || ($dispatch_type == 1)) {
                 $random_key = text::random($type = 'alnum', $length = 10);
                 $password   = text::random($type = 'alnum', $length = 6);
@@ -272,7 +272,7 @@ class Controller_Taxidispatchnode extends Controller_Dispatchadminnode
                         /** Mail to new User **/
                         $mail              = "";
                         $pass_phNo         = $post_values['edit_country_code'].$post_values['edit_phone'];
-                        $replace_variables = array(
+                        $replace_variables = [
                             REPLACE_LOGO => EMAILTEMPLATELOGO,
                             REPLACE_SITENAME => $this->app_name,
                             REPLACE_USERNAME => $post_values['edit_firstname'],
@@ -283,7 +283,7 @@ class Controller_Taxidispatchnode extends Controller_Dispatchadminnode
                             REPLACE_SITEURL => URL_BASE,
                             REPLACE_COPYRIGHTS => SITE_COPYRIGHT,
                             REPLACE_COPYRIGHTYEAR => COPYRIGHT_YEAR
-                        );
+                        ];
                         //$message           = $this->emailtemplate->emailtemplate(DOCROOT . TEMPLATEPATH . 'passenger-register.html', $replace_variables);
                         if ($this->lang != 'en') {
                             if (file_exists(DOCROOT . TEMPLATEPATH . $this->lang . '/passenger-register-' . $this->lang . '.html')) {
@@ -417,7 +417,7 @@ class Controller_Taxidispatchnode extends Controller_Dispatchadminnode
     }
     public function action_firstname_load_new()
     {
-        $name             = array();
+        $name             = [];
         $like_q           = arr::get($_REQUEST, 'query');
         $like_q           = urlencode($like_q);
         $user_details = $this->tdispatch_model->getuser_details($like_q, 1);
@@ -429,7 +429,7 @@ class Controller_Taxidispatchnode extends Controller_Dispatchadminnode
     }
     public function action_email_load_new()
     {
-        $name             = array();
+        $name             = [];
         $like_q           = arr::get($_REQUEST, 'q');
         $like_q           = urlencode($like_q);
         $user_details = $this->tdispatch_model->getuser_details($like_q, 2);
@@ -441,7 +441,7 @@ class Controller_Taxidispatchnode extends Controller_Dispatchadminnode
     }
     public function action_phone_load_new()
     {
-        $name             = array();
+        $name             = [];
         $like_q           = arr::get($_REQUEST, 'query');
         $like_q           = urlencode($like_q);
         $user_details = $this->tdispatch_model->getuser_details($like_q, 3);
@@ -476,13 +476,13 @@ class Controller_Taxidispatchnode extends Controller_Dispatchadminnode
         $post_values          = $_POST;
         $driver_status        = $_REQUEST['driver_status'];
         $taxi_company         = $_REQUEST['taxi_company'];
-        $send_array           = array(
+        $send_array           = [
             'driver_status' => $driver_status,
             'taxi_company' => $taxi_company
-        );
+        ];
         $all_company_map_list = $this->tdispatch_model->driver_status_details($_REQUEST);
-        $markers              = array();
-        $tmarkers             = array();
+        $markers              = [];
+        $tmarkers             = [];
         $book_now             = "";
         foreach ($all_company_map_list as $key => $val) {
             if ($val['driver_status'] == "F" && $val['shift_status'] == "IN") {
@@ -589,7 +589,7 @@ class Controller_Taxidispatchnode extends Controller_Dispatchadminnode
         $driver_free_in       = 0;
         $driver_free_out      = 0;
         $driver_busy          = 0;
-        $markers              = array();
+        $markers              = [];
         $book_now             = "";
         if (count($all_company_map_list) > 0) {
             $output = "<h4>Driver Details <span id='driver_dets_count'></span> </h4>";
@@ -786,13 +786,13 @@ class Controller_Taxidispatchnode extends Controller_Dispatchadminnode
         $manage_status        = isset($_GET['manage_status']) ? $_GET['manage_status'] : 0;
         $taxi_company         = isset($_GET['taxi_company']) ? $_GET['taxi_company'] : 0;
         //echo $taxi_company;exit;
-        $send_array           = array(
+        $send_array           = [
             "current_time" => $current_time,
             "travel_status" => $travel_status,
             "driver_reply_cancel" => $driver_reply_cancel,
             "manage_status" => $manage_status,
             "taxi_company" => $taxi_company
-        );
+        ];
 	$bk_type = isset($_GET['bk_t']) ? $_GET['bk_t'] : "";
         if($bk_type != '')
         {
@@ -804,7 +804,7 @@ class Controller_Taxidispatchnode extends Controller_Dispatchadminnode
         $status_button        = "";
         $edit                 = "";
         $name_color           = "";
-        $op                   = array();
+        $op                   = [];
         $confirmflag = 0;
 
         if (count($get_all_booking_list) > 0) {
@@ -1330,7 +1330,7 @@ class Controller_Taxidispatchnode extends Controller_Dispatchadminnode
         $booking_filter       = isset($_GET['booking_filter']) ? $_GET['booking_filter'] : "";
         $booking_key          = isset($_GET['booking_key']) ? $_GET['booking_key'] : "";
         $type          = isset($_GET['type']) ? $_GET['type'] : "";
-        $send_array           = array(
+        $send_array           = [
             "current_time" => $current_time,
             "travel_status" => $travel_status,
             "driver_reply_cancel" => $driver_reply_cancel,
@@ -1342,7 +1342,7 @@ class Controller_Taxidispatchnode extends Controller_Dispatchadminnode
             "booking_filter" => $booking_filter,
             "booking_key" => $booking_key,
             "type" => $type
-        );
+        ];
         $get_all_booking_list = $this->tdispatch_model->get_all_booking_list_all($send_array);
         //echo "<pre>"; print_r($get_all_booking_list); exit;
         $i                    = 0;
@@ -1350,7 +1350,7 @@ class Controller_Taxidispatchnode extends Controller_Dispatchadminnode
         $status_button        = "";
         $edit                 = "";
         $name_color           = "";
-        $op                   = array();
+        $op                   = [];
         $taxicompany_id       = 0;
        
         if (count($get_all_booking_list) > 0) {
@@ -1754,8 +1754,8 @@ class Controller_Taxidispatchnode extends Controller_Dispatchadminnode
         } else {
             $all_company_map_list = $this->tdispatch_model->all_driver_map_list($_REQUEST);
         }
-        $markers  = array();
-        $tmarkers = array();
+        $markers  = [];
+        $tmarkers = [];
         foreach ($all_company_map_list as $key => $val) {
             //print_r($val);exit;
             $book_now = "";
@@ -1916,8 +1916,8 @@ class Controller_Taxidispatchnode extends Controller_Dispatchadminnode
             {
                 $performance_status = 3;
             }
-             $updatequery = array('performance_status'=>$performance_status);
-             $updateresult = $this->mongo_db->update(MDB_PASSENGERS_LOGS,array('_id'=>(int)$passenger_logid),array('$set'=>$updatequery),array('upsert'=>true));
+             $updatequery = ['performance_status'=>$performance_status];
+             $updateresult = $this->mongo_db->update(MDB_PASSENGERS_LOGS,['_id'=>(int)$passenger_logid],['$set'=>$updatequery],['upsert'=>true]);
         }
     ?>
 		<script type="text/javascript">load_logcontent();</script>
@@ -1932,7 +1932,7 @@ class Controller_Taxidispatchnode extends Controller_Dispatchadminnode
             /***** Insert the druiver details to driver request table ************/
             
              $id = $this->common_model->get_auto_id(MDB_REQUEST_HISTORY);
-            $insert_array = array(
+            $insert_array = [
                 "_id" => (int)$id,
                 "trip_id" => (int)$passenger_logid,
                 "available_drivers" => $_REQUEST['driver_id'],
@@ -1942,18 +1942,18 @@ class Controller_Taxidispatchnode extends Controller_Dispatchadminnode
                 "rejected_timeout_drivers" => "",
                 //"createdate" => $company_all_currenttimestamp
                 "createdate" =>new \MongoDB\BSON\UTCDateTime(strtotime($company_all_currenttimestamp) * 1000)
-            );
+            ];
             //Inserting to Driver request table Table 
             $driver_request        = $this->common_model->insert(MDB_REQUEST_HISTORY, $insert_array);
-            $detail       = array(
+            $detail       = [
                 "passenger_tripid" => $passenger_logid,
                 "notification_time" => ""
-            );
-            $msg          = array(
+            ];
+            $msg          = [
                 "message" => __('api_request_confirmed_passenger'),
                 "status" => 1,
                 "detail" => $detail
-            );
+            ];
 ;
              $det    = $this->common_model->get_dispacttripdetails($passenger_logid);
               if(isset($det['result']) && count($det['result']) > 0)
@@ -1964,7 +1964,7 @@ class Controller_Taxidispatchnode extends Controller_Dispatchadminnode
             $p_device_id     = isset($dets['p_device_id'])?$dets['p_device_id']:'';
             $p_device_type     =  isset($dets['p_device_type'])?$dets['p_device_type']:1;
 
-            $push_message = array('message'=>'Trip Dispatched','trip_id'=>$passenger_logid,'status'=>20);
+            $push_message = ['message'=>'Trip Dispatched','trip_id'=>$passenger_logid,'status'=>20];
             $title='';
 
             $p_send_notification = $this->api->send_passenger_mobile_pushnotification($p_device_token,$p_device_type,$push_message,$this->customer_google_api,$title);
@@ -1996,7 +1996,7 @@ class Controller_Taxidispatchnode extends Controller_Dispatchadminnode
         $trip_id                  = $_REQUEST['trip_id'];
         $get_driver_sequence_list = $this->tdispatch_model->get_driver_sequence_list($trip_id);
         //print_r($get_driver_sequence_list);exit;
-        $markers                  = array();
+        $markers                  = [];
         if (count($get_driver_sequence_list) > 0) {
             foreach ($get_driver_sequence_list as $key => $val) {
                 $markers[$key]['trip_id']       = $val['trip_id'];
@@ -2021,8 +2021,8 @@ class Controller_Taxidispatchnode extends Controller_Dispatchadminnode
         $dispatch_submit            = arr::get($_REQUEST, 'dispatch');
         //print_r($dispatch_submit);exit;
         $model_details              = $this->tdispatch_model->model_details();
-        $errors                     = array();
-        $post_values                = array();
+        $errors                     = [];
+        $post_values                = [];
         $booking_key                = '';
         $type                       = 'N';
         $view                       = View::factory(TAXI_DISPATCH_NODE . 'manage_booking')->bind('validator', $validator)->bind('errors', $errors)->bind('company_tax', $company_tax)->bind('company_timezone', $company_timezone)->bind('model_details', $model_details)->bind('postvalue', $post_values)->bind('booking_key', $booking_key)->bind('type',$type);
@@ -2048,8 +2048,8 @@ class Controller_Taxidispatchnode extends Controller_Dispatchadminnode
         $type                       = 'R';
         //print_r($dispatch_submit);exit;
         $model_details              = $this->tdispatch_model->model_details();
-        $errors                     = array();
-        $post_values                = array();
+        $errors                     = [];
+        $post_values                = [];
         $view                       = View::factory(TAXI_DISPATCH_NODE . 'manage_booking')->bind('validator', $validator)->bind('errors', $errors)->bind('company_tax', $company_tax)->bind('company_timezone', $company_timezone)->bind('model_details', $model_details)->bind('postvalue', $post_values)->bind('booking_key', $booking_key)->bind('type',$type);
         $this->template->title      = SITENAME . " | " . __('recurrent_booking');
         $this->template->page_title = __('recurrent_booking');
@@ -2096,15 +2096,15 @@ class Controller_Taxidispatchnode extends Controller_Dispatchadminnode
         $json   = json_decode($geoloc);
         //print_r($json);exit;
         if (isset($json) && $json->status == 'OK') {
-            return array(
+            return [
                 $json->results[0]->geometry->location->lat,
                 $json->results[0]->geometry->location->lng
-            );
+            ];
         } else {
-			return array(
+			return [
                 29.3117,
                 47.4818
-            );
+            ];
             /* return array(
                 11.621354,
                 76.14253698
@@ -2233,34 +2233,34 @@ public function action_pay_details()
             //echo $check_promo;
             //exit;
             if ($check_promo == 0) {
-                $msg = array(
+                $msg = [
                     "message" => __('invalid_promocode'),
                     "status" => 3
-                );
+                ];
                
             } else if ($check_promo == 3) {
-                $msg = array(
+                $msg = [
                     "message" => __('promo_code_startdate'),
                     "status" => 3
-                );
+                ];
                
             } else if ($check_promo == 4) {
-                $msg = array(
+                $msg = [
                     "message" => __('promo_code_expired'),
                     "status" => 3
-                );                
+                ];                
             } else if ($check_promo == 2) {
-                $msg = array(
+                $msg = [
                     "message" => __('promo_code_limit_exceed'),
                     "status" => 3
-                );
+                ];
                 //echo json_encode($msg);
                 
             } else {
-                $msg = array(
+                $msg = [
                     "message" => __('promo_applied_succees'),
                     "status" => 1
-                );                
+                ];                
             }
 
             echo json_encode($msg);
@@ -2282,8 +2282,8 @@ public function action_pay_details()
         $dispatch_submit            = arr::get($_REQUEST, 'dispatch');
         //print_r($dispatch_submit);exit;
         $model_details              = $this->tdispatch_model->model_details();
-        $errors                     = array();
-        $post_values                = array();
+        $errors                     = [];
+        $post_values                = [];
         $booking_key                = '';
         $type                       = 'N';
         $view                       = View::factory(TAXI_DISPATCH_NODE . 'manage_complete_booking')->bind('validator', $validator)->bind('errors', $errors)->bind('company_tax', $company_tax)->bind('company_timezone', $company_timezone)->bind('model_details', $model_details)->bind('postvalue', $post_values)->bind('booking_key', $booking_key)->bind('type',$type);
@@ -2307,7 +2307,7 @@ public function action_pay_details()
         $booking_filter       = isset($_GET['booking_filter']) ? $_GET['booking_filter'] : "";
         $booking_key          = isset($_GET['booking_key']) ? $_GET['booking_key'] : "";
         $type          = isset($_GET['type']) ? $_GET['type'] : "";
-        $send_array           = array(
+        $send_array           = [
             "current_time" => $current_time,
             "travel_status" => $travel_status,
             "driver_reply_cancel" => $driver_reply_cancel,
@@ -2319,7 +2319,7 @@ public function action_pay_details()
             "booking_filter" => $booking_filter,
             "booking_key" => $booking_key,
             "type" => $type
-        );
+        ];
         $get_all_booking_list = $this->tdispatch_model->get_all_complete_booking_list_all($send_array);
         //echo "<pre>"; print_r($get_all_booking_list); exit;
         $i                    = 0;
@@ -2327,7 +2327,7 @@ public function action_pay_details()
         $status_button        = "";
         $edit                 = "";
         $name_color           = "";
-        $op                   = array();
+        $op                   = [];
         $taxicompany_id       = 0;
        
         if (count($get_all_booking_list) > 0) {

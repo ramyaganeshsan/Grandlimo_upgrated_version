@@ -8,7 +8,7 @@ $status_val = isset($srch["status"]) ? $srch["status"] :'';
 $keyword = isset($srch["keyword"]) ? $srch["keyword"] :''; 
 $customer_type = isset($srch["customer_type"]) ? $srch["customer_type"] :''; 
 
-$status = array('A' => 'Active','I' => 'Block','T' => 'Trash','PB'=>'Permanent Block' );
+$status = ['A' => 'Active','I' => 'Block','T' => 'Trash','PB'=>'Permanent Block' ];
 
 //For CSS class deefine in the table if the data's available
 //===========================================================

@@ -253,16 +253,16 @@ $i =0;
 foreach($all_company_list as $listings)
 {
     $i++;
-    $trip_id_array = isset($listings['trip_id'])?$listings['trip_id']:array();
-    $pickup_array = isset($listings['pickup'])?$listings['pickup']:array();
-    $drop_array = isset($listings['drop'])?$listings['drop']:array();
-    $pass_name_array = isset($listings['pass_names'])?$listings['pass_names']:array();
-    $pass_lname_array = isset($listings['pass_lnames'])?$listings['pass_lnames']:array();
-    $fare_array = isset($listings['fare'])?$listings['fare']:array();
-    $wallet_amount_used_array = isset($listings['wallet_amount_used'])?$listings['wallet_amount_used']:array();
-    $payment_type_array = isset($listings['payment_type'])?$listings['payment_type']:array();
-    $advance_payment_array = isset($listings['advance_payment'])?$listings['advance_payment']:array();
-    $driver_edit_status_array = isset($listings['driver_edit_status'])?$listings['driver_edit_status']:array();
+    $trip_id_array = isset($listings['trip_id'])?$listings['trip_id']:[];
+    $pickup_array = isset($listings['pickup'])?$listings['pickup']:[];
+    $drop_array = isset($listings['drop'])?$listings['drop']:[];
+    $pass_name_array = isset($listings['pass_names'])?$listings['pass_names']:[];
+    $pass_lname_array = isset($listings['pass_lnames'])?$listings['pass_lnames']:[];
+    $fare_array = isset($listings['fare'])?$listings['fare']:[];
+    $wallet_amount_used_array = isset($listings['wallet_amount_used'])?$listings['wallet_amount_used']:[];
+    $payment_type_array = isset($listings['payment_type'])?$listings['payment_type']:[];
+    $advance_payment_array = isset($listings['advance_payment'])?$listings['advance_payment']:[];
+    $driver_edit_status_array = isset($listings['driver_edit_status'])?$listings['driver_edit_status']:[];
     $driver_id = isset($listings['driver_id'])?$listings['driver_id']:0;
     $driver_name = isset($listings['driver_names'])?$listings['driver_names']:'';
     $driver_lname = isset($listings['driver_lnames'])?$listings['driver_lnames']:'';
@@ -497,7 +497,7 @@ foreach($all_company_list as $listings)
 
         $driver_logs_key = Commonfunction::get_array_id($driver_id,$all_shift_logs);
 
-        $driver_logs = isset($all_shift_logs[$driver_logs_key])?$all_shift_logs[$driver_logs_key]:array();
+        $driver_logs = isset($all_shift_logs[$driver_logs_key])?$all_shift_logs[$driver_logs_key]:[];
 
         //print_r($driver_logs);exit;
         $total_shift_hours= $tot_shift_out_hrs = 0;

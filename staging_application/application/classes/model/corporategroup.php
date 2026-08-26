@@ -44,7 +44,7 @@ class Model_CorporateGroup extends Model
             ->rule('wallet_positive_limit', 'not_empty')
             ->rule('wallet_max_limit_check', 'not_empty')
             ->rule('surge_pricing', 'not_empty')
-            ->rule('corporate_group_name', 'Model_CorporateGroup::checkCorporateGroupNameExists', array(':value', $arr['corporate_group_name']));
+            ->rule('corporate_group_name', 'Model_CorporateGroup::checkCorporateGroupNameExists', [':value', $arr['corporate_group_name']]);
         return $validate;
     }
 
@@ -52,13 +52,13 @@ class Model_CorporateGroup extends Model
     {
         //echo"<pre>"; print_r($post);exit();
         $user_createdby = $this->admin_userid;
-        $rs = $this->mongo_db->find(MDB_CORPORATE_GROUP, array(), array('_id'))->sort(array('_id' => -1))->limit(1);
+        $rs = $this->mongo_db->find(MDB_CORPORATE_GROUP, [], ['_id'])->sort(['_id' => -1])->limit(1);
         $rs = iterator_to_array($rs);
         reset($rs);
         $rs_first_key = key($rs);
         $inc_id = $rs_first_key + 1;
 
-        $param = array(
+        $param = [
             '_id' => $inc_id,
             'corporate_group_name' => $post['corporate_group_name'],
             'wallet_positive_limit' => (int)$post['wallet_positive_limit'],
@@ -67,7 +67,7 @@ class Model_CorporateGroup extends Model
             "corporate_passengers_list" => $post['corporate_passengers_list'],
             'status' => 'A',
             'created_by' => $user_createdby
-        );
+        ];
         $result = $this->mongo_db->insert(MDB_CORPORATE_GROUP, $param);
         return $result;
     }
@@ -83,25 +83,25 @@ class Model_CorporateGroup extends Model
     public static function checkCorporateGroupNameExists($corporate_group_name = "", $zone_id)
     {
         $mongodb = MangoDB::instance('default');
-        $result = $mongodb->count(MDB_CORPORATE_GROUP, array('corporate_group_name' => $corporate_group_name));
+        $result = $mongodb->count(MDB_CORPORATE_GROUP, ['corporate_group_name' => $corporate_group_name]);
         return ($result > 0) ? false : true;
     }
 
     public static function checkEditCorporateGroupNameExists($corporate_group_name = "", $id)
     {
         $mongodb = MangoDB::instance('default');
-        $result = $mongodb->count(MDB_CORPORATE_GROUP, array('corporate_group_name' => $corporate_group_name, '_id' => (int)$id));
+        $result = $mongodb->count(MDB_CORPORATE_GROUP, ['corporate_group_name' => $corporate_group_name, '_id' => (int)$id]);
         return ($result > 0) ? false : true;
     }
 
     public function corporate_group_detail($id)
     {
-        $arguments = array(
-            array(
-                '$match' => array('_id' => (int)$id)
-            ),
-            array(
-                '$project' => array(
+        $arguments = [
+            [
+                '$match' => ['_id' => (int)$id]
+            ],
+            [
+                '$project' => [
                     '_id' => '$_id',
                     'corporate_group_name' => '$corporate_group_name',
                     'wallet_positive_limit' => '$wallet_positive_limit',
@@ -109,62 +109,62 @@ class Model_CorporateGroup extends Model
                     'surge_pricing' => '$surge_pricing',
                     'corporate_passengers_list' => '$corporate_passengers_list',
                     'status' => '$status'
-                )
-            )
-        );
+                ]
+            ]
+        ];
 
         $res = $this->mongo_db->aggregate(MDB_CORPORATE_GROUP, $arguments);
-        return isset($res['result'][0]) ? $res['result'][0] : array();
+        return isset($res['result'][0]) ? $res['result'][0] : [];
     }
 
-    public function passengers_list($keyword, $selected = array())
+    public function passengers_list($keyword, $selected = [])
     {
         if (count($selected) > 0) {
-            $srch_query = array(
-                "\$and" => array(
-                    array('user_status' => 'A'),
-                    array("\$or" => array(
-                        array('name' => new MongoRegex("/$keyword/i")),
-                        array('email' => new MongoRegex("/$keyword/i")),
-                        array('phone' => new MongoRegex("/$keyword/i")),
+            $srch_query = [
+                "\$and" => [
+                    ['user_status' => 'A'],
+                    ["\$or" => [
+                        ['name' => new \MongoDB\BSON\Regex($keyword, 'i')],
+                        ['email' => new \MongoDB\BSON\Regex($keyword, 'i')],
+                        ['phone' => new \MongoDB\BSON\Regex($keyword, 'i')],
 
-                    )),
-                    array("\$or" => array(
-                        array('_id' => array('$in' => $selected))
-                    ))
-                )
-            );
+                    ]],
+                    ["\$or" => [
+                        ['_id' => ['$in' => $selected]]
+                    ]]
+                ]
+            ];
         } else {
-            $srch_query = array(
-                "\$and" => array(
-                    array('user_status' => 'A'),
-                    array("\$or" => array(
-                        array('name' => new MongoRegex("/$keyword/i")),
-                        array('email' => new MongoRegex("/$keyword/i")),
-                        array('phone' => new MongoRegex("/$keyword/i")),
+            $srch_query = [
+                "\$and" => [
+                    ['user_status' => 'A'],
+                    ["\$or" => [
+                        ['name' => new \MongoDB\BSON\Regex($keyword, 'i')],
+                        ['email' => new \MongoDB\BSON\Regex($keyword, 'i')],
+                        ['phone' => new \MongoDB\BSON\Regex($keyword, 'i')],
 
-                    ))
-                )
-            );
+                    ]]
+                ]
+            ];
         }
 
-        $arguments = array(
-            array(
+        $arguments = [
+            [
                 '$match' => $srch_query,
-            ),
-            array(
-                '$project' => array(
+            ],
+            [
+                '$project' => [
                     'id' => '$_id',
-                    'text' => array('$concat' => ['$name', ' - ', '$email', ' - ', '$phone'])
-                )
-            ),
-            array(
+                    'text' => ['$concat' => ['$name', ' - ', '$email', ' - ', '$phone']]
+                ]
+            ],
+            [
                 '$limit' => 20
-            )
-        );
+            ]
+        ];
 
         $res = $this->mongo_db->aggregate(MDB_PASSENGERS, $arguments);
-        return isset($res['result']) ? $res['result'] : array();
+        return isset($res['result']) ? $res['result'] : [];
     }
 
 
@@ -175,22 +175,22 @@ class Model_CorporateGroup extends Model
             ->rule('wallet_positive_limit', 'not_empty')
             ->rule('wallet_max_limit_check', 'not_empty')
             ->rule('surge_pricing', 'not_empty')
-            ->rule('corporate_group_name', 'Model_CorporateGroup::checkEditCorporateGroupNameExists', array(':value', $arr['corporate_group_name']));
+            ->rule('corporate_group_name', 'Model_CorporateGroup::checkEditCorporateGroupNameExists', [':value', $arr['corporate_group_name']]);
 
         return $validate;
     }
     public function edit_corporate_group($postvalues, $id)
     {
         $user_createdby = $_SESSION['userid'];
-        $param = array(
+        $param = [
             'corporate_group_name' => $postvalues['corporate_group_name'],
             'wallet_positive_limit' => (int)$postvalues['wallet_positive_limit'],
             'surge_pricing' => (int)$postvalues['surge_pricing'],
             'wallet_max_limit_check' => (int)$postvalues['wallet_max_limit_check'],
             'corporate_passengers_list' => $postvalues['corporate_passengers_list'],
             'created_by' => $user_createdby
-        );
-        $result = $this->mongo_db->update(MDB_CORPORATE_GROUP, array('_id' => (int)$id), array('$set' => $param), array('upsert' => false));
+        ];
+        $result = $this->mongo_db->update(MDB_CORPORATE_GROUP, ['_id' => (int)$id], ['$set' => $param], ['upsert' => false]);
         return (empty($result['err'])) ? 1 : $result['err'];
     }
 
@@ -198,49 +198,49 @@ class Model_CorporateGroup extends Model
     {
         $keyword       = str_replace("%", "!%", $keyword);
         $keyword       = str_replace("_", "!_", $keyword);
-        $srch_query = array();
+        $srch_query = [];
         //MongoDB with aggregate process only
         if ((!empty($keyword)) && (!empty($status))) {
-            $srch_query = array("\$and" => array(array('status' => $status), array("\$or" => array(array('corporate_group_name' => new MongoRegex("/$keyword/i"))))));
+            $srch_query = ["\$and" => [['status' => $status], ["\$or" => [['corporate_group_name' => new \MongoDB\BSON\Regex($keyword, 'i')]]]]];
         } else if (!empty($status)) {
-            $srch_query = array("\$and" => array(array('status' => $status)));
+            $srch_query = ["\$and" => [['status' => $status]]];
         } else {
-            $srch_query = array("\$and" => array(array('status' => 'A')));
+            $srch_query = ["\$and" => [['status' => 'A']]];
         }
 
         //echo '<pre>'; print_r($srch_query); exit();
         if (!empty($srch_query)) {
-            $arguments = array(
-                array(
+            $arguments = [
+                [
                     '$match' => $srch_query
-                ),
-                array(
-                    '$project' => array(
+                ],
+                [
+                    '$project' => [
                         '_id' => '$_id',
                         'corporate_group_name' => '$corporate_group_name',
                         'wallet_positive_limit' => '$wallet_positive_limit',
                         'wallet_max_limit_check' => '$wallet_max_limit_check',
                         'surge_pricing' => '$surge_pricing',
                         'status' => '$status'
-                    )
-                )
-            );
+                    ]
+                ]
+            ];
         } else {
-            $arguments = array(
-                array(
+            $arguments = [
+                [
                     '$match' => $srch_query
-                ),
-                array(
-                    '$project' => array(
+                ],
+                [
+                    '$project' => [
                         '_id' => '$_id',
                         'corporate_group_name' => '$corporate_group_name',
                         'wallet_positive_limit' => '$wallet_positive_limit',
                         'wallet_max_limit_check' => '$wallet_max_limit_check',
                         'surge_pricing' => '$surge_pricing',
                         'status' => '$status'
-                    )
-                )
-            );
+                    ]
+                ]
+            ];
         }
 
         if ($find_count == false) {
@@ -269,7 +269,7 @@ class Model_CorporateGroup extends Model
     {
         $active_ids = Commonfunction::mongo_format_array($activeids);
         //print_r($active_ids); exit();
-        $result = $this->mongo_db->update(MDB_CORPORATE_GROUP, array('_id' => array('$in' => $active_ids)), array('$set' => array('status' => 'D')), array('multiple' => true));
+        $result = $this->mongo_db->update(MDB_CORPORATE_GROUP, ['_id' => ['$in' => $active_ids]], ['$set' => ['status' => 'D']], ['multiple' => true]);
         return (empty($res['err'])) ? 1 : $res['errmsg'];
     }
 
@@ -277,7 +277,7 @@ class Model_CorporateGroup extends Model
     {
         $active_ids = Commonfunction::mongo_format_array($activeids);
         //print_r($active_ids); exit();
-        $result = $this->mongo_db->update(MDB_CORPORATE_GROUP, array('_id' => array('$in' => $active_ids)), array('$set' => array('status' => 'A')), array('multiple' => true));
+        $result = $this->mongo_db->update(MDB_CORPORATE_GROUP, ['_id' => ['$in' => $active_ids]], ['$set' => ['status' => 'A']], ['multiple' => true]);
         return (empty($res['err'])) ? 1 : $res['errmsg'];
     }
 
@@ -285,7 +285,7 @@ class Model_CorporateGroup extends Model
     {
         $active_ids = Commonfunction::mongo_format_array($activeids);
         //print_r($active_ids); exit();
-        $result = $this->mongo_db->update(MDB_CORPORATE_GROUP, array('_id' => array('$in' => $active_ids)), array('$set' => array('status' => 'T')), array('multiple' => true));
+        $result = $this->mongo_db->update(MDB_CORPORATE_GROUP, ['_id' => ['$in' => $active_ids]], ['$set' => ['status' => 'T']], ['multiple' => true]);
         return (empty($res['err'])) ? 1 : $res['errmsg'];
     }
 

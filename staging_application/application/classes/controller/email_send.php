@@ -2,7 +2,7 @@
 		if(is_array($mail))
 		{
 			$this->siteusers=Model::factory('siteusers');
-			if($this->array_keys_exists($mail,array('to','from','subject','message')))
+			if($this->array_keys_exists($mail,['to','from','subject','message']))
 			{
 				$to=$mail['to'];
 				$from=$mail['from'];
@@ -23,14 +23,14 @@
 						$username=$smtp_detail[0]['smtp_username'];
 						$password=$smtp_detail[0]['smtp_password'];
 						$port=$smtp_detail[0]['smtp_port'];
-						$smtp_config = array('driver' => 'smtp','options' => array('hostname'=>$host,
+						$smtp_config = ['driver' => 'smtp','options' => ['hostname'=>$host,
 									'username'=>$username,'password' =>$password,
-									'port' => $port,'encryption' => 'ssl')); 	
+									'port' => $port,'encryption' => 'ssl']]; 	
 					 }		
 
-					 $smtp_config1 = array('driver' => 'smtp','options' => array('hostname'=>'smtp.gmail.com',
+					 $smtp_config1 = ['driver' => 'smtp','options' => ['hostname'=>'smtp.gmail.com',
 								  'username'=>'johnjoeshep@gmail.com','password' =>'test@123',
-									'port' => '465','encryption' => 'ssl'));
+									'port' => '465','encryption' => 'ssl']];
 														
 					/* $smtp_config = array('driver' => 'smtp','options' => array('hostname'=>'smtp.gmail.com',
 								'username'=>'johnjoeshep@gmail.com','password' =>'test@123',

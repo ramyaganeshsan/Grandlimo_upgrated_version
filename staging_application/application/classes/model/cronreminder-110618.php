@@ -50,17 +50,17 @@ class Model_Cronreminder extends Model
 	
 	public function cron_deactive_company($company_id)
 	{
-		$result1 = DB::update(PEOPLE)->set(array('status' => 'D'))
+		$result1 = DB::update(PEOPLE)->set(['status' => 'D'])
 				->and_where('company_id', '=', $company_id)
 				->and_where('user_type', '=', 'C') //Deactive Company
 				->execute();
 		
-		$result2 = DB::update(PEOPLE)->set(array('status' => 'D'))
+		$result2 = DB::update(PEOPLE)->set(['status' => 'D'])
 				->and_where('company_id', '=', $company_id)
 				->and_where('user_type', '=', 'M') //Deactive Dispatchers
 				->execute();
 				
-		$result3 = DB::update(PEOPLE)->set(array('status' => 'D'))
+		$result3 = DB::update(PEOPLE)->set(['status' => 'D'])
 				->and_where('company_id', '=', $company_id)
 				->and_where('user_type', '=', 'D') //Deactive Drivers
 				->execute();
@@ -102,66 +102,66 @@ class Model_Cronreminder extends Model
 
 	public function get_notification_passengers_list(){			
 
-            $field_arguments = array(
-                array(
-                      '$match'=>array('push_notification' => array('$ne' => 1),'user_status'=>'A','device_type'=>array('$in'=>['1','2']),'device_token'=>array('$ne'=>''))
-                    ),
-                array( '$project' => array('_id'=>'$_id','device_type'=>'$device_type','device_token'=>'$device_token')
-                ),            
-                array(
-                    '$sort' => array(
+            $field_arguments = [
+                [
+                      '$match'=>['push_notification' => ['$ne' => 1],'user_status'=>'A','device_type'=>['$in'=>['1','2']],'device_token'=>['$ne'=>'']]
+                    ],
+                [ '$project' => ['_id'=>'$_id','device_type'=>'$device_type','device_token'=>'$device_token']
+                ],            
+                [
+                    '$sort' => [
                         '_id' => -1
-                    ),
-                ),
-                array(
+                    ],
+                ],
+                [
                     '$skip' => 0
-                ),
-                array(
+                ],
+                [
                   '$limit' => 100
-                )
+                ]
 
                 
-            );
+            ];
 
         $qresult = $this->mongo_db->aggregate(MDB_PASSENGERS,$field_arguments); 
         //print_r($qresult);exit;
-        return (!empty($qresult['result']))?$qresult['result']:array();
+        return (!empty($qresult['result']))?$qresult['result']:[];
 
     }
 
     public function change_notification_status($id){
 
-    	$result = $this->mongo_db->update(MDB_NOTIFICATIONS,array('_id'=>(int)$id ),array('$set'=>array('sent_status'=>1) ) );
+    	$result = $this->mongo_db->update(MDB_NOTIFICATIONS,['_id'=>(int)$id ],['$set'=>['sent_status'=>1] ] );
     	
     	return (empty($result['err']))?1:$result['err'];
     }
 
     public function pushnotification_list(){    	
 
-		$field_arguments = array(
-                array(
-                      '$match'=>array('sent_status' => 2)
-                    ),
-                array( '$project' => array('_id'=>'$_id','title'=>'$title','sub_title'=>'$sub_title','message'=>'$message','image'=>'$image')
-                ),            
-                array(
-                    '$sort' => array(
+		$field_arguments = [
+                [
+                      '$match'=>['sent_status' => 2]
+                    ],
+                [ '$project' => ['_id'=>'$_id','title'=>'$title','sub_title'=>'$sub_title','message'=>'$message','image'=>'$image']
+                ],            
+                [
+                    '$sort' => [
                         '_id' => -1
-                    ),
-                ),
-                array(
+                    ],
+                ],
+                [
                     '$skip' => 0
-                ),
-                array(
+                ],
+                [
                   '$limit' => 1
-                )
+                ]
 
                 
-            );
+            ];
 
         $qresult = $this->mongo_db->aggregate(MDB_NOTIFICATIONS,$field_arguments); 
         //print_r($qresult);exit;
-        return (!empty($qresult['result']))?$qresult['result']:array();
+        return (!empty($qresult['result']))?$qresult['result']:[];
 
     
     }
@@ -179,17 +179,17 @@ class Model_Cronreminder extends Model
 
                 $pushmessage = json_encode($pushmessage);               
 				
-				$fields      = array(
+				$fields      = [
                     'registration_ids' => $registrationIDs,
-                    'data' => array(
+                    'data' => [
                         "message" => $pushmessage
-                    )
-                );
+                    ]
+                ];
                 //print_r( $fields );exit;
-                $headers     = array(
+                $headers     = [
                     'Authorization: key=' . $apiKey,
                     'Content-Type: application/json'
-                );
+                ];
                 // Open connection
                 $ch          = curl_init();
                 // Set the url, number of POST vars, POST data
@@ -212,15 +212,15 @@ class Model_Cronreminder extends Model
     {
     			
     			$deviceToken = $d_device_tokens;
-    			$body['aps'] = array(
-									'alert' => array('title'=>$pushmessage['title'],'body'=>$pushmessage['message']),
+    			$body['aps'] = [
+									'alert' => ['title'=>$pushmessage['title'],'body'=>$pushmessage['message']],
 									'badge' => 1,
 									'status' => 22,
 									'sound' => 'default',
 									'mutable-content'=> 1,        					
-								);
+								];
 
-    			$body['data'] = array('attachment-url'=>$pushmessage['image']);
+    			$body['data'] = ['attachment-url'=>$pushmessage['image']];
 
     			//print_r(json_encode($body));exit;
 
@@ -264,7 +264,7 @@ class Model_Cronreminder extends Model
 
 	      if(count($passengers_ids)){
 	                  //print_r($passengers_ids);exit;
-	            $result = $this->mongo_db->update(MDB_PASSENGERS,array('_id'=>array('$in'=>$passengers_ids)),array('$set'=>array('push_notification' => 1)),array('multiple'=>true) );
+	            $result = $this->mongo_db->update(MDB_PASSENGERS,['_id'=>['$in'=>$passengers_ids]],['$set'=>['push_notification' => 1]],['multiple'=>true] );
 	      }
     }
 

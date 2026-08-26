@@ -1,8 +1,8 @@
  <?php 
 
   if($get_transaction){
-	  $fare = array();
-	  $month = array();
+	  $fare = [];
+	  $month = [];
 	foreach($get_transaction as $vl)
 	{
 		if($vl['fare'] != NULL){
@@ -18,14 +18,14 @@
 	}
 	$display ="display:block;";
 }else{
-	$fare = array();
-	$month = array();
+	$fare = [];
+	$month = [];
 	$display ="display:none;";
 }
 
        foreach($dashstyles as $file => $type)
        { 
-       echo HTML::style($file, array('media' => $type)); 
+       echo HTML::style($file, ['media' => $type]); 
 	   }    
        foreach($dashscripts as $file => $type)
        { 

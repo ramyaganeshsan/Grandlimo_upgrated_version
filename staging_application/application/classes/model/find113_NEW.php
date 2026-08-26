@@ -72,7 +72,7 @@ class Model_Find113 extends Model
                     $remove_driver_list[] = $value['driver_id'];
                 }
             } else {
-                $remove_driver_list = array();
+                $remove_driver_list = [];
             }
         }
         $assigned_driver = $this->free_availabletaxisearch_list_web($no_passengers, $request);
@@ -97,7 +97,7 @@ class Model_Find113 extends Model
         }
         $driver_list       = '';
         $driver_count      = '';
-        $driver_list_array = array();
+        $driver_list_array = [];
         foreach ($assigned_driver as $key => $value) {
             $driver_list_array[] = $value['id'];
         }
@@ -244,7 +244,7 @@ class Model_Find113 extends Model
         $end_time          = $current_date[0] . ' 23:59:59';
 		//$start_time = '2015-04-21 00:00:01';
 		//$end_time = '2015-04-21 01:58:53';
-		$match = array(
+		$match = [
 				'people.status'=>"A",
 				/*'people.booking_limit'=> array('$gt' => $this->mongo_db->count(MDB_PASSENGERS_LOGS,array('createdate'=>array(
 									'$gte'=> new \MongoDB\BSON\UTCDateTime(strtotime($start_time) * 1000)),
@@ -262,7 +262,7 @@ class Model_Find113 extends Model
 				//'taxi_mapping.mapping_enddate' => array('$gte' => new \MongoDB\BSON\UTCDateTime(strtotime($end_time) * 1000))
 				//'package_report.check_package_type' => 'T',
 				//'package_report.upgrade_expirydate' => array('$gte' => new \MongoDB\BSON\UTCDateTime(strtotime($end_time) * 1000))
-			); 
+			]; 
         if ($company_id != "") {
             $match['taxi_mapping.mapping_companyid'] = (int)$company_id;
 			$match['people.company_id']	 = (int)$company_id;
@@ -274,20 +274,20 @@ class Model_Find113 extends Model
         
         $check_pass_log = $this->mongo_db->count(MDB_PASSENGERS_LOGS);//exit;
         
-        $book_limit =  $this->mongo_db->count(MDB_PASSENGERS_LOGS,array(
-									'createdate'=>array('$gte'=> new \MongoDB\BSON\UTCDateTime(strtotime($start_time) * 1000)),
+        $book_limit =  $this->mongo_db->count(MDB_PASSENGERS_LOGS,[
+									'createdate'=>['$gte'=> new \MongoDB\BSON\UTCDateTime(strtotime($start_time) * 1000)],
 									'driver_id'=> '$people._id',
 									//'taxi_modelid'=> (int)$motor_model,
 									'travel_status'=>1,
-									'booking_from' => array('$ne'=>2)
-									));
+									'booking_from' => ['$ne'=>2]
+									]);
 				//					$res = iterator_to_array($book_limit);
 				//reset($res);
 									
 						//	echo '<pre>'; 		
         //print_r($res);
         if($check_pass_log > 0 ){
-			$match['people.booking_limit'] = array('$gte'=> $book_limit); 
+			$match['people.booking_limit'] = ['$gte'=> $book_limit]; 
 		}
         
        //print_r($match);
@@ -301,20 +301,20 @@ class Model_Find113 extends Model
 			
 			$match['taxi_model'] = (int)$motor_model;
         }
-		$arguments = array(array('$lookup'=>array(
+		$arguments = [['$lookup'=>[
 					'from'=>MDB_COMPANY,
 					'localField'=>"taxi_company",
 					'foreignField'=>"_id",
 					 'as'=>"company"        
-				)),
-				array('$unwind'=>'$company'),
-				array('$lookup'=>array(
+				]],
+				['$unwind'=>'$company'],
+				['$lookup'=>[
 					'from'=>MDB_TAXI_DRIVER_MAPPING,
 					'localField'=>"_id",
 					'foreignField'=>"mapping_taxiid",
 					 'as'=>"taxi_mapping"        
-				)),
-				array('$unwind'=>'$taxi_mapping'),
+				]],
+				['$unwind'=>'$taxi_mapping'],
 				/*array('$lookup'=>array(
 					'from'=>MDB_PACKAGE_REPORT,
 					'localField'=>"taxi_company",
@@ -322,35 +322,35 @@ class Model_Find113 extends Model
 					 'as'=>"package_report"        
 				)),
 				array('$unwind'=>'$package_report'),*/
-				array('$lookup'=>array(
+				['$lookup'=>[
 					'from'=>MDB_PEOPLE,
 					'localField'=>"taxi_mapping.mapping_driverid",
 					'foreignField'=>"_id",
 					 'as'=>"people"        
-				)),
-				array('$unwind'=>'$people'),
-					array('$lookup'=>array(
+				]],
+				['$unwind'=>'$people'],
+					['$lookup'=>[
 					'from'=>'driver_driverinfo',
 					'localField'=>"taxi_mapping.mapping_driverid",
 					'foreignField'=>"_id",
 					 'as'=>"driverinfo"        
-				)),
-				array('$unwind'=>'$driverinfo'),
+				]],
+				['$unwind'=>'$driverinfo'],
 				
-				array('$match'=>$match),
-				array('$group' => array('_id'=>array('taxi_id'=>'$_id',
+				['$match'=>$match],
+				['$group' => ['_id'=>['taxi_id'=>'$_id',
 							'id'=>'$people._id',
 							//'check_package_type'=>'$package_report.check_package_type',
 							//'upgrade_expirydate'=>'$package_report.upgrade_expirydate',
 						    'booking_limit'=>'$people.booking_limit'
-						))),
-				array('$sort'=>array('_id.id'=>1))
-			);		
+						]]],
+				['$sort'=>['_id.id'=>1]]
+			];		
 			
 		//	print_r($arguments);
         $result = $this->mongo_db->aggregate(MDB_TAXI,$arguments);
        	//print_r($result['result']);exit;
-		return (isset($result['result']) ? $result['result']: array()); 	
+		return (isset($result['result']) ? $result['result']: []); 	
         	
     }
     
@@ -480,7 +480,7 @@ class Model_Find113 extends Model
         //print_r($assigned_driver1);exit;
         /* ChecK TAXI AVAILABLITY with other model */
         /* AVAIL MOTOR MODEL */
-        $modelrs = $this->mongo_db->find(MDB_MOTOR_MODEL,array('model_status' => 'A'),array('_id','model_name','priority'))->sort(array('priority'=>1));
+        $modelrs = $this->mongo_db->find(MDB_MOTOR_MODEL,['model_status' => 'A'],['_id','model_name','priority'])->sort(['priority'=>1]);
 		$modelres = iterator_to_array($modelrs,false);
 		reset($modelres);
 		$countres = count($modelres);
@@ -495,7 +495,7 @@ class Model_Find113 extends Model
         /* AVAIL MOTOR MODEL */
         
         
-        $result1 = $this->mongo_db->find_one(MDB_MOTOR_MODEL,array("_id"=>(int)$params['motor_model']),array('priority'));
+        $result1 = $this->mongo_db->find_one(MDB_MOTOR_MODEL,["_id"=>(int)$params['motor_model']],['priority']);
         //print_r($result1);
         //echo "ssss".
         $count_check1 = count($assigned_driver1);
@@ -541,7 +541,7 @@ class Model_Find113 extends Model
 						//echo $next_model;
 						//echo '<br>';
 						//echo '<pre>';
-					$result2 = $this->mongo_db->find_one(MDB_MOTOR_MODEL,array("priority"=>(int)$next_model),array('_id'));
+					$result2 = $this->mongo_db->find_one(MDB_MOTOR_MODEL,["priority"=>(int)$next_model],['_id']);
 					//echo $result2['_id'];//exit;
 					$assigned_driver = $this->free_availabletaxisearch_list($params['motor_company'],$result2['_id'], $params['company_id']);
 					
@@ -556,7 +556,7 @@ class Model_Find113 extends Model
 							 $next_model	 = $modelres[$next_model_key]['priority'];
 						}
 						
-					$result2 = $this->mongo_db->find_one(MDB_MOTOR_MODEL,array("priority"=>(int)$next_model),array('_id'));
+					$result2 = $this->mongo_db->find_one(MDB_MOTOR_MODEL,["priority"=>(int)$next_model],['_id']);
 					//echo $result2['_id'];//exit;
 					$assigned_driver = $this->free_availabletaxisearch_list($params['motor_company'],$result2['_id'], $params['company_id']);
 						//print_r($assigned_driver);exit;
@@ -570,7 +570,7 @@ class Model_Find113 extends Model
         /* ChecK TAXI AVAILABLITY with other model */
         //print_r($assigned_driver);exit;
      
-        $driver_list_array = array();
+        $driver_list_array = [];
        
         foreach ($assigned_driver as $key => $value) {
             $driver_list_array[] = $value['_id']['id'];
@@ -585,7 +585,7 @@ class Model_Find113 extends Model
             $end_time     = $current_date[0] . ' 23:59:59';
         } else {
             //$model_base_query = "select time_zone from  company where cid='$company_id' ";
-            $result = $this->mongo_db->find_one(MDB_COMPANY,array('_id'=>(int)$company_id),array('companydetails.time_zone'));
+            $result = $this->mongo_db->find_one(MDB_COMPANY,['_id'=>(int)$company_id],['companydetails.time_zone']);
 			if(!empty($result)){
 				$time_zone = isset($result['companydetails'][ 'time_zone' ])?$result['companydetails'][ 'time_zone' ]:"";
 			}
@@ -606,21 +606,21 @@ class Model_Find113 extends Model
 		
         $latitude = (float)$params['latitude'];
         $longitude = (float)$params['longitude'];		
-		$match1   = array(  'people.login_status' => 'S',
+		$match1   = [  'people.login_status' => 'S',
 							'status' => 'F', //MULTI TRIP
 							'shift_status' => 'IN',
-							'_id'=>array('$in'=>$driver_list_array)
-						);
-        $match2   = array(  //'tmap.mapping_startdate' => array('$gte'=> new \MongoDB\BSON\UTCDateTime(strtotime($start_time) * 1000)),
+							'_id'=>['$in'=>$driver_list_array]
+						];
+        $match2   = [  //'tmap.mapping_startdate' => array('$gte'=> new \MongoDB\BSON\UTCDateTime(strtotime($start_time) * 1000)),
 							//'tmap.mapping_enddate' => array('$lte'=>new \MongoDB\BSON\UTCDateTime(strtotime($end_time) * 1000)),
 							'tmap.mapping_status' => 'A',
-						);
-        $match1['updatetime_difference'] =  array('$lte'=> LOCATIONUPDATESECONDS);
+						];
+        $match1['updatetime_difference'] =  ['$lte'=> LOCATIONUPDATESECONDS];
         if (isset($params['distance'])) {
-            $match1['distance'] =  array('$lte'=> DEFAULTMILE);
+            $match1['distance'] =  ['$lte'=> DEFAULTMILE];
         }
 		if ($params['taxi_fare_km'] != '') {
-            $match2['model.min_fare'] = array('$lte' => $params['taxi_fare_km']);
+            $match2['model.min_fare'] = ['$lte' => $params['taxi_fare_km']];
         }
 		if ($company_id) {
 			$match2['tmap.mapping_companyid'] =  (int)$company_id;
@@ -636,74 +636,74 @@ class Model_Find113 extends Model
         //echo UNIT;exit;
         $distance = DEFAULTMILE;
 		if (UNIT == 0) {
-			$geonear = array('near'=>array('type'=>'Point','coordinates'=>array($longitude,$latitude)),
+			$geonear = ['near'=>['type'=>'Point','coordinates'=>[$longitude,$latitude]],
 							'distanceField'=>"distance",
 							'maxDistance' => $distance*1000,
 							'spherical'=>true,
 							'distanceMultiplier'=>0.001,
 							 'num'=>1000000        
-						);
+						];
         }else {
             //Get the result In Miles
-            $geonear = array('near' => array( 'type' => "Point", 'coordinates' => array( $longitude , $latitude )),
+            $geonear = ['near' => [ 'type' => "Point", 'coordinates' => [ $longitude , $latitude ]],
 						'distanceField' => "distance",
 						'maxDistance' => $distance*1000,
 						'spherical' => true,
 						'distanceMultiplier' => 0.000621371192237,
 						'num' => 1000000
-					);
+					];
         }
-		$arguments = array(
-			array('$geoNear'=>$geonear ),						
-			array('$lookup' => array(
+		$arguments = [
+			['$geoNear'=>$geonear ],						
+			['$lookup' => [
 				'from' => MDB_PEOPLE,
 				'localField' => '_id',
 				'foreignField' => '_id',
 				'as' => 'people'									
-			)),
-			array('$unwind'=>'$people'),			
-			array('$match'=>$match1),				
-			array('$sort'=>array('distance'=>1)),
-			array('$project' => array(
+			]],
+			['$unwind'=>'$people'],			
+			['$match'=>$match1],				
+			['$sort'=>['distance'=>1]],
+			['$project' => [
 							'_id' => 1,
 							'distance' => '$distance',
 							'shift_status' => '$shift_status',
 							'status' => '$status',
 							'loc' => '$loc.coordinates',
 							'people' => 1,	
-							'updatetime_difference' => array('$subtract'=>
-								array(new \MongoDB\BSON\UTCDateTime(strtotime($current_time) * 1000),'$update_date'))
-						)),
-			array('$lookup'=>array(
+							'updatetime_difference' => ['$subtract'=>
+								[new \MongoDB\BSON\UTCDateTime(strtotime($current_time) * 1000),'$update_date']]
+						]],
+			['$lookup'=>[
 							'from' => MDB_TAXI_DRIVER_MAPPING,
 							'localField' => '_id',
 							'foreignField' => 'mapping_driverid',
 							'as' => 'tmap'
-						)),
-			array('$unwind'=>'$tmap'),
-			array('$lookup'=>array(
+						]],
+			['$unwind'=>'$tmap'],
+			['$lookup'=>[
 				'from' => MDB_TAXI,
 				'localField' => 'tmap.mapping_taxiid',
 				'foreignField' => '_id',
 				'as' => 'taxi'
-			)),
-			array('$unwind'=>'$taxi'),
-			array('$lookup'=>array(
+			]],
+			['$unwind'=>'$taxi'],
+			['$lookup'=>[
 				'from' => MDB_MOTOR_MODEL,
 				'localField' => 'taxi.taxi_model',
 				'foreignField' => '_id',
 				'as' => 'model'
-			)),
-			array('$unwind'=>'$model'),
-			array('$lookup'=>array(
+			]],
+			['$unwind'=>'$model'],
+			['$lookup'=>[
 				'from' => MDB_COMPANY,
 				'localField' => 'tmap.mapping_companyid',
 				'foreignField' => '_id',
 				'as' => 'comp'
-			)),
-			array('$unwind'=>'$comp'),
-			array('$match'=>$match2),
-			array('$group'=>array('_id'=>array('driver_id'=>'$_id',
+			]],
+			['$unwind'=>'$comp'],
+			['$match'=>$match2],
+			['$group'=>['_id'=>['driver_id'=>'$_id',
 					'name' => '$people.name',
 					'model_name' => '$model.model_name',
 					'phone' => '$people.phone',
@@ -724,8 +724,8 @@ class Model_Find113 extends Model
 					'taxi_id' => '$taxi._id',
 					'taxi_speed' => '$taxi.taxi_speed',
 					'taxi_min_speed' => '$taxi.taxi_min_speed'
-				)))
-		);
+				]]]
+		];
 		//print_r($arguments);exit;
 		$result = $this->mongo_db->aggregate(MDB_DRIVER_INFO,$arguments);
 		//print "<pre>";
@@ -761,7 +761,7 @@ class Model_Find113 extends Model
                 $remove_driver_list[] = $value['driver_id'];
                 }*/
             } else {
-                $remove_driver_list = array();
+                $remove_driver_list = [];
             }
         } else {
             //based on passenger id and date
@@ -770,7 +770,7 @@ class Model_Find113 extends Model
             if ($get_passenger_driverid != "") {
                 $remove_driver_list = explode(',', $get_passenger_driverid);
             } else {
-                $remove_driver_list = array();
+                $remove_driver_list = [];
             }
         }
         $assigned_driver = $this->free_availabletaxisearch_list($taxi_type, $taxi_model, $company_id);
@@ -788,7 +788,7 @@ class Model_Find113 extends Model
         }*/
         $driver_list       = '';
         $driver_count      = '';
-        $driver_list_array = array();
+        $driver_list_array = [];
         foreach ($assigned_driver as $key => $value) {
             $driver_list_array[] = $value['id'];
         }
@@ -989,7 +989,7 @@ class Model_Find113 extends Model
         $d_company_id            = $companytax_query = "SELECT * FROM " . COMPANYINFO . " WHERE `company_cid` = '" . $company_id . "'";
         $companytax_result       = Db::query(Database::SELECT, $companytax_query)->execute()->as_array();
         $company_tax             = $companytax_result[0]['company_tax'];
-        $fieldname_array         = array(
+        $fieldname_array         = [
             'passengers_id',
             'driver_id',
             'company_id',
@@ -1014,14 +1014,14 @@ class Model_Find113 extends Model
             'company_tax',
             'bookingtype',
             'bookby'
-        );
+        ];
         $time                    = date('H:i:s', strtotime($pickup_time));
         $current_datetime        = convert_timezone('now', TIMEZONE);
         $curretnt_datetime_split = explode(' ', $current_datetime);
         $update_time             = $curretnt_datetime_split[0] . ' ' . $time;
         $Commonmodel             = Model::factory('Commonmodel');
         $this->currentdate       = $Commonmodel->getcompany_all_currenttimestamp(COMPANY_CID);
-        $values_array            = array(
+        $values_array            = [
             $passenger_id,
             mysql_real_escape_string($driver_details[0]['driver_id']),
             $company_id,
@@ -1046,15 +1046,15 @@ class Model_Find113 extends Model
             $company_tax,
             '1',
             '1'
-        );
+        ];
         $result                  = DB::insert(PASSENGERS_LOG, $fieldname_array)->values($values_array)->execute();
         if ($pass_logid == '') {
-            $update_pass_logid = DB::update(PASSENGERS_LOG)->set(array(
+            $update_pass_logid = DB::update(PASSENGERS_LOG)->set([
                 'sub_logid' => $result[0]
-            ))->where('passengers_log_id', '=', $result[0])->execute();
+            ])->where('passengers_log_id', '=', $result[0])->execute();
         }
         if ($result) {
-            $array               = array();
+            $array               = [];
             //return array(1,$result);
             $array['result']     = 1;
             $array['pass_logid'] = $result[0];
@@ -1080,15 +1080,15 @@ class Model_Find113 extends Model
         $json   = json_decode($geoloc);
         //print_r($json);exit;
         if ($json->status == 'OK') {
-            return array(
+            return [
                 $json->results[0]->geometry->location->lat,
                 $json->results[0]->geometry->location->lng
-            );
+            ];
         } else {
-            return array(
+            return [
                 11.621354,
                 76.14253698
-            );
+            ];
         }
     }
     public function find_Haversine($start, $finish)
@@ -1110,15 +1110,15 @@ class Model_Find113 extends Model
     {
         $free_driver       = $this->availabledrivers($passenger_id, $company_id);
 		//print_r($free_driver);exit;
-        $match1            = array();
-        $match2            = array();
-        $driver_list_array = array();        
+        $match1            = [];
+        $match2            = [];
+        $driver_list_array = [];        
         if ($free_driver > 0) {
             foreach ($free_driver as $key => $value) {
                 $driver_list_array[] = $value['_id']['id'];
             }
         } else {
-            $driver_list_array = array();
+            $driver_list_array = [];
         }
         // Find already rejected and timeout drivers in the current trip
         $flag                   = 1;        
@@ -1135,7 +1135,7 @@ class Model_Find113 extends Model
             $start_time   = $current_date[0] . ' 00:00:01';
             $end_time     = $current_date[0] . ' 23:59:59';
         } else {
-            $query = $this->mongo_db->find(MDB_COMPANY,array('_id'=>(int)$company_id),array('companydetails.time_zone'));
+            $query = $this->mongo_db->find(MDB_COMPANY,['_id'=>(int)$company_id],['companydetails.time_zone']);
             $result = iterator_to_array($query);
 			if(!empty($result)){
 				$time_zone = isset($result[ $company_id ]['companydetails'][ 'time_zone' ])?$result[ $company_id ]['companydetails'][ 'time_zone' ]:"";
@@ -1160,93 +1160,93 @@ class Model_Find113 extends Model
         $longitude = (float)$long;
         if ($distance) {
             //$distance_query = "HAVING d_distance <='$distance'";
-            $match1['distance'] =  array('$lte'=> $distance);
+            $match1['distance'] =  ['$lte'=> $distance];
         }
         $service_types = "";
         if ($service_type) {
             //$service_types = " AND driver.taxi_service_type in ($service_type) ";
-            $match1['taxi_service_type'] =  array('$in'=> $service_type);
+            $match1['taxi_service_type'] =  ['$in'=> $service_type];
         }
         if ($unit == '0') {
              //Get the result In KM
-            $geonear = array('near'=>array('type'=>'Point','coordinates'=>array($longitude,$latitude)),
+            $geonear = ['near'=>['type'=>'Point','coordinates'=>[$longitude,$latitude]],
 							'distanceField'=>"distance",
 							'spherical'=>true,
 							'distanceMultiplier'=> 0.001,
 							 'num'=>1000000        
-						);
+						];
         }else {
             //Get the result In Miles
-            $geonear = array('near' => array( 'type' => "Point", 'coordinates' => array( $longitude , $latitude )),
+            $geonear = ['near' => [ 'type' => "Point", 'coordinates' => [ $longitude , $latitude ]],
 						'distanceField' => "distance",
 						'spherical' => true,
 						'distanceMultiplier' => 0.000621371192237,
 						'num' => 1000000
-					);
+					];
         }
 		//print_r($geonear);exit;
-        $match1   = array(  'people.login_status' => 'S',
+        $match1   = [  'people.login_status' => 'S',
 							'status' => 'F',
 							'shift_status' => 'IN',
-							'_id'=>array('$in'=>$driver_list_array)
-						);
-        $match2   = array(  'updatetime_difference' => array('$lte'=>LOCATIONUPDATESECONDS),
-							'tmap.mapping_startdate' => array('$lte'=> new \MongoDB\BSON\UTCDateTime(strtotime($start_time) * 1000)),
-							'tmap.mapping_enddate' => array('$gte'=> new \MongoDB\BSON\UTCDateTime(strtotime($end_time) * 1000)),
+							'_id'=>['$in'=>$driver_list_array]
+						];
+        $match2   = [  'updatetime_difference' => ['$lte'=>LOCATIONUPDATESECONDS],
+							'tmap.mapping_startdate' => ['$lte'=> new \MongoDB\BSON\UTCDateTime(strtotime($start_time) * 1000)],
+							'tmap.mapping_enddate' => ['$gte'=> new \MongoDB\BSON\UTCDateTime(strtotime($end_time) * 1000)],
 							'tmap.mapping_status' => 'A',
-						);
-        $arguments = array(
-						array('$geoNear'=>$geonear ),						
-						array('$lookup' => array(
+						];
+        $arguments = [
+						['$geoNear'=>$geonear ],						
+						['$lookup' => [
 							'from' => MDB_PEOPLE,
 							'localField' => '_id',
 							'foreignField' => '_id',
 							'as' => 'people'									
-						)),
-						array('$unwind'=>'$people'),
-						array('$project' => array(
+						]],
+						['$unwind'=>'$people'],
+						['$project' => [
 							'_id' => 1,
 							'distance' => '$distance',
 							'shift_status' => '$shift_status',
 							'status' => '$status',
 							'loc' => '$loc.coordinates',
 							'people' => 1,	
-							'updatetime_difference' => array('$subtract'=>array(new \MongoDB\BSON\UTCDateTime(strtotime($current_time) * 1000),
-																				'$update_date'))
-						)),
-						array('$match'=>$match1),				
-						array('$sort'=>array('distance'=>1)),
-						array('$lookup'=>array(
+							'updatetime_difference' => ['$subtract'=>[new \MongoDB\BSON\UTCDateTime(strtotime($current_time) * 1000),
+																				'$update_date']]
+						]],
+						['$match'=>$match1],				
+						['$sort'=>['distance'=>1]],
+						['$lookup'=>[
 							'from' => MDB_TAXI_DRIVER_MAPPING,
 							'localField' => '_id',
 							'foreignField' => 'mapping_driverid',
 							'as' => 'tmap'
-						)),
-						array('$unwind'=>'$tmap'),
-						array('$lookup'=>array(
+						]],
+						['$unwind'=>'$tmap'],
+						['$lookup'=>[
 							'from' => MDB_TAXI,
 							'localField' => 'tmap.mapping_taxiid',
 							'foreignField' => '_id',
 							'as' => 'taxi'
-						)),
-						array('$unwind'=>'$taxi'),
-						array('$lookup'=>array(
+						]],
+						['$unwind'=>'$taxi'],
+						['$lookup'=>[
 							'from' => MDB_COMPANY,
 							'localField' => 'tmap.mapping_companyid',
 							'foreignField' => '_id',
 							'as' => 'comp'
-						)),
-						array('$unwind'=>'$comp'),
-						array('$match'=>$match2),
-						array('$group'=>array('_id'=>array('driver_id'=>'$_id',
+						]],
+						['$unwind'=>'$comp'],
+						['$match'=>$match2],
+						['$group'=>['_id'=>['driver_id'=>'$_id',
 							'loc' => '$loc',
 							'distance_km' => '$distance',
 							'taxi_speed' => '$taxi.taxi_speed'
-						)))
-					);
+						]]]
+					];
         $result = $this->mongo_db->aggregate(MDB_DRIVER_INFO,$arguments);
 		//print_r($result);exit;
-        return (isset($result['result']) ? (isset($result['result'][0]) ? $result['result'][0] : array()) : array());
+        return (isset($result['result']) ? (isset($result['result'][0]) ? $result['result'][0] : []) : []);
     }
     public function nearestdrivers_old($lat, $long, $taxi_model, $passenger_id, $distance = NULL, $company_id, $unit, $service_type)
     {
@@ -1258,13 +1258,13 @@ class Model_Find113 extends Model
         $driver_list       = '';
         $driver_count      = '';
         $unit_conversion   = "";
-        $driver_list_array = array();
+        $driver_list_array = [];
         if ($free_driver > 0) {
             foreach ($free_driver as $key => $value) {
                 $driver_list_array[] = $value['id'];
             }
         } else {
-            $driver_list_array = array();
+            $driver_list_array = [];
         }
         // Find already rejected and timeout drivers in the current trip
         $flag                   = 1;
@@ -1272,7 +1272,7 @@ class Model_Find113 extends Model
         if ($get_passenger_driverid != "") {
             $remove_driver_list = explode(',', $get_passenger_driverid);
         } else {
-            $remove_driver_list = array();
+            $remove_driver_list = [];
         }
         // Exclude already rejected and timeout drivers in the current trip
         $driver_arraylist = array_diff($driver_list_array, $remove_driver_list);
@@ -1299,7 +1299,7 @@ class Model_Find113 extends Model
             $end_time     = $current_date[0] . ' 23:59:59';
         } else {
             $model_base_query = "select time_zone from  company where cid='$company_id' ";
-            $query = $this->mongo_db->find(MDB_COMPANY,array('_id'=>(int)$company_id),array('companydetails.time_zone'));
+            $query = $this->mongo_db->find(MDB_COMPANY,['_id'=>(int)$company_id],['companydetails.time_zone']);
             $result = iterator_to_array($query);
 			if(!empty($result)){
 				$time_zone = isset($result[ $company_id ]['companydetails'][ 'time_zone' ])?$result[ $company_id ]['companydetails'][ 'time_zone' ]:"";
@@ -1349,34 +1349,34 @@ class Model_Find113 extends Model
         $company_condition = "";
         if ($company_id != "") {
             //$company_condition = "AND taximapping.mapping_companyid = '$company_id' AND people.company_id = '$company_id' AND taxi.taxi_company = '$company_id'";
-            $arguments = array(array('$lookup'=>array(
+            $arguments = [['$lookup'=>[
 							'from'=>MDB_COMPANY,
 							'localField'=>"taxi_company",
 							'foreignField'=>"_id",
 							 'as'=>"company"        
-						)),
-						array('$unwind'=>'$company'),
-						array('$lookup'=>array(
+						]],
+						['$unwind'=>'$company'],
+						['$lookup'=>[
 							'from'=>MDB_TAXI_DRIVER_MAPPING,
 							'localField'=>"_id",
 							'foreignField'=>"mapping_taxiid",
 							 'as'=>"taxi_mapping"        
-						)),
-						array('$unwind'=>'$taxi_mapping'),
-						array('$lookup'=>array(
+						]],
+						['$unwind'=>'$taxi_mapping'],
+						['$lookup'=>[
 							'from'=>MDB_PACKAGE_REPORT,
 							'localField'=>"taxi_company",
 							'foreignField'=>"upgrade_companyid",
 							 'as'=>"package_report"        
-						)),
-						array('$unwind'=>'$package_report'),
-						array('$lookup'=>array(
+						]],
+						['$unwind'=>'$package_report'],
+						['$lookup'=>[
 							'from'=>MDB_PEOPLE,
 							'localField'=>"taxi_mapping.mapping_driverid",
 							'foreignField'=>"_id",
 							 'as'=>"people"        
-						)),
-						array('$project' => array(
+						]],
+						['$project' => [
 							'taxi_status' => 1,
 							'taxi_availability' => 1,
 							'taxi_company' => 1,
@@ -1384,17 +1384,17 @@ class Model_Find113 extends Model
 							'taxi_mapping' => 1,
 							'package_report' => 1,
 							'people' => 1,	
-							'people' => array('$cond' => array(array('$eq'=>array(array('$size'=>'$people'),0)),null,'$people'))
+							'people' => ['$cond' => [['$eq'=>[['$size'=>'$people'],0]],null,'$people']]
 							//people:{$cond: [ {"$eq": [{ $size:"$people" }, 0]}, [null], "$people" ]}}},	
-						)),
-						array('$unwind'=>'$people'),
-						array('$match'=>array(
+						]],
+						['$unwind'=>'$people'],
+						['$match'=>[
 							'people.status'=>"A",
-							'people.booking_limit'=> array('$gt' => $this->mongo_db->count(MDB_PASSENGERS_LOGS,array('createdate'=>array(
-												'$gte'=>$start_time),
+							'people.booking_limit'=> ['$gt' => $this->mongo_db->count(MDB_PASSENGERS_LOGS,['createdate'=>[
+												'$gte'=>$start_time],
 												'driver_id'=>'people._id',
 												'travel_status'=>1,
-												'booking_from' => array('$ne'=>2)))),
+												'booking_from' => ['$ne'=>2]])],
 							'taxi_status' => 'A',
 							'taxi_availability' => 'A',
 							'people.availability_status' => 'A',
@@ -1403,47 +1403,47 @@ class Model_Find113 extends Model
 							'people.company_id' => (int)$company_id,
 							'taxi_company' => (int)$company_id,
 							'company.companydetails.company_status' => 'A',      
-							'taxi_mapping.mapping_startdate' => array('$lte' => $start_time),
-							'taxi_mapping.mapping_enddate' => array('$gte' => $start_time),
+							'taxi_mapping.mapping_startdate' => ['$lte' => $start_time],
+							'taxi_mapping.mapping_enddate' => ['$gte' => $start_time],
 							'package_report.check_package_type' => 'T',
-							'package_report.upgrade_expirydate' => array('$gte' =>$start_time)
-						)),
-						array('$group' => array('_id'=>array('taxi_id'=>'$_id',
+							'package_report.upgrade_expirydate' => ['$gte' =>$start_time]
+						]],
+						['$group' => ['_id'=>['taxi_id'=>'$_id',
 									'id'=>'$people._id',
 									'check_package_type'=>'$package_report.check_package_type',
 									'upgrade_expirydate'=>'$package_report.upgrade_expirydate',
-									'booking_limit'=>'$people.booking_limit'))),
-						array('$sort'=>array('_id.id'=>1))
-					);		
+									'booking_limit'=>'$people.booking_limit']]],
+						['$sort'=>['_id.id'=>1]]
+					];		
         }else{
-			$arguments = array(array('$lookup'=>array(
+			$arguments = [['$lookup'=>[
 							'from'=>MDB_COMPANY,
 							'localField'=>"taxi_company",
 							'foreignField'=>"_id",
 							 'as'=>"company"        
-						)),
-						array('$unwind'=>'$company'),
-						array('$lookup'=>array(
+						]],
+						['$unwind'=>'$company'],
+						['$lookup'=>[
 							'from'=>MDB_TAXI_DRIVER_MAPPING,
 							'localField'=>"_id",
 							'foreignField'=>"mapping_taxiid",
 							 'as'=>"taxi_mapping"        
-						)),
-						array('$unwind'=>'$taxi_mapping'),
-						array('$lookup'=>array(
+						]],
+						['$unwind'=>'$taxi_mapping'],
+						['$lookup'=>[
 							'from'=>MDB_PACKAGE_REPORT,
 							'localField'=>"taxi_company",
 							'foreignField'=>"upgrade_companyid",
 							 'as'=>"package_report"        
-						)),
-						array('$unwind'=>'$package_report'),
-						array('$lookup'=>array(
+						]],
+						['$unwind'=>'$package_report'],
+						['$lookup'=>[
 							'from'=>MDB_PEOPLE,
 							'localField'=>"taxi_mapping.mapping_driverid",
 							'foreignField'=>"_id",
 							 'as'=>"people"        
-						)),
-						array('$project' => array(
+						]],
+						['$project' => [
 							'taxi_status' => 1,
 							'taxi_availability' => 1,
 							'taxi_company' => 1,
@@ -1451,37 +1451,37 @@ class Model_Find113 extends Model
 							'taxi_mapping' => 1,
 							'package_report' => 1,
 							'people' => 1,	
-							'people' => array('$cond' => array(array('$eq'=>array(array('$size'=>'$people'),0)),null,'$people'))
+							'people' => ['$cond' => [['$eq'=>[['$size'=>'$people'],0]],null,'$people']]
 							//people:{$cond: [ {"$eq": [{ $size:"$people" }, 0]}, [null], "$people" ]}}},	
-						)),
-						array('$unwind'=>'$people'),
-						array('$match'=>array(
+						]],
+						['$unwind'=>'$people'],
+						['$match'=>[
 							'people.status'=>"A",
-							'people.booking_limit'=> array('$gt' => $this->mongo_db->count(MDB_PASSENGERS_LOGS,array('createdate'=>array(
-												'$gte'=>$start_time),
+							'people.booking_limit'=> ['$gt' => $this->mongo_db->count(MDB_PASSENGERS_LOGS,['createdate'=>[
+												'$gte'=>$start_time],
 												'driver_id'=>'people._id',
 												'travel_status'=>1,
-												'booking_from' => array('$ne'=>2)))),
+												'booking_from' => ['$ne'=>2]])],
 							'taxi_status' => 'A',
 							'taxi_availability' => 'A',
 							'people.availability_status' => 'A',
 							'taxi_mapping.mapping_status' => 'A',
 							'company.companydetails.company_status' => 'A',      
-							'taxi_mapping.mapping_startdate' => array('$lte' => $start_time),
-							'taxi_mapping.mapping_enddate' => array('$gte' => $start_time),
+							'taxi_mapping.mapping_startdate' => ['$lte' => $start_time],
+							'taxi_mapping.mapping_enddate' => ['$gte' => $start_time],
 							'package_report.check_package_type' => 'T',
-							'package_report.upgrade_expirydate' => array('$gte' =>$start_time)
-						)),
-						array('$group' => array('_id'=>array('taxi_id'=>'$_id',
+							'package_report.upgrade_expirydate' => ['$gte' =>$start_time]
+						]],
+						['$group' => ['_id'=>['taxi_id'=>'$_id',
 									'id'=>'$people._id',
 									'check_package_type'=>'$package_report.check_package_type',
 									'upgrade_expirydate'=>'$package_report.upgrade_expirydate',
-									'booking_limit'=>'$people.booking_limit'))),
-						array('$sort'=>array('_id.id'=>1))
-					);	
+									'booking_limit'=>'$people.booking_limit']]],
+						['$sort'=>['_id.id'=>1]]
+					];	
 		}		         
         $result = $this->mongo_db->aggregate(MDB_TAXI,$arguments);
-        return (isset($result['result']) ? $result['result']: array()); 
+        return (isset($result['result']) ? $result['result']: []); 
         
         /*$sql     = "SELECT people.id,taxi.taxi_capacity ,taxi.taxi_id  ,(select check_package_type from " . PACKAGE_REPORT . " where " . PACKAGE_REPORT . ".upgrade_companyid = " . TAXI . ".taxi_company  order by upgrade_id desc limit 0,1 ) as check_package_type,(select upgrade_expirydate from " . PACKAGE_REPORT . " where " . PACKAGE_REPORT . ".upgrade_companyid = " . TAXI . ".taxi_company order by upgrade_id desc limit 0,1 ) as upgrade_expirydate FROM " . TAXI . " as taxi 
 		 JOIN " . COMPANY . " as company ON taxi.taxi_company = company.cid 

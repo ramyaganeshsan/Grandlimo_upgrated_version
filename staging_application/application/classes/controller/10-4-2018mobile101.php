@@ -32,7 +32,7 @@ abstract class Controller_Mobile101 extends Controller
     public $replace_variables;
     public $site_settings;
     public $miles;
-    public $passenger_data = array();
+    public $passenger_data = [];
     /**
      ****__construct()****
      */
@@ -81,19 +81,19 @@ abstract class Controller_Mobile101 extends Controller
      *@purpose of linkdin curl function
      */
     /** SEND GRID FUNCTION **/
-    public function sendgrid($host = array(), $from = "", $receiver = array(), $subject = "", $message = "")
+    public function sendgrid($host = [], $from = "", $receiver = [], $subject = "", $message = "")
     {
         include MODPATH . "/email/swift/lib/swift_required.php";
         include_once MODPATH . "/email/swift/SmtpApiHeader.php";
         $hdr   = new SmtpApiHeader();
-        $times = array();
-        $names = array();
+        $times = [];
+        $names = [];
         $hdr->addFilterSetting('subscriptiontrack', 'enable', 1);
         $hdr->addFilterSetting('twitter', 'enable', 1);
         $hdr->addTo($receiver);
         $hdr->addSubVal('-time-', $times);
         $hdr->addSubVal('-name-', $names);
-        $hdr->setUniqueArgs(array());
+        $hdr->setUniqueArgs([]);
         $sitename = "Sayboard";
         if (!$sitename) {
             $sitename = $_SERVER['HTTP_HOST'];
@@ -102,12 +102,12 @@ abstract class Controller_Mobile101 extends Controller
         if (!$fromEmail) {
             $fromEmail = "noreply@" . $_SERVER['HTTP_HOST'];
         }
-        $from      = array(
+        $from      = [
             $fromEmail => $sitename
-        );
-        $to        = array(
+        ];
+        $to        = [
             'defaultdestination@example.com' => 'Personal Name Of Recipient'
-        );
+        ];
         $text      = "test text..";
         $html      = $message;
         $transport = Swift_SmtpTransport::newInstance($host['host'], $host['port']);
@@ -165,29 +165,29 @@ abstract class Controller_Mobile101 extends Controller
     {
         return Validation::factory($array)->rule('firstname', 'not_empty')->rule('lastname', 'not_empty')->rule('email', 'not_empty')
         //->rule('email','email')		
-            ->rule('phone', 'not_empty')/*->rule('salutation', 'not_empty')*/->rule('password', 'not_empty')->rule('password', 'min_length', array(
+            ->rule('phone', 'not_empty')/*->rule('salutation', 'not_empty')*/->rule('password', 'not_empty')->rule('password', 'min_length', [
             ':value',
             '6'
-        ))->rule('password', 'max_length', array(
+        ])->rule('password', 'max_length', [
             ':value',
             '20'
-        ))->rule('password', 'valid_password', array(
+        ])->rule('password', 'valid_password', [
             ':value',
             '/^[A-Za-z0-9@#$%!^&*(){}?-_<>=+|~`\'".,:;[]+]*$/u'
-        ))->rule('repassword', 'not_empty')->rule('repassword', 'min_length', array(
+        ])->rule('repassword', 'not_empty')->rule('repassword', 'min_length', [
             ':value',
             '6'
-        ))->rule('repassword', 'max_length', array(
+        ])->rule('repassword', 'max_length', [
             ':value',
             '20'
-        ))->rule('repassword', 'valid_password', array(
+        ])->rule('repassword', 'valid_password', [
             ':value',
             '/^[A-Za-z0-9@#$%!^&*(){}?-_<>=+|~`\'".,:;[]+]*$/u'
-        ))->rule('repassword', 'matches', array(
+        ])->rule('repassword', 'matches', [
             ':validation',
             'password',
             'repassword'
-        ))->rule('start_km','not_empty');
+        ])->rule('start_km','not_empty');
         //->rule('phone','numeric');
         //->rule('password','min_length', array(':value', '6'));
     }
@@ -208,38 +208,38 @@ abstract class Controller_Mobile101 extends Controller
     //http://192.168.1.88:1000/api/index/dGF4aV9hbGw=/?type=payment_updateby_driver&trip_id=165&distance=25&actual_distance=&actual_amount=120&total_fare=120&remarks=test%20driviing&nightfare_applicable=1&nightfare=12.50&creditcard_no=&creditcard_cvv=&expmonth=&expyear=&pay_mod_id=1
     function payment_validationwith_card($array)
     {
-        return Validation::factory($array)->rule('trip_id', 'not_empty')->rule('distance', 'not_empty')->rule('fare', 'not_empty')->rule('creditcard_no', 'not_empty')->rule('creditcard_no', 'min_length', array(
+        return Validation::factory($array)->rule('trip_id', 'not_empty')->rule('distance', 'not_empty')->rule('fare', 'not_empty')->rule('creditcard_no', 'not_empty')->rule('creditcard_no', 'min_length', [
             ':value',
             '9'
-        ))->rule('creditcard_no', 'max_length', array(
+        ])->rule('creditcard_no', 'max_length', [
             ':value',
             '16'
-        ))
+        ])
         //->rule('creditcard_cvv','not_empty')
             ->rule('expmonth', 'not_empty')->rule('expyear', 'not_empty');
     }
     function payment_validationwith_account($array)
     {
-        return Validation::factory($array)->rule('trip_id', 'not_empty')->rule('distance', 'not_empty')->rule('fare', 'not_empty')->rule('creditcard_no', 'not_empty')->rule('creditcard_no', 'min_length', array(
+        return Validation::factory($array)->rule('trip_id', 'not_empty')->rule('distance', 'not_empty')->rule('fare', 'not_empty')->rule('creditcard_no', 'not_empty')->rule('creditcard_no', 'min_length', [
             ':value',
             '9'
-        ))->rule('creditcard_no', 'max_length', array(
+        ])->rule('creditcard_no', 'max_length', [
             ':value',
             '16'
-        ))
+        ])
         //->rule('creditcard_cvv','not_empty')
             ->rule('expmonth', 'not_empty')->rule('expyear', 'not_empty')->rule('account_id', 'not_empty')->rule('group_id', 'not_empty');
     }
     //Passenger Card Validation
     function passenger_card_validation($array)
     {
-        return Validation::factory($array)->rule('email', 'not_empty')->rule('email', 'email')->rule('creditcard_no', 'not_empty')->rule('creditcard_no', 'min_length', array(
+        return Validation::factory($array)->rule('email', 'not_empty')->rule('email', 'email')->rule('creditcard_no', 'not_empty')->rule('creditcard_no', 'min_length', [
             ':value',
             '9'
-        ))->rule('creditcard_no', 'max_length', array(
+        ])->rule('creditcard_no', 'max_length', [
             ':value',
             '16'
-        ))
+        ])
         ->rule('creditcard_cvv','not_empty')
             
         //->rule('creditcard_cvv','numeric')
@@ -253,13 +253,13 @@ abstract class Controller_Mobile101 extends Controller
     //Edit Card Validation
     function edit_passenger_card_validation($array)
     {
-        return Validation::factory($array)->rule('creditcard_no', 'not_empty')->rule('creditcard_no', 'min_length', array(
+        return Validation::factory($array)->rule('creditcard_no', 'not_empty')->rule('creditcard_no', 'min_length', [
             ':value',
             '9'
-        ))->rule('creditcard_no', 'max_length', array(
+        ])->rule('creditcard_no', 'max_length', [
             ':value',
             '16'
-        ))
+        ])
         ->rule('creditcard_cvv','not_empty')
             
         //->rule('creditcard_cvv','numeric')
@@ -312,63 +312,63 @@ abstract class Controller_Mobile101 extends Controller
     public function pasenger_signup_validation($array)
     {
         $password = isset($array['password']) ? $array['password'] : '';
-        return Validation::factory($array)->rule('first_name', 'not_empty')->rule('last_name', 'not_empty')->rule('email', 'not_empty')->rule('email', 'email')->rule('phone', 'not_empty')->rule('phone', 'min_length', array(
+        return Validation::factory($array)->rule('first_name', 'not_empty')->rule('last_name', 'not_empty')->rule('email', 'not_empty')->rule('email', 'email')->rule('phone', 'not_empty')->rule('phone', 'min_length', [
             ':value',
             '7'
-        ))->rule('password', 'not_empty')->rule('confirm_password', 'not_empty')->rule('confirm_password', 'Controller_Mobile101::checkwithpassword', array(
+        ])->rule('password', 'not_empty')->rule('confirm_password', 'not_empty')->rule('confirm_password', 'Controller_Mobile101::checkwithpassword', [
             ':value',
             $password
-        ));
+        ]);
     }
     public function account_validation($array)
     {
-        return Validation::factory($array)->rule('email', 'not_empty')->rule('email', 'email')->rule('phone', 'not_empty')->rule('phone', 'min_length', array(
+        return Validation::factory($array)->rule('email', 'not_empty')->rule('email', 'email')->rule('phone', 'not_empty')->rule('phone', 'min_length', [
             ':value',
             '7'
-        ))->rule('password', 'not_empty');
+        ])->rule('password', 'not_empty');
     }
     
     public function passenger_account_validation($array)
     {
-        return Validation::factory($array)->rule('phone', 'not_empty')->rule('phone', 'numeric')->rule('phone', 'min_length', array(
+        return Validation::factory($array)->rule('phone', 'not_empty')->rule('phone', 'numeric')->rule('phone', 'min_length', [
             ':value',
             '7'
-        ))->rule('devicetype', 'not_empty')->rule('deviceid', 'not_empty'); //->rule('devicetoken', 'not_empty');
+        ])->rule('devicetype', 'not_empty')->rule('deviceid', 'not_empty'); //->rule('devicetoken', 'not_empty');
     }
     
     public function phone_verify_code_validation($array)
     {
-        return Validation::factory($array)->rule('phone', 'not_empty')->rule('verification_code', 'not_empty')->rule('phone', 'numeric')->rule('phone', 'min_length', array(
+        return Validation::factory($array)->rule('phone', 'not_empty')->rule('verification_code', 'not_empty')->rule('phone', 'numeric')->rule('phone', 'min_length', [
             ':value',
             '7'
-        ));
+        ]);
     }
     
     public function passenger_register_validation($array)
     {
-        return Validation::factory($array)->rule('phone', 'not_empty')->rule('phone', 'numeric')->rule('phone', 'min_length', array(
+        return Validation::factory($array)->rule('phone', 'not_empty')->rule('phone', 'numeric')->rule('phone', 'min_length', [
             ':value',
             '7'
-        ))->rule('firstname', 'not_empty')->rule('email', 'not_empty')/*->rule('lastname', 'not_empty')->rule('civilid', 'not_empty')->rule('civilid','Model_Add::civilid_isValid',array(':value'))*/
+        ])->rule('firstname', 'not_empty')->rule('email', 'not_empty')/*->rule('lastname', 'not_empty')->rule('civilid', 'not_empty')->rule('civilid','Model_Add::civilid_isValid',array(':value'))*/
         //->rule('civilid','Model_Add::civilid_exist',array(':value'))
         /*->rule('creditcard_no', 'credit_card')*/->rule('expdatemonth', 'numeric')->rule('expdateyear', 'numeric')->rule('creditcard_cvv', 'numeric')/*->rule('civilid_front', 'not_empty')->rule('civilid_back', 'not_empty')*/;
     }
     
     public function child_account_validation($array)
     {
-        return Validation::factory($array)->rule('email', 'not_empty')->rule('parent_id', 'not_empty')->rule('parent_id', 'numeric')->rule('account_type', 'not_empty')->rule('account_type', 'numeric')->rule('parent_id','Model_Add::parent_id_isValid',array(':value'))->rule('account_type','Model_Add::account_type_isValid',array(':value'))->rule('email', 'email')->rule('phone', 'not_empty')->rule('phone', 'min_length', array(
+        return Validation::factory($array)->rule('email', 'not_empty')->rule('parent_id', 'not_empty')->rule('parent_id', 'numeric')->rule('account_type', 'not_empty')->rule('account_type', 'numeric')->rule('parent_id','Model_Add::parent_id_isValid',[':value'])->rule('account_type','Model_Add::account_type_isValid',[':value'])->rule('email', 'email')->rule('phone', 'not_empty')->rule('phone', 'min_length', [
             ':value',
             '7'
-        ));
+        ]);
         //->rule('password', 'not_empty')->rule('confirm_password',  'matches', array(':validation', 'password', 'confirm_password'));
     }
     
     public function send_request_validation($array)
     {
-        return Validation::factory($array)->rule('email', 'not_empty')->rule('parent_id', 'not_empty')->rule('parent_id', 'numeric')->rule('account_type', 'not_empty')->rule('account_type', 'numeric')->rule('parent_id','Model_Add::parent_id_isValid',array(':value'))->rule('account_type','Model_Add::account_type_isValid',array(':value'))->rule('email', 'email')->rule('phone', 'not_empty')->rule('phone', 'min_length', array(
+        return Validation::factory($array)->rule('email', 'not_empty')->rule('parent_id', 'not_empty')->rule('parent_id', 'numeric')->rule('account_type', 'not_empty')->rule('account_type', 'numeric')->rule('parent_id','Model_Add::parent_id_isValid',[':value'])->rule('account_type','Model_Add::account_type_isValid',[':value'])->rule('email', 'email')->rule('phone', 'not_empty')->rule('phone', 'min_length', [
             ':value',
             '7'
-        ));
+        ]);
     }
     
     public function getpassenger_update_validation($array)
@@ -540,7 +540,7 @@ abstract class Controller_Mobile101 extends Controller
 {
     //MongoDB
     $mongodb        = MangoDB::instance('default');
-    $rs = $mongodb->find_one(MDB_COMPANY,array('_id'=>(int)$company_cid),array('companydetails.time_zone'));
+    $rs = $mongodb->find_one(MDB_COMPANY,['_id'=>(int)$company_cid],['companydetails.time_zone']);
     return (count($rs)>0)?$rs['companydetails']['time_zone']:0;
 }
     /********* Get Subdomain details from URL *************/
@@ -584,7 +584,7 @@ abstract class Controller_Mobile101 extends Controller
         //echo $position;
         //echo $name; 
         $count  = 0;
-        $return = array();
+        $return = [];
         foreach ($array as $k => $v) {
             //echo $k.'=>'.$v;	
             // insert new object
@@ -611,7 +611,7 @@ abstract class Controller_Mobile101 extends Controller
         return $array;
     }
     /** CURL GET AND POST**/
-    private function curl_function($req_url = "", $type = "", $arguments = array())
+    private function curl_function($req_url = "", $type = "", $arguments = [])
     {
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $req_url);
@@ -756,7 +756,7 @@ abstract class Controller_Mobile101 extends Controller
 			<tr><td width='80px' align='center'>" . $distance_km . "	" . __('km') . "</td><td width='80px' align='center'>" . $trip_minutes . "</td></tr>
 			</tbody></table></td></tr></table>";
             $mail              = "";
-            $replace_variables = array(
+            $replace_variables = [
                 REPLACE_LOGO => URL_BASE . PUBLIC_FOLDER_IMGPATH . '/logo.png',
                 REPLACE_SITENAME => $this->app_name,
                 REPLACE_USERNAME => $name,
@@ -772,7 +772,7 @@ abstract class Controller_Mobile101 extends Controller
                 REPLACE_COMPANYDOMAIN => $this->domain_name,
                 REPLACE_COPYRIGHTS => SITE_COPYRIGHT,
                 REPLACE_COPYRIGHTYEAR => COPYRIGHT_YEAR
-            );
+            ];
             /* Added for language email template */
             if ($this->lang != 'en') {
                 if (file_exists(DOCROOT . TEMPLATEPATH . $this->lang . '/tripcomplete-mail-' . $this->lang . '.html')) {
@@ -816,7 +816,7 @@ abstract class Controller_Mobile101 extends Controller
 			<tr style='color:#808080'><td>" . __('cancel_fare') . "</td><td style='color:#000'>" . COMPANY_CURRENCY . "	" . $cancelFare . "</td></tr>
 			<tr style='color:#808080'><td>" . __('Current_Location') . "</td><td style='word-break:break-word;border-collapse:collapse!important;text-align:left;display:table-cell;line-height:16px;padding:0px;color:#000'>" . $pickup_location . "</td></tr></table>";
         $mail              = "";
-        $replace_variables = array(
+        $replace_variables = [
             REPLACE_LOGO => URL_BASE . PUBLIC_FOLDER_IMGPATH . '/logo.png',
             REPLACE_SITENAME => $this->app_name,
             REPLACE_USERNAME => $passenger_name,
@@ -826,7 +826,7 @@ abstract class Controller_Mobile101 extends Controller
             REPLACE_COMPANYDOMAIN => $this->domain_name,
             REPLACE_COPYRIGHTS => SITE_COPYRIGHT,
             REPLACE_COPYRIGHTYEAR => COPYRIGHT_YEAR
-        );
+        ];
         /* Added for language email template */
         if ($this->lang != 'en') {
             if (file_exists(DOCROOT . TEMPLATEPATH . $this->lang . '/tripcancel-' . $this->lang . '.html')) {
@@ -891,7 +891,7 @@ abstract class Controller_Mobile101 extends Controller
         $nvpstr   = $response;
         curl_close($curl);
         $intial   = 0;
-        $nvpArray = array();
+        $nvpArray = [];
         while (strlen($nvpstr)) {
             //postion of Key
             $keypos                       = strpos($nvpstr, '=');
@@ -1026,7 +1026,7 @@ abstract class Controller_Mobile101 extends Controller
         /******* Process the next step once we get the response from payment gateway ****************************/
         
         if (isset($_SESSION["paymentresponse"]) && !empty($_SESSION["paymentresponse"]) || isset($result->success)) {
-            $paymentresponse = array();
+            $paymentresponse = [];
             $ack             = isset($_SESSION['paymentresponse']["ACK"]) ? strtoupper($_SESSION['paymentresponse']["ACK"]) : '';
             if ($ack == "SUCCESS" || $ack == "SUCCESSWITHWARNING" || isset($result->success)) {
                 $invoceno = commonfunction::randomkey_generator();
@@ -1036,7 +1036,7 @@ abstract class Controller_Mobile101 extends Controller
                     $paymentresponse = $_SESSION['paymentresponse'];
                 }
                 
-                $insert_array         = array(
+                $insert_array         = [
                     "passengers_log_id" => $passenger_log_id,
                     "distance" => $values['distance'],
                     "actual_distance" => $values['actual_distance'],
@@ -1062,13 +1062,13 @@ abstract class Controller_Mobile101 extends Controller
                     "eveningfare" => $values['eveningfare'],
                     "wallet_amount_used" => $array['wallet_amount_used']
 
-                );
+                ];
                 $transactionfield     = $insert_array + $paymentresponse + $siteinfo_details; // Data Store
                 //print_r($transactionfield);exit;
                 /********** Update Driver Status after complete Payments *****************/
-                $update_driver_arrary = array(
+                $update_driver_arrary = [
                     "status" => 'F'
-                );
+                ];
                 $result               = $api_model->update_table(MDB_DRIVER_INFO, $update_driver_arrary, '_id', $driver_userid);
                 /***********************************************************************************/
                 //Update Travel Status after payment done
@@ -1275,7 +1275,7 @@ abstract class Controller_Mobile101 extends Controller
             curl_close($curl);
             //print_r($nvpstr);	
             $intial   = 0;
-            $nvpArray = array();
+            $nvpArray = [];
             while (strlen($nvpstr)) {
                 //postion of Key
                 $keypos                       = strpos($nvpstr, '=');
@@ -1288,7 +1288,7 @@ abstract class Controller_Mobile101 extends Controller
                 $nvpArray[urldecode($keyval)] = urldecode($valval);
                 $nvpstr                       = substr($nvpstr, $valuepos + 1, strlen($nvpstr));
             }
-            $_SESSION["paymentresponse"] = array();
+            $_SESSION["paymentresponse"] = [];
             $_SESSION["paymentresponse"] = $nvpArray;
             //print_r($_SESSION["paymentresponse"]);exit;
         }
@@ -1319,16 +1319,16 @@ abstract class Controller_Mobile101 extends Controller
                 $expirationMonth = $expdatemonth;
                 $expirationYear  = $expdateyear;
                 $email           = $shipping_email;
-                $result          = Braintree_Transaction::sale(array(
+                $result          = Braintree_Transaction::sale([
                     'amount' => $amount,
-                    'creditCard' => array(
+                    'creditCard' => [
                         'cardholderName' => $firstName,
                         'number' => $cnumber, //$_POST['creditCard']
                         'expirationMonth' => $expirationMonth, //$_POST['month']
                         'expirationYear' => $expirationYear, //$_POST['year']
                         'cvv' => $ccv
-                    ),
-                    'customer' => array(
+                    ],
+                    'customer' => [
                         'firstName' => isset($passenger_log_details[0]['passenger_name']) ? $passenger_log_details[0]['passenger_name'] : "",
                         'lastName' => isset($passenger_log_details[0]['passenger_lastname']) ? $passenger_log_details[0]['passenger_lastname'] : "",
                         'company' => '',
@@ -1336,8 +1336,8 @@ abstract class Controller_Mobile101 extends Controller
                         'fax' => '',
                         'website' => '',
                         'email' => isset($passenger_log_details[0]['passenger_email']) ? $passenger_log_details[0]['passenger_email'] : ""
-                    ),
-                    'shipping' => array(
+                    ],
+                    'shipping' => [
                         'firstName' => $shipping_first_name,
                         'lastName' => $shipping_last_name,
                         'company' => '',
@@ -1347,13 +1347,13 @@ abstract class Controller_Mobile101 extends Controller
                         'region' => $country_code,
                         'postalCode' => $zipcode,
                         'countryCodeAlpha2' => $country_code
-                    )
-                ));
+                    ]
+                ]);
             }
             catch (Braintree_Exception $message) {
                 return 0;
             }
-            $braintree_trans_id = array();
+            $braintree_trans_id = [];
             if ($result->success) {
                 $braintree_trans_id['TRANSACTIONID'] = $result->transaction->id;
             } else if ($result->transaction) {
@@ -1370,7 +1370,7 @@ abstract class Controller_Mobile101 extends Controller
             return 7;
         }
         if (isset($_SESSION["paymentresponse"]) && !empty($_SESSION["paymentresponse"]) || isset($result->success)) {
-            $paymentresponse = array();
+            $paymentresponse = [];
             $ack             = isset($_SESSION['paymentresponse']["ACK"]) ? strtoupper($_SESSION['paymentresponse']["ACK"]) : '';
             if ($ack == "SUCCESS" || $ack == "SUCCESSWITHWARNING" || isset($result->success)) {
                 $invoceno = commonfunction::randomkey_generator();
@@ -1483,7 +1483,7 @@ abstract class Controller_Mobile101 extends Controller
             curl_close($curl);
             //print_r($nvpstr);	
             $intial   = 0;
-            $nvpArray = array();
+            $nvpArray = [];
             while (strlen($nvpstr)) {
                 //postion of Key
                 $keypos                       = strpos($nvpstr, '=');
@@ -1496,7 +1496,7 @@ abstract class Controller_Mobile101 extends Controller
                 $nvpArray[urldecode($keyval)] = urldecode($valval);
                 $nvpstr                       = substr($nvpstr, $valuepos + 1, strlen($nvpstr));
             }
-            $_SESSION["paymentresponse"] = array();
+            $_SESSION["paymentresponse"] = [];
             $_SESSION["paymentresponse"] = $nvpArray;
             //print_r($_SESSION["paymentresponse"]);exit;
         }
@@ -1527,16 +1527,16 @@ abstract class Controller_Mobile101 extends Controller
                 $expirationMonth = $expdatemonth;
                 $expirationYear  = $expdateyear;
                 $email           = $shipping_email;
-                $result          = Braintree_Transaction::sale(array(
+                $result          = Braintree_Transaction::sale([
                     'amount' => $amount,
-                    'creditCard' => array(
+                    'creditCard' => [
                         'cardholderName' => $firstName,
                         'number' => $cnumber, //$_POST['creditCard']
                         'expirationMonth' => $expirationMonth, //$_POST['month']
                         'expirationYear' => $expirationYear, //$_POST['year']
                         'cvv' => $ccv
-                    ),
-                    'customer' => array(
+                    ],
+                    'customer' => [
                         'firstName' => isset($passenger_details[0]['name']) ? $passenger_details[0]['name'] : "",
                         'lastName' => isset($passenger_details[0]['lastname']) ? $passenger_details[0]['lastname'] : "",
                         'company' => '',
@@ -1544,8 +1544,8 @@ abstract class Controller_Mobile101 extends Controller
                         'fax' => '',
                         'website' => '',
                         'email' => isset($passenger_details[0]['email']) ? $passenger_details[0]['email'] : ""
-                    ),
-                    'shipping' => array(
+                    ],
+                    'shipping' => [
                         'firstName' => $shipping_first_name,
                         'lastName' => $shipping_last_name,
                         'company' => '',
@@ -1555,14 +1555,14 @@ abstract class Controller_Mobile101 extends Controller
                         'region' => $country_code,
                         'postalCode' => $zipcode,
                         'countryCodeAlpha2' => $country_code
-                    )
-                ));
+                    ]
+                ]);
             }
             catch (Braintree_Exception $message) {
                 //print_r($message);exit;
                 return 0;
             }
-            $braintree_trans_id = array();
+            $braintree_trans_id = [];
             if ($result->success) {
                 $braintree_trans_id['TRANSACTIONID'] = $result->transaction->id;
             } else if ($result->transaction) {
@@ -1580,7 +1580,7 @@ abstract class Controller_Mobile101 extends Controller
         }
         /******* Process the next step once we get the response from payment gateway ****************************/
         if (isset($_SESSION["paymentresponse"]) && !empty($_SESSION["paymentresponse"]) || isset($result->success)) {
-            $paymentresponse = array();
+            $paymentresponse = [];
             $ack             = isset($_SESSION['paymentresponse']["ACK"]) ? strtoupper($_SESSION['paymentresponse']["ACK"]) : '';
             if ($ack == "SUCCESS" || $ack == "SUCCESSWITHWARNING" || isset($result->success)) {
                 $invoceno = commonfunction::randomkey_generator();
@@ -1591,15 +1591,15 @@ abstract class Controller_Mobile101 extends Controller
                 }
                 /********** Update Wallet Money and Payment Status Status after complete Payments *****************/
                 $totalWalletAmount   = $wallet_amount + $amount;
-                $update_wallet_array = array(
+                $update_wallet_array = [
                     "wallet_amount" => $totalWalletAmount
-                );
+                ];
                 $result              = $api_model->update_table(PASSENGERS, $update_wallet_array, 'id', $values['passenger_id']);
                 $correlation_id      = isset($paymentresponse['CORRELATIONID']) ? $paymentresponse['CORRELATIONID'] : '';
                 $ack                 = isset($paymentresponse['ACK']) ? $paymentresponse['ACK'] : '1';
                 $currecncy_code      = isset($paymentresponse['CURRENCYCODE']) ? $paymentresponse['CURRENCYCODE'] : '';
                 $creditcard_no       = encrypt_decrypt('encrypt', $creditcard_no);
-                $wallet_fieldArr     = array(
+                $wallet_fieldArr     = [
                     "passenger_id",
                     "creditcard_no",
                     "card_holder_name",
@@ -1613,8 +1613,8 @@ abstract class Controller_Mobile101 extends Controller
                     "transaction_id",
                     "promocode",
                     "promocode_amount"
-                );
-                $wallet_valueArr     = array(
+                ];
+                $wallet_valueArr     = [
                     $values['passenger_id'],
                     $creditcard_no,
                     $cardholder_name,
@@ -1628,20 +1628,20 @@ abstract class Controller_Mobile101 extends Controller
                     $paymentresponse['TRANSACTIONID'],
                     $promo_code,
                     $promocodeAmount
-                );
+                ];
                 $wallet_log          = $api_model->add_wallet_log($wallet_fieldArr, $wallet_valueArr);
                 //save the card details if savecard param is one
                 if ($savecard == 1) {
-					$args = array(array('$unwind' => 'creditcard_details'),
-								array('$project' => array('id'=>'$creditcard_details.passenger_cardid')),
-								array('$sort' => array('$creditcard_details.passenger_cardid'=>-1)),
-								array('$limit' => 1)
-								);
+					$args = [['$unwind' => 'creditcard_details'],
+								['$project' => ['id'=>'$creditcard_details.passenger_cardid']],
+								['$sort' => ['$creditcard_details.passenger_cardid'=>-1]],
+								['$limit' => 1]
+								];
 					$rs = $this->mongo_db->aggregate(MDB_CONTACTS,$args);
 					$first_key = (isset($rs['result'])) ? $rs['result'][0]['id'] : 0;
 					$inc_id = $first_key+1;
                     $passenger_id = $values['passenger_id'];
-                    $card_fieldArr = array(
+                    $card_fieldArr = [
 						'passenger_cardid' => (int)$inc_id,
 						'passenger_id' => (int)$passenger_id,
                         'passenger_email' => $shipping_email,
@@ -1649,7 +1649,7 @@ abstract class Controller_Mobile101 extends Controller
                         'card_holder_name' => $cardholder_name,
                         'expdatemonth' => (int)$expdatemonth,
                         'expdateyear' => (int)$expdateyear
-                    );
+                    ];
                     $api_model->add_credit_card_details($card_fieldArr, $passenger_id);
                 }   
                 /***********************************************************************************/
@@ -1675,20 +1675,20 @@ abstract class Controller_Mobile101 extends Controller
     /* wallet add money form validation */
     function wallet_addmoney_validation($array)
     {
-        return Validation::factory($array)->rule('passenger_id', 'not_empty')->rule('creditcard_no', 'not_empty')->rule('creditcard_no', 'min_length', array(
+        return Validation::factory($array)->rule('passenger_id', 'not_empty')->rule('creditcard_no', 'not_empty')->rule('creditcard_no', 'min_length', [
             ':value',
             '9'
-        ))->rule('creditcard_no', 'max_length', array(
+        ])->rule('creditcard_no', 'max_length', [
             ':value',
             '16'
-        ))->rule('expmonth', 'not_empty')->rule('expyear', 'not_empty')->rule('money', 'not_empty')->rule('cardholder_name', 'not_empty');
+        ])->rule('expmonth', 'not_empty')->rule('expyear', 'not_empty')->rule('money', 'not_empty')->rule('cardholder_name', 'not_empty');
     }
     
     public function _save_image($image, $dir)
     {
         if (! Upload::valid($image) OR
             ! Upload::not_empty($image) OR
-            ! Upload::type($image, array('jpg', 'jpeg', 'png', 'gif','mp4','flv','avi','wmv','mov')))
+            ! Upload::type($image, ['jpg', 'jpeg', 'png', 'gif','mp4','flv','avi','wmv','mov']))
         {
             return FALSE;
         }
@@ -1703,34 +1703,34 @@ abstract class Controller_Mobile101 extends Controller
      public function car_info_validation($array)
     {
         return Validation::factory($array)->rule('model_type', 'not_empty')->rule('taxi_number', 'not_empty')
-		->rule('taxi_number', 'min_length', array(
+		->rule('taxi_number', 'min_length', [
             ':value',
             '4'
-        ))->rule('taxi_number', 'max_length', array(
+        ])->rule('taxi_number', 'max_length', [
             ':value',
             '30'
-        ))
+        ])
         //->rule('taxi_no', 'alpha_numeric', array(':value','/^[0-9]{1,}/'))
-            ->rule('taxi_number', 'regex', array(
+            ->rule('taxi_number', 'regex', [
             ':value',
             '/^[a-z0-9A-Z -]++$/iD'
-        ))->rule('start_km', 'not_empty')->rule('driver_id','not_empty');
+        ])->rule('start_km', 'not_empty')->rule('driver_id','not_empty');
     }
       public function car_info_validation1($array)
     {		
         return Validation::factory($array)->rule('model_type', 'not_empty')->rule('taxi_number', 'not_empty')
-		->rule('taxi_number', 'min_length', array(
+		->rule('taxi_number', 'min_length', [
             ':value',
             '4'
-        ))->rule('taxi_number', 'max_length', array(
+        ])->rule('taxi_number', 'max_length', [
             ':value',
             '30'
-        ))
+        ])
         //->rule('taxi_no', 'alpha_numeric', array(':value','/^[0-9]{1,}/'))
-            ->rule('taxi_number', 'regex', array(
+            ->rule('taxi_number', 'regex', [
             ':value',
             '/^[a-z0-9A-Z -]++$/iD'
-        ))->rule('feedback', 'not_empty')->rule('driver_id','not_empty')->rule('end_km', 'not_empty')->rule('end_km', 'numeric');
+        ])->rule('feedback', 'not_empty')->rule('driver_id','not_empty')->rule('end_km', 'not_empty')->rule('end_km', 'numeric');
     }
        public function check_validation_passenger($array)
     {

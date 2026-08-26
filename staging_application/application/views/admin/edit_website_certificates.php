@@ -2,9 +2,9 @@
 defined('SYSPATH') OR die("No direct access allowed.");
 //print_r($site_settings);
 
-$home_page = isset($website_content['home_page'])?$website_content['home_page']:array();
+$home_page = isset($website_content['home_page'])?$website_content['home_page']:[];
 
-$website_certificate = isset($website_certificates[0])?$website_certificates[0]:array();
+$website_certificate = isset($website_certificates[0])?$website_certificates[0]:[];
 //print_r($website_certificates);exit;
 ?>
 <script type="text/javascript" src="<?php echo URL_BASE;?>public/js/validation/jquery-1.6.3.min.js"></script>

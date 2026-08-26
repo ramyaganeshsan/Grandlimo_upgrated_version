@@ -135,7 +135,7 @@ $fare = 0;
 </div>
 <script>
   $(document).ready(function() {
-    let selectedList = <?php echo isset($corporate_group_detail['corporate_passengers_list']) ? json_encode($corporate_group_detail['corporate_passengers_list']) : json_encode(array()); ?>;
+    let selectedList = <?php echo isset($corporate_group_detail['corporate_passengers_list']) ? json_encode($corporate_group_detail['corporate_passengers_list']) : json_encode([]); ?>;
     $('#corporate_passenger_list').val(selectedList);
     $('#corporate_passenger_list').trigger('change');
     $('#corporate_passenger_list').select2({

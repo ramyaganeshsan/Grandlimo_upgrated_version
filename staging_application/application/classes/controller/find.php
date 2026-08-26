@@ -179,13 +179,13 @@ class Controller_Find extends Controller_Website {
 			$post_values = $_POST;
 		}
 		else{
-			$post_values = array(
+			$post_values = [
 						"current_location"=>"",
 						"drop_location"=>"",
 						"no_passengers"=>"",
 						"pick_up_time"=>"",
 						"miles"=>""
-						);
+						];
 			}
 						
 		
@@ -361,7 +361,7 @@ class Controller_Find extends Controller_Website {
 			$temp_driver=0;
 			$nearest_key=0;
 			$prev_key=0;
-			$driverdetails=array();
+			$driverdetails=[];
 			$total_count = count($driver_details);		
 			//echo COMPANY_CONTACT_PHONE_NUMBER;					
 			$company_contact_no='';
@@ -442,13 +442,13 @@ class Controller_Find extends Controller_Website {
 					$result = $find_model->auto_savebooking($driverdetails,$_REQUEST,$passenger_id,$company_id);
 					
 					$company_all_currenttimestamp = $common_model->getcompany_all_currenttimestamp($company_id);
-											$insert_array = array(
+											$insert_array = [
 																	"trip_id" => $result['pass_logid'],
 																	"available_drivers" 			=> $available_drivers,
 																	"status" 	=> '0',
 																	"rejected_timeout_drivers"		=> "",
 																	"createdate"		=> $company_all_currenttimestamp,
-																);								
+																];								
 					//Inserting to Transaction Table 
 					$transaction = $common_model->insert(DRIVER_REQUEST_DETAILS,$insert_array);	
 							/*if($result['result'] == 1)

@@ -336,7 +336,7 @@ if($total_transaction>0)
 		}else{
 			$for_date=$current_year;
 		}
-		$fare = array();
+		$fare = [];
 		if(count($grpahdata)>0)
 		{ 	
 			foreach($grpahdata as $gdata)

@@ -40,7 +40,7 @@ Class Model_Airportzonefare extends Model
 
      public function all_zone_detail()
     {
-        $query = $this->mongo_db->find(MDB_ZONES,array('status' => 'A','is_airport'=>(int)0));
+        $query = $this->mongo_db->find(MDB_ZONES,['status' => 'A','is_airport'=>(int)0]);
         $result = iterator_to_array($query);
         return $result;
     }
@@ -50,24 +50,24 @@ Class Model_Airportzonefare extends Model
         $company_id = 0;        
         if (FARE_SETTINGS == 2 && $company_id != 0) //company_id = 0 as Admin
 		{
-           $arguments = array(
-							array('$lookup' => array(
+           $arguments = [
+							['$lookup' => [
 								'from' => MDB_COMPANY,
 								'localField' => '_id',
 								'foreignField' => 'model_fare.model_id',					
 								'as'=> "cdetails"
-							)),
-							array('$unwind'=>'$cdetails'),
-							array('$match'=>array('cdetails._id'=>(int)$company_id)),
-							array('$project'=>array('_id'=>'$_id','model_name'=>'$model_name'))
-						);
+							]],
+							['$unwind'=>'$cdetails'],
+							['$match'=>['cdetails._id'=>(int)$company_id]],
+							['$project'=>['_id'=>'$_id','model_name'=>'$model_name']]
+						];
             $result = $this->mongo_db->aggregate(MDB_MOTOR_MODEL,$arguments);
             $res = $result['result'];
-            return (isset($res)?$res:array());
+            return (isset($res)?$res:[]);
         } else {          
-            $result = $this->mongo_db->find(MDB_MOTOR_MODEL,array('model_status'=>'A'))->sort(array('_id'=>1));
+            $result = $this->mongo_db->find(MDB_MOTOR_MODEL,['model_status'=>'A'])->sort(['_id'=>1]);
             $res = iterator_to_array($result);
-            return (isset($res)?$res:array());
+            return (isset($res)?$res:[]);
         }
     }
 
@@ -76,7 +76,7 @@ Class Model_Airportzonefare extends Model
        $validate = Validation::factory($arr)
             ->rule('zone_id', 'not_empty')
             ->rule('model_id', 'not_empty')
-            ->rule('model_id', 'Model_Airportzonefare::checkZoneExistsModel', array(':value',$arr['zone_id']))
+            ->rule('model_id', 'Model_Airportzonefare::checkZoneExistsModel', [':value',$arr['zone_id']])
             ->rule('zone_fixed_fare', 'not_empty');
        return $validate;
     }
@@ -84,20 +84,20 @@ Class Model_Airportzonefare extends Model
      public static function checkZoneExistsModel($model_id="",$zone_id)
     {		
         $mongodb = MangoDB::instance('default');
-        $result = $mongodb->count(MDB_ZONE_FARE,array('model_id'=>(int)$model_id,'zone_id'=>(int)$zone_id));
+        $result = $mongodb->count(MDB_ZONE_FARE,['model_id'=>(int)$model_id,'zone_id'=>(int)$zone_id]);
         return ($result > 0)?false:true;
     }
 
      public function add_airport_zone_fare($post){
         //echo"<pre>"; print_r($post);exit();
         $user_createdby = $this->admin_userid;
-        $rs = $this->mongo_db->find(MDB_AIRPORT_ZONE_FARE,array(),array('_id'))->sort(array('_id'=>-1))->limit(1);
+        $rs = $this->mongo_db->find(MDB_AIRPORT_ZONE_FARE,[],['_id'])->sort(['_id'=>-1])->limit(1);
 		$rs = iterator_to_array($rs);
 		reset($rs);
 		$rs_first_key = key($rs);
 		$inc_id = $rs_first_key + 1;
 
-        $param = array(
+        $param = [
                     '_id' => $inc_id,
                     'zone_id'=>(int)$post['zone_id'],
                     'model_id'=>(int)$post['model_id'],
@@ -106,7 +106,7 @@ Class Model_Airportzonefare extends Model
                     'zone_fixed_fare'=>(double)$post['zone_fixed_fare'],
                     'status' => 'A',                     
                     'created_by'=>$user_createdby                 
-        );
+        ];
         $result = $this->mongo_db->insert(MDB_AIRPORT_ZONE_FARE,$param);
         return $result;        
     }
@@ -116,50 +116,50 @@ Class Model_Airportzonefare extends Model
     {	
     	$keyword       = str_replace("%", "!%", $keyword);
         $keyword       = str_replace("_", "!_", $keyword);
-		$srch_query = array();
+		$srch_query = [];
 		//MongoDB with aggregate process only
 		if((!empty($keyword)) && (!empty($status))) {
-			$srch_query = array( "\$and" => array(array('status' => $status ),array("\$or"=>array(array( 'zone_name' => new MongoRegex("/$keyword/i")) ) ) ) );
+			$srch_query = [ "\$and" => [['status' => $status ],["\$or"=>[[ 'zone_name' => new \MongoDB\BSON\Regex($keyword, 'i')] ] ] ] ];
 		} else if (!empty($keyword)) {
-			$srch_query = array("\$or"=>array(array( '$zones.zone_name' => new MongoRegex("/$keyword/i")) ));
+			$srch_query = ["\$or"=>[[ '$zones.zone_name' => new \MongoDB\BSON\Regex($keyword, 'i')] ]];
 		} else if (!empty($status)) {
-			$srch_query = array( "\$and" => array(array('status' => $status )));
+			$srch_query = [ "\$and" => [['status' => $status ]]];
 		} else {
-			$srch_query = array( "\$and" => array(array('status' => 'A' )));
+			$srch_query = [ "\$and" => [['status' => 'A' ]]];
 		}
 
 		//echo '<pre>'; print_r($srch_query); exit();
 		if(!empty($srch_query))
 		{
-			$arguments = array(
-				array(
+			$arguments = [
+				[
 					'$match' => $srch_query
-                ),
-                array(
-                    '$lookup' => array(
+                ],
+                [
+                    '$lookup' => [
                         'from' => MDB_ZONES,
                         'localField' => 'zone_id',
                         'foreignField' => '_id',
                         'as' => 'zones'
-                    )
-                ),
-                array(
+                    ]
+                ],
+                [
                     '$unwind' =>'$zones'
-                ),
-                array(
-                    '$lookup' => array(
+                ],
+                [
+                    '$lookup' => [
                         'from' => MDB_MOTOR_MODEL,
                         'localField' => 'model_id',
                         'foreignField' => '_id',
                         'as' => 'model'
-                    )
-                ),
-                array(
+                    ]
+                ],
+                [
                     '$unwind' =>'$model'
-                ),
+                ],
 				//array('$sort' => array('zone_name' => -1)),
-				array(
-					'$project' => array(
+				[
+					'$project' => [
 						'_id'=>'$_id',
                         'model_name'=>'$model.model_name',
                         'zone_name'=>'$zones.zone_name',
@@ -167,41 +167,41 @@ Class Model_Airportzonefare extends Model
                         'model_id'=>'$model_id',
                         'zone_fixed_fare'=>'$zone_fixed_fare',
 						'status'=>'$status'
-					)
-				)
-			);
+					]
+				]
+			];
 		}
 		else
 		{
-			$arguments = array(
-				array(
+			$arguments = [
+				[
 					'$match' => $srch_query
-                ),
-                array(
-                    '$lookup' => array(
+                ],
+                [
+                    '$lookup' => [
                         'from' => MDB_ZONES,
                         'localField' => 'zone_id',
                         'foreignField' => '_id',
                         'as' => 'zones'
-                    )
-                ),
-                array(
+                    ]
+                ],
+                [
                     '$unwind' =>'$zones'
-                ),
-                array(
-                    '$lookup' => array(
+                ],
+                [
+                    '$lookup' => [
                         'from' => MDB_MOTOR_MODEL,
                         'localField' => 'model_id',
                         'foreignField' => '_id',
                         'as' => 'model'
-                    )
-                ),
-                array(
+                    ]
+                ],
+                [
                     '$unwind' =>'$model'
-                ),
+                ],
 				//array('$sort' => array('zone_name' => -1)),
-				array(
-					'$project' => array(
+				[
+					'$project' => [
                         '_id'=>'$_id',
                         'model_name'=>'$model.model_name',
                         'zone_name'=>'$zones.zone_name',
@@ -210,9 +210,9 @@ Class Model_Airportzonefare extends Model
                         'status'=>'$status',
                         'zone_fixed_fare'=>'$zone_fixed_fare',
 
-					)
-				)
-			);
+					]
+				]
+			];
 		}
 		
 		if($find_count == false){

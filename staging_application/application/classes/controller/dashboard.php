@@ -57,9 +57,9 @@ class Controller_Dashboard extends Controller_Siteadmin
 			for ($i=1; $i<=12; $i++) {
 				$count = $this->dashboard_model->getUsers($i, $year);
 				if ($count == '' || $count == 'NULL') { $count = "0"; }
-				$data['users'][] = array(
+				$data['users'][] = [
 					'count'       => $count
-				);
+				];
 			}
 		}
 		else
@@ -68,11 +68,11 @@ class Controller_Dashboard extends Controller_Siteadmin
 			$enddate = $_REQUEST['enddate'];
 			$count = $this->dashboard_model->getUsersbydate($startdate, $enddate);		
 			if ($count == '' || $count == 'NULL') { $count = "0"; }
-				$data['users'][] = array(
+				$data['users'][] = [
 			'count'       => $count
-			);
+			];
 		}
-		$json = array();
+		$json = [];
 		$json['success'] = $data;
 		echo json_encode($json);
 	}
@@ -99,16 +99,16 @@ class Controller_Dashboard extends Controller_Siteadmin
 				$average = $count/$revenues;
 			}
 			
-			$data['trips'][] = array(
+			$data['trips'][] = [
 				'trips'       => $count,
 				'revenues'       => round($revenues,2),
 				'admincommission'       => round($admincommission,2),
 				'average'       => round($average,3)
-			);
+			];
 		}
 		$data['webtrips'] = $webtrips;
 		$data['mobiletrips'] = $mobiletrips;
-		$json = array();
+		$json = [];
 		//echo "<pre>"; print_r($data); exit;
 		$json['success'] = $data;
 		echo json_encode($json);
@@ -117,7 +117,7 @@ class Controller_Dashboard extends Controller_Siteadmin
 	//** Function to get total users count companywise **//
 	public function action_getallUsersCompanywise()
 	{
-		$data = array();
+		$data = [];
 		if(isset($_POST['company'])) {
 			$company_id = $_POST['company'];
 			
@@ -135,13 +135,13 @@ class Controller_Dashboard extends Controller_Siteadmin
 						$passengers = $usersTaxies[0]['_id']['totalpassengers'];
 						$company_name = $usersTaxies[0]['_id']['company_name'];
 					}
-					$data['totalusers'][] = array('drivers' => $drivers,'taxis' => $taxis,'passengers' => $passengers);
+					$data['totalusers'][] = ['drivers' => $drivers,'taxis' => $taxis,'passengers' => $passengers];
 				//}
 			//}
 			//print_r($data);exit;
 			$data['companyName'] = $company_name;
 		}
-		$json = array();
+		$json = [];
 		$json['success'] = $data;
 		echo json_encode($json);exit;
 	}
@@ -172,7 +172,7 @@ class Controller_Dashboard extends Controller_Siteadmin
 		
 		$a=0;
 		$b=5 ;
-		$markers = array();
+		$markers = [];
 		if(count($all_company_map_list) > 0)
 		{
 			 foreach($all_company_map_list as $v)
@@ -230,7 +230,7 @@ class Controller_Dashboard extends Controller_Siteadmin
 		$all_company_map_list = $this->taxidispatch_model->driver_status_details_company($driver_status,$company);
 		$a=0;
 		$b=5 ;
-		$markers = array();
+		$markers = [];
 		if(count($all_company_map_list) > 0)
 		{
 			 foreach($all_company_map_list as $v)
@@ -292,14 +292,14 @@ class Controller_Dashboard extends Controller_Siteadmin
 			if ($drivers_countlist == '' || $drivers_countlist == 'NULL') { $drivers_countlist = "0"; } else { $drivers_countlist=$drivers_countlist; }
 			if ($availabletaxi_countlist == '' || $availabletaxi_countlist == 'NULL') { $availabletaxi_countlist = "0"; } else { $availabletaxi_countlist=$availabletaxi_countlist; }
 			
-			$data['latest_details'][] = array(
+			$data['latest_details'][] = [
 				'company_countlist' => "['Total Companies (".$company_countlist.")',".$company_countlist."]",
 				'passenger_countlist' => "['Total passengers (".$passenger_countlist.")',".$passenger_countlist."]",
 				'drivers_countlist' => "['Total Drivers (".$drivers_countlist.")',".$drivers_countlist."]",
 				'availabletaxi_countlist' => "['Total Taxies (".$availabletaxi_countlist.")',".$availabletaxi_countlist."]"
-			);
+			];
 			
-		$json = array();
+		$json = [];
 		$json['success'] = $data;
 		echo json_encode($json);
 	}
@@ -321,14 +321,14 @@ class Controller_Dashboard extends Controller_Siteadmin
 			
 			if ($freetaxi_list_count == '' || $freetaxi_list_count == 'NULL') { $freetaxi_list_count = "0"; } else { $freetaxi_list_count=$freetaxi_list_count; }
 			
-			$data['latest_details'][] = array(
+			$data['latest_details'][] = [
 				'activeusers_list_count' => "['Live Passengers (".$activeusers_list_count.")',".$activeusers_list_count."]",
 				'availabletaxi_list_count' => "['Today Unassigned Taxies (".$freetaxi_list_count.")',".$freetaxi_list_count."]",
 				'freedriver_list_count' => "['Today Unassigned Drivers (".$freedriver_list_count.")',".$freedriver_list_count."]",
 				'freetaxi_list_count' => "['Today Free Taxies (".$availabletaxi_list_count.")',".$availabletaxi_list_count."]"
-			);
+			];
 			
-		$json = array();
+		$json = [];
 		$json['success'] = $data;
 		echo json_encode($json);
 	}

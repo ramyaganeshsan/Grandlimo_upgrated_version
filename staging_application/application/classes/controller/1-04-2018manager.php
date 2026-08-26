@@ -51,10 +51,10 @@ class Controller_Manager extends Controller_Siteadmin
             $this->urlredirect->redirect('manager/login');
         }
         $submit      = $this->request->post('admin_login');
-        $form_values = Arr::extract($_REQUEST, array(
+        $form_values = Arr::extract($_REQUEST, [
             'email',
             'password'
-        ));
+        ]);
         $validate    = $this->authorize->login_validate($form_values);
         if (isset($submit)) {
             if ($validate->check()) {
@@ -104,13 +104,13 @@ class Controller_Manager extends Controller_Siteadmin
         } else {
             $this->urlredirect->redirect('manager/login');
         }
-        $post_values        = array();
+        $post_values        = [];
         $post_values        = $_REQUEST;
         $availabletaxi_list = $this->manager_model->get_availabletaxi_list();
         $freedriver_list    = $this->manager_model->free_driver_list();
         $freetaxi_list      = $this->manager_model->free_taxi_list(true,$this->company_id);
         $getdriverdetails   = $this->transaction_model->getdriverdetails($this->company_id, $this->userid);
-        $driver_id          = array();
+        $driver_id          = [];
         if (count($getdriverdetails) > 0) {
             foreach ($getdriverdetails as $res) {
                 $driver_id []= $res['id'];
@@ -167,8 +167,8 @@ class Controller_Manager extends Controller_Siteadmin
         }
         /**To get the form submit button name**/
         $signup_submit       = arr::get($_REQUEST, 'submit_editmanager');
-        $errors              = array();
-        $post_values         = array();
+        $errors              = [];
+        $post_values         = [];
         $company_details = $this->add_model->taxicompany_details();
         
         $manager_details     = $this->edit_model->manager_details($uid);
@@ -178,7 +178,7 @@ class Controller_Manager extends Controller_Siteadmin
         if ($signup_submit && Validation::factory($_POST)) {
             $post_values = $_POST;
             $post        = Arr::map('trim', $this->request->post());
-            $form_values = Arr::extract($post, array(
+            $form_values = Arr::extract($post, [
                 'firstname',
                 'lastname',
                 'email',
@@ -188,7 +188,7 @@ class Controller_Manager extends Controller_Siteadmin
                 'state',
                 'city',
                 'company_name'
-            ));
+            ]);
             $validator   = $this->edit_model->validate_editmanager($form_values, $uid);
             if ($validator->check()) {
                 $status = $this->edit_model->edit_manager($post, $uid);
@@ -222,22 +222,22 @@ class Controller_Manager extends Controller_Siteadmin
         if ($usertype == 'C') {
             $this->urlredirect->redirect('company/dashboard');
         }
-        $errors         = array();
+        $errors         = [];
         $changepassword = arr::get($_REQUEST, 'submit_changepassword');
         /**To get current logged user id from session**/
         if (isset($changepassword) && Validation::factory($_POST)) {
             $postvalue = $_POST;
             $post      = Arr::map('trim', $this->request->post());
-            $validator = $this->authorize->changepassword_validate(arr::extract($post, array(
+            $validator = $this->authorize->changepassword_validate(arr::extract($post, [
                 'oldpassword',
                 'password',
                 'repassword'
-            )), $this->userid);
+            ]), $this->userid);
             if ($validator->check()) {
                 $update_status            = $this->authorize->changepassword($post['password'], $this->userid);
 				$update = $this->authorize->select_user_details_by_id($this->userid);
                 $mail              = "";
-                $replace_variables = array(
+                $replace_variables = [
                     REPLACE_LOGO => EMAILTEMPLATELOGO,
                     REPLACE_SITENAME => $this->app_name,
                     REPLACE_USERNAME => ucfirst($update['name']),
@@ -248,7 +248,7 @@ class Controller_Manager extends Controller_Siteadmin
                     REPLACE_SITEURL => URL_BASE,
                     REPLACE_COPYRIGHTS => SITE_COPYRIGHT,
                     REPLACE_COPYRIGHTYEAR => COPYRIGHT_YEAR
-                );
+                ];
                 //$message           = $this->emailtemplate->emailtemplate(DOCROOT . TEMPLATEPATH . 'changepassword.html', $replace_variables);
 				if ($this->lang != 'en') {
 					if (file_exists(DOCROOT . TEMPLATEPATH . $this->lang . '/changepassword-' . $this->lang . '.html')) {
@@ -301,22 +301,22 @@ class Controller_Manager extends Controller_Siteadmin
     }
     public function action_forgot_password()
     {
-		$errors         = array();
+		$errors         = [];
         $forgotpassword = arr::get($_REQUEST, 'submit_forgot_password_admin');
 		
         if (isset($forgotpassword) && Validation::factory($_POST)) {
 			
             $postvalue      = Arr::map('trim', $this->request->post());
-            $validator = $this->authorize->forgotpassword_managervalidate(arr::extract($postvalue, array(
+            $validator = $this->authorize->forgotpassword_managervalidate(arr::extract($postvalue, [
                 'email'
-            )));
+            ]));
 			
             if ($validator->check()) {
                 $user_detail = $this->authorize->select_users_byemail($postvalue['email']);
                 $password    = Text::random();
                 $result = $this->authorize->changepassword($password, $user_detail['_id']);
                 $mail              = "";
-                $replace_variables = array(
+                $replace_variables = [
                     REPLACE_LOGO => EMAILTEMPLATELOGO,
                     REPLACE_SITENAME => $this->app_name,
                     REPLACE_USERNAME => ucfirst($user_detail['name']),
@@ -327,7 +327,7 @@ class Controller_Manager extends Controller_Siteadmin
                     REPLACE_SITEURL => URL_BASE,
                     REPLACE_COPYRIGHTS => SITE_COPYRIGHT,
                     REPLACE_COPYRIGHTYEAR => COPYRIGHT_YEAR
-                );
+                ];
                 $message           = $this->emailtemplate->emailtemplate(DOCROOT . TEMPLATEPATH . 'forgotpassword.html', $replace_variables);
 				if ($this->currlang != 'en') {
 					if (file_exists(DOCROOT . TEMPLATEPATH . $this->lang . '/forgotpassword-' . $this->currlang . '.html')) {
@@ -389,13 +389,13 @@ class Controller_Manager extends Controller_Siteadmin
             } else {
                 $average = "0";
             }
-            $data['trips'][] = array(
+            $data['trips'][] = [
                 'trips' => $count,
                 'revenues' => $revenues,
                 'average' => round($average, 3)
-            );
+            ];
         }
-        $json            = array();
+        $json            = [];
         $json['success'] = $data;
         echo json_encode($json);
     }

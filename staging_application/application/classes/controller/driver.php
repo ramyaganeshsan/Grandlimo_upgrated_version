@@ -65,7 +65,7 @@ Class Controller_Driver extends Controller_Website
         $usrid         = $id; // isset($userid)?$userid:$id;
         /**To Set Errors Null to avoid error if not set in view**/
         if (!isset($usrid)) {
-            $errors       = array();
+            $errors       = [];
             /**To get the form submit button name**/
             $login_submit = arr::get($_REQUEST, 'submit_login');
             $phone        = commonfunction::real_escape_string($_GET['phone']);
@@ -112,7 +112,7 @@ Class Controller_Driver extends Controller_Website
     //DashoBoard Settings Function
     public function action_dashboard()
     {
-        $errors = array();
+        $errors = [];
         $this->is_login();
         $this->is_login_status();
 		if($this->lang == 'en') {
@@ -123,7 +123,7 @@ Class Controller_Driver extends Controller_Website
 		
         //$this->is_login(); 	
         /*** Dashboard Style & Scripts ***/
-        $dashstyles                        = array(
+        $dashstyles                        = [
             CSSPATH . 'dashboard/bootstrap-responsive.css' => 'screen',
             CSSPATH . 'dashboard/'.$charisma.'.css' => 'screen',
             CSSPATH . 'dashboard/jquery-ui-1.8.21.custom.css' => 'screen',
@@ -134,8 +134,8 @@ Class Controller_Driver extends Controller_Website
             CSSPATH . 'dashboard/jquery.iphone.toggle.css' => 'screen',
             CSSPATH . 'dashboard/opa-icons.css' => 'screen',
             CSSPATH . 'datepicker.css' => 'screen'
-        );
-        $dashscripts                       = array(
+        ];
+        $dashscripts                       = [
             SCRIPTPATH . 'dashboard/jquery-ui-1.8.21.custom.min.js',
             SCRIPTPATH . 'dashboard/bootstrap-transition.js',
             SCRIPTPATH . 'dashboard/bootstrap-alert.js',
@@ -159,7 +159,7 @@ Class Controller_Driver extends Controller_Website
             SCRIPTPATH . 'bootstrap-datepicker.js',
             SCRIPTPATH . 'kkcountdown.js',
             SCRIPTPATH . 'jquery-countdown.js'
-        );
+        ];
         $driver_id                         = $this->session->get('id');
         $id                                = $driver_id;
         //echo COMPANY_CID;
@@ -261,17 +261,17 @@ Class Controller_Driver extends Controller_Website
     public function action_logout()
     {
         $update_id           = $this->session->get('id');
-        $update_array        = array(
+        $update_array        = [
             "login_status" => "N",
             "login_from" => ""
-        );
+        ];
         $login_status_update = $this->commonmodel->update(PEOPLE, $update_array, 'id', $update_id); //destroy session while logout
         /*** Update in Driver table **/
         $driver_reply        = $this->driver_model->update_driver_shift_status($update_id, '0');
         /** Update in driver shift history table **/
-        $update_arrary       = array(
+        $update_arrary       = [
             "shift_end" => $this->currentdate
-        );
+        ];
         $inserid             = $this->session->get("shiftstatus_id");
         if ($inserid) {
             $transaction = $this->commonmodel->update(DRIVERSHIFTSERVICE, $update_arrary, 'driver_shift_id', $inserid);
@@ -291,23 +291,23 @@ Class Controller_Driver extends Controller_Website
     public function action_forgotpassword()
     {
         /**To Set Errors Null to avoid error if not set in view**/
-        $errors            = array();
+        $errors            = [];
         $view              = View::factory(USERVIEW . 'driver/forgot_password')->bind('validator', $validator)->bind('errors', $errors)->bind('success', $success)->bind('email_error', $email_error);
         /**To generate random key if user enter email at forgot password**/
         $random_key        = text::random($type = 'alnum', $length = 7);
         /**To get the form submit button name**/
         $change_pwd_submit = arr::get($_REQUEST, 'submit_forgot_password');
         if ($change_pwd_submit && Validation::factory($_POST)) {
-            $validator = $this->driver_model->validate_forgotpwd(arr::extract($_POST, array(
+            $validator = $this->driver_model->validate_forgotpwd(arr::extract($_POST, [
                 'email'
-            )));
+            ]));
             if ($validator->check()) {
                 $email_exist = $this->driver_model->check_email_driver($_POST['email']);
                 if ($email_exist == 1) {
                     $result = $this->driver_model->forgot_password($validator, $_POST, $random_key);
                     if ($result) {
                         $mail              = "";
-                        $replace_variables = array(
+                        $replace_variables = [
                             REPLACE_LOGO => EMAILTEMPLATELOGO,
                             REPLACE_SITENAME => COMPANY_SITENAME,
                             REPLACE_USERNAME => ucfirst($result[0]['name']),
@@ -319,7 +319,7 @@ Class Controller_Driver extends Controller_Website
                             SITE_DESCRIPTION => $this->app_description,
                             REPLACE_COPYRIGHTS => SITE_COPYRIGHT,
                             REPLACE_COPYRIGHTYEAR => COPYRIGHT_YEAR
-                        );
+                        ];
                         //$message           = $this->emailtemplate->emailtemplate(DOCROOT . TEMPLATEPATH . 'user-forgotpassword.html', $replace_variables);
 						if ($this->lang != 'en') {
 							if (file_exists(DOCROOT . TEMPLATEPATH . $this->lang . '/user-forgotpassword-' . $this->lang . '.html')) {
@@ -380,7 +380,7 @@ Class Controller_Driver extends Controller_Website
     public function action_editprofile()
     {
         /**To Set Errors Null to avoid error if not set in view**/
-        $errors = array();
+        $errors = [];
         /**Check Whether the user is logged in**/
         $this->is_login();
         $this->is_login_status();
@@ -393,11 +393,11 @@ Class Controller_Driver extends Controller_Website
         $_POST                = Arr::map('trim', $this->request->post());
         if ($submit_profile_form2 && Validation::factory($_POST, $_FILES)) {
             /**Send entered values to model for validation**/
-            $validator = $this->driver_model->validate_driver_profilesettings(arr::extract($_POST, array(
+            $validator = $this->driver_model->validate_driver_profilesettings(arr::extract($_POST, [
                 'name',
                 'phone',
                 'address'
-            )));
+            ]));
             if (!empty($_FILES['profile_picture']['name'])) {
                 $image_name       = uniqid() . $_FILES['profile_picture']['name'];
                 $thumb_image_name = 'thumb_' . $image_name;
@@ -444,7 +444,7 @@ Class Controller_Driver extends Controller_Website
     public function action_changepassword()
     {
         /*To set errors in array if errors not set*/
-        $errors = array();
+        $errors = [];
         /*checks if user logged or not*/
         $this->is_login();
         $this->is_login_status();
@@ -457,11 +457,11 @@ Class Controller_Driver extends Controller_Website
             $userid1              = $this->session->get('id');
             //$userid2 =$this->session->get('userid');
             $userid               = isset($userid1) ? $userid1 : '';
-            $validator_changepass = $this->driver_model->validate_changepwd(arr::extract($_POST, array(
+            $validator_changepass = $this->driver_model->validate_changepwd(arr::extract($_POST, [
                 'old_password',
                 'new_password',
                 'confirm_password'
-            )));
+            ]));
             //print_r($validator_changepass);exit;
             if ($validator_changepass->check()) {
                 $oldpass_check = $this->driver_model->check_pass($_POST['old_password'], $userid);
@@ -473,7 +473,7 @@ Class Controller_Driver extends Controller_Website
                             //$signup_cont=$this->emailtemplate->get_template_content(USER_CHANGE_PASSWORD);
                             //$subject=$signup_cont[0]['email_subject'];
                             //$content=$signup_cont[0]['email_content'];	
-                            $replace_variables = array(
+                            $replace_variables = [
                                 REPLACE_LOGO => EMAILTEMPLATELOGO,
                                 REPLACE_SITENAME => COMPANY_SITENAME,
                                 REPLACE_USERNAME => ucfirst($result[0]['name']),
@@ -485,7 +485,7 @@ Class Controller_Driver extends Controller_Website
                                 SITE_DESCRIPTION => $this->app_description,
                                 REPLACE_COPYRIGHTS => SITE_COPYRIGHT,
                                 REPLACE_COPYRIGHTYEAR => COPYRIGHT_YEAR
-                            );
+                            ];
                             //$message           = $this->emailtemplate->emailtemplate(DOCROOT . TEMPLATEPATH . 'user-changepassword.html', $replace_variables);
 							if ($this->lang != 'en') {
 								if (file_exists(DOCROOT . TEMPLATEPATH . $this->lang . '/user-changepassword-' . $this->lang . '.html')) {
@@ -914,9 +914,9 @@ Class Controller_Driver extends Controller_Website
             $accgroup_id                  = $get_passenger_log_details[0]->accgroup_id;
             $company_tax                  = $get_passenger_log_details[0]->company_tax;
             
-            $update_driver_arrary = array(
+            $update_driver_arrary = [
                 "status" => 'F'
-            );
+            ];
             $result               = $this->commonmodel->update(DRIVER, $update_driver_arrary, 'driver_id', $driver_id);
             //Converting the Waiting Time 
             $waiting_time         = $_POST['waiting_time'];
@@ -1162,7 +1162,7 @@ Class Controller_Driver extends Controller_Website
             else
                 $total_fare = $total;
             $transcommission = $this->driver_model->set_trans_commissiondetails($_REQUEST['pass_logid'], $total_fare);
-            $insert_array    = array(
+            $insert_array    = [
                 "passengers_log_id" => $_REQUEST['pass_logid'],
                 "distance" => $_REQUEST['distance'],
                 "actual_distance" => $_REQUEST['actual_distance'],
@@ -1179,7 +1179,7 @@ Class Controller_Driver extends Controller_Website
                 "company_amount" => $transcommission['company_commission'],
                 "trans_packtype" => $transcommission['package_type'],
                 "payment_type" => '3'
-            );
+            ];
             //print_r($insert_array);
             //exit;				
             //Inserting to Transaction Table 
@@ -1199,15 +1199,15 @@ Class Controller_Driver extends Controller_Website
         $geoloc = curl_exec($ch);
         $json   = json_decode($geoloc);
         if ($json->status == 'OK') {
-            return array(
+            return [
                 $json->results[0]->geometry->location->lat,
                 $json->results[0]->geometry->location->lng
-            );
+            ];
         } else {
-            return array(
+            return [
                 11.621354,
                 76.14253698
-            );
+            ];
         }
     }
     //Applying the Haversine Function to get the Distance
@@ -1480,7 +1480,7 @@ Class Controller_Driver extends Controller_Website
     }
     public function action_transactionlog()
     {
-        $errors = array();
+        $errors = [];
         $this->is_login();
         $this->is_login_status();
         $userid             = $this->session->get('id');
@@ -1489,7 +1489,7 @@ Class Controller_Driver extends Controller_Website
 		} else {
 			$charisma = 'charisma-app-arabic';	
 		}
-        $dashstyles         = array(
+        $dashstyles         = [
             CSSPATH . 'dashboard/bootstrap-responsive.css' => 'screen',
             CSSPATH . 'dashboard/'.$charisma.'.css' => 'screen',
             CSSPATH . 'dashboard/jquery-ui-1.8.21.custom.css' => 'screen',
@@ -1500,8 +1500,8 @@ Class Controller_Driver extends Controller_Website
             CSSPATH . 'dashboard/jquery.iphone.toggle.css' => 'screen',
             CSSPATH . 'dashboard/opa-icons.css' => 'screen',
             CSSPATH . 'datepicker.css' => 'screen'
-        );
-        $dashscripts        = array(
+        ];
+        $dashscripts        = [
             SCRIPTPATH . 'dashboard/jquery-ui-1.8.21.custom.min.js',
             SCRIPTPATH . 'dashboard/bootstrap-transition.js',
             SCRIPTPATH . 'dashboard/bootstrap-alert.js',
@@ -1525,7 +1525,7 @@ Class Controller_Driver extends Controller_Website
             SCRIPTPATH . 'bootstrap-datepicker.js',
             SCRIPTPATH . 'kkcountdown.js',
             SCRIPTPATH . 'jquery-countdown.js'
-        );
+        ];
         
         //pagination loads here
         $page_no            = isset($_GET['page']) ? $_GET['page'] : 0;
@@ -1551,7 +1551,7 @@ Class Controller_Driver extends Controller_Website
             $reason        = $_POST['reason'];
             $interval_type = $_POST['interval_type'];
             $driver_reply  = $this->driver_model->update_driver_break_status($userid, $_POST['breakstatus'], $interval_type);
-            $insert_array  = array(
+            $insert_array  = [
                 "driver_id" => $userid,
                 "taxi_id" => $getTaxiforDriver[0]['mapping_taxiid'],
                 "interval_type" => $interval_type,
@@ -1559,7 +1559,7 @@ Class Controller_Driver extends Controller_Website
                 "interval_end" => "",
                 "reason" => $reason,
                 "createdate" => $this->currentdate
-            );
+            ];
             //Inserting to Transaction Table 
             $transaction   = $this->commonmodel->insert(DRIVERBREAKSERVICE, $insert_array);
             $inserid       = mysql_insert_id();
@@ -1570,9 +1570,9 @@ Class Controller_Driver extends Controller_Website
                 $html = "<span class='btn btn-mini btn-warning' onclick='driverbreak(0)'>SERVICE OUT</span>";
             }
         } else {
-            $update_arrary = array(
+            $update_arrary = [
                 "interval_end" => $this->currentdate
-            );
+            ];
             $inserid       = $this->session->get("breakstatus_id");
             $this->session->set("breakstatus_id", "");
             $transaction        = $this->commonmodel->update(DRIVERBREAKSERVICE, $update_arrary, 'driver_break_service_id', $inserid);
@@ -1617,14 +1617,14 @@ Class Controller_Driver extends Controller_Website
                     if (count($getTaxiforDriver) > 0) {
                         //echo "sfs";	
                         $driver_reply = $this->driver_model->update_driver_shift_status($userid, $_POST['shiftstatus']);
-                        $insert_array = array(
+                        $insert_array = [
                             "driver_id" => $userid,
                             "taxi_id" => $getTaxiforDriver[0]['mapping_taxiid'],
                             "shift_start" => $current_time,
                             "shift_end" => "",
                             "reason" => $reason,
                             "createdate" => $current_time
-                        );
+                        ];
                         //Inserting to Transaction Table 
                         $transaction  = $this->commonmodel->insert(DRIVERSHIFTSERVICE, $insert_array);
                         $inserid      = mysql_insert_id();
@@ -1647,9 +1647,9 @@ Class Controller_Driver extends Controller_Website
                     //exit;
                     if (count($driver_current_status) > 0) {
                         if ($driver_current_status[0]->status != 'A') {
-                            $update_arrary = array(
+                            $update_arrary = [
                                 "shift_end" => $current_time
-                            );
+                            ];
                             $inserid       = $this->session->get("shiftstatus_id");
                             $this->session->set("shiftstatus_id", "");
                             $transaction  = $this->commonmodel->update(DRIVERSHIFTSERVICE, $update_arrary, 'driver_shift_id', $inserid);
@@ -1676,9 +1676,9 @@ Class Controller_Driver extends Controller_Website
             //exit;
             if (count($driver_current_status) > 0) {
                 if ($driver_current_status[0]->status != 'A') {
-                    $update_arrary = array(
+                    $update_arrary = [
                         "shift_end" => $current_time
-                    );
+                    ];
                     $inserid       = $this->session->get("shiftstatus_id");
                     $this->session->set("shiftstatus_id", "");
                     $transaction  = $this->commonmodel->update(DRIVERSHIFTSERVICE, $update_arrary, 'driver_shift_id', $inserid);
@@ -1700,7 +1700,7 @@ Class Controller_Driver extends Controller_Website
     //DashoBoard Settings Function
     public function action_completedtrips()
     {
-        $errors = array();
+        $errors = [];
         $this->is_login();
         $this->is_login_status();
 		if($this->lang == 'en') {
@@ -1710,7 +1710,7 @@ Class Controller_Driver extends Controller_Website
 		}
         //$this->is_login(); 	
         /*** Dashboard Style & Scripts ***/
-        $dashstyles                                  = array(
+        $dashstyles                                  = [
             CSSPATH . 'dashboard/bootstrap-responsive.css' => 'screen',
             CSSPATH . 'dashboard/'.$charisma.'.css' => 'screen',
             CSSPATH . 'dashboard/jquery-ui-1.8.21.custom.css' => 'screen',
@@ -1721,8 +1721,8 @@ Class Controller_Driver extends Controller_Website
             CSSPATH . 'dashboard/jquery.iphone.toggle.css' => 'screen',
             CSSPATH . 'dashboard/opa-icons.css' => 'screen',
             CSSPATH . 'datepicker.css' => 'screen'
-        );
-        $dashscripts                                 = array(
+        ];
+        $dashscripts                                 = [
             SCRIPTPATH . 'dashboard/jquery-ui-1.8.21.custom.min.js',
             SCRIPTPATH . 'dashboard/bootstrap-transition.js',
             SCRIPTPATH . 'dashboard/bootstrap-alert.js',
@@ -1746,7 +1746,7 @@ Class Controller_Driver extends Controller_Website
             SCRIPTPATH . 'bootstrap-datepicker.js',
             SCRIPTPATH . 'kkcountdown.js',
             SCRIPTPATH . 'jquery-countdown.js'
-        );
+        ];
         $driver_id                                   = $this->session->get('id');
         $id                                          = $driver_id;
         //Getting all Completed driver logs total
@@ -1756,15 +1756,15 @@ Class Controller_Driver extends Controller_Website
         if ($page_no == 0 || $page_no == 'index')
             $page_no = PAGE_NO;
         $offset                            = REC_PER_PAGE * ($page_no - 1);
-        $pag_data                          = Pagination::factory(array(
-            'current_page' => array(
+        $pag_data                          = Pagination::factory([
+            'current_page' => [
                 'source' => 'query_string',
                 'key' => 'page'
-            ),
+            ],
             'items_per_page' => REC_PER_PAGE,
             'total_items' => count($get_driver_total_logs_completed_transaction),
             'view' => 'pagination/punbb'
-        ));
+        ]);
         //Getting all Completed driver logs
         $driver_logs_completed_transaction = $this->driver_model->get_driver_logs_completed_transaction($driver_id, 'R', 'A', '1', REC_PER_PAGE, $offset);
         //print_r($driver_logs_completed_transaction);
@@ -1777,7 +1777,7 @@ Class Controller_Driver extends Controller_Website
     public function action_resetpassword()
     {
         /**To Set Errors Null to avoid error if not set in view**/
-        $errors          = array();
+        $errors          = [];
         /**To get the form submit button name**/
         $country_details = $this->siteusers->country_details();
         $city_details    = $this->siteusers->city_details();
@@ -1797,7 +1797,7 @@ Class Controller_Driver extends Controller_Website
 				
                 if ($result) {
                     $mail              = "";
-                    $replace_variables = array(
+                    $replace_variables = [
                         REPLACE_LOGO => EMAILTEMPLATELOGO,
                         REPLACE_SITENAME => COMPANY_SITENAME,
                         REPLACE_USERNAME => ucfirst($result['name']),
@@ -1809,7 +1809,7 @@ Class Controller_Driver extends Controller_Website
                         SITE_DESCRIPTION => $this->app_description,
                         REPLACE_COPYRIGHTS => SITE_COPYRIGHT,
                         REPLACE_COPYRIGHTYEAR => COPYRIGHT_YEAR
-                    );
+                    ];
                     $message           = $this->emailtemplate->emailtemplate(DOCROOT . TEMPLATEPATH . 'user-forgotpassword.html', $replace_variables);
 					if ($this->lang != 'en') {
                         if (file_exists(DOCROOT . TEMPLATEPATH . $this->lang . '/user-forgotpassword-' . $this->lang . '.html')) {

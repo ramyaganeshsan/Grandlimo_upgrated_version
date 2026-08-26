@@ -45,17 +45,17 @@ class Model_Cronreminder extends Model
 	
 	public function cron_deactive_company($company_id)
 	{
-		$result1 = DB::update(PEOPLE)->set(array('status' => 'D'))
+		$result1 = DB::update(PEOPLE)->set(['status' => 'D'])
 				->and_where('company_id', '=', $company_id)
 				->and_where('user_type', '=', 'C') //Deactive Company
 				->execute();
 		
-		$result2 = DB::update(PEOPLE)->set(array('status' => 'D'))
+		$result2 = DB::update(PEOPLE)->set(['status' => 'D'])
 				->and_where('company_id', '=', $company_id)
 				->and_where('user_type', '=', 'M') //Deactive Dispatchers
 				->execute();
 				
-		$result3 = DB::update(PEOPLE)->set(array('status' => 'D'))
+		$result3 = DB::update(PEOPLE)->set(['status' => 'D'])
 				->and_where('company_id', '=', $company_id)
 				->and_where('user_type', '=', 'D') //Deactive Drivers
 				->execute();

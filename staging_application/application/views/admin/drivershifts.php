@@ -10,7 +10,7 @@
 $startdate = isset($srch["startdate"]) ? $srch["startdate"] :date('Y-m-d 00:00:00'); 	
 $enddate = isset($srch["enddate"]) ? $srch["enddate"] :date('Y-m-d H:i:s'); 	
 $sort = isset($_GET["order"]) ? $_GET["order"] :"";
-$shift_history = array();
+$shift_history = [];
 ?>
 
 
@@ -56,7 +56,7 @@ $shift_history = array();
 	</div>
 	<div>
 		
-			<?php $tdvalue = array(); if(count($driver_shift_logs)>0) { ?>
+			<?php $tdvalue = []; if(count($driver_shift_logs)>0) { ?>
 			<?php 
 			$temp=""; $i = 0; $j = 1;
 			foreach($driver_shift_logs as $key => $values) { ?>

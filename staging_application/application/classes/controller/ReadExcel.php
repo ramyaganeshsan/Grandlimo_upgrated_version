@@ -71,7 +71,7 @@
 
 class SimpleXLSX {
 	// Don't remove this string! Created by Sergey Shuchkin sergey.shuchkin@gmail.com
-	public static $CF = array( // Cell formats
+	public static $CF = [ // Cell formats
 		0  => 'General',
 		1  => '0',
 		2  => '0.00',
@@ -118,15 +118,15 @@ class SimpleXLSX {
 		68 => 't0.00%',
 		69 => 't# ?/?',
 		70 => 't# ??/??',
-	);
-	public $cellFormats = array();
+	];
+	public $cellFormats = [];
 	public $datetimeFormat = 'Y-m-d H:i:s';
 	public $debug;
 
 	/* @var SimpleXMLElement[] $sheets */
 	protected $sheets;
-	protected $sheetNames = array();
-	protected $sheetFiles = array();
+	protected $sheetNames = [];
+	protected $sheetFiles = [];
 	// scheme
 	protected $styles;
 	protected $hyperlinks;
@@ -182,13 +182,13 @@ class SimpleXLSX {
 		if ( $debug !== null ) {
 			$this->debug = $debug;
 		}
-		$this->package = array(
+		$this->package = [
 			'filename' => '',
 			'mtime'    => 0,
 			'size'     => 0,
 			'comment'  => '',
-			'entries'  => array()
-		);
+			'entries'  => []
+		];
 		if ( $filename && $this->_unzip( $filename, $is_data ) ) {
 			$this->_parse();
 		}
@@ -291,7 +291,7 @@ class SimpleXLSX {
 
 		// Loop through the entries
 		foreach ( $aE as $vZ ) {
-			$aI       = array();
+			$aI       = [];
 			$aI['E']  = 0;
 			$aI['EM'] = '';
 			// Retrieving local file header information
@@ -386,14 +386,14 @@ class SimpleXLSX {
 				( ( $aP['FD'] & 0xfe00 ) >> 9 ) + 1980 );
 
 			//$this->Entries[] = &new SimpleUnzipEntry($aI);
-			$this->package['entries'][] = array(
+			$this->package['entries'][] = [
 				'data'      => $aI['D'],
 				'error'     => $aI['E'],
 				'error_msg' => $aI['EM'],
 				'name'      => $aI['N'],
 				'path'      => $aI['P'],
 				'time'      => $aI['T']
-			);
+			];
 
 		} // end for each entries
 
@@ -420,8 +420,8 @@ class SimpleXLSX {
 
 	protected function _parse() {
 		// Document data holders
-		$this->sharedstrings = array();
-		$this->sheets        = array();
+		$this->sharedstrings = [];
+		$this->sheets        = [];
 //		$this->styles = array();
 
 		// Read relations and search for officeDocument
@@ -434,7 +434,7 @@ class SimpleXLSX {
 
 				if ( $rel_type === 'officeDocument' && $workbook = $this->getEntryXML( $rel_target ) ) {
 
-					$index_rId = array(); // [0 => rId1]
+					$index_rId = []; // [0 => rId1]
 
 					$index = 0;
 					foreach ( $workbook->sheets->sheet as $s ) {
@@ -482,7 +482,7 @@ class SimpleXLSX {
 
 								$this->styles = $this->getEntryXML( $wrel_path );
 
-								$nf = array();
+								$nf = [];
 								if ( $this->styles->numFmts->numFmt !== null ) {
 									foreach ( $this->styles->numFmts->numFmt as $v ) {
 										$nf[ (int) $v['numFmtId'] ] = (string) $v['formatCode'];
@@ -622,12 +622,12 @@ class SimpleXLSX {
 		$numCols = $dim[0];
 		$numRows = $dim[1];
 
-		$emptyRow = array();
+		$emptyRow = [];
 		for ( $i = 0; $i < $numCols; $i ++ ) {
 			$emptyRow[] = '';
 		}
 
-		$rows = array();
+		$rows = [];
 		for ( $i = 0; $i < $numRows; $i ++ ) {
 			$rows[] = $emptyRow;
 		}
@@ -663,13 +663,13 @@ class SimpleXLSX {
 			return false;
 		}
 
-		$rows = array();
+		$rows = [];
 
 		$dim     = $this->dimension( $worksheetIndex );
 		$numCols = $dim[0];
 		$numRows = $dim[1];
 
-		$hiddenCols = array();
+		$hiddenCols = [];
 		/* @var SimpleXMLElement $ws */
 		foreach( $ws->cols->col as $col ) {
 			for ( $i = (int) $col['min']; $i <= (int) $col['max']; $i++ ) {
@@ -686,7 +686,7 @@ class SimpleXLSX {
 				for ( $k = $x; $k >= 0; $k = (int) ( $k / 26 ) - 1 ) {
 					$c = chr( $k % 26 + 65 ) . $c;
 				}
-				$rows[ $y ][ $x ] = array(
+				$rows[ $y ][ $x ] = [
 					'type'   => '',
 					'name'   => $c . ( $y + 1 ),
 					'value'  => '',
@@ -695,7 +695,7 @@ class SimpleXLSX {
 					'format' => '',
 					'r'      => $y,
 					'hidden'      => count($hiddenCols) && in_array($x, $hiddenCols, true )
-				);
+				];
 			}
 		}
 
@@ -733,7 +733,7 @@ class SimpleXLSX {
 					$hidden = true;
 				}
 
-				$rows[ $curR ][ $curC ] = array(
+				$rows[ $curR ][ $curC ] = [
 					'type'   => $t,
 					'name'   => (string) $c['r'],
 					'value'  => $this->value( $c ),
@@ -742,7 +742,7 @@ class SimpleXLSX {
 					'format' => $format,
 					'r'      => $r_idx,
 					'hidden' => $hidden,
-				);
+				];
 				$curC ++;
 			}
 			$curR ++;
@@ -773,9 +773,9 @@ class SimpleXLSX {
 			$ws = $this->sheets[ $worksheetIndex ];
 
 			if ( !isset($this->hyperlinks[ $worksheetIndex ]) && isset( $ws->hyperlinks ) ) {
-				$this->hyperlinks[ $worksheetIndex ] = array();
+				$this->hyperlinks[ $worksheetIndex ] = [];
 				$sheet_rels = str_replace('worksheets','worksheets/_rels', $this->sheetFiles[$worksheetIndex]).'.rels';
-				$link_ids = array();
+				$link_ids = [];
 
 				if ( $rels = $this->getEntryXML( $sheet_rels ) ) {
 					// hyperlink
@@ -824,7 +824,7 @@ class SimpleXLSX {
 	public function dimension( $worksheetIndex = 0 ) {
 
 		if ( ( $ws = $this->worksheet( $worksheetIndex ) ) === false ) {
-			return array( 0, 0 );
+			return [ 0, 0 ];
 		}
 		/* @var SimpleXMLElement $ws */
 
@@ -834,7 +834,7 @@ class SimpleXLSX {
 			$d   = explode( ':', $ref );
 			$idx = $this->getIndex( $d[1] );
 
-			return array( $idx[0] + 1, $idx[1] + 1 );
+			return [ $idx[0] + 1, $idx[1] + 1 ];
 		}
 		/*
 		if ( $ref !== '' ) { // 0.6.8
@@ -862,7 +862,7 @@ class SimpleXLSX {
 			}
 		}
 
-		return array( $maxC + 1, $maxR + 1 );
+		return [ $maxC + 1, $maxR + 1 ];
 	}
 
 	public function getIndex( $cell = 'A1' ) {
@@ -878,12 +878,12 @@ class SimpleXLSX {
 				$index += ( ord( $col[ $i ] ) - 64 ) * pow( 26, $colLen - $i - 1 );
 			}
 
-			return array( $index - 1, $row - 1 );
+			return [ $index - 1, $row - 1 ];
 		}
 
 //		$this->error( 'Invalid cell index ' . $cell );
 
-		return array( - 1, - 1 );
+		return [ - 1, - 1 ];
 	}
 
 	public function value( $cell ) {
@@ -1049,7 +1049,7 @@ class SimpleXLSX {
 		$this->datetimeFormat = is_string( $value ) ? $value : false;
 	}
 	protected function _parseRichText( $is = null ) {
-		$value = array();
+		$value = [];
 
 		if ( isset( $is->t ) ) {
 			$value[] = (string) $is->t;
@@ -1090,7 +1090,7 @@ class SimpleXLSX {
 		$target = ( $base ? $base . '/' : '' ) . $target;
 		// a/b/../c -> a/c
 		$parts = explode( '/', $target );
-		$abs   = array();
+		$abs   = [];
 		foreach ( $parts as $p ) {
 			if ( '.' === $p ) {
 				continue;

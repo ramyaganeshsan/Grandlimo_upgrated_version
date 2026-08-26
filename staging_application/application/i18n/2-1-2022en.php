@@ -1,6 +1,6 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 
-return array(
+return [
 'button_login' => 'Log In',
 'button_signup' => 'Sign Up',
 'button_update' => 'Update',
@@ -3316,4 +3316,4 @@ provided by its licensed drivers who undergo rigorous training and screening to 
 "surge_price_disable"=>"Surge Price Disable",
 "wallet_max_limit_check"=>"Enable Wallet Limit Check"
 
-); 
+]; 

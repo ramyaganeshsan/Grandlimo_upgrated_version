@@ -66,15 +66,15 @@ class Controller_Manageusers extends Controller_Siteadmin
         if ($page_no == 0 || $page_no == 'index')
             $page_no = PAGE_NO;
         $offset                     = REC_PER_PAGE * ($page_no - PAGE_NO);
-        $pag_data                   = Pagination::factory(array(
-            'current_page' => array(
+        $pag_data                   = Pagination::factory([
+            'current_page' => [
                 'source' => 'query_string',
                 'key' => 'page'
-            ),
+            ],
             'items_per_page' => REC_PER_PAGE,
             'total_items' => $count_user_list,
             'view' => 'pagination/punbb'
-        ));
+        ]);
         $all_user_list              = $this->admin_model->all_user_list($offset, REC_PER_PAGE);
         //****pagination ends here***//
         //send data to view file 
@@ -115,15 +115,15 @@ class Controller_Manageusers extends Controller_Siteadmin
 				if ($page_no == 0 || $page_no == 'index')
 					$page_no = PAGE_NO;
 				$offset      = REC_PER_PAGE * ($page_no - 1);
-				$pag_data    = Pagination::factory(array(
-					'current_page' => array(
+				$pag_data    = Pagination::factory([
+					'current_page' => [
 						'source' => 'query_string',
 						'key' => 'page'
-					),
+					],
 					'items_per_page' => REC_PER_PAGE,
 					'total_items' => $count_user_list,
 					'view' => 'pagination/punbb'
-				));
+				]);
 				$all_user_list = $this->admin_model->get_all_search_list($keyword, $usertype, $status, $offset, REC_PER_PAGE);
 			} else {
 				Message::error('Your search keyword must not be empty');
@@ -211,15 +211,15 @@ class Controller_Manageusers extends Controller_Siteadmin
         if ($page_no == 0 || $page_no == 'index')
             $page_no = PAGE_NO;
         $offset                     = REC_PER_PAGE * ($page_no - 1);
-        $pag_data                   = Pagination::factory(array(
-            'current_page' => array(
+        $pag_data                   = Pagination::factory([
+            'current_page' => [
                 'source' => 'query_string',
                 'key' => 'page'
-            ),
+            ],
             'items_per_page' => REC_PER_PAGE,
             'total_items' => $count_user_list,
             'view' => 'pagination/punbb'
-        ));
+        ]);
         $all_user_list              = $this->authorize->all_user_list_history($offset, REC_PER_PAGE);
         //****pagination ends here***//
         $details                    = '';
@@ -251,15 +251,15 @@ class Controller_Manageusers extends Controller_Siteadmin
         if ($page_no == 0 || $page_no == 'index')
             $page_no = PAGE_NO;
         $offset                     = REC_PER_PAGE * ($page_no - 1);
-        $pag_data                   = Pagination::factory(array(
-            'current_page' => array(
+        $pag_data                   = Pagination::factory([
+            'current_page' => [
                 'source' => 'query_string',
                 'key' => 'page'
-            ),
+            ],
             'items_per_page' => REC_PER_PAGE,
             'total_items' => $count_user_list,
             'view' => 'pagination/punbb'
-        ));
+        ]);
         $all_user_list              = $this->admin_model->all_passenger_list($offset, REC_PER_PAGE);
         $all_companies             = $this->manage_model->get_allcompany('A');
         //****pagination ends here***//
@@ -298,15 +298,15 @@ class Controller_Manageusers extends Controller_Siteadmin
 				if ($page_no == 0 || $page_no == 'index')
 					$page_no = PAGE_NO;
 				$offset      = REC_PER_PAGE * ($page_no - 1);
-				$pag_data    = Pagination::factory(array(
-					'current_page' => array(
+				$pag_data    = Pagination::factory([
+					'current_page' => [
 						'source' => 'query_string',
 						'key' => 'page'
-					),
+					],
 					'items_per_page' => REC_PER_PAGE,
 					'total_items' => $count_user_list,
 					'view' => 'pagination/punbb'
-				));
+				]);
 				$all_user_list = $this->admin_model->get_all_searchpassenger_list($keyword,$status ,$company,$customer_type,$offset, REC_PER_PAGE);
                // print_r($all_user_list);exit;
 			// } else {
@@ -427,15 +427,15 @@ class Controller_Manageusers extends Controller_Siteadmin
         if ($page_no == 0 || $page_no == 'index')
             $page_no = PAGE_NO;
         $offset                     = REC_PER_PAGE * ($page_no - PAGE_NO);
-        $pag_data                   = Pagination::factory(array(
-            'current_page' => array(
+        $pag_data                   = Pagination::factory([
+            'current_page' => [
                 'source' => 'query_string',
                 'key' => 'page'
-            ),
+            ],
             'items_per_page' => REC_PER_PAGE,
             'total_items' => $activeusers_list_count,
             'view' => 'pagination/punbb'
-        ));
+        ]);
         $all_user_list              = $this->admin_model->all_users_list($offset, REC_PER_PAGE, $cid);
         //****pagination ends here***//
         //$details = $siteusers->get_favorite_people($usrid);
@@ -467,15 +467,15 @@ class Controller_Manageusers extends Controller_Siteadmin
         if ($page_no == 0 || $page_no == 'index')
             $page_no = PAGE_NO;
         $offset      = REC_PER_PAGE * ($page_no - 1);
-        $pag_data    = Pagination::factory(array(
-            'current_page' => array(
+        $pag_data    = Pagination::factory([
+            'current_page' => [
                 'source' => 'query_string',
                 'key' => 'page'
-            ),
+            ],
             'items_per_page' => REC_PER_PAGE,
             'total_items' => $count_user_list,
             'view' => 'pagination/punbb'
-        ));
+        ]);
         //get form submit request
         $search_post = arr::get($_REQUEST, 'search_user');
         //Post results for search 
@@ -561,13 +561,13 @@ class Controller_Manageusers extends Controller_Siteadmin
             $email_logo = EMAIL_TEMPLATE_LOGO;
         }
         if ($promocode_exit == 0) {
-            $res = $this->commonmodel->select_all('coupon_package',array('_id'=>(int)$package,'coupon_package_status'=>'A'),array('passenger_commission'));
+            $res = $this->commonmodel->select_all('coupon_package',['_id'=>(int)$package,'coupon_package_status'=>'A'],['passenger_commission']);
             $p_c = (!empty($res))?$res[0]['passenger_commission']:'';
             if ($mail_type == 1) {
                 //$passenger_list = $this->manage_model->getactive_users($cid);
-                $passenger_list = array();
+                $passenger_list = [];
                 $currenttime    = $this->commonmodel->getcompany_all_currenttimestamp(COMPANY_CID);
-                $ins_array      = array(
+                $ins_array      = [
                             "company_id" => $cid,
                             "promocode" => $promo_code,
                             "package" => $package,
@@ -576,7 +576,7 @@ class Controller_Manageusers extends Controller_Siteadmin
                             "expire_date" => $expire_date,
                             "promo_limit" => $promo_limit,
                             "createdate" => $currenttime
-                        );
+                        ];
                 $p_insert  = $this->add_model->insert_promocode($ins_array);
                 Message::success(__('promo_success'));
                 $this->request->redirect("manage/promocode");
@@ -585,7 +585,7 @@ class Controller_Manageusers extends Controller_Siteadmin
                 $passenger_list = $to_user;
             
             //echo count($passenger_list); exit;
-            $bulkmessages = array();
+            $bulkmessages = [];
             if (count($passenger_list) > 0) {
                 foreach ($passenger_list as $values) {
                     $pdetail = explode('~', $values);
@@ -595,7 +595,7 @@ class Controller_Manageusers extends Controller_Siteadmin
                         $name              = $pdetail[2];
                         $currenttime       = $this->commonmodel->getcompany_all_currenttimestamp(COMPANY_CID);
                         for($i=1; $i<=$user_cnt; $i++){
-                        $insert_array      = array(
+                        $insert_array      = [
                             "corporate_id" => $id,
                             "company_id" => $cid,
                             "promocode" => $promo_code,
@@ -609,13 +609,13 @@ class Controller_Manageusers extends Controller_Siteadmin
                             "createdate" => $currenttime,
                             "customer_number" => $_POST['cphone'.$i],
                             "customer_email" => $_POST['cemail'.$i],
-                        );
+                        ];
                         //Inserting to Transaction Table 
                         $promo_insert      = $this->add_model->insert_promocode($insert_array);
                         $promocode_msg     = __('promocode_msg');
                         //$code              = str_replace('##DISCOUNT##', 'discount', $promocode_msg);
                         $code              = str_replace('##PROMOCODE##', $promo_code, $promocode_msg);
-                        $replace_variables = array(
+                        $replace_variables = [
                             REPLACE_LOGO => $email_logo,
                             REPLACE_SITENAME => $this->app_name,
                             REPLACE_USERNAME => 'Customer',
@@ -629,7 +629,7 @@ class Controller_Manageusers extends Controller_Siteadmin
                             REPLACE_SITEURL => URL_BASE,
                             REPLACE_COPYRIGHTS => SITE_COPYRIGHT,
                             REPLACE_COPYRIGHTYEAR => COPYRIGHT_YEAR
-                        );
+                        ];
 						//exit;
                         $message           = $this->emailtemplate->emailtemplate(DOCROOT . TEMPLATEPATH . 'promocode_message.html', $replace_variables);
                        // print_r($message);
@@ -712,8 +712,8 @@ class Controller_Manageusers extends Controller_Siteadmin
            $this->request->redirect("admin/login");
         }
         $signup_submit = arr::get($_REQUEST, 'submit_admin_pnotification');
-        $errors        = array();
-        $post_values   = array();
+        $errors        = [];
+        $post_values   = [];
         
         if ($signup_submit) {
 
@@ -749,7 +749,7 @@ class Controller_Manageusers extends Controller_Siteadmin
                                         
                                         for($i=0;$i<count($android_pass);$i++){
 
-                                            $android_device_token = array();
+                                            $android_device_token = [];
 
                                             foreach ($android_pass[$i] as $akey => $avalue) {
                                                 $android_device_token[] = $avalue['device_token'];
@@ -848,7 +848,7 @@ class Controller_Manageusers extends Controller_Siteadmin
                                         
                                         for($i=0;$i<count($android_pass);$i++){
 
-                                            $android_device_token = array();
+                                            $android_device_token = [];
 
                                             foreach ($android_pass[$i] as $akey => $avalue) {
                                                 $android_device_token[] = $avalue['device_token'];
@@ -914,8 +914,8 @@ class Controller_Manageusers extends Controller_Siteadmin
            $this->request->redirect("admin/login");
         }
         $signup_submit = arr::get($_REQUEST, 'submit_admin_pnotification');
-        $errors        = array();
-        $post_values   = array();
+        $errors        = [];
+        $post_values   = [];
         
         if ($signup_submit) {
 
@@ -995,8 +995,8 @@ class Controller_Manageusers extends Controller_Siteadmin
                     
                 } */
 
-                $form_values = Arr::extract($_POST, array('admin_push_message','push_title','push_sub_title'));
-                $file_values = Arr::extract($_FILES, array('notification_image'));
+                $form_values = Arr::extract($_POST, ['admin_push_message','push_title','push_sub_title']);
+                $file_values = Arr::extract($_FILES, ['notification_image']);
                 $values      = Arr::merge($form_values, $file_values);
 
 
@@ -1149,8 +1149,8 @@ class Controller_Manageusers extends Controller_Siteadmin
                 //print_r($passenger_list);
                 //exit;
 
-                $export_table_header = array(__('passenger_name'),__('email'),__('passenger_phone'),__('customer_type'),__('wallet_amount'),__('created_date'));
-                $export_table_field_select = array('name','email','phone','customer_type','wallet_amount','created_date');
+                $export_table_header = [__('passenger_name'),__('email'),__('passenger_phone'),__('customer_type'),__('wallet_amount'),__('created_date')];
+                $export_table_field_select = ['name','email','phone','customer_type','wallet_amount','created_date'];
 
                 $heading = 'Passengers wallet';
 
@@ -1172,15 +1172,15 @@ class Controller_Manageusers extends Controller_Siteadmin
         if ($page_no == 0 || $page_no == 'index')
             $page_no = PAGE_NO;
         $offset                     = REC_PER_PAGE * ($page_no - 1);
-        $pag_data                   = Pagination::factory(array(
-            'current_page' => array(
+        $pag_data                   = Pagination::factory([
+            'current_page' => [
                 'source' => 'query_string',
                 'key' => 'page'
-            ),
+            ],
             'items_per_page' => REC_PER_PAGE,
             'total_items' => $count_user_list,
             'view' => 'pagination/punbb'
-        ));
+        ]);
         $all_user_list              = $this->admin_model->all_passenger_wallet_list($keyword,$customer_type,$offset, REC_PER_PAGE);
         $all_companies             = $this->manage_model->get_allcompany('A');
         //****pagination ends here***//

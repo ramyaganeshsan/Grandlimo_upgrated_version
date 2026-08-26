@@ -41,20 +41,20 @@
       $restrict_wallet_amount = $postvalue['restrict_wallet_amount'];
    }
 
-   $members = array();
+   $members = [];
 
    if(!isset($postvalue['members'])) {
       foreach ($groupInfo['members'] as $key => $value) {
          $name = isset($value['name']) ? $value['name'] : "";
          $phone = isset($value['phone']) ? $value['phone'] : "";
-         $newUsers = array(
+         $newUsers = [
             "id" => $value['_id']."--".$name."--".$phone,
             "text" => $name."-".$phone,
-         );
+         ];
          array_push($members,$newUsers);
       }
    } else {
-      $members = isset($postvalue['members']) ? $postvalue['members'] : array();
+      $members = isset($postvalue['members']) ? $postvalue['members'] : [];
    }
    
 ?>

@@ -7,18 +7,18 @@
       public $port = SMTP_PORT;
       public $username = SMTP_USERNAME;
       public $password = SMTP_PASSWORD;
-      public $status = array();
+      public $status = [];
       public $success = 'Mail Sent Successfully';
       
       public $mail;
       public $site = APPLICATION_NAME;
       public $subject = '';
       public $content = '';
-      public $attachment = array();
+      public $attachment = [];
       public $altbody = 'To view the message, please use an HTML compatible email viewer!';
       
       private $senders = SMTP_USERNAME;
-      private $receivers = array();
+      private $receivers = [];
       private $_sysNotification = true;
       private $_emailNotification = true;
       
@@ -44,7 +44,7 @@
           }          
       }
       
-      public function setReceivers($to = array()) {
+      public function setReceivers($to = []) {
           $this->mail->SetFrom($this->senders, $this->site);  
           $this->mail->AddReplyTo($this->senders, $this->site);
           $this->receivers = $to;          

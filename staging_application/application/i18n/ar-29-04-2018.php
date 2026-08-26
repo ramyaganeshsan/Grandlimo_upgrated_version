@@ -1,6 +1,6 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 
-return array(
+return [
 '(or)' => '(او)',
 ':size msg' => 'وحجم الصورة لن تكون أكبر من 2M',
 ':type msg' => 'نوع الصورة يكون  .jpg, .gif, .png',
@@ -2603,4 +2603,4 @@ provided by its licensed drivers who undergo rigorous training and screening to 
 'grand_limo_sales_report'=>'Grand Limo Sales Report',
 'fare_notes'=>'Fare Notes',
 'wallet_limit_exceeded'=>'Pending Payment Exceeded'
-); 
+]; 

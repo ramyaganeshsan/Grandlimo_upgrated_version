@@ -38,12 +38,12 @@ abstract class Controller_Website extends Controller_Config
     public function email_send(array $mail, $type = 'smtp', $htmlneed = true)
     {
         if (is_array($mail)) {
-            if ($this->array_keys_exists($mail, array(
+            if ($this->array_keys_exists($mail, [
                 'to',
                 'from',
                 'subject',
                 'message'
-            ))) {
+            ])) {
                 $to      = $mail['to'];
                 $from    = $mail['from'];
                 $subject = $mail['subject'];
@@ -62,27 +62,27 @@ abstract class Controller_Website extends Controller_Config
                             $username    = $smtp_detail[0]['smtp_username'];
                             $password    = $smtp_detail[0]['smtp_password'];
                             $port        = $smtp_detail[0]['smtp_port'];
-                            $smtp_config = array(
+                            $smtp_config = [
                                 'driver' => 'smtp',
-                                'options' => array(
+                                'options' => [
                                     'hostname' => $host,
                                     'username' => $username,
                                     'password' => $password,
                                     'port' => $port,
                                     'encryption' => 'ssl'
-                                )
-                            );
+                                ]
+                            ];
                         }
-                        $smtp_config1   = array(
+                        $smtp_config1   = [
                             'driver' => 'smtp',
-                            'options' => array(
+                            'options' => [
                                 'hostname' => 'smtp-mail.outlook.com',
                                 'username' => 'info@taximobility.com',
                                 'password' => 'ndotadmin',
                                 'port' => '587',
                                 'encryption' => 'tls'
-                            )
-                        );
+                            ]
+                        ];
                         //mail sending option here
                         $connect_result = Email::connect($smtp_config1);
                         try {
@@ -139,19 +139,19 @@ abstract class Controller_Website extends Controller_Config
      *@purpose of linkdin curl function
      */
     /** SEND GRID FUNCTION **/
-    public function sendgrid($host = array(), $from = "", $receiver = array(), $subject = "", $message = "")
+    public function sendgrid($host = [], $from = "", $receiver = [], $subject = "", $message = "")
     {
         include MODPATH . "/email/swift/lib/swift_required.php";
         include_once MODPATH . "/email/swift/SmtpApiHeader.php";
         $hdr   = new SmtpApiHeader();
-        $times = array();
-        $names = array();
+        $times = [];
+        $names = [];
         $hdr->addFilterSetting('subscriptiontrack', 'enable', 1);
         $hdr->addFilterSetting('twitter', 'enable', 1);
         $hdr->addTo($receiver);
         $hdr->addSubVal('-time-', $times);
         $hdr->addSubVal('-name-', $names);
-        $hdr->setUniqueArgs(array());
+        $hdr->setUniqueArgs([]);
         $sitename = "Sayboard";
         if (!$sitename) {
             $sitename = $_SERVER['HTTP_HOST'];
@@ -160,12 +160,12 @@ abstract class Controller_Website extends Controller_Config
         if (!$fromEmail) {
             $fromEmail = "noreply@" . $_SERVER['HTTP_HOST'];
         }
-        $from      = array(
+        $from      = [
             $fromEmail => $sitename
-        );
-        $to        = array(
+        ];
+        $to        = [
             'defaultdestination@example.com' => 'Personal Name Of Recipient'
-        );
+        ];
         $text      = "test text..";
         $html      = $message;
         $transport = Swift_SmtpTransport::newInstance($host['host'], $host['port']);
@@ -189,14 +189,14 @@ abstract class Controller_Website extends Controller_Config
     public function network_activity($oauth_token, $oauth_token_secret, $endpoint)
     {
         $req_token   = new OAuthConsumer($oauth_token, $oauth_token_secret, 1);
-        $profile_req = OAuthRequest::from_consumer_and_token($this->test_consumer, $req_token, "GET", $endpoint, array());
+        $profile_req = OAuthRequest::from_consumer_and_token($this->test_consumer, $req_token, "GET", $endpoint, []);
         $profile_req->sign_request($this->sig_method, $this->test_consumer, $req_token);
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+        curl_setopt($ch, CURLOPT_HTTPHEADER, [
             $profile_req->to_header()
-        ));
+        ]);
         curl_setopt($ch, CURLOPT_URL, $endpoint);
         $output = curl_exec($ch);
         if (curl_errno($ch)) {

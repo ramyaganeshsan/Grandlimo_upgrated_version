@@ -98,13 +98,13 @@ abstract class Controller_Siteadmin extends Controller_Template
         define("ADMINIMGPATH", URL_BASE . 'public/admin/images/');
         define("CSSADMIN", URL_BASE . 'public/admin/');
         define("ADMINCSSPATH", CSSADMIN . 'css/');
-        $adminstyles  = array(
+        $adminstyles  = [
             ADMINCSSPATH . 'admin_style.css' => 'screen',
             ADMINCSSPATH . 'jquery-ui-1.8.11.custom.css' => 'screen'
-        );
-        $adminscripts = array(
+        ];
+        $adminscripts = [
             SCRIPTPATH . 'jquery-1.4.3.min.js'
-        );
+        ];
         View::bind_global('adminstyles', $adminstyles);
         View::bind_global('adminscripts', $adminscripts);
         //Users Themes
@@ -112,38 +112,38 @@ abstract class Controller_Siteadmin extends Controller_Template
         define("USERVIEW", "themes/" . THEME);
         define("CSSPATH", "public/" . THEME . "css/");
         //DEFINE("EMAILTEMPLATELOGO",URL_BASE.PUBLIC_FOLDER_IMGPATH.'/logo.png'); //IMAGESPATH      
-        $userstyles  = array(
+        $userstyles  = [
             CSSPATH . 'layout.css' => 'screen'
-        ); //CSSPATH.'mobile_slider/skin.css' =>'screen'
-        $userscripts = array(
+        ]; //CSSPATH.'mobile_slider/skin.css' =>'screen'
+        $userscripts = [
             SCRIPTPATH . 'jquery.jcarousel.pack.js',
             SCRIPTPATH . 'jquery-1.4.2.min.js'
-        );
+        ];
         View::bind_global('styles', $userstyles);
         View::bind_global('scripts', $userscripts);
         //For Filter Defining
         //=====================
-        $this->allfilter = array(
+        $this->allfilter = [
            // "C" => "Company Owner",
             "D" => "Taxi Driver",
             "M" => "Company Manager"
            // "S" => "Moderator"
-        );
+        ];
         //For status Defining
         //===================== 
-        $this->allstatus = array(
+        $this->allstatus = [
             "A" => "Active",
             "D" => "Block",
             "T" => "Trash"
-        );
+        ];
         $site_settings = $this->commonmodel->select_site_settings_old();
         //print_r($site_settings);echo $site_settings['app_name'];exit;
         $this->app_name  = $site_settings['app_name'];
         $this->siteemail = $site_settings['email_id'];
         $getcurrencycode = $this->commonmodel->getcurrencycode();
         if (count($getcurrencycode) > 0) {
-            $curr_codes = array();
-            $curr_symbol = array();
+            $curr_codes = [];
+            $curr_symbol = [];
             foreach ($getcurrencycode as $ccode) {
                 $crcode       = $ccode['currency_code'];
                 $curr_codes[] = $crcode;
@@ -270,12 +270,12 @@ abstract class Controller_Siteadmin extends Controller_Template
     public function email_send(array $mail, $type = 'smtp', $htmlneed = true)
     {
         if (is_array($mail)) {
-            if ($this->array_keys_exists($mail, array(
+            if ($this->array_keys_exists($mail, [
                 'to',
                 'from',
                 'subject',
                 'message'
-            ))) {
+            ])) {
                 $to      = $mail['to'];
                 $from    = $mail['from'];
                 $subject = $mail['subject'];
@@ -292,16 +292,16 @@ abstract class Controller_Siteadmin extends Controller_Template
                             $username    = $smtp_detail[0]['smtp_username'];
                             $password    = $smtp_detail[0]['smtp_password'];
                             $port        = $smtp_detail[0]['smtp_port'];
-                            $smtp_config = array(
+                            $smtp_config = [
                                 'driver' => 'smtp',
-                                'options' => array(
+                                'options' => [
                                     'hostname' => $host,
                                     'username' => $username,
                                     'password' => $password,
                                     'port' => $port,
                                     'encryption' => 'ssl'
-                                )
-                            );
+                                ]
+                            ];
                         }
                         //$smtp_config = array('driver' => 'smtp','options' => array('hostname'=>'smtp.gmail.com','username'=>'johnjoeshep@gmail.com','password' =>'test@123','port' => '465','encryption' => 'ssl'));
                         //mail sending option here

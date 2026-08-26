@@ -508,7 +508,7 @@ if($_SESSION['user_type']=="O"){
                                                     <option value=""><?php echo __('select_the_promocode'); ?></option>   
                                                     <?php if(count($promo_res_edit)){
 
-                                                        $promo_arr = array();
+                                                        $promo_arr = [];
                                                         foreach($promo_res_edit as $val){ 
 
                                                             if(!in_array($val['promocode'], $promo_arr))

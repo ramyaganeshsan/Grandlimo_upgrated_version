@@ -2,10 +2,10 @@
 echo html::script('public/ckeditor/ckeditor.js'); 
 
 if(isset($_GET['type']) && $_GET['type'] == 'terms_and_conditions_page'){
-	$cms_page = isset($website_content['terms_and_conditions_page'])?$website_content['terms_and_conditions_page']:array();
+	$cms_page = isset($website_content['terms_and_conditions_page'])?$website_content['terms_and_conditions_page']:[];
 	$type = 'terms_and_conditions_page';
 }elseif ((isset($_GET['type']) && $_GET['type'] == 'about_us_page') ) {
-	$cms_page = isset($website_content['about_us_page'])?$website_content['about_us_page']:array();
+	$cms_page = isset($website_content['about_us_page'])?$website_content['about_us_page']:[];
 	$type = 'about_us_page';
 }
 

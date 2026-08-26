@@ -99,48 +99,48 @@ $export_range_search = isset($srch["range"]) ? $srch["range"] :'';
 // 	),
 // );
 
-$export_range = array(
-	array(
+$export_range = [
+	[
 		"value" => "0-1000",
 		"lable" => "1 - 1000"
-	),
-	array(
+	],
+	[
 		"value" => "1000-2000",
 		"lable" => "1001 - 2000"
-	),
-	array(
+	],
+	[
 		"value" => "2000-3000",
 		"lable" => "2001 - 3000"
-	),
-	array(
+	],
+	[
 		"value" => "3000-4000",
 		"lable" => "3001 - 4000"
-	),
-	array(
+	],
+	[
 		"value" => "4000-5000",
 		"lable" => "4001 - 5000"
-	),
-	array(
+	],
+	[
 		"value" => "5000-6000",
 		"lable" => "5001 - 6000"
-	),
-	array(
+	],
+	[
 		"value" => "6000-7000",
 		"lable" => "6001 - 7000"
-	),
-	array(
+	],
+	[
 		"value" => "7000-8000",
 		"lable" => "7001 - 8000"
-	),
-	array(
+	],
+	[
 		"value" => "8000-9000",
 		"lable" => "8001 - 9000"
-	),
-	array(
+	],
+	[
 		"value" => "9000-10000",
 		"lable" => "9001 - 10000"
-	)
-);
+	]
+];
 
 /* End */
 
@@ -209,7 +209,7 @@ if($total_company>0)
                         </td>
                         <input type="hidden" name="status"  maxlength="256" id="keyword" value="1" />
                         <?php
-                        $recharge_type_array = array('1'=>__('manual_pay'),'2'=>__('credit_pay'),'3'=>__('pending_pay'),'4'=> __('trip_payment'),'5'=> __('trip_pending_payment'),'6'=>__('pending_repayment'),'7'=>__('dispatcher_alteration'),'8'=>__('knet_payment'));
+                        $recharge_type_array = ['1'=>__('manual_pay'),'2'=>__('credit_pay'),'3'=>__('pending_pay'),'4'=> __('trip_payment'),'5'=> __('trip_pending_payment'),'6'=>__('pending_repayment'),'7'=>__('dispatcher_alteration'),'8'=>__('knet_payment')];
                          ?>
 
                         <!-- Sasi -->

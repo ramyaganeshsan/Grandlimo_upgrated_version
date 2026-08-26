@@ -63,11 +63,11 @@ facebook_secretkey,twitter_key,twitter_secretkey,facebook_share,twitter_share,no
             $result['masked_card'] = $masked_card;
             if ($devicetoken != "") {
                 //echo $company_id;
-                $update_array = array(
+                $update_array = [
                     "device_token" => $devicetoken,
                     "device_id" => $deviceid,
                     "device_type" => $devicetype
-                );
+                ];
                 if ($company_id == '') {
                     $update_device_token_result = DB::update(PASSENGERS)->set($update_array)->where('phone', '=', $phone)->where('passenger_cid', '=', '0')->execute();
                 } else {
@@ -76,7 +76,7 @@ facebook_secretkey,twitter_key,twitter_secretkey,facebook_share,twitter_share,no
             }
             return $result;
         } else {
-            return array();
+            return [];
         }
     }
     // Check Whether Passenger Email is Already Exist or Not
@@ -199,11 +199,11 @@ facebook_secretkey,twitter_key,twitter_secretkey,facebook_share,twitter_share,no
         if ($result) {
             $email = DB::select()->from(PASSENGERS)->where('email', '=', $val['email'])->execute()->as_array();
             if ($devicetoken != "") {
-                $update_array               = array(
+                $update_array               = [
                     "device_token" => $devicetoken,
                     "device_id" => $deviceid,
                     "device_type" => $devicetype
-                );
+                ];
                 /*if($company_id != '')
                 {
                 $update_device_token_result = DB::update(PASSENGERS)
@@ -259,7 +259,7 @@ facebook_secretkey,twitter_key,twitter_secretkey,facebook_share,twitter_share,no
                 $current_time = date('Y-m-d H:i:s');
             }
             $current_time    = date('Y-m-d H:i:s');
-            $fieldname_array = array(
+            $fieldname_array = [
                 'name',
                 'lastname',
                 'email',
@@ -279,8 +279,8 @@ facebook_secretkey,twitter_key,twitter_secretkey,facebook_share,twitter_share,no
                 'created_date',
                 'updated_date',
                 'passenger_cid'
-            );
-            $values_array    = array(
+            ];
+            $values_array    = [
                 $fname,
                 $lname,
                 $email,
@@ -300,14 +300,14 @@ facebook_secretkey,twitter_key,twitter_secretkey,facebook_share,twitter_share,no
                 $current_time,
                 $current_time,
                 $company_id
-            );
+            ];
             $result          = DB::insert(PASSENGERS, $fieldname_array)->values($values_array)->execute();
             if ($devicetoken != "") {
-                $update_array               = array(
+                $update_array               = [
                     "device_token" => $devicetoken,
                     "device_id" => $device_id,
                     "device_type" => $devicetype
-                );
+                ];
                 $update_device_token_result = DB::update(PASSENGERS)->set($update_array)->where('email', '=', $email)->execute();
             }
             return 2;
@@ -348,12 +348,12 @@ facebook_secretkey,twitter_key,twitter_secretkey,facebook_share,twitter_share,no
                 }
                 //echo $card_count;			
                 if ($devicetoken != "") {
-                    $update_array = array(
+                    $update_array = [
                         "device_token" => $devicetoken,
                         "device_id" => $device_id,
                         "device_type" => $devicetype,
                         "login_from" => 3
-                    );
+                    ];
                     if ($company_id != '') {
                         $update_device_token_result = DB::update(PASSENGERS)->set($update_array)->where('email', '=', $email)->where('passenger_cid', '=', $company_id)->execute();
                     } else {
@@ -382,9 +382,9 @@ facebook_secretkey,twitter_key,twitter_secretkey,facebook_share,twitter_share,no
     public function update_passenger_mobile($email = "", $mobile = "", $creditcard_no = "", $creditcard_cvv = "", $expdatemonth = "", $expdateyear = "", $company_id = "")
     {
         try {
-            $update_array = array(
+            $update_array = [
                 "phone" => $mobile
-            );
+            ];
             if ($company_id != '') {
                 $result = DB::update(PASSENGERS)->set($update_array)->where('email', '=', $email)->where('passenger_cid', '=', $company_id)->execute();
             } else {
@@ -481,7 +481,7 @@ facebook_secretkey,twitter_key,twitter_secretkey,facebook_share,twitter_share,no
             }
         }
         //'pickup_latitude','pickup_longitude','drop_latitude','drop_longitude'
-        $fieldname_array            = array(
+        $fieldname_array            = [
             'passengers_id',
             'driver_id',
             'company_id',
@@ -507,9 +507,9 @@ facebook_secretkey,twitter_key,twitter_secretkey,facebook_share,twitter_share,no
             'company_tax',
             'bookingtype',
             'bookby'
-        );
+        ];
         //'pickup','drop','no_of_passengers','pickup_time','driver_id','roundtrip','taxi_id','passenger_id'
-        $values_array               = array(
+        $values_array               = [
             commonfunction::real_escape_string($val['passenger_id']),
             commonfunction::real_escape_string($val['driver_id']),
             $companyid,
@@ -535,14 +535,14 @@ facebook_secretkey,twitter_key,twitter_secretkey,facebook_share,twitter_share,no
             $company_tax,
             '1',
             '1'
-        );
+        ];
         $driver_availability_result = $this->get_driver_availability(commonfunction::real_escape_string($val['driver_id']), $update_time);
         if (count($driver_availability_result) == 0) {
             $result = DB::insert(PASSENGERS_LOG, $fieldname_array)->values($values_array)->execute();
             if ($sub_logid == '' || $sub_logid == '0') {
-                $update_pass_logid = DB::update(PASSENGERS_LOG)->set(array(
+                $update_pass_logid = DB::update(PASSENGERS_LOG)->set([
                     'sub_logid' => $result[0]
-                ))->where('passengers_log_id', '=', $result[0])->execute();
+                ])->where('passengers_log_id', '=', $result[0])->execute();
             }
             if ($result) {
                 return $result[0];
@@ -562,9 +562,9 @@ facebook_secretkey,twitter_key,twitter_secretkey,facebook_share,twitter_share,no
     /** Mark as favourite Trip**/
     public function set_markfav_tripdetails($pass_log_id, $mark_status)
     {
-        $update_result = DB::update(PASSENGERS_LOG)->set(array(
+        $update_result = DB::update(PASSENGERS_LOG)->set([
             'favourite_trip' => $mark_status
-        ))->where('passengers_log_id', '=', $pass_log_id)->execute();
+        ])->where('passengers_log_id', '=', $pass_log_id)->execute();
         return $update_result;
     }
     /** Driver availability **/
@@ -651,21 +651,21 @@ facebook_secretkey,twitter_key,twitter_secretkey,facebook_share,twitter_share,no
                         ->execute();
                         }	
                         */
-                        $result = DB::update($table)->set(array(
+                        $result = DB::update($table)->set([
                             'password' => $array['new_password'],
                             'org_password' => $array['org_new_password']
-                        ))->where('id', '=', $array['id'])->execute();
+                        ])->where('id', '=', $array['id'])->execute();
                     } else {
                         if ($company_id != '') {
-                            $result = DB::update($table)->set(array(
+                            $result = DB::update($table)->set([
                                 'password' => $array['new_password'],
                                 'org_password' => $array['org_new_password']
-                            ))->where('id', '=', $array['id'])->where('passenger_cid', '=', $company_id)->execute();
+                            ])->where('id', '=', $array['id'])->where('passenger_cid', '=', $company_id)->execute();
                         } else {
-                            $result = DB::update($table)->set(array(
+                            $result = DB::update($table)->set([
                                 'password' => $array['new_password'],
                                 'org_password' => $array['org_new_password']
-                            ))->where('id', '=', $array['id'])->where('passenger_cid', '=', '0')->execute();
+                            ])->where('id', '=', $array['id'])->where('passenger_cid', '=', '0')->execute();
                         }
                         //$result = DB::update($table)->set(array('password' => $array['new_password'],'org_password'=>$array['org_new_password']))->where('id', '=', $array['id'])->execute();
                     }
@@ -681,10 +681,10 @@ facebook_secretkey,twitter_key,twitter_secretkey,facebook_share,twitter_share,no
     //Save Comments and Ratings from Passenger
     public function savecomments($log_id = "", $ratings = "", $comments = "")
     {
-        $update_result = DB::update(PASSENGERS_LOG)->set(array(
+        $update_result = DB::update(PASSENGERS_LOG)->set([
             'comments' => $comments,
             'rating' => $ratings
-        ))->where('passengers_log_id', '=', $log_id)->execute();
+        ])->where('passengers_log_id', '=', $log_id)->execute();
         return $update_result;
     }
     //Common Function for updation
@@ -779,7 +779,7 @@ facebook_secretkey,twitter_key,twitter_secretkey,facebook_share,twitter_share,no
         }
         //Acceptred Status
         if ($status == 'A') {
-            $sql_query = array(
+            $sql_query = [
                 'travel_status' => $travel_status,
                 'driver_reply' => $status,
                 'driver_id' => $driver_id,
@@ -787,11 +787,11 @@ facebook_secretkey,twitter_key,twitter_secretkey,facebook_share,twitter_share,no
                 'company_id' => $company_id,
                 'time_to_reach_passen' => $field,
                 'msg_status' => 'R'
-            );
+            ];
         }
         //Rejected Status and Adding the Driver Comments 
         else {
-            $sql_query = array(
+            $sql_query = [
                 'travel_status' => $travel_status,
                 'driver_reply' => $status,
                 'driver_id' => $driver_id,
@@ -799,7 +799,7 @@ facebook_secretkey,twitter_key,twitter_secretkey,facebook_share,twitter_share,no
                 'company_id' => $company_id,
                 'driver_comments' => $field,
                 'msg_status' => 'R'
-            );
+            ];
         }
         if ($driver_reply == '') {
             if ($company_id != '') {
@@ -820,12 +820,12 @@ facebook_secretkey,twitter_key,twitter_secretkey,facebook_share,twitter_share,no
         } else {
             // Driver cancel the drip when pick up
             if ($flag == 1) {
-                $sql_query = array(
+                $sql_query = [
                     'travel_status' => '0',
                     'driver_reply' => $status,
                     'driver_comments' => $field,
                     'msg_status' => 'R'
-                );
+                ];
                 if ($company_id != '') {
                     $update_result = DB::update(PASSENGERS_LOG)->set($sql_query)->where('passengers_log_id', '=', $id)->where('company_id', '=', $company_id)->execute();
                 } else {
@@ -996,15 +996,15 @@ facebook_secretkey,twitter_key,twitter_secretkey,facebook_share,twitter_share,no
             }
         }
         if ($company_id != '') {
-            $result = DB::select(PASSENGERS . '.name', PASSENGERS . '.phone', PASSENGERS_LOG . '.passengers_log_id', PASSENGERS_LOG . '.pickup_time', array(
+            $result = DB::select(PASSENGERS . '.name', PASSENGERS . '.phone', PASSENGERS_LOG . '.passengers_log_id', PASSENGERS_LOG . '.pickup_time', [
                 PASSENGERS_LOG . '.current_location',
                 'pickup_location'
-            ), PASSENGERS_LOG . '.drop_location')->from(PASSENGERS_LOG)->join(PASSENGERS)->on(PASSENGERS_LOG . '.passengers_id', '=', PASSENGERS . '.id')->where(PASSENGERS_LOG . '.driver_id', '=', $id)->where(PASSENGERS_LOG . '.msg_status', '=', $msg_status)->where(PASSENGERS_LOG . '.driver_reply', '=', $driver_reply)->where(PASSENGERS_LOG . '.company_id', '=', $company_id)->limit($start)->offset($limit)->order_by(PASSENGERS . '.id', 'ASC')->where(PASSENGERS_LOG . '.travel_status', '=', $travel_status)->where(PASSENGERS_LOG . '.pickup_time', '>=', $start_time)->where(PASSENGERS_LOG . '.company_id', '=', $company_id)->as_object()->execute();
+            ], PASSENGERS_LOG . '.drop_location')->from(PASSENGERS_LOG)->join(PASSENGERS)->on(PASSENGERS_LOG . '.passengers_id', '=', PASSENGERS . '.id')->where(PASSENGERS_LOG . '.driver_id', '=', $id)->where(PASSENGERS_LOG . '.msg_status', '=', $msg_status)->where(PASSENGERS_LOG . '.driver_reply', '=', $driver_reply)->where(PASSENGERS_LOG . '.company_id', '=', $company_id)->limit($start)->offset($limit)->order_by(PASSENGERS . '.id', 'ASC')->where(PASSENGERS_LOG . '.travel_status', '=', $travel_status)->where(PASSENGERS_LOG . '.pickup_time', '>=', $start_time)->where(PASSENGERS_LOG . '.company_id', '=', $company_id)->as_object()->execute();
         } else {
-            $result = DB::select(PASSENGERS . '.name', PASSENGERS . '.phone', PASSENGERS_LOG . '.passengers_log_id', PASSENGERS_LOG . '.pickup_time', array(
+            $result = DB::select(PASSENGERS . '.name', PASSENGERS . '.phone', PASSENGERS_LOG . '.passengers_log_id', PASSENGERS_LOG . '.pickup_time', [
                 PASSENGERS_LOG . '.current_location',
                 'pickup_location'
-            ), PASSENGERS_LOG . '.drop_location')->from(PASSENGERS_LOG)->join(PASSENGERS)->on(PASSENGERS_LOG . '.passengers_id', '=', PASSENGERS . '.id')->where(PASSENGERS_LOG . '.driver_id', '=', $id)->where(PASSENGERS_LOG . '.msg_status', '=', $msg_status)->where(PASSENGERS_LOG . '.driver_reply', '=', $driver_reply)->limit($start)->offset($limit)->order_by(PASSENGERS . '.id', 'ASC')->where(PASSENGERS_LOG . '.travel_status', '=', $travel_status)->where(PASSENGERS_LOG . '.pickup_time', '>=', $start_time)->as_object()->execute();
+            ], PASSENGERS_LOG . '.drop_location')->from(PASSENGERS_LOG)->join(PASSENGERS)->on(PASSENGERS_LOG . '.passengers_id', '=', PASSENGERS . '.id')->where(PASSENGERS_LOG . '.driver_id', '=', $id)->where(PASSENGERS_LOG . '.msg_status', '=', $msg_status)->where(PASSENGERS_LOG . '.driver_reply', '=', $driver_reply)->limit($start)->offset($limit)->order_by(PASSENGERS . '.id', 'ASC')->where(PASSENGERS_LOG . '.travel_status', '=', $travel_status)->where(PASSENGERS_LOG . '.pickup_time', '>=', $start_time)->as_object()->execute();
         }
         //print_r($result);           exit;
         return $result;
@@ -1040,18 +1040,18 @@ facebook_secretkey,twitter_key,twitter_secretkey,facebook_share,twitter_share,no
             }
         }
         if ($company_id != '') {
-            $result = DB::select(PASSENGERS . '.name', PASSENGERS_LOG . '.passengers_log_id', array(
+            $result = DB::select(PASSENGERS . '.name', PASSENGERS_LOG . '.passengers_log_id', [
                 PASSENGERS_LOG . '.current_location',
                 'pickup_location'
-            ), PASSENGERS_LOG . '.drop_location', PASSENGERS_LOG . '.pickup_longitude', PASSENGERS_LOG . '.pickup_latitude', PASSENGERS_LOG . '.drop_latitude', PASSENGERS_LOG . '.drop_longitude', PASSENGERS_LOG . '.travel_status')->from(PASSENGERS_LOG)->join(PASSENGERS)->on(PASSENGERS_LOG . '.passengers_id', '=', PASSENGERS . '.id')->where(PASSENGERS_LOG . '.driver_id', '=', $id)->where(PASSENGERS_LOG . '.msg_status', '=', $msg_status)->where(PASSENGERS_LOG . '.driver_reply', '=', $driver_reply)->where(PASSENGERS_LOG . '.company_id', '=', $company_id) ///$this->currentdate
+            ], PASSENGERS_LOG . '.drop_location', PASSENGERS_LOG . '.pickup_longitude', PASSENGERS_LOG . '.pickup_latitude', PASSENGERS_LOG . '.drop_latitude', PASSENGERS_LOG . '.drop_longitude', PASSENGERS_LOG . '.travel_status')->from(PASSENGERS_LOG)->join(PASSENGERS)->on(PASSENGERS_LOG . '.passengers_id', '=', PASSENGERS . '.id')->where(PASSENGERS_LOG . '.driver_id', '=', $id)->where(PASSENGERS_LOG . '.msg_status', '=', $msg_status)->where(PASSENGERS_LOG . '.driver_reply', '=', $driver_reply)->where(PASSENGERS_LOG . '.company_id', '=', $company_id) ///$this->currentdate
                 ->limit(1)->offset(0)->order_by(PASSENGERS_LOG . '.pickup_time', 'ASC')
             //->where(PASSENGERS_LOG.'.pickup_time','=',$this->currentdate)
                 ->where(PASSENGERS_LOG . '.travel_status', '=', $travel_status)->where(PASSENGERS_LOG . '.pickup_time', '>=', $start_time)->where(PASSENGERS_LOG . '.company_id', '=', $company_id)->as_object()->execute();
         } else {
-            $result = DB::select(PASSENGERS . '.name', PASSENGERS_LOG . '.passengers_log_id', array(
+            $result = DB::select(PASSENGERS . '.name', PASSENGERS_LOG . '.passengers_log_id', [
                 PASSENGERS_LOG . '.current_location',
                 'pickup_location'
-            ), PASSENGERS_LOG . '.drop_location', PASSENGERS_LOG . '.pickup_longitude', PASSENGERS_LOG . '.pickup_latitude', PASSENGERS_LOG . '.drop_latitude', PASSENGERS_LOG . '.drop_longitude', PASSENGERS_LOG . '.travel_status')->from(PASSENGERS_LOG)->join(PASSENGERS)->on(PASSENGERS_LOG . '.passengers_id', '=', PASSENGERS . '.id')->where(PASSENGERS_LOG . '.driver_id', '=', $id)->where(PASSENGERS_LOG . '.msg_status', '=', $msg_status)->where(PASSENGERS_LOG . '.driver_reply', '=', $driver_reply)->limit(1)->offset(0)->order_by(PASSENGERS_LOG . '.pickup_time', 'ASC')->where(PASSENGERS_LOG . '.pickup_time', '>=', $start_time)->where(PASSENGERS_LOG . '.travel_status', '=', $travel_status)->as_object()->execute();
+            ], PASSENGERS_LOG . '.drop_location', PASSENGERS_LOG . '.pickup_longitude', PASSENGERS_LOG . '.pickup_latitude', PASSENGERS_LOG . '.drop_latitude', PASSENGERS_LOG . '.drop_longitude', PASSENGERS_LOG . '.travel_status')->from(PASSENGERS_LOG)->join(PASSENGERS)->on(PASSENGERS_LOG . '.passengers_id', '=', PASSENGERS . '.id')->where(PASSENGERS_LOG . '.driver_id', '=', $id)->where(PASSENGERS_LOG . '.msg_status', '=', $msg_status)->where(PASSENGERS_LOG . '.driver_reply', '=', $driver_reply)->limit(1)->offset(0)->order_by(PASSENGERS_LOG . '.pickup_time', 'ASC')->where(PASSENGERS_LOG . '.pickup_time', '>=', $start_time)->where(PASSENGERS_LOG . '.travel_status', '=', $travel_status)->as_object()->execute();
         }
         //print_r($result);
         return $result;
@@ -1060,15 +1060,15 @@ facebook_secretkey,twitter_key,twitter_secretkey,facebook_share,twitter_share,no
     public function get_driver_logs_completed_transaction($id, $msg_status, $driver_reply = null, $travel_status = null, $company_id = '', $start = null, $limit = null)
     {
         if ($company_id != '') {
-            $result = DB::select(PASSENGERS . '.name', PASSENGERS_LOG . '.passengers_log_id', array(
+            $result = DB::select(PASSENGERS . '.name', PASSENGERS_LOG . '.passengers_log_id', [
                 PASSENGERS_LOG . '.current_location',
                 'pickup_location'
-            ), PASSENGERS_LOG . '.drop_location', PASSENGERS_LOG . '.rating')->from(PASSENGERS_LOG)->join(PASSENGERS)->on(PASSENGERS_LOG . '.passengers_id', '=', PASSENGERS . '.id')->join(TRANS, 'LEFT')->on(PASSENGERS_LOG . '.passengers_log_id', '=', TRANS . '.passengers_log_id')->where(PASSENGERS_LOG . '.driver_id', '=', $id)->where(PASSENGERS_LOG . '.msg_status', '=', $msg_status)->where(PASSENGERS_LOG . '.driver_reply', '=', $driver_reply)->where(PASSENGERS_LOG . '.company_id', '=', $company_id)->limit($start)->offset($limit)->order_by(PASSENGERS_LOG . '.passengers_log_id', 'desc')->where(PASSENGERS_LOG . '.travel_status', '=', $travel_status)->as_object()->execute();
+            ], PASSENGERS_LOG . '.drop_location', PASSENGERS_LOG . '.rating')->from(PASSENGERS_LOG)->join(PASSENGERS)->on(PASSENGERS_LOG . '.passengers_id', '=', PASSENGERS . '.id')->join(TRANS, 'LEFT')->on(PASSENGERS_LOG . '.passengers_log_id', '=', TRANS . '.passengers_log_id')->where(PASSENGERS_LOG . '.driver_id', '=', $id)->where(PASSENGERS_LOG . '.msg_status', '=', $msg_status)->where(PASSENGERS_LOG . '.driver_reply', '=', $driver_reply)->where(PASSENGERS_LOG . '.company_id', '=', $company_id)->limit($start)->offset($limit)->order_by(PASSENGERS_LOG . '.passengers_log_id', 'desc')->where(PASSENGERS_LOG . '.travel_status', '=', $travel_status)->as_object()->execute();
         } else {
-            $result = DB::select(PASSENGERS . '.name', PASSENGERS_LOG . '.passengers_log_id', array(
+            $result = DB::select(PASSENGERS . '.name', PASSENGERS_LOG . '.passengers_log_id', [
                 PASSENGERS_LOG . '.current_location',
                 'pickup_location'
-            ), PASSENGERS_LOG . '.drop_location', PASSENGERS_LOG . '.rating')->from(PASSENGERS_LOG)->join(PASSENGERS)->on(PASSENGERS_LOG . '.passengers_id', '=', PASSENGERS . '.id')->join(TRANS, 'LEFT')->on(PASSENGERS_LOG . '.passengers_log_id', '=', TRANS . '.passengers_log_id')->where(PASSENGERS_LOG . '.driver_id', '=', $id)->where(PASSENGERS_LOG . '.msg_status', '=', $msg_status)->where(PASSENGERS_LOG . '.driver_reply', '=', $driver_reply)->limit($start)->offset($limit)->order_by(PASSENGERS_LOG . '.passengers_log_id', 'desc')->where(PASSENGERS_LOG . '.travel_status', '=', $travel_status)->as_object()->execute();
+            ], PASSENGERS_LOG . '.drop_location', PASSENGERS_LOG . '.rating')->from(PASSENGERS_LOG)->join(PASSENGERS)->on(PASSENGERS_LOG . '.passengers_id', '=', PASSENGERS . '.id')->join(TRANS, 'LEFT')->on(PASSENGERS_LOG . '.passengers_log_id', '=', TRANS . '.passengers_log_id')->where(PASSENGERS_LOG . '.driver_id', '=', $id)->where(PASSENGERS_LOG . '.msg_status', '=', $msg_status)->where(PASSENGERS_LOG . '.driver_reply', '=', $driver_reply)->limit($start)->offset($limit)->order_by(PASSENGERS_LOG . '.passengers_log_id', 'desc')->where(PASSENGERS_LOG . '.travel_status', '=', $travel_status)->as_object()->execute();
         }
         //print_r($result);           exit;
         return $result;
@@ -1141,9 +1141,9 @@ WHERE  " . PASSENGERS_LOG . ".`passengers_log_id` =  '$passengerlog_id' $company
         } else {
             $break_status = 'F';
         }
-        $sql_query = array(
+        $sql_query = [
             'status' => $break_status
-        );
+        ];
         //print_r($driver_id);
         DB::update(DRIVER)->set($sql_query)->where('driver_id', '=', $driver_id)->execute();
     }
@@ -1207,15 +1207,15 @@ WHERE  " . PASSENGERS_LOG . ".`passengers_log_id` =  '$passengerlog_id' $company
         //print_r($geoloc);
         $json   = json_decode($geoloc);
         if ($json->status == 'OK') {
-            return array(
+            return [
                 $json->results[0]->geometry->location->lat,
                 $json->results[0]->geometry->location->lng
-            );
+            ];
         } else {
-            return array(
+            return [
                 11.621354,
                 76.14253698
-            );
+            ];
         }
     }
     //Getting the latitude and Longitude with City
@@ -1246,19 +1246,19 @@ WHERE  " . PASSENGERS_LOG . ".`passengers_log_id` =  '$passengerlog_id' $company
                     continue;
                 }
             }
-            $response = array(
+            $response = [
                 $json->results[0]->geometry->location->lat,
                 $json->results[0]->geometry->location->lng,
                 $city
-            ); //level_1 administrative data not exist
+            ]; //level_1 administrative data not exist
         } else {
             $cityresult = DB::select()->from(CITY)->where('city_id', '=', DEFAULT_CITY)->where('city_status', '=', 'A')->order_by('city_name', 'ASC')->execute()->as_array();
             $city       = $cityresult[0]['city_name'];
-            $response   = array(
+            $response   = [
                 LOCATION_LATI,
                 LOCATION_LONG,
                 $city
-            ); //level_1 administrative data not exist
+            ]; //level_1 administrative data not exist
         }
         return $response;
         //}		
@@ -1405,17 +1405,17 @@ WHERE  " . PASSENGERS_LOG . ".`passengers_log_id` =  '$passengerlog_id' $company
     public function forgot_password($array, $password)
     {
         if ($array['user_type'] == 'P') {
-            $result = DB::update(PASSENGERS)->set(array(
+            $result = DB::update(PASSENGERS)->set([
                 'password' => Html::chars(md5($password)),
                 'org_password' => $password
-            ))->where('phone', '=', $array['phone_no'])->execute();
+            ])->where('phone', '=', $array['phone_no'])->execute();
             $result = DB::select()->from(PASSENGERS)->where('phone', '=', $array['phone_no'])->execute()->as_array();
             return $result;
         } else {
-            $result = DB::update(PEOPLE)->set(array(
+            $result = DB::update(PEOPLE)->set([
                 'password' => Html::chars(md5($password)),
                 'org_password' => $password
-            ))->where('phone', '=', $array['phone_no'])->execute();
+            ])->where('phone', '=', $array['phone_no'])->execute();
             $result = DB::select()->from(PEOPLE)->where('phone', '=', $array['phone_no'])->execute()->as_array();
             return $result;
         }
@@ -1644,31 +1644,31 @@ company_model_fare.waiting_time,company_model_fare.min_km,company_model_fare.bel
     }
    public function passenger_transdetails($log_id)
     {		
-		$args = array(
-			array('$lookup' => array(
+		$args = [
+			['$lookup' => [
 									'from' => MDB_PASSENGERS,
 									'localField' => 'passengers_id',
 									'foreignField' => '_id',
 									'as' => 'passengers',
-								)),
-			array('$unwind' => '$passengers'),
-			array('$lookup' => array(
+								]],
+			['$unwind' => '$passengers'],
+			['$lookup' => [
 									'from' => MDB_TRANSACTION,
 									'localField' => '_id',
 									'foreignField' => 'passengers_log_id',
 									'as' => 'trans',
-								)),
-			array('$unwind' => '$trans'),
-			array('$lookup' => array(
+								]],
+			['$unwind' => '$trans'],
+			['$lookup' => [
 									'from' => MDB_PEOPLE,
 									'localField' => 'driver_id',
 									'foreignField' => '_id',
 									'as' => 'people',
-								)),
-			array('$unwind' => '$people'),
-			array('$match' => array('_id' => (int)$log_id)),
-			array('$project' =>
-				array('passengers_log_id' => '$_id',
+								]],
+			['$unwind' => '$people'],
+			['$match' => ['_id' => (int)$log_id]],
+			['$project' =>
+				['passengers_log_id' => '$_id',
 					'booking_key' => '$booking_key',
 					'passengers_id' => '$passengers_id',
 					'driver_id' => '$driver_id',
@@ -1698,7 +1698,7 @@ company_model_fare.waiting_time,company_model_fare.min_km,company_model_fare.bel
 					'faretype' => '$faretype',
 					'bookingtype' => '$bookingtype',
 					'driver_comments' => '$driver_comments',
-					'travel_time' => array('$subtract' => array('$drop_time','$actual_pickup_time')),
+					'travel_time' => ['$subtract' => ['$drop_time','$actual_pickup_time']],
 					'used_wallet_amount' => '$used_wallet_amount',
 					'job_referral' => '$trans._id',
 					'distance' => '$trans.distance',
@@ -1729,16 +1729,16 @@ company_model_fare.waiting_time,company_model_fare.min_km,company_model_fare.bel
 					'passenger_name' => '$people.name',
 					'passenger_email' => '$people.email',
 					'driver_name' => '$passengers.name',
-					'driver_email' => '$passengers.email'  ))
-		);
+					'driver_email' => '$passengers.email'  ]]
+		];
 		$result = $this->mongo_db->aggregate(MDB_PASSENGERS_LOGS,$args);
-		return (!empty($result['result']) ? $result['result'] : array());
+		return (!empty($result['result']) ? $result['result'] : []);
     }
     public function paypal_details()
     {
 		
 		$res = $this->mongo_db->find_one(MDB_PAYMENT_GATEWAYS);
-        $result = (!empty($res)?$res:array());
+        $result = (!empty($res)?$res:[]);
 		return $result;
        
     }
@@ -1772,7 +1772,7 @@ company_model_fare.waiting_time,company_model_fare.min_km,company_model_fare.bel
         $updatequery  = " UPDATE " . PEOPLE . " SET account_balance=account_balance+$company_amt WHERE user_type = 'C' and company_id=" . $details['company_id'];
         $updateresult = Db::query(Database::UPDATE, $updatequery)->execute();
         $current_time = date('Y-m-d H:i:s');
-        $result       = DB::insert(TRANS, array(
+        $result       = DB::insert(TRANS, [
             'passengers_log_id',
             'distance',
             'actual_distance',
@@ -1800,7 +1800,7 @@ company_model_fare.waiting_time,company_model_fare.min_km,company_model_fare.bel
             'trans_packtype',
             'nightfare_applicable',
             'nightfare'
-        ))->values(array(
+        ])->values([
             $details['passengers_log_id'],
             $details['distance'],
             $details['actual_distance'],
@@ -1828,7 +1828,7 @@ company_model_fare.waiting_time,company_model_fare.min_km,company_model_fare.bel
             $check_package_type,
             $details['nightfare_applicable'],
             $details['nightfare']
-        ))->execute();
+        ])->execute();
         return $result;
     }
     public function cancel_triptransact_details($details, $cancellation_nfree)
@@ -1902,11 +1902,11 @@ company_model_fare.waiting_time,company_model_fare.min_km,company_model_fare.bel
             $updateresult = Db::query(Database::UPDATE, $updatequery)->execute();
         }*/
         
-        $update_array = array(
+        $update_array = [
 			"comments" => $details['remarks'],
 			"travel_status" => 4
-		);
-		$res = $this->mongo_db->update(MDB_PASSENGERS_LOGS,array('_id'=>(int)$details['passenger_log_id']),array('$set'=>$update_array),array('upsert'=>true));
+		];
+		$res = $this->mongo_db->update(MDB_PASSENGERS_LOGS,['_id'=>(int)$details['passenger_log_id']],['$set'=>$update_array],['upsert'=>true]);
 		return (empty($res['err']))?1:$res['err_msg'];
     }
     public function check_tranc($log_id='', $flag='')
@@ -1925,28 +1925,28 @@ company_model_fare.waiting_time,company_model_fare.min_km,company_model_fare.bel
         }
         */
         
-        $match = array('transaction.passengers_log_id'=> (int)$log_id);
+        $match = ['transaction.passengers_log_id'=> (int)$log_id];
         if($flag == 1){
 			$match['travel_status'] = 1;
 		}
-		$arguments = array(array('$lookup' => array(
+		$arguments = [['$lookup' => [
 					'from'=>MDB_TRANSACTION,
 					'localField'=> "_id",
 					'foreignField' => "passengers_log_id",
-					'as'=> "transaction")),
-			array('$unwind' => '$transaction'),
-			array('$match' => $match),
-			array('$project' => array(
+					'as'=> "transaction"]],
+			['$unwind' => '$transaction'],
+			['$match' => $match],
+			['$project' => [
 					'travel_status'=>'$travel_status',
 					'driver_id' =>'$driver_id',
-					'id' => '$transaction._id'))							
-		);
+					'id' => '$transaction._id']]							
+		];
 		$result = $this->mongo_db->aggregate(MDB_PASSENGERS_LOGS,$arguments);
 		//print_r($result);exit;
 		if ($flag == 1) {
-            return (!empty($result['result']) ? count($result['result']) : array());		
+            return (!empty($result['result']) ? count($result['result']) : []);		
         } else {
-            return (!empty($result['result']) ? $result['result'] : array());		
+            return (!empty($result['result']) ? $result['result'] : []);		
         }	
     }
     public function check_travelstatus($log_id)
@@ -2037,20 +2037,20 @@ company_model_fare.waiting_time,company_model_fare.min_km,company_model_fare.bel
                 //echo count($trip_check);
                 if (count($trip_check) == 0) {
                     //$location_record = substr($location_record, 0, -1);		
-                    $fieldname_array = array(
+                    $fieldname_array = [
                         'driver_id',
                         'trip_id',
                         'active_record',
                         'status',
                         'createdate'
-                    );
-                    $values_array    = array(
+                    ];
+                    $values_array    = [
                         $driver_id,
                         $trip_id,
                         $location_record,
                         $status,
                         $current_time
-                    );
+                    ];
                     if ($trip_id != 0) {
                         $result = DB::insert('driver_location_history', $fieldname_array)->values($values_array)->execute();
                         if ($result) {
@@ -2063,8 +2063,8 @@ company_model_fare.waiting_time,company_model_fare.min_km,company_model_fare.bel
                     }
                 } else {
                     // We updated driver location waypoits one by one(lat,lon)
-                    $pickup = array();
-                    $drop   = array();
+                    $pickup = [];
+                    $drop   = [];
                     //$location_record = substr($location_record, 0, -1);
                     //print_r($trip_check[0]['distance']);echo '<br>';//exit;
                     if (($trip_check[0]['active_record'] != "") && ($trip_check[0]['active_record'] != '[]')) {
@@ -2172,7 +2172,7 @@ company_model_fare.waiting_time,company_model_fare.min_km,company_model_fare.bel
     //Update the Journey Status with drop location
     public function update_journey_statuswith_drop($id, $msg_status, $driver_reply, $travel_status, $drop_latitude, $drop_longitude, $drop_location, $drop_time)
     {
-        $sql_query = array(
+        $sql_query = [
             'msg_status' => $msg_status,
             'driver_reply' => $driver_reply,
             'travel_status' => $travel_status,
@@ -2180,17 +2180,17 @@ company_model_fare.waiting_time,company_model_fare.min_km,company_model_fare.bel
             'drop_longitude' => $drop_longitude,
             'drop_location' => $drop_location,
             'drop_time' => $drop_time
-        );
+        ];
         DB::update(PASSENGERS_LOG)->set($sql_query)->where('passengers_log_id', '=', $id)->execute();
     }
     //Update the Journey Status with out drop location
     public function update_journey_status($id, $msg_status, $driver_reply, $travel_status)
     {
-        $sql_query = array(
+        $sql_query = [
             'msg_status' => $msg_status,
             'driver_reply' => $driver_reply,
             'travel_status' => $travel_status
-        );
+        ];
         DB::update(PASSENGERS_LOG)->set($sql_query)->where('passengers_log_id', '=', $id)->execute();
     }
     //Function used to Transactions for driver
@@ -2438,21 +2438,21 @@ JOIN  " . PEOPLE . " ON (  " . PEOPLE . ".`id` =  " . PASSENGERS_LOG . ".`driver
         $result = Db::query(Database::SELECT, $sql)->execute()->as_array();
         return $result[0]['cancellation_fare'];*/
         
-        $args = array(
-					array('$lookup'=>array('from' => MDB_TAXI,
+        $args = [
+					['$lookup'=>['from' => MDB_TAXI,
 								  'localField' => 'taxi_id',
 								  'foreignField' => '_id',
-								  'as' => 'taxi')),
-					array('$unwind' => '$taxi'),
-					array('$lookup'=>array('from' => MDB_MOTOR_MODEL,
+								  'as' => 'taxi']],
+					['$unwind' => '$taxi'],
+					['$lookup'=>['from' => MDB_MOTOR_MODEL,
 								  'localField' => 'taxi.taxi_model',
 								  'foreignField' => '_id',
-								  'as' => 'mm')),
-					array('$unwind' => '$mm'),
-					array('$match' => array('_id' => (int)$passengerlog_id)),
-					array('$project'=>
-								array('Passenger_log_id' => '$_id','cancellation_fare' => '$mm.cancellation_fare'))					  
-				);
+								  'as' => 'mm']],
+					['$unwind' => '$mm'],
+					['$match' => ['_id' => (int)$passengerlog_id]],
+					['$project'=>
+								['Passenger_log_id' => '$_id','cancellation_fare' => '$mm.cancellation_fare']]					  
+				];
 		$res = $this->mongo_db->aggregate(MDB_PASSENGERS_LOGS,$args);
 		return (isset($result[0]['cancellation_fare'])?$result[0]['cancellation_fare']:0);
     }
@@ -2501,18 +2501,18 @@ JOIN  " . PEOPLE . " ON (  " . PEOPLE . ".`id` =  " . PASSENGERS_LOG . ".`driver
         );
         return $result = DB::update(DRIVER)->set($update_array)->where('driver_id', '=', $driverid)->execute(); */
         
-          $update_array = array(
+          $update_array = [
             "status" => $status
-        );		
-		$result = $this->mongo_db->update(MDB_DRIVER_INFO,array('_id'=>(int)$driverid),array('$set'=>$update_array),array('upsert'=>true));
+        ];		
+		$result = $this->mongo_db->update(MDB_DRIVER_INFO,['_id'=>(int)$driverid],['$set'=>$update_array],['upsert'=>true]);
 		return (empty($result['err']))?1:0;
     }
     // Update Driver Shift Status
     public function update_driver_shift_status($id, $shift_status, $stat = null)
     {
-        $sql_query = array(
+        $sql_query = [
             'shift_status' => $shift_status
-        );
+        ];
         DB::update(DRIVER)->set($sql_query)->where('driver_id', '=', $id)->execute();
     }
     // Update Driver Sattus
@@ -2677,7 +2677,7 @@ JOIN  " . PEOPLE . " ON (  " . PEOPLE . ".`id` =  " . PASSENGERS_LOG . ".`driver
     //Get Company Current Package Details
     public function current_package_details($cid)
     {
-        $array  = array();
+        $array  = [];
         $query  = "SELECT people.id ,(select upgrade_packageid from package_report where package_report.upgrade_companyid = '$cid' order by upgrade_id desc limit 0,1 ) as upgrade_packageid,
 		(select check_package_type from package_report where package_report.upgrade_companyid = '$cid' order by upgrade_id desc limit 0,1 ) as check_package_type,
 		(select upgrade_expirydate from package_report where package_report.upgrade_companyid = '$cid' order by upgrade_id desc limit 0,1 ) as upgrade_expirydate FROM people WHERE user_type='C' and company_id ='$cid' group by people.id Having ( check_package_type = 'T' or upgrade_expirydate >=now() )";
@@ -2903,7 +2903,7 @@ JOIN  " . PEOPLE . " ON (  " . PEOPLE . ".`id` =  " . PASSENGERS_LOG . ".`driver
             $referral_code       = $referralcode_result[0]['referral_code'];
         }
         /** Referrral key generator **/
-        $fieldname_array = array(
+        $fieldname_array = [
             'name',
             'email',
             'password',
@@ -2922,8 +2922,8 @@ JOIN  " . PEOPLE . " ON (  " . PEOPLE . ".`id` =  " . PASSENGERS_LOG . ".`driver
             'created_date',
             'updated_date',
             'passenger_cid'
-        );
-        $values_array    = array(
+        ];
+        $values_array    = [
             '',
             $val['email'],
             md5($val['password']),
@@ -2942,16 +2942,16 @@ JOIN  " . PEOPLE . " ON (  " . PEOPLE . ".`id` =  " . PASSENGERS_LOG . ".`driver
             $current_time,
             $current_time,
             $company_id
-        );
+        ];
         $result          = DB::insert(PASSENGERS, $fieldname_array)->values($values_array)->execute();
         if ($result) {
             $email = DB::select()->from(PASSENGERS)->where('email', '=', $val['email'])->execute()->as_array();
             if ($devicetoken != "") {
-                $update_array               = array(
+                $update_array               = [
                     "device_token" => $devicetoken,
                     "device_id" => $deviceid,
                     "device_type" => $devicetype
-                );
+                ];
                 $update_device_token_result = DB::update(PASSENGERS)->set($update_array)->where('email', '=', $val['email'])->execute();
             }
             return 1;
@@ -2970,21 +2970,21 @@ JOIN  " . PEOPLE . " ON (  " . PEOPLE . ".`id` =  " . PASSENGERS_LOG . ".`driver
         }
         if ($otp_array['user_type'] == 'P') {
             if ($company_id != '') {
-                $update_otp = DB::update(PASSENGERS)->set(array(
+                $update_otp = DB::update(PASSENGERS)->set([
                     'otp' => $otp,
                     'updated_date' => $current_datetime
-                ))->where('email', '=', $otp_array['email'])->where('passenger_cid', '=', $company_id)->execute();
+                ])->where('email', '=', $otp_array['email'])->where('passenger_cid', '=', $company_id)->execute();
             } else {
-                $update_otp = DB::update(PASSENGERS)->set(array(
+                $update_otp = DB::update(PASSENGERS)->set([
                     'otp' => $otp,
                     'updated_date' => $current_datetime
-                ))->where('email', '=', $otp_array['email'])->where('passenger_cid', '=', 0)->execute();
+                ])->where('email', '=', $otp_array['email'])->where('passenger_cid', '=', 0)->execute();
             }
         } else if ($otp_array['user_type'] == 'D') {
-            $update_otp = DB::update(PEOPLE)->set(array(
+            $update_otp = DB::update(PEOPLE)->set([
                 'otp' => $otp,
                 'updated_date' => $current_datetime
-            ))->where('email', '=', $otp_array['email'])->execute();
+            ])->where('email', '=', $otp_array['email'])->execute();
         } else {
             $update_otp = false;
         }
@@ -3026,18 +3026,18 @@ JOIN  " . PEOPLE . " ON (  " . PEOPLE . ".`id` =  " . PASSENGERS_LOG . ".`driver
                 if ($company_id != '') {
 					$match['otp'] = $otp;
 					$match['passenger_cid'] = (int)$company_id;
-                    $sql = $this->mongo_db->find_one(MDB_PASSENGERS,$match,array('_id','email','otp','created_date','updated_date'));
+                    $sql = $this->mongo_db->find_one(MDB_PASSENGERS,$match,['_id','email','otp','created_date','updated_date']);
                    // $sql = "SELECT id,email, otp, created_date,updated_date,DATE_ADD(  `updated_date` , INTERVAL 15 MINUTE ) AS otp_expiry FROM " . PASSENGERS . " WHERE email='$email' and otp='$otp' and passenger_cid='$company_id'";
                 } else {
 					$match['otp'] = $otp;
 					$match['passenger_cid'] = 0;
-					$sql = $this->mongo_db->find_one(MDB_PASSENGERS,$match,array('_id','email','otp','created_date','updated_date'));
+					$sql = $this->mongo_db->find_one(MDB_PASSENGERS,$match,['_id','email','otp','created_date','updated_date']);
                     //$sql = "SELECT id,email, otp, created_date,updated_date,DATE_ADD(  `updated_date` , INTERVAL 15 MINUTE ) AS otp_expiry FROM " . PASSENGERS . " WHERE email='$email' and otp='$otp' and passenger_cid='0'";
                 }
             } else {
                     $match['otp'] = $otp;
 					$match['passenger_cid'] =  $company_id;
-					$sql = $this->mongo_db->find_one(MDB_PASSENGERS,$match,array('_id','email','otp','created_date','updated_date'));
+					$sql = $this->mongo_db->find_one(MDB_PASSENGERS,$match,['_id','email','otp','created_date','updated_date']);
             }
             
             
@@ -3109,23 +3109,23 @@ JOIN  " . PEOPLE . " ON (  " . PEOPLE . ".`id` =  " . PASSENGERS_LOG . ".`driver
                 /*********************************************************/
                 $referer_data_count = DB::select('*')->from(PASSENGERS_REF_DETAILS)->where(PASSENGERS_REF_DETAILS . '.registered_passenger_id', '=', $passenger_id)->as_object()->execute();
                 if (count($referer_data_count) == 0) {
-                    $ref_result   = DB::insert(PASSENGERS_REF_DETAILS, array(
+                    $ref_result   = DB::insert(PASSENGERS_REF_DETAILS, [
                         'referred_passenger_id',
                         'registered_passenger_id',
                         'referral_status',
                         'referrer_earned',
                         'earned_amount'
-                    ))->values(array(
+                    ])->values([
                         $referred_passenger_id,
                         $passenger_id,
                         '1',
                         '0',
                         ''
-                    ))->execute();
+                    ])->execute();
                     /****************************************/
-                    $refby_array  = array(
+                    $refby_array  = [
                         "referred_by" => $referred_passenger_id
-                    );
+                    ];
                     $refby_result = DB::update(PASSENGERS)->set($refby_array)->where('email', '=', $p_email)->execute();
                 }
                 //print_r($ref_result);			
@@ -3169,7 +3169,7 @@ JOIN  " . PEOPLE . " ON (  " . PEOPLE . ".`id` =  " . PASSENGERS_LOG . ".`driver
                 if (count($result) > 0) {
                     return 2;
                 } else {
-                    $card_result = DB::insert(PASSENGERS_CARD_DETAILS, array(
+                    $card_result = DB::insert(PASSENGERS_CARD_DETAILS, [
                         'passenger_id',
                         'passenger_email',
                         'card_type',
@@ -3178,7 +3178,7 @@ JOIN  " . PEOPLE . " ON (  " . PEOPLE . ".`id` =  " . PASSENGERS_LOG . ".`driver
                         'expdatemonth',
                         'expdateyear',
                         'default_card'
-                    ))->values(array(
+                    ])->values([
                         $passenger_id,
                         $p_email,
                         'P',
@@ -3187,7 +3187,7 @@ JOIN  " . PEOPLE . " ON (  " . PEOPLE . ".`id` =  " . PASSENGERS_LOG . ".`driver
                         $expdatemonth,
                         $expdateyear,
                         '1'
-                    ))->execute();
+                    ])->execute();
                     return 0;
                 }
             } else {
@@ -3398,11 +3398,11 @@ JOIN  " . PEOPLE . " ON (  " . PEOPLE . ".`id` =  " . PASSENGERS_LOG . ".`driver
             $card_type      = $array['card_type'];
             $default        = $array['default'];
             if ($default == 1) {
-                $array          = array(
+                $array          = [
                     "default_card" => '0'
-                );
+                ];
                 $result         = DB::update(PASSENGERS_CARD_DETAILS)->set($array)->where('passenger_id', '=', $passenger_id)->execute();
-                $card_result    = DB::insert(PASSENGERS_CARD_DETAILS, array(
+                $card_result    = DB::insert(PASSENGERS_CARD_DETAILS, [
                     'passenger_id',
                     'passenger_email',
                     'card_type',
@@ -3411,7 +3411,7 @@ JOIN  " . PEOPLE . " ON (  " . PEOPLE . ".`id` =  " . PASSENGERS_LOG . ".`driver
                     'expdatemonth',
                     'expdateyear',
                     'default_card'
-                ))->values(array(
+                ])->values([
                     $passenger_id,
                     $p_email,
                     $card_type,
@@ -3420,7 +3420,7 @@ JOIN  " . PEOPLE . " ON (  " . PEOPLE . ".`id` =  " . PASSENGERS_LOG . ".`driver
                     $expdatemonth,
                     $expdateyear,
                     "1"
-                ))->execute();
+                ])->execute();
                 $last_insert_id = mysql_insert_id();
                 /*$array = array("default_card" => '0');
                 $result = DB::update(PASSENGERS_CARD_DETAILS)
@@ -3428,7 +3428,7 @@ JOIN  " . PEOPLE . " ON (  " . PEOPLE . ".`id` =  " . PASSENGERS_LOG . ".`driver
                 ->where('passenger_cardid', '!=', $last_insert_id)							
                 ->execute();  */
             } else {
-                $card_result = DB::insert(PASSENGERS_CARD_DETAILS, array(
+                $card_result = DB::insert(PASSENGERS_CARD_DETAILS, [
                     'passenger_id',
                     'passenger_email',
                     'card_type',
@@ -3437,7 +3437,7 @@ JOIN  " . PEOPLE . " ON (  " . PEOPLE . ".`id` =  " . PASSENGERS_LOG . ".`driver
                     'expdatemonth',
                     'expdateyear',
                     'default_card'
-                ))->values(array(
+                ])->values([
                     $passenger_id,
                     $p_email,
                     $card_type,
@@ -3446,7 +3446,7 @@ JOIN  " . PEOPLE . " ON (  " . PEOPLE . ".`id` =  " . PASSENGERS_LOG . ".`driver
                     $expdatemonth,
                     $expdateyear,
                     "0"
-                ))->execute();
+                ])->execute();
             }
             //print_r($card_result);														
             return 0;
@@ -3474,28 +3474,28 @@ JOIN  " . PEOPLE . " ON (  " . PEOPLE . ".`id` =  " . PASSENGERS_LOG . ".`driver
             $card_type        = $array['card_type'];
             $default          = $array['default'];
             if ($default == 1) {
-                $update_array = array(
+                $update_array = [
                     "card_type" => $card_type,
                     "creditcard_no" => $creditcard_no,
                     "creditcard_cvv" => $creditcard_cvv,
                     "expdatemonth" => $expdatemonth,
                     "expdateyear" => $expdateyear,
                     "default_card" => '1'
-                );
+                ];
                 //print_r($update_array);exit;
-                $array        = array(
+                $array        = [
                     "default_card" => '0'
-                );
+                ];
                 $result       = DB::update(PASSENGERS_CARD_DETAILS)->set($array)->where('passenger_id', '=', $passenger_id)->execute();
                 $udate_result = DB::update(PASSENGERS_CARD_DETAILS)->set($update_array)->where('passenger_cardid', '=', $passenger_cardid)->execute();
             } else {
-                $update_array = array(
+                $update_array = [
                     "card_type" => $card_type,
                     "creditcard_no" => $creditcard_no,
                     "creditcard_cvv" => $creditcard_cvv,
                     "expdatemonth" => $expdatemonth,
                     "expdateyear" => $expdateyear
-                );
+                ];
                 $udate_result = DB::update(PASSENGERS_CARD_DETAILS)->set($update_array)->where('passenger_cardid', '=', $passenger_cardid)->execute();
             }
             //print_r($ref_result);														
@@ -3509,7 +3509,7 @@ JOIN  " . PEOPLE . " ON (  " . PEOPLE . ".`id` =  " . PASSENGERS_LOG . ".`driver
     /** Save favourite Trip**/
     public function save_favourite($passenger_id = null, $p_favourite_place = null, $p_fav_latitude = null, $p_fav_longtitute = null, $d_favourite_place = null, $d_fav_latitude = null, $d_fav_longtitute = null, $fav_comments = null)
     {
-        $fav_result = DB::insert(PASSENGERS_FAV, array(
+        $fav_result = DB::insert(PASSENGERS_FAV, [
             'passenger_id',
             'p_favourite_place',
             'p_fav_latitude',
@@ -3519,7 +3519,7 @@ JOIN  " . PEOPLE . " ON (  " . PEOPLE . ".`id` =  " . PASSENGERS_LOG . ".`driver
             'd_fav_longtitute',
             'fav_comments',
             'status'
-        ))->values(array(
+        ])->values([
             $passenger_id,
             $p_favourite_place,
             $p_fav_latitude,
@@ -3529,7 +3529,7 @@ JOIN  " . PEOPLE . " ON (  " . PEOPLE . ".`id` =  " . PASSENGERS_LOG . ".`driver
             $d_fav_longtitute,
             $fav_comments,
             'A'
-        ))->execute();
+        ])->execute();
         return $fav_result;
     }
     /** Get Favourite list **/
@@ -3547,7 +3547,7 @@ JOIN  " . PEOPLE . " ON (  " . PEOPLE . ".`id` =  " . PASSENGERS_LOG . ".`driver
     //$favourite_id,$p_favourite_place,$p_fav_latitude,$p_fav_longtitute,$d_favourite_place,$d_fav_latitude,$d_fav_longtitute,$fav_comments
     public function edit_favourite($favourite_id = null, $p_favourite_place = null, $p_fav_latitude = null, $p_fav_longtitute = null, $d_favourite_place = null, $d_fav_latitude = null, $d_fav_longtitute = null, $fav_comments = null)
     {
-        $update_result = DB::update(PASSENGERS_FAV)->set(array(
+        $update_result = DB::update(PASSENGERS_FAV)->set([
             'p_favourite_place' => $p_favourite_place,
             'p_fav_latitude' => $p_fav_latitude,
             'p_fav_longtitute' => $p_fav_longtitute,
@@ -3555,7 +3555,7 @@ JOIN  " . PEOPLE . " ON (  " . PEOPLE . ".`id` =  " . PASSENGERS_LOG . ".`driver
             'd_fav_latitude' => $d_fav_latitude,
             'd_fav_longtitute' => $d_fav_longtitute,
             'fav_comments' => $fav_comments
-        ))->where('p_favourite_id', '=', $favourite_id)->execute();
+        ])->where('p_favourite_id', '=', $favourite_id)->execute();
         return $update_result;
     }
     //Passenger Completed Trips by Date wise
@@ -3642,7 +3642,7 @@ JOIN  " . PEOPLE . " ON (  " . PEOPLE . ".`id` =  " . PASSENGERS_LOG . ".`driver
         $current_date    = explode(' ', $current_time);
         $start_time      = $current_date[0] . ' 00:00:01';
         $end_time        = $current_date[0] . ' 23:59:59';
-        $fieldname_array = array(
+        $fieldname_array = [
             'name',
             'email',
             'password',
@@ -3656,8 +3656,8 @@ JOIN  " . PEOPLE . " ON (  " . PEOPLE . ".`id` =  " . PASSENGERS_LOG . ".`driver
             'updated_date',
             'company_id',
             'booking_limit'
-        );
-        $values_array    = array(
+        ];
+        $values_array    = [
             '',
             $val['email'],
             md5($val['password']),
@@ -3671,16 +3671,16 @@ JOIN  " . PEOPLE . " ON (  " . PEOPLE . ".`id` =  " . PASSENGERS_LOG . ".`driver
             $current_time,
             '',
             '100'
-        );
+        ];
         $result          = DB::insert(PEOPLE, $fieldname_array)->values($values_array)->execute();
         if ($result) {
             $email = DB::select()->from(PEOPLE)->where('email', '=', $val['email'])->execute()->as_array();
             if ($devicetoken != "") {
-                $update_array               = array(
+                $update_array               = [
                     "device_token" => $devicetoken,
                     "device_id" => $deviceid,
                     "device_type" => $devicetype
-                );
+                ];
                 $update_device_token_result = DB::update(PEOPLE)->set($update_array)->where('email', '=', $val['email'])->execute();
             }
             return 1;
@@ -3733,7 +3733,7 @@ JOIN  " . PEOPLE . " ON (  " . PEOPLE . ".`id` =  " . PASSENGERS_LOG . ".`driver
             $company_owner_name = $array['taxi_company'];
             $comp_password      = text::random($type = 'alnum', $length = 5);
             /** Insert Owner Details *******/
-            $owner_result       = DB::insert(PEOPLE, array(
+            $owner_result       = DB::insert(PEOPLE, [
                 'name',
                 'email',
                 'password',
@@ -3743,7 +3743,7 @@ JOIN  " . PEOPLE . " ON (  " . PEOPLE . ".`id` =  " . PASSENGERS_LOG . ".`driver
                 'login_state',
                 'login_city',
                 'status'
-            ))->values(array(
+            ])->values([
                 $company_owner_name,
                 $company_email,
                 md5($comp_password),
@@ -3753,10 +3753,10 @@ JOIN  " . PEOPLE . " ON (  " . PEOPLE . ".`id` =  " . PASSENGERS_LOG . ".`driver
                 DEFAULT_STATE,
                 DEFAULT_CITY,
                 'A'
-            ))->execute();
+            ])->execute();
             $user_id            = mysql_insert_id();
             /** Insert Company Details *******/
-            $comp_result        = DB::insert(COMPANY, array(
+            $comp_result        = DB::insert(COMPANY, [
                 'company_name',
                 'bankname',
                 'bankaccount_no',
@@ -3766,7 +3766,7 @@ JOIN  " . PEOPLE . " ON (  " . PEOPLE . ".`id` =  " . PASSENGERS_LOG . ".`driver
                 'company_state',
                 'company_city',
                 'company_status'
-            ))->values(array(
+            ])->values([
                 $company_name,
                 $bank_name,
                 $bank_account_no,
@@ -3776,7 +3776,7 @@ JOIN  " . PEOPLE . " ON (  " . PEOPLE . ".`id` =  " . PASSENGERS_LOG . ".`driver
                 DEFAULT_STATE,
                 DEFAULT_CITY,
                 'A'
-            ))->execute();
+            ])->execute();
             $company_id         = mysql_insert_id();
             if ($company_id != "") {
                 /** Insert Company Package *************/
@@ -3797,7 +3797,7 @@ JOIN  " . PEOPLE . " ON (  " . PEOPLE . ".`id` =  " . PASSENGERS_LOG . ".`driver
                 $userid           = $user_id;
                 // Convert Time				
                 $expirydate       = $current_time;
-                $result           = DB::insert(PACKAGE_REPORT, array(
+                $result           = DB::insert(PACKAGE_REPORT, [
                     'upgrade_companyid',
                     'upgrade_packageid',
                     'upgrade_packagename',
@@ -3811,7 +3811,7 @@ JOIN  " . PEOPLE . " ON (  " . PEOPLE . ".`id` =  " . PASSENGERS_LOG . ".`driver
                     'upgrade_by',
                     'check_expirydate',
                     'check_package_type'
-                ))->values(array(
+                ])->values([
                     $company_id,
                     '1',
                     $package_name,
@@ -3825,25 +3825,25 @@ JOIN  " . PEOPLE . " ON (  " . PEOPLE . ".`id` =  " . PASSENGERS_LOG . ".`driver
                     $userid,
                     $expirydate,
                     $package_type
-                ))->execute();
+                ])->execute();
                 /** Insert Company Info Details *******/
-                $comp_info_result = DB::insert(COMPANYINFO, array(
+                $comp_info_result = DB::insert(COMPANYINFO, [
                     'company_cid',
                     'cancellation_fare',
                     'company_currency',
                     'company_currency_format',
                     'company_time_zone'
-                ))->values(array(
+                ])->values([
                     $company_id,
                     '0',
                     CURRENCY,
                     CURRENCY_FORMAT,
                     TIMEZONE
-                ))->execute();
+                ])->execute();
                 $company_info_id  = mysql_insert_id();
                 /** Insert Taxi Details *******/
                 $taxi_type        = '1';
-                $taxi_result      = DB::insert(TAXI, array(
+                $taxi_result      = DB::insert(TAXI, [
                     'taxi_no',
                     'taxi_type',
                     'taxi_model',
@@ -3851,7 +3851,7 @@ JOIN  " . PEOPLE . " ON (  " . PEOPLE . ".`id` =  " . PASSENGERS_LOG . ".`driver
                     'taxi_country',
                     'taxi_state',
                     'taxi_city'
-                ))->values(array(
+                ])->values([
                     $plate_no,
                     $taxi_type,
                     $taxi_model,
@@ -3859,7 +3859,7 @@ JOIN  " . PEOPLE . " ON (  " . PEOPLE . ".`id` =  " . PASSENGERS_LOG . ".`driver
                     DEFAULT_COUNTRY,
                     DEFAULT_STATE,
                     DEFAULT_CITY
-                ))->execute();
+                ])->execute();
                 $taxi_id          = mysql_insert_id();
                 /*** Insert Model fare for the company ***********/
                 $adminmodeldata   = DB::select('*')->from(MOTORMODEL)->where(MOTORMODEL . '.model_id', '=', $taxi_model)->execute()->as_array();
@@ -3880,7 +3880,7 @@ JOIN  " . PEOPLE . " ON (  " . PEOPLE . ".`id` =  " . PASSENGERS_LOG . ".`driver
                         $night_fare        = $values['night_fare'];
                         $waiting_time      = $values['waiting_time'];
                     }
-                    $result = DB::insert(COMPANY_MODEL_FARE, array(
+                    $result = DB::insert(COMPANY_MODEL_FARE, [
                         'model_id',
                         'company_cid',
                         'motor_mid',
@@ -3896,7 +3896,7 @@ JOIN  " . PEOPLE . " ON (  " . PEOPLE . ".`id` =  " . PASSENGERS_LOG . ".`driver
                         'min_km',
                         'below_above_km',
                         'waiting_time'
-                    ))->values(array(
+                    ])->values([
                         $model_id,
                         $company_id,
                         $motor_mid,
@@ -3912,10 +3912,10 @@ JOIN  " . PEOPLE . " ON (  " . PEOPLE . ".`id` =  " . PASSENGERS_LOG . ".`driver
                         $min_km,
                         $below_above_km,
                         $waiting_time
-                    ))->execute();
+                    ])->execute();
                 }
                 /** Insert Taxi Mappning Details *******/
-                $taxi_mapping_result          = DB::insert(TAXIMAPPING, array(
+                $taxi_mapping_result          = DB::insert(TAXIMAPPING, [
                     'mapping_driverid',
                     'mapping_taxiid',
                     'mapping_companyid',
@@ -3925,7 +3925,7 @@ JOIN  " . PEOPLE . " ON (  " . PEOPLE . ".`id` =  " . PASSENGERS_LOG . ".`driver
                     'mapping_startdate',
                     'mapping_enddate',
                     'mapping_createdby'
-                ))->values(array(
+                ])->values([
                     $driver_id,
                     $taxi_id,
                     $company_id,
@@ -3935,28 +3935,28 @@ JOIN  " . PEOPLE . " ON (  " . PEOPLE . ".`id` =  " . PASSENGERS_LOG . ".`driver
                     $start_time,
                     $end_time,
                     1
-                ))->execute();
+                ])->execute();
                 /** Insert Taxi Additional Details *******/
-                $taxi_additional_result       = DB::insert(ADDFIELD, array(
+                $taxi_additional_result       = DB::insert(ADDFIELD, [
                     'taxi_id'
-                ))->values(array(
+                ])->values([
                     $taxi_id
-                ))->execute();
+                ])->execute();
                 /**********  Insert Driver status in DRIVER table************/
-                $driver_status_result         = DB::insert(DRIVER, array(
+                $driver_status_result         = DB::insert(DRIVER, [
                     'driver_id',
                     'status',
                     'shift_status'
-                ))->values(array(
+                ])->values([
                     $driver_id,
                     'F',
                     'OUT'
-                ))->execute();
+                ])->execute();
                 /**************************************************************/
-                $d_update_array               = array(
+                $d_update_array               = [
                     "company_id" => $company_id,
                     "driver_license_id" => $tvdlno
-                );
+                ];
                 $update_driver_company_result = DB::update(PEOPLE)->set($d_update_array)->where('email', '=', $d_email)->where(PEOPLE . '.user_type', '=', 'D')->execute();
                 $update_owner_company_result  = DB::update(PEOPLE)->set($d_update_array)->where('email', '=', $company_email)->where('user_type', '=', 'C')->execute();
                 //print_r($ref_result);														
@@ -4256,7 +4256,7 @@ JOIN  " . PEOPLE . " ON (  " . PEOPLE . ".`id` =  " . PASSENGERS_LOG . ".`driver
                 $company_id = $gettaxidetails[0]['mapping_companyid'];
             }
             /************** Insert into pass log table ***************/
-            $log_result        = DB::insert(PASSENGERS_LOG, array(
+            $log_result        = DB::insert(PASSENGERS_LOG, [
                 'driver_id',
                 'taxi_id',
                 'company_id',
@@ -4269,7 +4269,7 @@ JOIN  " . PEOPLE . " ON (  " . PEOPLE . ".`id` =  " . PASSENGERS_LOG . ".`driver
                 'msg_status',
                 'createdate',
                 'booking_from'
-            ))->values(array(
+            ])->values([
                 $driver_id,
                 $taxi_id,
                 $company_id,
@@ -4282,7 +4282,7 @@ JOIN  " . PEOPLE . " ON (  " . PEOPLE . ".`id` =  " . PASSENGERS_LOG . ".`driver
                 'R',
                 $travel_date,
                 '2'
-            ))->execute();
+            ])->execute();
             //print_r($log_result);
             $passengers_log_id = mysql_insert_id();
             $amount            = $fare + $tips;
@@ -4290,7 +4290,7 @@ JOIN  " . PEOPLE . " ON (  " . PEOPLE . ".`id` =  " . PASSENGERS_LOG . ".`driver
             $siteinfo_details  = $this->siteinfo_details();
             $Commonmodel       = Model::factory('Commonmodel');
             $update_commission = $Commonmodel->update_commission($passengers_log_id, $amount, $siteinfo_details[0]['admin_commission']);
-            $trans_result      = DB::insert(TRANS, array(
+            $trans_result      = DB::insert(TRANS, [
                 'passengers_log_id',
                 'distance',
                 'fare',
@@ -4300,7 +4300,7 @@ JOIN  " . PEOPLE . " ON (  " . PEOPLE . ".`id` =  " . PASSENGERS_LOG . ".`driver
                 'trans_packtype',
                 'admin_amount',
                 'company_amount'
-            ))->values(array(
+            ])->values([
                 $passengers_log_id,
                 $distance,
                 $fare,
@@ -4310,7 +4310,7 @@ JOIN  " . PEOPLE . " ON (  " . PEOPLE . ".`id` =  " . PASSENGERS_LOG . ".`driver
                 $update_commission['trans_packtype'],
                 $update_commission['admin_commission'],
                 $update_commission['company_commission']
-            ))->execute();
+            ])->execute();
             /******************************************************************/
             return 1;
         }
@@ -4336,7 +4336,7 @@ JOIN  " . PEOPLE . " ON (  " . PEOPLE . ".`id` =  " . PASSENGERS_LOG . ".`driver
             $todate            = $add_exp_array['todate'];
             $payment_type      = "Cash";
             if ($recurring == 0) {
-                $exp_result = DB::insert(DRIVER_EXP, array(
+                $exp_result = DB::insert(DRIVER_EXP, [
                     'expense_driver_id',
                     'expense_amount',
                     'expense_type_id',
@@ -4344,7 +4344,7 @@ JOIN  " . PEOPLE . " ON (  " . PEOPLE . ".`id` =  " . PASSENGERS_LOG . ".`driver
                     'recurrent',
                     'notes',
                     'expense_date'
-                ))->values(array(
+                ])->values([
                     $expense_driver_id,
                     $expense_amount,
                     $expense_type_id,
@@ -4352,7 +4352,7 @@ JOIN  " . PEOPLE . " ON (  " . PEOPLE . ".`id` =  " . PASSENGERS_LOG . ".`driver
                     $recurring,
                     $notes,
                     $expense_date
-                ))->execute();
+                ])->execute();
             } else {
                 for ($i = strtotime($fromdate); $i <= strtotime($todate); $i = strtotime('+1 Day', $i)) {
                     //echo date('l Y-m-d', $i);
@@ -4367,7 +4367,7 @@ JOIN  " . PEOPLE . " ON (  " . PEOPLE . ".`id` =  " . PASSENGERS_LOG . ".`driver
                     if (checkdate($check_month, $check_date, $check_year)) {
                         $expense_date = $expense_date . ' ' . $current_date[1];
                         //echo '<br>';
-                        $exp_result   = DB::insert(DRIVER_EXP, array(
+                        $exp_result   = DB::insert(DRIVER_EXP, [
                             'expense_driver_id',
                             'expense_amount',
                             'expense_type_id',
@@ -4377,7 +4377,7 @@ JOIN  " . PEOPLE . " ON (  " . PEOPLE . ".`id` =  " . PASSENGERS_LOG . ".`driver
                             'expense_date',
                             'fromdate',
                             'todate'
-                        ))->values(array(
+                        ])->values([
                             $expense_driver_id,
                             $expense_amount,
                             $expense_type_id,
@@ -4387,7 +4387,7 @@ JOIN  " . PEOPLE . " ON (  " . PEOPLE . ".`id` =  " . PASSENGERS_LOG . ".`driver
                             $expense_date,
                             $fromdate,
                             $todate
-                        ))->execute();
+                        ])->execute();
                     }
                 }
             }
@@ -4414,7 +4414,7 @@ JOIN  " . PEOPLE . " ON (  " . PEOPLE . ".`id` =  " . PASSENGERS_LOG . ".`driver
             $todate            = $add_exp_array['todate'];
             $payment_type      = "Cash";
             if ($recurring == 0) {
-                $update_array  = array(
+                $update_array  = [
                     "expense_amount" => $expense_amount,
                     "expense_type_id" => $expense_type_id,
                     "recurrent" => $recurring,
@@ -4422,7 +4422,7 @@ JOIN  " . PEOPLE . " ON (  " . PEOPLE . ".`id` =  " . PASSENGERS_LOG . ".`driver
                     "expense_date" => $expense_date,
                     "fromdate" => '0000:00:00 00:00:00',
                     "todate" => '0000:00:00 00:00:00'
-                );
+                ];
                 $update_result = DB::update(DRIVER_EXP)->set($update_array)->where('expense_id', '=', $expense_id)->where('expense_driver_id', '=', $expense_driver_id)->execute();
             } else {
                 //echo strtotime($fromdate);
@@ -4476,7 +4476,7 @@ JOIN  " . PEOPLE . " ON (  " . PEOPLE . ".`id` =  " . PASSENGERS_LOG . ".`driver
                         //echo $current_time;
                         //echo '<br>';
                         if (strtotime($expense_date) > strtotime($current_time)) {
-                            $exp_result = DB::insert(DRIVER_EXP, array(
+                            $exp_result = DB::insert(DRIVER_EXP, [
                                 'expense_driver_id',
                                 'expense_amount',
                                 'expense_type_id',
@@ -4486,7 +4486,7 @@ JOIN  " . PEOPLE . " ON (  " . PEOPLE . ".`id` =  " . PASSENGERS_LOG . ".`driver
                                 'expense_date',
                                 'fromdate',
                                 'todate'
-                            ))->values(array(
+                            ])->values([
                                 $expense_driver_id,
                                 $expense_amount,
                                 $expense_type_id,
@@ -4496,7 +4496,7 @@ JOIN  " . PEOPLE . " ON (  " . PEOPLE . ".`id` =  " . PASSENGERS_LOG . ".`driver
                                 $expense_datetime,
                                 $fromdate,
                                 $todate
-                            ))->execute();
+                            ])->execute();
                             //print_r($exp_result);
                         }
                     }
@@ -4565,19 +4565,19 @@ JOIN  " . PEOPLE . " ON (  " . PEOPLE . ".`id` =  " . PASSENGERS_LOG . ".`driver
         $todate           = $add_target_array['todate'];
         if ($recurring == 0) {
             $target_date = date('Y-m-d', strtotime($add_target_array['target_date']));
-            $exp_result  = DB::insert(DRIVER_TARGET, array(
+            $exp_result  = DB::insert(DRIVER_TARGET, [
                 'target_driver_id',
                 'target_amount',
                 'recurrent',
                 'target_date',
                 'createdate'
-            ))->values(array(
+            ])->values([
                 $target_driver_id,
                 $target_amount,
                 $recurring,
                 $target_date,
                 $createdate
-            ))->execute();
+            ])->execute();
         } else {
             for ($i = strtotime($fromdate); $i <= strtotime($todate); $i = strtotime('+1 Day', $i)) {
                 //echo date('l Y-m-d', $i);
@@ -4595,7 +4595,7 @@ JOIN  " . PEOPLE . " ON (  " . PEOPLE . ".`id` =  " . PASSENGERS_LOG . ".`driver
                     $target_date = date('Y-m-d', strtotime($target_date));
                     $fromdate    = date('Y-m-d', strtotime($fromdate)) . ' ' . $current_date[1];
                     $todate      = date('Y-m-d', strtotime($todate)) . ' ' . $current_date[1];
-                    $exp_result  = DB::insert(DRIVER_TARGET, array(
+                    $exp_result  = DB::insert(DRIVER_TARGET, [
                         'target_driver_id',
                         'target_amount',
                         'recurrent',
@@ -4603,7 +4603,7 @@ JOIN  " . PEOPLE . " ON (  " . PEOPLE . ".`id` =  " . PASSENGERS_LOG . ".`driver
                         'fromdate',
                         'todate',
                         'createdate'
-                    ))->values(array(
+                    ])->values([
                         $target_driver_id,
                         $target_amount,
                         $recurring,
@@ -4611,7 +4611,7 @@ JOIN  " . PEOPLE . " ON (  " . PEOPLE . ".`id` =  " . PASSENGERS_LOG . ".`driver
                         $fromdate,
                         $todate,
                         $createdate
-                    ))->execute();
+                    ])->execute();
                     //}
                 }
             }
@@ -4637,11 +4637,11 @@ JOIN  " . PEOPLE . " ON (  " . PEOPLE . ".`id` =  " . PASSENGERS_LOG . ".`driver
             //$exp_result = DB::insert(DRIVER_TARGET, array('target_driver_id','target_amount','recurrent','target_date','createdate'))
             //	->values(array($target_driver_id,$target_amount,$recurring,$target_date,$createdate))
             //	->execute();
-            $update_array  = array(
+            $update_array  = [
                 "target_amount" => $target_amount,
                 "recurrent" => $recurring,
                 "target_date" => $target_date
-            );
+            ];
             //echo 'as'.$target_id;
             $update_result = DB::update(DRIVER_TARGET)->set($update_array)->where('target_id', '=', $target_id)->where('target_driver_id', '=', $target_driver_id)->execute();
             //print_r($update_array);
@@ -4666,7 +4666,7 @@ JOIN  " . PEOPLE . " ON (  " . PEOPLE . ".`id` =  " . PASSENGERS_LOG . ".`driver
                         $target_date  = date('Y-m-d', strtotime($target_date));
                         $fromdate     = date('Y-m-d', strtotime($fromdate)) . ' ' . $current_date[1];
                         $todate       = date('Y-m-d', strtotime($todate)) . ' ' . $current_date[1];
-                        $exp_result   = DB::insert(DRIVER_TARGET, array(
+                        $exp_result   = DB::insert(DRIVER_TARGET, [
                             'target_driver_id',
                             'target_amount',
                             'recurrent',
@@ -4674,7 +4674,7 @@ JOIN  " . PEOPLE . " ON (  " . PEOPLE . ".`id` =  " . PASSENGERS_LOG . ".`driver
                             'fromdate',
                             'todate',
                             'createdate'
-                        ))->values(array(
+                        ])->values([
                             $target_driver_id,
                             $target_amount,
                             $recurring,
@@ -4682,7 +4682,7 @@ JOIN  " . PEOPLE . " ON (  " . PEOPLE . ".`id` =  " . PASSENGERS_LOG . ".`driver
                             $fromdate,
                             $todate,
                             $createdate
-                        ))->execute();
+                        ])->execute();
                     }
                 }
             }
@@ -4728,7 +4728,7 @@ JOIN  " . PEOPLE . " ON (  " . PEOPLE . ".`id` =  " . PASSENGERS_LOG . ".`driver
     }
     function isVAlidCreditCard($ccnum, $type = "", $returnobj = false)
     {
-        $creditcard = array(
+        $creditcard = [
             "visa" => "/^4\d{3}-?\d{4}-?\d{4}-?\d{4}$/",
             "mastercard" => "/^5[1-5]\d{2}-?\d{4}-?\d{4}-?\d{4}$/",
             "discover" => "/^6011-?\d{4}-?\d{4}-?\d{4}$/",
@@ -4738,7 +4738,7 @@ JOIN  " . PEOPLE . " ON (  " . PEOPLE . ".`id` =  " . PASSENGERS_LOG . ".`driver
             "jcb" => "/^[3088|3096|3112|3158|3337|3528|3530]\d{12}$/",
             "enroute" => "/^[2014|2149]\d{11}$/",
             "switch" => "/^[4903|4911|4936|5641|6333|6759|6334|6767]\d{12}$/"
-        );
+        ];
         if (empty($type)) {
             $match = false;
             foreach ($creditcard as $type => $pattern)
@@ -4782,24 +4782,24 @@ JOIN  " . PEOPLE . " ON (  " . PEOPLE . ".`id` =  " . PASSENGERS_LOG . ".`driver
         if ($device_type == 1) {
             $apiKey          = $android_api;
             //echo $d_device_token;
-            $registrationIDs = array(
+            $registrationIDs = [
                 $d_device_token
-            );
+            ];
             // Message to be sent                                    
             if (!empty($registrationIDs)) {
                 // Set POST variables
                 $url     = 'https://android.googleapis.com/gcm/send';
                 //print_r($registrationIDs);exit;
-                $fields  = array(
+                $fields  = [
                     'registration_ids' => $registrationIDs,
-                    'data' => array(
+                    'data' => [
                         "message" => $pushmessage
-                    )
-                );
-                $headers = array(
+                    ]
+                ];
+                $headers = [
                     'Authorization: key=' . $apiKey,
                     'Content-Type: application/json'
-                );
+                ];
                 // print_r($pushmessage);exit;
                 // Open connection
                 $ch      = curl_init();
@@ -4850,27 +4850,27 @@ JOIN  " . PEOPLE . " ON (  " . PEOPLE . ".`id` =  " . PASSENGERS_LOG . ".`driver
                     $company_id   = $pushmessage['company_id'];
                     $distance     = $pushmessage['distance'];
                     $trip_details = $passenger_id . '-' . $taxi_id . '-' . $company_id . '-' . $distance;
-                    $body['aps']  = array(
+                    $body['aps']  = [
                         'alert' => 'You have new booking request',
                         'trip_details' => $trip_details,
                         'sound' => 'default'
-                    );
+                    ];
                 } else if ($status == 3) {
                     $pickup            = $pushmessage['pickup'];
                     $fare              = $pushmessage['fare'];
                     $referral_discount = $pushmessage['referral_discount'];
                     $message           = $pushmessage['result'];
                     $fare_details      = $pickup . '-' . $fare . '-' . $referral_discount;
-                    $body['aps']       = array(
+                    $body['aps']       = [
                         'alert' => $message,
                         'fare_details' => $fare_details,
                         'sound' => 'default'
-                    );
-                    $body['aps']       = array(
+                    ];
+                    $body['aps']       = [
                         'alert' => $pushmessage,
                         'badge' => $badge,
                         'sound' => 'default'
-                    );
+                    ];
                 }
                 // print_r($body);
                 // exit;
@@ -4931,10 +4931,10 @@ JOIN  " . PEOPLE . " ON (  " . PEOPLE . ".`id` =  " . PASSENGERS_LOG . ".`driver
         }
         $achve_amt     = number_format($achve_amt, 2, '.', '');
         $tar_amt       = number_format($tar_amt, 2, '.', '');
-        $total_amounts = array(
+        $total_amounts = [
             "ach_amt" => $achve_amt,
             "target_amount" => $tar_amt
-        );
+        ];
         return $total_amounts;
     }
     /** Get Driver Target by Year ********/
@@ -4955,9 +4955,9 @@ JOIN  " . PEOPLE . " ON (  " . PEOPLE . ".`id` =  " . PASSENGERS_LOG . ".`driver
         //---------------------------------- ANDROID ----------------------------------//                            
         if ($device_type == 1) {
             $apiKey          = $android_api;
-            $registrationIDs = array(
+            $registrationIDs = [
                 $d_device_token
-            );
+            ];
             //echo $d_device_token;
             // Message to be sent                                    
             if (!empty($registrationIDs)) {
@@ -4966,16 +4966,16 @@ JOIN  " . PEOPLE . " ON (  " . PEOPLE . ".`id` =  " . PASSENGERS_LOG . ".`driver
                 //print_r($registrationIDs);exit;
                 $pushmessage = json_encode($pushmessage);
                 //print_r($pushmessage);exit;
-                $fields      = array(
+                $fields      = [
                     'registration_ids' => $registrationIDs,
-                    'data' => array(
+                    'data' => [
                         "message" => $pushmessage
-                    )
-                );
-                $headers     = array(
+                    ]
+                ];
+                $headers     = [
                     'Authorization: key=' . $apiKey,
                     'Content-Type: application/json'
-                );
+                ];
                 // Open connection
                 $ch          = curl_init();
                 // Set the url, number of POST vars, POST data
@@ -5022,66 +5022,66 @@ JOIN  " . PEOPLE . " ON (  " . PEOPLE . ".`id` =  " . PASSENGERS_LOG . ".`driver
                 $status  = $pushmessage['status'];
                 if ($status == 1) {
                     $trip_id     = $pushmessage['trip_id'];
-                    $body['aps'] = array(
+                    $body['aps'] = [
                         'alert' => $message,
                         'trip_id' => $trip_id,
                         'status' => $status,
                         'sound' => 'default'
-                    );
+                    ];
                 } else if ($status == 2) {
                     $trip_id     = $pushmessage['trip_id'];
-                    $body['aps'] = array(
+                    $body['aps'] = [
                         'alert' => $message,
                         'trip_id' => $trip_id,
                         'status' => $status,
                         'sound' => 'default'
-                    );
+                    ];
                 } else if ($status == 3) {
                     $trip_id     = $pushmessage['trip_id'];
-                    $body['aps'] = array(
+                    $body['aps'] = [
                         'alert' => $message,
                         'trip_id' => $trip_id,
                         'status' => $status,
                         'sound' => 'default'
-                    );
+                    ];
                 } else if ($status == 4) {
-                    $body['aps'] = array(
+                    $body['aps'] = [
                         'alert' => $message,
                         'status' => $status,
                         'sound' => 'default'
-                    );
+                    ];
                 } else if ($status == 5) {
                     $fare        = $pushmessage['fare'];
                     $pickup      = $pushmessage['pickup'];
-                    $body['aps'] = array(
+                    $body['aps'] = [
                         'alert' => $message,
                         'fare' => $fare,
                         'pickup' => $pickup,
                         'status' => $status,
                         'sound' => 'default'
-                    );
+                    ];
                 } else if ($status == 6) {
                     $trip_id     = $pushmessage['trip_id'];
-                    $body['aps'] = array(
+                    $body['aps'] = [
                         'alert' => $message,
                         'trip_id' => $trip_id,
                         'status' => $status,
                         'sound' => 'default'
-                    );
+                    ];
                 } else if ($status == 7) {
                     $trip_id     = $pushmessage['trip_id'];
-                    $body['aps'] = array(
+                    $body['aps'] = [
                         'alert' => $message,
                         'trip_id' => $trip_id,
                         'status' => $status,
                         'sound' => 'default'
-                    );
+                    ];
                 } else {
-                    $body['aps'] = array(
+                    $body['aps'] = [
                         'alert' => $message,
                         'status' => $status,
                         'sound' => 'default'
-                    );
+                    ];
                 }
                 //print_r($body);		
                 // Encode the payload as JSON
@@ -5117,9 +5117,9 @@ JOIN  " . PEOPLE . " ON (  " . PEOPLE . ".`id` =  " . PASSENGERS_LOG . ".`driver
     public function update_ref_discount($referred_by, $referral_discount)
     {
         /****************************************/
-        $refby_array  = array(
+        $refby_array  = [
             "referral_earned_amount" => $referral_discount
-        );
+        ];
         $refby_result = DB::update(PASSENGERS)->set($refby_array)->where('id', '=', $referred_by)->where('referrer_earned', '=', '0')->execute();
         //print_r($ref_result);			
         /*****************************************/
@@ -5128,11 +5128,11 @@ JOIN  " . PEOPLE . " ON (  " . PEOPLE . ".`id` =  " . PASSENGERS_LOG . ".`driver
     public function update_registerer_discount($passengers_id, $trip_id, $referral_discount)
     {
         /****************************************/
-        $refby_array  = array(
+        $refby_array  = [
             "registerer_earned" => '1',
             "registerer_tripid" => $trip_id,
             "earned_amount" => $referral_discount
-        );
+        ];
         $refby_result = DB::update(PASSENGERS_REF_DETAILS)->set($refby_array)->where('registered_passenger_id', '=', $passengers_id)->execute();
         //print_r($ref_result);			
         /*****************************************/
@@ -5141,9 +5141,9 @@ JOIN  " . PEOPLE . " ON (  " . PEOPLE . ".`id` =  " . PASSENGERS_LOG . ".`driver
     public function update_referer_earn_status($passengers_id)
     {
         /****************************************/
-        $refby_array  = array(
+        $refby_array  = [
             "referrer_earned" => '1'
-        );
+        ];
         $refby_result = DB::update(PASSENGERS)->set($refby_array)->where('id', '=', $passengers_id)->execute();
         //print_r($ref_result);			
         /*****************************************/
@@ -5181,8 +5181,8 @@ JOIN  " . PEOPLE . " ON (  " . PEOPLE . ".`id` =  " . PASSENGERS_LOG . ".`driver
         $log_fetch       = Db::query(Database::SELECT, $log_query)->execute()->as_array();
         $passenger_photo = $log_fetch[0]['profile_image'];
         */
-        $arguments = array(
-						array('$project' => array(
+        $arguments = [
+						['$project' => [
 							'_id' => '$_id',
 							'phone' => '$people.phone',
 							'promocode' => '$promocode',
@@ -5226,15 +5226,15 @@ JOIN  " . PEOPLE . " ON (  " . PEOPLE . ".`id` =  " . PASSENGERS_LOG . ".`driver
 							'notes_driver'=>'$notes_driver',
 							'used_wallet_amount'=>'$used_wallet_amount'
 							
-						)),
-						array('$match'=>array(
+						]],
+						['$match'=>[
 							'_id'=>(int)$log_id
-						)),					
-					);
+						]],					
+					];
 					
         $result = $this->mongo_db->aggregate(MDB_PASSENGERS_LOGS,$arguments);
         //print_r($result);exit;
-        return (!empty($result['result'])?$result['result']:array());
+        return (!empty($result['result'])?$result['result']:[]);
        /* 
         if ((!empty($passenger_photo)) && file_exists($_SERVER['DOCUMENT_ROOT'] . PASS_IMG_IMGPATH . $passenger_photo)) {
             $passenger_image = $passenger_photo;
@@ -5333,7 +5333,7 @@ JOIN  " . PEOPLE . " ON (  " . PEOPLE . ".`id` =  " . PASSENGERS_LOG . ".`driver
         return (count($taxi_speed) > 0)?$taxi_speed[0]['taxi_speed']:0;*/
 		
 		//MongoDB
-		$result = $this->mongo_db->find_one(MDB_TAXI,array('_id'=>(int)$taxi_id),array('taxi_speed'));
+		$result = $this->mongo_db->find_one(MDB_TAXI,['_id'=>(int)$taxi_id],['taxi_speed']);
 		return (!empty($result))?$result['taxi_speed']:0;
     }
     /***************** Calculate ETA Time *********************/
@@ -5371,21 +5371,21 @@ JOIN  " . PEOPLE . " ON (  " . PEOPLE . ".`id` =  " . PASSENGERS_LOG . ".`driver
     }
     public function add_rejected_list($post, $rejection_type)
     {
-        $result = DB::insert(DRIVER_REJECTION, array(
+        $result = DB::insert(DRIVER_REJECTION, [
             'driver_id',
             'passengers_log_id',
             'passengers_id',
             'reason',
             'rejection_type',
             'createdate'
-        ))->values(array(
+        ])->values([
             $post['driver_id'],
             $post['passengers_log_id'],
             $post['passengers_id'],
             $post['reason'],
             $rejection_type,
             $post['createdate']
-        ))->execute();
+        ])->execute();
         return $result;
     }
     public function passenger_log_det($trip_id)
@@ -5397,10 +5397,10 @@ JOIN  " . PEOPLE . " ON (  " . PEOPLE . ".`id` =  " . PASSENGERS_LOG . ".`driver
     }
     public function update_booking($driver_id, $pass_id)
     {
-        $result = DB::update(PASSENGERS_LOG)->set(array(
+        $result = DB::update(PASSENGERS_LOG)->set([
             'driver_id' => $driver_id,
             'travel_status' => '9'
-        ))->where('passengers_log_id', '=', $pass_id)->execute();
+        ])->where('passengers_log_id', '=', $pass_id)->execute();
         return $result;
     }
     public function get_passenger_phone_by_id($id)
@@ -5496,17 +5496,17 @@ JOIN  " . PEOPLE . " ON (  " . PEOPLE . ".`id` =  " . PASSENGERS_LOG . ".`driver
             $updatequery = " UPDATE " . PASSENGER_LOG_TEMP . " SET tdriver_ids='$driver_ids' where tpassenger_log_id = '$trip_id'";
             $result      = Db::query(Database::UPDATE, $updatequery)->execute();
         } else {
-            $result = DB::insert(PASSENGER_LOG_TEMP, array(
+            $result = DB::insert(PASSENGER_LOG_TEMP, [
                 'tpassenger_log_id',
                 'tdriver_ids',
                 'tpassenger_id',
                 'createdate'
-            ))->values(array(
+            ])->values([
                 $post['passengers_log_id'],
                 $post['driver_id'],
                 $post['passengers_id'],
                 $post['createdate']
-            ))->execute();
+            ])->execute();
         }
         return $result;
     }
@@ -5538,8 +5538,8 @@ JOIN  " . PEOPLE . " ON (  " . PEOPLE . ".`id` =  " . PASSENGERS_LOG . ".`driver
         }
     }
     public function get_insert_id($collection = ""){
-		$rs = $this->mongo_db->find($collection,array(),array('_id'))->sort(array('_id'=>-1))->limit(1);
-		$res = (!empty($rs))?iterator_to_array($rs):array(1);
+		$rs = $this->mongo_db->find($collection,[],['_id'])->sort(['_id'=>-1])->limit(1);
+		$res = (!empty($rs))?iterator_to_array($rs):[1];
 		reset($res);
 		$first_key = key($res);
 		$inc_id = $first_key+1;

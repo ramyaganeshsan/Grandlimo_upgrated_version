@@ -29,7 +29,7 @@ class Model_Commonmodel extends Model
         return $result;*/
          //~ print_r($arr);exit;
         //~ echo $cond2;exit;
-       $result = $this->mongo_db->update($table,array($cond1 =>(int)$cond2),array('$set'=> $arr),array('multiple'=>true));
+       $result = $this->mongo_db->update($table,[$cond1 =>(int)$cond2],['$set'=> $arr],['multiple'=>true]);
        //print_r($result);exit;
        
         return (empty($result['err']))? 1: $result['err'];
@@ -38,7 +38,7 @@ class Model_Commonmodel extends Model
     {
         /*$result = DB::delete( $table )->where( $cond1, '=', $cond2 )->execute();
         return $result;*/
-        $result = $this->mongo_db->remove($table,array($cond1 => (int)$cond2));
+        $result = $this->mongo_db->remove($table,[$cond1 => (int)$cond2]);
 		return (empty($result['err']))?1:$result['err'];
     }
     public function select($table, $query )
@@ -49,14 +49,14 @@ class Model_Commonmodel extends Model
     public function select_all($table, $query, $fields )
     {
         $result = $this->mongo_db->find($table,$query, $fields);
-        return (!empty($result))?iterator_to_array($result,false):array();
+        return (!empty($result))?iterator_to_array($result,false):[];
         
     }
        public function select_site_settings($field_name,$tablename)
     {
 		if(is_array($field_name)){
 			//MongoDB
-			$result = $this->mongo_db->find_one($tablename,array(),$field_name);
+			$result = $this->mongo_db->find_one($tablename,[],$field_name);
 			if(count($field_name) > 1){
 				for($i=0;$i<count($field_name); $i++){
 					$index = $field_name[$i];
@@ -67,11 +67,11 @@ class Model_Commonmodel extends Model
 			}
 		}elseif(empty($field_name)){
 			//MongoDB
-			$result = $this->mongo_db->find_one($tablename,array());
+			$result = $this->mongo_db->find_one($tablename,[]);
 			$result = isset($result)?$result:"";
 		}else{
 			//MongoDB
-			$result = $this->mongo_db->find_one($tablename,array(),array($field_name));
+			$result = $this->mongo_db->find_one($tablename,[],[$field_name]);
 			$result = isset($result[$field_name])?$result[$field_name]:"";
 		}
 		return (!empty($result))?$result:'';
@@ -79,14 +79,14 @@ class Model_Commonmodel extends Model
     public function select_site_settings_old()
     {
 		//MongoDB
-		$result = $this->mongo_db->find_one(MDB_SITEINFO,array('_id'=>1));
-		return (!empty($result))?$result:array();
+		$result = $this->mongo_db->find_one(MDB_SITEINFO,['_id'=>1]);
+		return (!empty($result))?$result:[];
     }
     public function get_meta_settings( $action )
     {
 		//MongoDB
-		$result = $this->mongo_db->find_one(MDB_CMS,array('menu_link'=>$action),array('meta_keyword','meta_description','meta_title'));
-		return (!empty($result))?$result:array();
+		$result = $this->mongo_db->find_one(MDB_CMS,['menu_link'=>$action],['meta_keyword','meta_description','meta_title']);
+		return (!empty($result))?$result:[];
     }
     /*Function Used to get the 
      * Driver and Taxi Details 
@@ -170,11 +170,11 @@ class Model_Commonmodel extends Model
     {
         $data      = $this->get_randorm_values( $lat, $long, $max );
         $dat_arr   = explode( "$", $data );
-        $sql_query = array(
+        $sql_query = [
              'latitude' => $dat_arr[ 0 ],
             'longitude' => $dat_arr[ 1 ],
             'status' => $status 
-        );
+        ];
         $result    = DB::update( DRIVER )->set( $sql_query )->where( 'driver_id', '=', $id )->execute();
         return $data;
     }
@@ -252,17 +252,17 @@ class Model_Commonmodel extends Model
     /** get location **/
     public function company_location( $cid )
     {
-		$condition = array('_id'=>(int)$cid);
-		$arguments = array(
+		$condition = ['_id'=>(int)$cid];
+		$arguments = [
 		
-		array('$project' => array(
+		['$project' => [
 		 'login_city' => '$companydetails.company_city',
 		 'login_state' => '$companydetails.company_state',
 		 'login_country' => '$companydetails.company_country'
-		))
-		);
+		]]
+		];
 		 $result = $this->mongo_db->aggregate(MDB_COMPANY,$arguments);
-		 return (!empty($result))?$result['result'][0]:array();
+		 return (!empty($result))?$result['result'][0]:[];
 		
 		/*$condition = ( $cid != 0 ) ? array('company_id'=>(int)$cid,'user_type'=>'C') : array('user_type'=>'A');
 		$result = $this->mongo_db->find_one(MDB_PEOPLE,$condition,array('login_country', 'login_state', 'login_city'));
@@ -274,10 +274,10 @@ class Model_Commonmodel extends Model
 		//MongoDB
 		/*
 		if ($company_id==null) {*/
-			$query = ($booktype == 4)?array('pay_mod_active'=>1,'_id'=>array('$eq'=>4)):array('pay_mod_active'=>1,'_id'=>array('$ne'=>4));
-			$result = $this->mongo_db->find(MDB_PAYMENT_MODULES,$query,array('_id','pay_mod_name','pay_mod_default'))->sort(array('_id'=>1));
+			$query = ($booktype == 4)?['pay_mod_active'=>1,'_id'=>['$eq'=>4]]:['pay_mod_active'=>1,'_id'=>['$ne'=>4]];
+			$result = $this->mongo_db->find(MDB_PAYMENT_MODULES,$query,['_id','pay_mod_name','pay_mod_default'])->sort(['_id'=>1]);
 			//echo '<pre>if';print_r(iterator_to_array($result));exit;
-			return (!empty($result))?iterator_to_array($result,false):array();
+			return (!empty($result))?iterator_to_array($result,false):[];
 		/*} else {
 			$query = ($booktype == 1)?array('_id'=>(int)$company_id,'paymentmodule.pay_active'=>1,'paymentmodule.pay_mod_id'=>array('$ne'=>1)):array('_id'=>(int)$company_id,'paymentmodule.pay_active'=>1);
 			
@@ -296,20 +296,20 @@ class Model_Commonmodel extends Model
 		  //$function = $trace[1]['function'];
 		  //$lang = $trace[1]['object']->lang;
 		}
-		$match_query = array('_id'=>(int)$sms_id);
-		$arg = array(
-				array('$match'	=> $match_query),
-				array(
-				'$project' => array(
+		$match_query = ['_id'=>(int)$sms_id];
+		$arg = [
+				['$match'	=> $match_query],
+				[
+				'$project' => [
 					'sms_title'=>($lang == 'en')? '$sms_title' : '$arabic_sms_title',
 					'sms_description' => ($lang == 'en')? '$sms_description' : '$arabic_sms_description'
-				)
-			));
+				]
+			]];
 		
 		//$result = $this->mongo_db->find_one(MDB_SMS_TEMPLATES,array('sms_title'=> $sms_title));
 		$qry = $this->mongo_db->aggregate(MDB_SMS_TEMPLATES,$arg);
 		$result = $qry['result'];
-		return (isset($result[0])?$result[0]:array()); 
+		return (isset($result[0])?$result[0]:[]); 
     }
     public function get_passengers_details( $value = '', $check = '' )
     {
@@ -338,16 +338,16 @@ class Model_Commonmodel extends Model
        return ( count( $result ) > 0 )?$result[ 0 ][ 'shift_status' ]:"";*/
 		
 		//MongoDB
-		$result = $this->mongo_db->find_one(MDB_DRIVER_INFO,array('_id'=>(int)$driver_id),array('shift_status'));
+		$result = $this->mongo_db->find_one(MDB_DRIVER_INFO,['_id'=>(int)$driver_id],['shift_status']);
 		return (!empty($result))?$result['shift_status']:"";
     }
     public function package_details()
     {
-		$args = array(array('$project'=>array('package_name'=>'$package_name')),
-					  array('$sort'=> array('package_name' => 1)));
+		$args = [['$project'=>['package_name'=>'$package_name']],
+					  ['$sort'=> ['package_name' => 1]]];
 		$result = $this->mongo_db->aggregate(MDB_PACKAGE,$args);
 		//echo "<pre>";print_r($result);exit;
-        return (!empty($result['result']) ? $result['result'] : array());
+        return (!empty($result['result']) ? $result['result'] : []);
     }
     
     public function package_details_old()
@@ -357,25 +357,25 @@ class Model_Commonmodel extends Model
     }
     public function update_commission( $pass_logid, $total_amount, $admin_commission )
     {
-		$c_id = $this->mongo_db->find_one(MDB_PASSENGERS_LOGS,array('_id'=> (int)$pass_logid),array('company_id')); 
+		$c_id = $this->mongo_db->find_one(MDB_PASSENGERS_LOGS,['_id'=> (int)$pass_logid],['company_id']); 
         $company_id      = (!empty($c_id) ? $c_id['company_id'] : '');
-		$match_query = array();
+		$match_query = [];
 		if($company_id !='' && $company_id !=0){
 			$match_query['upgrade_companyid'] = (int)$company_id;
 		}
-		$args = array(array('$lookup' => array(
+		$args = [['$lookup' => [
 											   'from' => MDB_PACKAGE,
 											   'localField' => 'upgrade_packageid',
 											   'foreignField' => '_id',
-											   'as' => 'package')),
-					  array('$unwind' => '$package'),
-					  array('$match' => $match_query),
-					  array('$project' => array('check_package_type' => '$check_package_type')),
-					  array('$sort' => array('upgrade_id' => -1)),
-					  array('$limit' => 1)					  
-				);
+											   'as' => 'package']],
+					  ['$unwind' => '$package'],
+					  ['$match' => $match_query],
+					  ['$project' => ['check_package_type' => '$check_package_type']],
+					  ['$sort' => ['upgrade_id' => -1]],
+					  ['$limit' => 1]					  
+				];
 		$first = $this->mongo_db->aggregate(MDB_PACKAGE_REPORT,$args);
-		$first_results = (isset($first['result']) ? $first['result'] : array());
+		$first_results = (isset($first['result']) ? $first['result'] : []);
         if (count( $first_results ) > 0 ) {
             $check_package_type = $first_results[0]['check_package_type'];
         } else {
@@ -386,17 +386,17 @@ class Model_Commonmodel extends Model
             $admin_amt     = round( $admin_amt, 2);
             $total_balance = round($total_amount, 2);
             //Set Commission to Admin
-			$update = $this->mongo_db->Update(MDB_PEOPLE,array('user_type' => 'A'),
-											  array('$inc' =>array('account_balance' => $admin_amt)),
-											  array('upsert' => false));
+			$update = $this->mongo_db->Update(MDB_PEOPLE,['user_type' => 'A'],
+											  ['$inc' =>['account_balance' => $admin_amt]],
+											  ['upsert' => false]);
         } else {
             $admin_amt = 0;
         }
         $company_amt                          = $total_amount - $admin_amt;
         $company_amt                          = round( $company_amt, 2 );
 		//Set Commission to Admin
-		$update1 = $this->mongo_db->Update(MDB_PEOPLE,array('user_type' => 'C', 'company_id' => (int)$company_id),array('$inc' =>array('account_balance' => $company_amt)),array('upsert' => false));		
-        $result_array                         = array();
+		$update1 = $this->mongo_db->Update(MDB_PEOPLE,['user_type' => 'C', 'company_id' => (int)$company_id],['$inc' =>['account_balance' => $company_amt]],['upsert' => false]);		
+        $result_array                         = [];
         $result_array['admin_commission']   = $admin_amt;
         $result_array['company_commission'] = $company_amt;
         $result_array['trans_packtype']     = $check_package_type;
@@ -414,7 +414,7 @@ class Model_Commonmodel extends Model
             $date         = $current_date[ 0 ] . ' %';
         } else {
 			$time_zone="";
-			$query = $this->mongo_db->find(MDB_COMPANY,array('_id'=>(int)$company_id),array('companydetails.time_zone'));
+			$query = $this->mongo_db->find(MDB_COMPANY,['_id'=>(int)$company_id],['companydetails.time_zone']);
 			$result = iterator_to_array($query);
 			if(!empty($result)){
 				$time_zone = isset($result[ $company_id ]['companydetails'][ 'time_zone' ])?$result[ $company_id ]['companydetails'][ 'time_zone' ]:"";
@@ -453,23 +453,23 @@ class Model_Commonmodel extends Model
     public function company_tax( $company_id = '' )
     {
 		//MongoDB
-		$query = $this->mongo_db->find_one(MDB_COMPANY,array('_id'=>(int)$company_id),array('companyinfo.company_tax'));
+		$query = $this->mongo_db->find_one(MDB_COMPANY,['_id'=>(int)$company_id],['companyinfo.company_tax']);
 		//echo '<pre>';print_r($query);exit;
 		return (!empty($query))?$query['companyinfo'][ 'company_tax' ]:0;
     }
     public function company_timezone( $company_id = '' )
     {
 		//MongoDB
-		$query = $this->mongo_db->find_one(MDB_COMPANY,array('_id'=>(int)$company_id),array('companydetails.time_zone'));
+		$query = $this->mongo_db->find_one(MDB_COMPANY,['_id'=>(int)$company_id],['companydetails.time_zone']);
 		//echo '<pre>';print_r($query);exit;
 		return (!empty($query))?$query['companydetails'][ 'time_zone' ]:TIMEZONE;
     }
     public function getcurrencycode()
     {
 		//MongoDB
-		$result = $this->mongo_db->find(MDB_CSC,array('country_status'=>'A'),array('currency_code','currency_symbol'))->sort(array('_id'=>1));
+		$result = $this->mongo_db->find(MDB_CSC,['country_status'=>'A'],['currency_code','currency_symbol'])->sort(['_id'=>1]);
 		//echo '<pre>';print_r(iterator_to_array($result));exit;
-		return (!empty($result))?iterator_to_array($result):array();
+		return (!empty($result))?iterator_to_array($result):[];
     }
     public function getcurrencysymbol()
     {
@@ -499,26 +499,26 @@ class Model_Commonmodel extends Model
 		  //$function = $trace[1]['function'];
 		 // $lang = $trace[1]['object']->lang;
 		}
-		$match_query = array('sms_title'=>$sms_title);
-		$arg = array(
-				array('$match'	=> $match_query),
-				array(
-				'$project' => array(
+		$match_query = ['sms_title'=>$sms_title];
+		$arg = [
+				['$match'	=> $match_query],
+				[
+				'$project' => [
 					'sms_title'=>($lang == 'en')? '$sms_title' : '$arabic_sms_title',
 					'sms_description' => ($lang == 'en')? '$sms_description' : '$arabic_sms_description'
-				)
-			));
+				]
+			]];
 		
 		//$result = $this->mongo_db->find_one(MDB_SMS_TEMPLATES,array('sms_title'=> $sms_title));
 		$qry = $this->mongo_db->aggregate(MDB_SMS_TEMPLATES,$arg);
 		$result = $qry['result'];
-		return (isset($result[0])?$result[0]:array());        
+		return (isset($result[0])?$result[0]:[]);        
     }
 	
 	public function getParent($id)
     {
-        $result = $this->mongo_db->find_one(MDB_PASSENGERS,array('_id'=> (int)$id), array('name','lastname'));
-		return (isset($result)?$result:array());        
+        $result = $this->mongo_db->find_one(MDB_PASSENGERS,['_id'=> (int)$id], ['name','lastname']);
+		return (isset($result)?$result:[]);        
     }
 	
     //**** Booking key generator *******/
@@ -543,36 +543,36 @@ class Model_Commonmodel extends Model
         return $result;*/
 		
 		//MongoDB
-		$match_query = array('people.company_id'=>(int)$cid,'people.user_type'=>'C');
-		$arguments = array(
-			array('$unwind' => '$stateinfo'),
-			array('$unwind' => '$stateinfo.cityinfo'),
-			array('$lookup' 		=> array(
+		$match_query = ['people.company_id'=>(int)$cid,'people.user_type'=>'C'];
+		$arguments = [
+			['$unwind' => '$stateinfo'],
+			['$unwind' => '$stateinfo.cityinfo'],
+			['$lookup' 		=> [
 					'from'			=>	MDB_PEOPLE,
 					'localField'	=> 'stateinfo.cityinfo.city_id',
 					'foreignField'	=> "login_city",
 					'as'			=> "people"
-				)
-			),
-			array('$unwind' => '$people'),
-			array('$match'	=> $match_query),
-			array(
-				'$project' => array('_id'=>0,
+				]
+			],
+			['$unwind' => '$people'],
+			['$match'	=> $match_query],
+			[
+				'$project' => ['_id'=>0,
 					'country_name'=>'$country_name',
 					'login_country' => '$people.login_country',
 					'login_state' => '$people.login_state',
 					'login_city' => '$people.login_city',
-				)
-			),
-			array(
-				'$sort' => array(
+				]
+			],
+			[
+				'$sort' => [
 					'people.created_date' => 1
-				),
-			),
-		);
+				],
+			],
+		];
         $result = $this->mongo_db->aggregate(MDB_CSC,$arguments);
 		//echo "<pre>"; print_r($result); exit;
-		return (!empty($result['result']))?$result['result']:array();
+		return (!empty($result['result']))?$result['result']:[];
     }
 	/******************** Get default payment gateway of Specific company *********************/
 	public function company_payment_details($cid)
@@ -582,19 +582,19 @@ class Model_Commonmodel extends Model
 		return $result;*/
 		
 		//MongoDB
-		$match_query = array('pg.company_id'=>(int)$cid,'pg.default_payment_gateway'=>1);
-		$arguments = array(
-			array('$lookup' 		=> array(
+		$match_query = ['pg.company_id'=>(int)$cid,'pg.default_payment_gateway'=>1];
+		$arguments = [
+			['$lookup' 		=> [
 					'from'			=>	MDB_PAYMENT_GATEWAYS,
 					'localField'	=> "_id",
 					'foreignField'	=> "company_id",
 					'as'			=> "pg"
-				)
-			),
-			array('$unwind' => '$pg'),
-			array('$match'	=> $match_query),
-			array(
-				'$project' => array('_id'=>0,
+				]
+			],
+			['$unwind' => '$pg'],
+			['$match'	=> $match_query],
+			[
+				'$project' => ['_id'=>0,
 					'payment_type'=>'$pg.payment_gateway_id',
 					'payment_gateway_username' => '$pg.paypal_api_username',
 					'payment_gateway_password' => '$pg.paypal_api_password',
@@ -602,12 +602,12 @@ class Model_Commonmodel extends Model
 					'gateway_currency_format' => '$companyinfo.company_currency_format',
 					'payment_method' => '$pg.payment_method',
 					'gateway_name' => '$pg.payment_gatway',
-				)
-			)
-		);
+				]
+			]
+		];
         $result = $this->mongo_db->aggregate(MDB_COMPANY,$arguments);
 		//echo "<pre>"; print_r($result); exit;
-		return (!empty($result['result']))?$result['result']:array();
+		return (!empty($result['result']))?$result['result']:[];
 	}
 	/******************** Get default payment gateway of Specific company *********************/
 	public function payment_gateway_details()
@@ -617,11 +617,11 @@ class Model_Commonmodel extends Model
 		return $result;*/
 		
 		//MongoDB
-		$match_query = array('company_id'=>0,'default_payment_gateway'=>1);
-		$arguments = array(
-			array('$match'	=> $match_query),
-			array(
-				'$project' => array('_id'=>0,
+		$match_query = ['company_id'=>0,'default_payment_gateway'=>1];
+		$arguments = [
+			['$match'	=> $match_query],
+			[
+				'$project' => ['_id'=>0,
 					'payment_type'=>'$payment_gateway_id',
 					'payment_gateway_username' => '$paypal_api_username',
 					'payment_gateway_password' => '$paypal_api_password',
@@ -629,23 +629,23 @@ class Model_Commonmodel extends Model
 					'gateway_currency_format' => '$currency_code',
 					'payment_method' => '$payment_method',
 					'gateway_name' => '$payment_gatway',
-				)
-			)
-		);
+				]
+			]
+		];
         $result = $this->mongo_db->aggregate(MDB_PAYMENT_GATEWAYS,$arguments);
 		//echo "<pre>"; print_r($result); exit;
-		return (!empty($result['result']))?$result['result']:array();
+		return (!empty($result['result']))?$result['result']:[];
 	}
 	//update brain tree settlement payment status
 	public function mongo_update($collection_name,$update_array,$match_condition)
 	{
-		$result = $this->mongo_db->update($collection_name,$match_condition,array('$set'=>$update_array),array('upsert'=>false));
+		$result = $this->mongo_db->update($collection_name,$match_condition,['$set'=>$update_array],['upsert'=>false]);
 		return (empty($result['err']))?1:$result['errmsg'];
 	}
 	
 	public function get_auto_id($table_name)
 	{
-		$result = $this->mongo_db->find($table_name,array(),array('_id'))->sort(array('_id'=>-1))->limit(1);
+		$result = $this->mongo_db->find($table_name,[],['_id'])->sort(['_id'=>-1])->limit(1);
 		$id = iterator_to_array($result);
 		reset($id);
 		$first_key = key($id);
@@ -653,36 +653,36 @@ class Model_Commonmodel extends Model
 	}
 	public function get_tripdetails($passenger_id,$travel_status,$pay_choosen_flag,$end_time,$weekstart_time)
         {
-            $match_array = array(
+            $match_array = [
                 'travel_status' => $travel_status,
                 'payment_type' => $pay_choosen_flag,
-                'passengers_id' => array('$in'=>array((int)$passenger_id)),
-                'actual_pickup_time' => array('$gte' => new \MongoDB\BSON\UTCDateTime(strtotime($weekstart_time) * 1000),'$lte' => new \MongoDB\BSON\UTCDateTime(strtotime($end_time) * 1000)),
-            );
+                'passengers_id' => ['$in'=>[(int)$passenger_id]],
+                'actual_pickup_time' => ['$gte' => new \MongoDB\BSON\UTCDateTime(strtotime($weekstart_time) * 1000),'$lte' => new \MongoDB\BSON\UTCDateTime(strtotime($end_time) * 1000)],
+            ];
                  //print_r($match_array);
-            $arguments = array(
-                            array('$lookup'=> array(
+            $arguments = [
+                            ['$lookup'=> [
                                 'from'          => PASSENGERS,
                                 'localField'    => 'passengers_id',
                                 'foreignField'  => '_id',
                                 'as'            => 'passenger'
-                            )), array('$unwind'=> '$passenger'),
-                            array('$lookup' 		=> array(
+                            ]], ['$unwind'=> '$passenger'],
+                            ['$lookup' 		=> [
                                 'from'		=> PEOPLE,
                                 'localField'	=> "driver_id",
                                 'foreignField'	=> "_id",
                                 'as'		=> "driver"
-				)),array('$unwind' => '$driver'),
-                            array('$lookup' => array(
+				]],['$unwind' => '$driver'],
+                            ['$lookup' => [
                                 'from' => MDB_TRANSACTION,
                                 'localField'=>'_id',
                                 'foreignField' => 'passengers_log_id',
                                 'as'=>'trans'
-                            )),array('$unwind'=>'$trans'),
+                            ]],['$unwind'=>'$trans'],
                 
-                            array('$match'  => $match_array),
-                            array(
-                                '$project' => array('_id'=>'$_id',
+                            ['$match'  => $match_array],
+                            [
+                                '$project' => ['_id'=>'$_id',
 					'passenger_name'=>'$passenger.name',
 					'passenger_email'=>'$passenger.email',
 					'driver_name'=>'$driver.name',
@@ -694,9 +694,9 @@ class Model_Commonmodel extends Model
 					'distance' => '$distance',
 					'company_tax' => '$company_tax',
 					'createdate' => '$createdate',
-					)
-                                )
-                        );
+					]
+                                ]
+                        ];
             return $this->mongo_db->aggregate(PASSENGERS_LOG,$arguments); 
     }
 	public function hasabe_auth($array) 
@@ -741,26 +741,26 @@ class Model_Commonmodel extends Model
     // 03 Feb 2020
     public function get_dispacttripdetails($plog_id)
     {
-        $match_array = array(
+        $match_array = [
             '_id' => (int)$plog_id
-            );
+            ];
              //print_r($match_array);
-        $arguments = array(
-                        array('$match'  => $match_array),
-                        array('$lookup'=> array(
+        $arguments = [
+                        ['$match'  => $match_array],
+                        ['$lookup'=> [
                             'from'          => PASSENGERS,
                             'localField'    => 'passengers_id',
                             'foreignField'  => '_id',
                             'as'            => 'passenger'
-                        )), array('$unwind' =>  array( 'path' =>  '$passenger', 'preserveNullAndEmptyArrays' =>  true)),
-                        array('$lookup' 		=> array(
+                        ]], ['$unwind' =>  [ 'path' =>  '$passenger', 'preserveNullAndEmptyArrays' =>  true]],
+                        ['$lookup' 		=> [
                             'from'		=> PEOPLE,
                             'localField'	=> "driver_id",
                             'foreignField'	=> "_id",
                             'as'		=> "driver"
-                            )),array('$unwind' =>  array( 'path' =>  '$driver', 'preserveNullAndEmptyArrays' =>  true)),
-                        array(
-                            '$project' => array('_id'=>'$_id',
+                            ]],['$unwind' =>  [ 'path' =>  '$driver', 'preserveNullAndEmptyArrays' =>  true]],
+                        [
+                            '$project' => ['_id'=>'$_id',
                             'p_phone'=>'$passenger.phone',
                             'p_country_code'=>'$passenger.country_code',
                             'p_device_token'=>'$passenger.device_token',
@@ -768,48 +768,48 @@ class Model_Commonmodel extends Model
             			    'p_device_type'=>'$passenger.device_type',
                             'd_name'=>'$driver.name',
                             'd_phone'=>'$driver.phone',
-                            )
-                            )
-                    );
+                            ]
+                            ]
+                    ];
         return $this->mongo_db->aggregate(PASSENGERS_LOG,$arguments); 
     }
     // 03 Feb 2020
 
     public function get_tripdetails_forcron($travel_status,$pay_choosen_flag,$end_time,$weekstart_time,$pay_mod)
         {
-            $match_array = array(
+            $match_array = [
                 'travel_status' => $travel_status,
                 'payment_type' => $pay_choosen_flag,
                 'passenger.pay_by'=>(int)$pay_mod,
-                'actual_pickup_time' => array('$gte' => new \MongoDB\BSON\UTCDateTime(strtotime($weekstart_time) * 1000),'$lte' => new \MongoDB\BSON\UTCDateTime(strtotime($end_time) * 1000)),
-            );
+                'actual_pickup_time' => ['$gte' => new \MongoDB\BSON\UTCDateTime(strtotime($weekstart_time) * 1000),'$lte' => new \MongoDB\BSON\UTCDateTime(strtotime($end_time) * 1000)],
+            ];
                  //print_r($match_array);
-            $arguments = array(
-                            array('$lookup'=> array(
+            $arguments = [
+                            ['$lookup'=> [
                                 'from'          => PASSENGERS,
                                 'localField'    => 'passengers_id',
                                 'foreignField'  => '_id',
                                 'as'            => 'passenger'
-                            )), array('$unwind'=> '$passenger'),
+                            ]], ['$unwind'=> '$passenger'],
                             
-                            array('$lookup'         => array(
+                            ['$lookup'         => [
                                 'from'      => PEOPLE,
                                 'localField'    => "driver_id",
                                 'foreignField'  => "_id",
                                 'as'        => "driver"
-                            )),array('$unwind' => '$driver'),
+                            ]],['$unwind' => '$driver'],
                             
-                            array('$lookup' => array(
+                            ['$lookup' => [
                                 'from' => MDB_TRANSACTION,
                                 'localField'=>'_id',
                                 'foreignField' => 'passengers_log_id',
                                 'as'=>'trans'
-                            )),array('$unwind'=>'$trans'),
+                            ]],['$unwind'=>'$trans'],
                 
-                            array('$match'  => $match_array),
+                            ['$match'  => $match_array],
                             
-                            array(
-                                '$project' => array('trip_id'=>'$_id',
+                            [
+                                '$project' => ['trip_id'=>'$_id',
                                     'passenger_id'=>'$passenger._id',
                                     'passenger_name'=>'$passenger.name',
                                     'passenger_email'=>'$passenger.email',
@@ -825,11 +825,11 @@ class Model_Commonmodel extends Model
                                     'distance' => '$distance',
                                     'company_tax' => '$company_tax',
                                     'createdate' => '$createdate',
-                                )
-                            ),
+                                ]
+                            ],
                             
-                            array(
-                                '$group' =>array('_id' => array(
+                            [
+                                '$group' =>['_id' => [
                                         'passenger_id'=>'$passenger_id',
                                         'passenger_name'=>'$passenger_name',
                                         'passenger_email'=>'$passenger_email',
@@ -837,11 +837,11 @@ class Model_Commonmodel extends Model
                                         'passenger_country_code'=>'$passenger_country_code',
                                         'passenger_payby'=>'$passenger_payby',
 
-                                    ),
-                                    'total_fare'=>array('$sum'=>'$fare'),
-                                    'trip_count' => array('$sum' => 1),
-                                    'trip_details'=>array(
-                                        '$push'=>array(
+                                    ],
+                                    'total_fare'=>['$sum'=>'$fare'],
+                                    'trip_count' => ['$sum' => 1],
+                                    'trip_details'=>[
+                                        '$push'=>[
                                             'driver_name'=>'$driver_name',
                                             '_id'=>'$trip_id',
                                             'current_location'=>'$current_location',
@@ -851,36 +851,36 @@ class Model_Commonmodel extends Model
                                             'trip_fare'=>'$trip_fare',
                                             'fare'=>'$fare',
                                             'distance'=>'$distance'
-                                        )
-                                    ),
+                                        ]
+                                    ],
                                    
-                                )
-                            )
+                                ]
+                            ]
                             
-                        );
+                        ];
             return $this->mongo_db->aggregate(PASSENGERS_LOG,$arguments); 
         }
         
 		public function get_milestones() {			
 			//MongoDB
-			$result    = $this->select_all(MDB_TAXI_SERVICE_RANGE, array('status'=>'A') ,array('km','label'));
+			$result    = $this->select_all(MDB_TAXI_SERVICE_RANGE, ['status'=>'A'] ,['km','label']);
 			return $result;
 		}
 		
 		// 03 Feb 2020
 		public function get_model_detail_info($model_id) {
-			$match_array = array(
+			$match_array = [
 				'_id' => (int)$model_id
-				);
+				];
 				 //print_r($match_array);
-			$arguments = array(
-							array('$match'  => $match_array),
-							array(
-								'$project' => array('_id'=>'$_id',
+			$arguments = [
+							['$match'  => $match_array],
+							[
+								'$project' => ['_id'=>'$_id',
 								'model_name'=>'$model_name'
-								)
-							)
-						);
+								]
+							]
+						];
 			$result = $this->mongo_db->aggregate(MDB_MOTOR_MODEL,$arguments); 			
 			return isset($result['result'][0]['model_name']) ? $result['result'][0]['model_name'] : '';
 		}
@@ -900,83 +900,83 @@ class Model_Commonmodel extends Model
 		}
 		
 		public function get_surge_price_model_list() {
-     $match_array = array(
+     $match_array = [
             'model_status' => 'A'
-        );
+        ];
          //print_r($match_array);
-      $arguments = array(
-              array('$match'  => $match_array),
-              array(
-                '$project' => array('_id'=>'$_id',
+      $arguments = [
+              ['$match'  => $match_array],
+              [
+                '$project' => ['_id'=>'$_id',
                 'model_name'=>'$model_name',
                 'surge_pricing_status'=>'$surge_pricing_status',
                 'surge_pricing_fare'=>'$surge_pricing_fare',
-                'surge_pricing_custom_interval' => array('$filter' => array('input'=>'$surge_pricing_custom_interval','as'=>'custom_interval','cond'=>array('$eq'=>array('$$custom_interval.default',1)))),
-                'surge_pricing_manual_interval' => array('$filter' => array('input'=>'$surge_pricing_manual_interval','as'=>'manual_interval','cond'=>array('$eq'=>array('$$manual_interval.default',1)))),
-                )
-            ),
+                'surge_pricing_custom_interval' => ['$filter' => ['input'=>'$surge_pricing_custom_interval','as'=>'custom_interval','cond'=>['$eq'=>['$$custom_interval.default',1]]]],
+                'surge_pricing_manual_interval' => ['$filter' => ['input'=>'$surge_pricing_manual_interval','as'=>'manual_interval','cond'=>['$eq'=>['$$manual_interval.default',1]]]],
+                ]
+            ],
             // array('$unwind'=>'$surge_pricing_manual_interval'),
             // array('$unwind'=>'$surge_pricing_fare'),
-            array(
-                '$sort' => array(
+            [
+                '$sort' => [
                     'surge_pricing_fare.fare'=> -1,
                     'surge_pricing_manual_interval.default'=> 1
-                ),
-            ),
-            array('$group'=>array(
+                ],
+            ],
+            ['$group'=>[
                 "_id" => '$_id',
-                'surge_pricing_manual_interval'=>array('$first'=>'$surge_pricing_manual_interval'),
-                'surge_pricing_custom_interval'=>array('$first'=>'$surge_pricing_custom_interval'),
-                'surge_pricing_fare'=> array('$first'=>'$surge_pricing_fare'),
-                'model_name'=>array('$first'=>'$model_name'),
-                'surge_pricing_status'=>array('$first'=>'$surge_pricing_status'),
+                'surge_pricing_manual_interval'=>['$first'=>'$surge_pricing_manual_interval'],
+                'surge_pricing_custom_interval'=>['$first'=>'$surge_pricing_custom_interval'],
+                'surge_pricing_fare'=> ['$first'=>'$surge_pricing_fare'],
+                'model_name'=>['$first'=>'$model_name'],
+                'surge_pricing_status'=>['$first'=>'$surge_pricing_status'],
 
-            )),
-            array('$sort'=>array('_id'=>1))
-        );
+            ]],
+            ['$sort'=>['_id'=>1]]
+        ];
       $result = $this->mongo_db->aggregate(MDB_MOTOR_MODEL,$arguments);       
       //echo "<pre>";print_r($result);exit;
-      return isset($result['result']) ? $result['result'] : array();
+      return isset($result['result']) ? $result['result'] : [];
     }
 
     public function get_surge_price_model_list2() {
-      $match_array = array(
+      $match_array = [
         'model_status' => 'A'
-        );
+        ];
          //print_r($match_array);
-      $arguments = array(
-                array('$match'  => $match_array),
-                array(
-                    '$project' => array('_id'=>'$_id',
+      $arguments = [
+                ['$match'  => $match_array],
+                [
+                    '$project' => ['_id'=>'$_id',
                     'model_name'=>'$model_name',
                     'surge_pricing_status'=>'$surge_pricing_status',
                     'surge_pricing_fare'=>'$surge_pricing_fare',
                     'surge_pricing_manual_interval'=>'$surge_pricing_manual_interval',
                     'surge_pricing_custom_interval'=>'$surge_pricing_custom_interval',
                     'surge_pricing_status'=>'$surge_pricing_status',
-                    )
-                ),
-                array('$unwind'=>'$surge_pricing_manual_interval'),
-                array('$unwind'=>'$surge_pricing_fare'),
-                array(
-                    '$sort' => array(
+                    ]
+                ],
+                ['$unwind'=>'$surge_pricing_manual_interval'],
+                ['$unwind'=>'$surge_pricing_fare'],
+                [
+                    '$sort' => [
                         '_id'=>-1,
                         'surge_pricing_fare.fare'=> -1,
                         'surge_pricing_manual_interval.default'=> 1
-                    ),
-                ),
-                array('$group'=>array('_id' => '$_id',
-                    'id' => array('$first' => '$_id' ),
-                    'model_name' => array('$first' => '$model_name' ),
-                    'surge_pricing_manual_interval' => array('$addToSet' => '$surge_pricing_manual_interval' ),
-                    'surge_pricing_fare' => array('$addToSet' => '$surge_pricing_fare' ),
-                    'surge_pricing_custom_interval' => array('$first' => '$surge_pricing_custom_interval' ),
-                    'surge_pricing_status' => array('$first' => '$surge_pricing_status' 
-                )))
-            );
+                    ],
+                ],
+                ['$group'=>['_id' => '$_id',
+                    'id' => ['$first' => '$_id' ],
+                    'model_name' => ['$first' => '$model_name' ],
+                    'surge_pricing_manual_interval' => ['$addToSet' => '$surge_pricing_manual_interval' ],
+                    'surge_pricing_fare' => ['$addToSet' => '$surge_pricing_fare' ],
+                    'surge_pricing_custom_interval' => ['$first' => '$surge_pricing_custom_interval' ],
+                    'surge_pricing_status' => ['$first' => '$surge_pricing_status' 
+                ]]]
+            ];
       $result = $this->mongo_db->aggregate(MDB_MOTOR_MODEL,$arguments);      
        //echo "<pre>";print_r($result);exit;
-      return isset($result['result']) ? $result['result'] : array();
+      return isset($result['result']) ? $result['result'] : [];
     }
 		
 		public function update_surge_price($model_id, $data) {	
@@ -984,10 +984,10 @@ class Model_Commonmodel extends Model
 			// print_r($model_id);
 			// print_r($data);
    //          exit;
-			$result = $this->mongo_db->find_one(MDB_MOTOR_MODEL,array('_id'=>(int)$model_id),array('surge_pricing_fare','surge_pricing_manual_interval','surge_pricing_custom_interval'));
+			$result = $this->mongo_db->find_one(MDB_MOTOR_MODEL,['_id'=>(int)$model_id],['surge_pricing_fare','surge_pricing_manual_interval','surge_pricing_custom_interval']);
 			
 			if(isset($data['surge_pricing_manual_interval']) && !empty($data['surge_pricing_manual_interval'])) {
-				$interval = isset($data['surge_pricing_manual_interval'][$model_id]) ? $data['surge_pricing_manual_interval'][$model_id] : array();				
+				$interval = isset($data['surge_pricing_manual_interval'][$model_id]) ? $data['surge_pricing_manual_interval'][$model_id] : [];				
 				if(isset($interval) && !empty($interval)) {
 					foreach($result['surge_pricing_manual_interval'] as $k => $v) {
 						$range = $v['from'].'-'.$v['to'];
@@ -1002,15 +1002,15 @@ class Model_Commonmodel extends Model
 						$result['surge_pricing_manual_interval'][$k]['default'] = 0;						
 					}
 				}
-				$qry = array('_id'=>(int)$model_id);
+				$qry = ['_id'=>(int)$model_id];
 				$update_array['surge_pricing_manual_interval'] = $result['surge_pricing_manual_interval'];
-				$res = $this->mongo_db->update(MDB_MOTOR_MODEL,$qry,array('$set'=>$update_array),array('multiple'=>true));								
+				$res = $this->mongo_db->update(MDB_MOTOR_MODEL,$qry,['$set'=>$update_array],['multiple'=>true]);								
 			}
 			
 			if(isset($data['surge_pricing_custom_interval'])&&isset($data['surge_pricing_manual_interval_backup'])) {
-				$interval = isset($data['surge_pricing_custom_interval'][$model_id]) ? $data['surge_pricing_custom_interval'][$model_id] : array();	
+				$interval = isset($data['surge_pricing_custom_interval'][$model_id]) ? $data['surge_pricing_custom_interval'][$model_id] : [];	
                 $custom_price = $data['surge_pricing_manual_interval_backup'];
-                $form_value = array();
+                $form_value = [];
 				if(isset($interval) && !empty($interval)) {
 					foreach($custom_price as $k => $v) {
                         $temp = explode("-", $v);
@@ -1032,9 +1032,9 @@ class Model_Commonmodel extends Model
 					}
 				}
 				
-				$qry = array('_id'=>(int)$model_id);
+				$qry = ['_id'=>(int)$model_id];
 				$update_array['surge_pricing_custom_interval'] = $form_value;
-				$res = $this->mongo_db->update(MDB_MOTOR_MODEL,$qry,array('$set'=>$update_array),array('multiple'=>true));								
+				$res = $this->mongo_db->update(MDB_MOTOR_MODEL,$qry,['$set'=>$update_array],['multiple'=>true]);								
 			}
 
             if(isset($data['surge_pricing_fare']) && !empty($data['surge_pricing_fare'])) {
@@ -1048,9 +1048,9 @@ class Model_Commonmodel extends Model
 						}
 					}					
 				}
-				$qry = array('_id'=>(int)$model_id);
+				$qry = ['_id'=>(int)$model_id];
 				$update_array['surge_pricing_fare'] = $result['surge_pricing_fare'];
-				$res = $this->mongo_db->update(MDB_MOTOR_MODEL,$qry,array('$set'=>$update_array),array('multiple'=>true));
+				$res = $this->mongo_db->update(MDB_MOTOR_MODEL,$qry,['$set'=>$update_array],['multiple'=>true]);
 				
 				//~ $fare = $data['surge_pricing_fare'][$model_id];
 				//~ $res = $this->mongo_db->update(MDB_MOTOR_MODEL,array('_id'=>(int)$model_id,'surge_pricing_fare.fare'=>(double)$fare),array('$set'=>array('surge_pricing_fare.$.default' => (int)1)),array('multiple'=>true));
@@ -1062,10 +1062,10 @@ class Model_Commonmodel extends Model
 
             //Feb 19 2021
             if(isset($data['time_interval']) && empty($data['time_interval']) && !isset($data['surge_pricing_custom_interval'])) {
-                $form_value = array();
-                $qry = array('_id'=>(int)$model_id);
+                $form_value = [];
+                $qry = ['_id'=>(int)$model_id];
                 $update_array['surge_pricing_custom_interval'] = $form_value;
-                $res = $this->mongo_db->update(MDB_MOTOR_MODEL,$qry,array('$set'=>$update_array),array('multiple'=>true));
+                $res = $this->mongo_db->update(MDB_MOTOR_MODEL,$qry,['$set'=>$update_array],['multiple'=>true]);
             }
             //Feb 19 2021
 
@@ -1079,15 +1079,15 @@ class Model_Commonmodel extends Model
 		}
 		
 		public function get_surge_price_model_item($id) {
-			 $match_array = array(
+			 $match_array = [
 					'model_status' => 'A',
 					'_id' => (int)$id
-				);
+				];
 				 //print_r($match_array);
-			  $arguments = array(
-					  array('$match'  => $match_array),
-					  array(
-						'$project' => array('_id'=>'$_id',
+			  $arguments = [
+					  ['$match'  => $match_array],
+					  [
+						'$project' => ['_id'=>'$_id',
 						'model_name'=>'$model_name',
 						'surge_pricing_status'=>'$surge_pricing_status',
 						'surge_pricing_fare'=>'$surge_pricing_fare',
@@ -1099,33 +1099,33 @@ class Model_Commonmodel extends Model
                         'book_later_display_fare' => '$book_later_display_fare',//26 feb 2021
                         'book_later_time_interval' => '$book_later_time_interval',//26 feb 2021
 
-						)
-					),
-					array('$unwind'=>'$surge_pricing_manual_interval'),
-					array('$unwind'=>'$surge_pricing_fare'),
-					array(
-						'$sort' => array(
+						]
+					],
+					['$unwind'=>'$surge_pricing_manual_interval'],
+					['$unwind'=>'$surge_pricing_fare'],
+					[
+						'$sort' => [
 							'surge_pricing_fare.fare'=> -1,
 							'surge_pricing_manual_interval.default'=> 1
-						),
-					),
-					array('$group'=>array('_id' => '$_id',
-						'id' => array('$first' => '$_id' ),
-						'model_name' => array('$first' => '$model_name' ),
-						'surge_pricing_manual_interval' => array('$addToSet' => '$surge_pricing_manual_interval' ),
-						'surge_pricing_fare' => array('$addToSet' => '$surge_pricing_fare' ),
-						'surge_pricing_custom_interval' => array('$first' => '$surge_pricing_custom_interval' ),
-                        'surge_pricing_interval' => array('$first' => '$surge_pricing_interval' ),//26 feb 2021
-                        'total_drivers' => array('$first' => '$total_drivers' ),//26 feb 2021 
-                        'book_later_fare' => array('$first' => '$book_later_fare' ),//26 feb 2021
-                        'book_later_display_fare' => array('$first' => '$book_later_display_fare' ),//26 feb 2021
-                        'book_later_time_interval' => array('$first' => '$book_later_time_interval' ),//26 feb 2021
-						'surge_pricing_status' => array('$first' => '$surge_pricing_status')
-                    ))					
-				);
+						],
+					],
+					['$group'=>['_id' => '$_id',
+						'id' => ['$first' => '$_id' ],
+						'model_name' => ['$first' => '$model_name' ],
+						'surge_pricing_manual_interval' => ['$addToSet' => '$surge_pricing_manual_interval' ],
+						'surge_pricing_fare' => ['$addToSet' => '$surge_pricing_fare' ],
+						'surge_pricing_custom_interval' => ['$first' => '$surge_pricing_custom_interval' ],
+                        'surge_pricing_interval' => ['$first' => '$surge_pricing_interval' ],//26 feb 2021
+                        'total_drivers' => ['$first' => '$total_drivers' ],//26 feb 2021 
+                        'book_later_fare' => ['$first' => '$book_later_fare' ],//26 feb 2021
+                        'book_later_display_fare' => ['$first' => '$book_later_display_fare' ],//26 feb 2021
+                        'book_later_time_interval' => ['$first' => '$book_later_time_interval' ],//26 feb 2021
+						'surge_pricing_status' => ['$first' => '$surge_pricing_status']
+                    ]]					
+				];
 			  //echo json_encode($arguments); exit;	
 			  $result = $this->mongo_db->aggregate(MDB_MOTOR_MODEL,$arguments);       
-			  return isset($result['result']) ? $result['result'] : array();
+			  return isset($result['result']) ? $result['result'] : [];
 		}
 		// 03 Feb 2020
 
@@ -1167,10 +1167,10 @@ class Model_Commonmodel extends Model
                     }
                 }
                 if($surge_price_percentage != 0) {
-                    $qry = array('_id'=>(int)$trip_id);
+                    $qry = ['_id'=>(int)$trip_id];
                     $update_array['surge_price_status'] = (int)1;
                     $update_array['surge_price_percentage'] = $surge_price_percentage;
-                    $res = $this->mongo_db->update(MDB_PASSENGERS_LOGS,$qry,array('$set'=>$update_array),array('multiple'=>true));
+                    $res = $this->mongo_db->update(MDB_PASSENGERS_LOGS,$qry,['$set'=>$update_array],['multiple'=>true]);
                 }
 
             }            
@@ -1231,16 +1231,16 @@ class Model_Commonmodel extends Model
                 }
 
                 if($checkCorporateGroup && $passengerid != "") {
-                  $filter = array(
+                  $filter = [
                     "members" => (int)$passengerid
-                  );
-                  $project = array(
+                  ];
+                  $project = [
                     '_id' => 1,
                     'corporate_trip_discount' => 1,
                     'corporate_discount' => 1
-                  );
+                  ];
                   $passengerGroup = $this->mongo_db->find(MDB_CORPORATE_GROUP_NEW,$filter,$project);
-                  $passengerGroup = (!empty($passengerGroup)) ? iterator_to_array($passengerGroup,false) : array();
+                  $passengerGroup = (!empty($passengerGroup)) ? iterator_to_array($passengerGroup,false) : [];
 
                   if(isset($passengerGroup[0]) && isset($passengerGroup[0]['corporate_trip_discount']) && $passengerGroup[0]['corporate_trip_discount'] == 1) {
 
@@ -1250,14 +1250,14 @@ class Model_Commonmodel extends Model
                 }
 
                 if($surge_price_percentage != 0) {
-                    $qry = array('_id'=>(int)$trip_id);
+                    $qry = ['_id'=>(int)$trip_id];
                     $update_array['surge_price_status'] = (int)1;
                     $update_array['surge_price_percentage'] = (float)$surge_price_percentage;
 
                     /* Sasidharan oct 04 2022 */
                     $update_array['surge_display_fare'] = $surge_display_fare;
 
-                    $res = $this->mongo_db->update(MDB_PASSENGERS_LOGS,$qry,array('$set'=>$update_array),array('multiple'=>true));
+                    $res = $this->mongo_db->update(MDB_PASSENGERS_LOGS,$qry,['$set'=>$update_array],['multiple'=>true]);
                 }
             }
         }
@@ -1265,16 +1265,16 @@ class Model_Commonmodel extends Model
 
     /* Sasi */
     public function getPassengerGroupInfo($passengerid) {
-        $filter = array(
+        $filter = [
           "members" => (int)$passengerid
-        );
-        $project = array(
+        ];
+        $project = [
           '_id' => 1,
           'corporate_trip_discount' => 1,
           'corporate_discount' => 1
-        );
+        ];
         $passengerGroup = $this->mongo_db->find(MDB_CORPORATE_GROUP_NEW,$filter,$project);
-        return (!empty($passengerGroup))?iterator_to_array($passengerGroup,false):array(); 
+        return (!empty($passengerGroup))?iterator_to_array($passengerGroup,false):[]; 
     }
 
     /* Sasidharan Jan 31 2023 */

@@ -13,17 +13,17 @@ Class Model_Cms extends Model
         $default_companyid = COMPANY_CID;
         //echo $content.'=='.$default_companyid;//exit;
         if ($default_companyid != 1) {
-            $cms_result = $this->mongo_db->find_one(MDB_COMPANY, array(
+            $cms_result = $this->mongo_db->find_one(MDB_COMPANY, [
                 'cid' => (int) $default_companyid,
                 'cms.type' => 1,
                 'cms.status' => 1,
                 'cms.page_url' => $content
-            ), array(
+            ], [
                 'cms.page_url' => 1,
                 'cms.content' => 1,
                 'cms.menu_name' => 1
-            ));
-            $res        = array();
+            ]);
+            $res        = [];
             //echo '<pre>';
             //print_r($cms_result);
             if (count($cms_result) > 0) {
@@ -36,7 +36,7 @@ Class Model_Cms extends Model
                 }
             }
         } else {
-			$array = array(
+			$array = [
                 'content',
 				'arabic_content',
                 'meta_keyword',
@@ -44,13 +44,13 @@ Class Model_Cms extends Model
                 'meta_description',
                 'menu',
 				'arabic_menu_name'
-            );
+            ];
 			//echo $content;exit;
-            $cms_result = $this->mongo_db->find_one(MDB_CMS, array(
+            $cms_result = $this->mongo_db->find_one(MDB_CMS, [
                 'type' => "1",
                 'status' => (int)1,
                 'menu_link' => $content
-            ), $array);
+            ], $array);
             $res        = $cms_result;
 			/*echo '<pre>',print_r($cms_result);exit;
             foreach ($cms_result as $keys => $values) {
@@ -63,12 +63,12 @@ Class Model_Cms extends Model
     /*Get the CMS Content*/
     public function getcompanycontent($pagename, $cid)
     {
-        $contentcom = $this->mongo_db->find_one(MDB_COMPANY, array(
+        $contentcom = $this->mongo_db->find_one(MDB_COMPANY, [
             'cid' => $cid,
             'cms.page_url' => $pagename,
             'cms.status' => 1
-        ));
-        $res        = array();
+        ]);
+        $res        = [];
         foreach ($contentcom as $keys => $values) {
             $res[0][$keys] = $values;
         }
@@ -76,13 +76,13 @@ Class Model_Cms extends Model
     }
     public function get_company_addr($cid)
     {
-        $res = array();
+        $res = [];
         if ($cid != 1) {
-            $contentcom = $this->mongo_db->find_one(MDB_COMPANY, array(
+            $contentcom = $this->mongo_db->find_one(MDB_COMPANY, [
                 'cid' => $cid
-            ), array(
+            ], [
                 'company_address'
-            ));
+            ]);
             foreach ($contentcom as $keys => $values) {
                 $res[0][$keys] = $values;
             }
@@ -92,8 +92,8 @@ Class Model_Cms extends Model
 
     public function get_model_list(){
 
-        $arguments = array(array('$match'=>array('model_status'=> 'A')),
-                               array('$project'=>array(
+        $arguments = [['$match'=>['model_status'=> 'A']],
+                               ['$project'=>[
                                     'model_id' => '$_id',
                                     'model_name' => '$model_name',
                                     'model_name_ar' => '$model_name_ar',
@@ -132,19 +132,19 @@ Class Model_Cms extends Model
                                     'model_image_2'=>'$model_image_2',
                                     'model_fare_image'=>'$model_fare_image',
                                     'minutes_fare'=>'$minutes_fare',
-                                    'website_model_image'=>array('$ifNull'=>array('$website_model_image','')),
+                                    'website_model_image'=>['$ifNull'=>['$website_model_image','']],
                                     'category_name'=>'$category_name',
 
-                               )),
-                                array(
-                                    '$sort' => array( 
+                               ]],
+                                [
+                                    '$sort' => [ 
                                         'priority' => 1
-                                    ),
-                                ),                              
-                            );   
+                                    ],
+                                ],                              
+                            ];   
                            // echo "<pre>";print_r($arguments);exit();         
             $result = $this->mongo_db->aggregate(MDB_MOTOR_MODEL,$arguments);
-            return (!empty($result['result'])) ? $result['result']: array();
+            return (!empty($result['result'])) ? $result['result']: [];
 
     }
 }

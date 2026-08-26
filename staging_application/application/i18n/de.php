@@ -1,6 +1,6 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 
-return array(
+return [
 'button_login' => 'Log In',
 'button_signup' => 'Sign Up',
 'button_update' => 'Update',
@@ -2157,4 +2157,4 @@ provided by its licensed drivers who undergo rigorous training and screening to 
 'taxi_assign_period_end' => 'Taxi zugeordnet Periode abgelaufen ist',
 'no_completed_data_month' => 'Es gibt keine abgeschlossene Reise in diesem Monat',
 'referral_code_info_details'=>'Geben Sie bitte hier Referral-Code , um freie Fahrt Gutscheine zu verdienen. Hinweis: Referral Regelung gilt nur für Benutzer, die noch nie auf gebucht haben '.SITE_NAME.' Vor.',
-); 
+]; 

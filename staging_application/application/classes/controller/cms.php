@@ -14,7 +14,7 @@ Class Controller_Cms extends Controller_Website
 	{
 		$cms = Model::factory('cms');
 		$contentcms = $cms->get_cmscontent();
-		$content_cms = array();
+		$content_cms = [];
 		foreach($contentcms as $keys=>$values){
 			$content_cms[0][$keys]=$values;
 			

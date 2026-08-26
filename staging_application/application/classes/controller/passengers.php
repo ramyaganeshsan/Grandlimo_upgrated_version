@@ -183,7 +183,7 @@ Class Controller_Passengers extends Controller_Website
 		} else {
 			$charisma = 'charisma-app-arabic';	
 		}
-        $dashstyles                       = array(
+        $dashstyles                       = [
             CSSPATH . 'dashboard/bootstrap-responsive.css' => 'screen',
             CSSPATH . 'dashboard/'.$charisma.'.css' => 'screen',
             CSSPATH . 'dashboard/jquery-ui-1.8.21.custom.css' => 'screen',
@@ -193,8 +193,8 @@ Class Controller_Passengers extends Controller_Website
             CSSPATH . 'dashboard/noty_theme_default.css' => 'screen',
             CSSPATH . 'dashboard/jquery.iphone.toggle.css' => 'screen',
             CSSPATH . 'dashboard/opa-icons.css' => 'screen'
-        );
-        $dashscripts                      = array(
+        ];
+        $dashscripts                      = [
             SCRIPTPATH . 'dashboard/jquery-ui-1.8.21.custom.min.js',
             SCRIPTPATH . 'dashboard/bootstrap-transition.js',
             SCRIPTPATH . 'dashboard/bootstrap-alert.js',
@@ -215,7 +215,7 @@ Class Controller_Passengers extends Controller_Website
             SCRIPTPATH . 'dashboard/jquery.history.js',
             SCRIPTPATH . 'dashboard/charisma.js',
             SCRIPTPATH . 'highcharts.js'
-        );
+        ];
 		if(isset($_GET['type'])){
 			$my_id =1;
 		}  
@@ -282,7 +282,7 @@ Class Controller_Passengers extends Controller_Website
 		} else {
 			$charisma = 'charisma-app-arabic';	
 		}
-        $dashstyles                               = array(
+        $dashstyles                               = [
             CSSPATH . 'dashboard/bootstrap-responsive.css' => 'screen',
             CSSPATH . 'dashboard/'.$charisma.'.css' => 'screen',
             CSSPATH . 'dashboard/jquery-ui-1.8.21.custom.css' => 'screen',
@@ -292,8 +292,8 @@ Class Controller_Passengers extends Controller_Website
             CSSPATH . 'dashboard/noty_theme_default.css' => 'screen',
             CSSPATH . 'dashboard/jquery.iphone.toggle.css' => 'screen',
             CSSPATH . 'dashboard/opa-icons.css' => 'screen'
-        );
-        $dashscripts                              = array(
+        ];
+        $dashscripts                              = [
             SCRIPTPATH . 'dashboard/jquery-ui-1.8.21.custom.min.js',
             SCRIPTPATH . 'dashboard/bootstrap-transition.js',
             SCRIPTPATH . 'dashboard/bootstrap-alert.js',
@@ -314,7 +314,7 @@ Class Controller_Passengers extends Controller_Website
             SCRIPTPATH . 'dashboard/jquery.history.js',
             SCRIPTPATH . 'dashboard/charisma.js',
             SCRIPTPATH . 'highcharts.js'
-        );
+        ];
 		$log_id    = $this->request->param('id');//exit;
 		$this->is_login();
         $this->is_login_status();
@@ -344,7 +344,7 @@ Class Controller_Passengers extends Controller_Website
         }
       public function action_get_favourite_list(){
 		$passengers = Model::factory('passengers');
-        $errors     = array();
+        $errors     = [];
         $this->is_login();
         $this->is_login_status();
         $userid                                   = $this->session->get('id');
@@ -354,7 +354,7 @@ Class Controller_Passengers extends Controller_Website
 		} else {
 			$charisma = 'charisma-app-arabic';	
 		}
-        $dashstyles                               = array(
+        $dashstyles                               = [
             CSSPATH . 'dashboard/bootstrap-responsive.css' => 'screen',
             CSSPATH . 'dashboard/'.$charisma.'.css' => 'screen',
             CSSPATH . 'dashboard/jquery-ui-1.8.21.custom.css' => 'screen',
@@ -364,8 +364,8 @@ Class Controller_Passengers extends Controller_Website
             CSSPATH . 'dashboard/noty_theme_default.css' => 'screen',
             CSSPATH . 'dashboard/jquery.iphone.toggle.css' => 'screen',
             CSSPATH . 'dashboard/opa-icons.css' => 'screen'
-        );
-        $dashscripts                              = array(
+        ];
+        $dashscripts                              = [
             SCRIPTPATH . 'dashboard/jquery-ui-1.8.21.custom.min.js',
             SCRIPTPATH . 'dashboard/bootstrap-transition.js',
             SCRIPTPATH . 'dashboard/bootstrap-alert.js',
@@ -386,7 +386,7 @@ Class Controller_Passengers extends Controller_Website
             SCRIPTPATH . 'dashboard/jquery.history.js',
             SCRIPTPATH . 'dashboard/charisma.js',
             SCRIPTPATH . 'highcharts.js'
-        );
+        ];
         //all Completed Status with transaction
        // $favourite_list = $passengers->get_favourite_list($userid);
        $favourite_list          = $passengers->get_favourite_list($userid,0, 0);
@@ -396,15 +396,15 @@ Class Controller_Passengers extends Controller_Website
         if ($page_no == 0 || $page_no == 'index')
             $page_no = PAGE_NO;
         $offset                        = REC_PER_PAGE * ($page_no - 1);
-        $pag_data                      = Pagination::factory(array(
-            'current_page' => array(
+        $pag_data                      = Pagination::factory([
+            'current_page' => [
                 'source' => 'query_string',
                 'key' => 'page'
-            ),
+            ],
             'items_per_page' => REC_PER_PAGE,
             'total_items' => count($favourite_list),
             'view' => 'pagination/punbb'
-        ));
+        ]);
         //echo REC_PER_PAGE;exit;
         // echo count($favourite_list);
         //print_r($favourite_list);exit;
@@ -432,7 +432,7 @@ Class Controller_Passengers extends Controller_Website
 			$charisma = 'charisma-app-arabic';	
 		}
         /*** Dashboard Style & Scripts ***/
-        $dashstyles                       = array(
+        $dashstyles                       = [
             CSSPATH . 'dashboard/bootstrap-responsive.css' => 'screen',
             CSSPATH . 'dashboard/'.$charisma.'.css' => 'screen',
             CSSPATH . 'dashboard/jquery-ui-1.8.21.custom.css' => 'screen',
@@ -443,8 +443,8 @@ Class Controller_Passengers extends Controller_Website
             CSSPATH . 'dashboard/jquery.iphone.toggle.css' => 'screen',
             CSSPATH . 'timerstyle.css' => 'screen',
             CSSPATH . 'dashboard/opa-icons.css' => 'screen'
-        );
-        $dashscripts                      = array(
+        ];
+        $dashscripts                      = [
             SCRIPTPATH . 'dashboard/jquery-ui-1.8.21.custom.min.js',
             SCRIPTPATH . 'dashboard/bootstrap-transition.js',
             SCRIPTPATH . 'dashboard/bootstrap-alert.js',
@@ -466,7 +466,7 @@ Class Controller_Passengers extends Controller_Website
             SCRIPTPATH . 'dashboard/charisma.js',
             SCRIPTPATH . 'highcharts.js',
             SCRIPTPATH . 'kkcountdown.js'
-        );
+        ];
         //Last argumant - 0 -> Today, 1->all
         //Today Completed Status
         $passengers_today_compl           = $passengers->get_passenger_log_details($userid, 1, 'A', '0', 0, REC_PER_PAGE, COMPANY_CID);
@@ -760,7 +760,7 @@ Class Controller_Passengers extends Controller_Website
         $siteusers      = Model::factory('passengers');
         $mobile_api      = Model::factory('mobileapi115');
         $activation_key = Commonfunction::admin_random_user_password_generator();
-        $errors         = array();
+        $errors         = [];
         $id             = $this->session->get('id');
         $usrid          = $id; // isset($userid)?$userid:$id; 
         /**If session is set it should not allow login page through URL**/
@@ -769,7 +769,7 @@ Class Controller_Passengers extends Controller_Website
             $lang_select = arr::get($_REQUEST, 'language');
             if ($_REQUEST) {
                 /**Send entered values to model for validation**/
-                $formvalues            = Arr::extract($_REQUEST, array(
+                $formvalues            = Arr::extract($_REQUEST, [
                     'salutation',
                     'name',
                     'lastname',
@@ -782,7 +782,7 @@ Class Controller_Passengers extends Controller_Website
                     'creditcard_cvv',
                     'expdatemonth',
                     'expdateyear',
-                ));
+                ]);
                 $passenger_validator = $siteusers->passenger_validation($formvalues);
                 if($passenger_validator->check()){
 
@@ -811,11 +811,11 @@ Class Controller_Passengers extends Controller_Website
 					$this->mongo_db = MangoDB::instance('default');
                     $otp       = text::random($type = 'alnum', $length = 5);
                     $signup_id = $siteusers->add_passenger($formvalues, $otp, $referred_passenger_id, $random_key);
-                    $result = $this->mongo_db->find(MDB_PASSENGERS,array(),array('_id'))->sort(array('_id'=>-1))->limit(1);
+                    $result = $this->mongo_db->find(MDB_PASSENGERS,[],['_id'])->sort(['_id'=>-1])->limit(1);
 					$id = iterator_to_array($result);
 					reset($id);
 					$first_key = key($id);
-                    $mobiledata = array(
+                    $mobiledata = [
                     'email' => $_POST['email'],
                     'phone' => $_POST['phone'],
                     'passenger_id' => $first_key,
@@ -826,14 +826,14 @@ Class Controller_Passengers extends Controller_Website
                     'card_type' => 'P',
                     'default' => (int)1,
                     
-                    );
+                    ];
                     
                     $mobile_api_update = $mobile_api->add_passenger_carddata($mobiledata);
                     
                         if ($signup_id == 1) {
                             $link              = URL_BASE . 'passengers/validateotp/?key=' . $random_key;
                             $mail              = "";
-                            $replace_variables = array(
+                            $replace_variables = [
                                 REPLACE_LOGO => URL_BASE . PUBLIC_FOLDER_IMGPATH . '/logo.png',
                                 REPLACE_SITENAME => COMPANY_SITENAME,
                                 REPLACE_USERNAME => '',
@@ -844,7 +844,7 @@ Class Controller_Passengers extends Controller_Website
                                 REPLACE_ACTLINK => $link,
                                 REPLACE_COPYRIGHTS => SITE_COPYRIGHT,
                                 REPLACE_COPYRIGHTYEAR => COPYRIGHT_YEAR
-                            );
+                            ];
                             if ($this->lang != 'en') {
                                 if (file_exists(DOCROOT . TEMPLATEPATH . $this->lang . '/otp_pass_website-' . $this->lang . '.html')) {
                                     $message = $this->emailtemplate->emailtemplate(DOCROOT . TEMPLATEPATH . $this->lang . '/otp_pass_website-' . $this->lang . '.html', $replace_variables);
@@ -905,7 +905,7 @@ Class Controller_Passengers extends Controller_Website
     {
         $siteusers = Model::factory('passengers');
         $api       = Model::factory('api');
-        $errors    = array();
+        $errors    = [];
         $id        = $this->session->get('id');
         //$userid = $this->session->get('userid');
         $usrid     = $id; // isset($userid)?$userid:$id; 
@@ -975,7 +975,7 @@ Class Controller_Passengers extends Controller_Website
                         $login_from = $passenger_details['login_from'];
                    // }
                     if ($login_from != 3) {
-                        $replace_variables = array(
+                        $replace_variables = [
                             REPLACE_LOGO => EMAILTEMPLATELOGO,
                             REPLACE_SITENAME => COMPANY_SITENAME,
                             REPLACE_USERNAME => $name,
@@ -988,7 +988,7 @@ Class Controller_Passengers extends Controller_Website
                             REPLACE_COPYRIGHTYEAR => COPYRIGHT_YEAR,
 							REPLACE_ANDROID_PASSENGER_APP => ANDROID_PASSENGER_APP,
                             REPLACE_IOS_PASSENGER_APP => IOS_PASSENGER_APP
-                        );
+                        ];
                         //$message           = $this->emailtemplate->emailtemplate(DOCROOT . TEMPLATEPATH . 'driver-register.html', $replace_variables);
 						if ($this->lang != 'en') {
 							if (file_exists(DOCROOT . TEMPLATEPATH . $this->lang . '/driver-register-' . $this->lang . '.html')) {
@@ -1017,34 +1017,34 @@ Class Controller_Passengers extends Controller_Website
                     }
                     Message::success(__('activation_success') . COMPANY_SITENAME);
                     //Message::success(__('signup_success').'-'.COMPANY_SITENAME);
-                    $message = array(
+                    $message = [
                         "message" => __('otp_expire'),
                         "status" => 1
-                    );
+                    ];
                     echo json_encode($message);
                     exit;
                 } else if ($result == 3) {
                     Message::success(__('otp_already_verified') . '-' . COMPANY_SITENAME);
-                    $message = array(
+                    $message = [
                         "message" => __('otp_already_verified'),
                         "status" => 4
-                    );
+                    ];
                     echo json_encode($message);
                     exit;
                 }
            } else {
-                $message = array(
+                $message = [
                     "message" => __('otp_expire'),
                     "status" => 2
-                );
+                ];
                 echo json_encode($message);
                 exit;
             }
         } else {
-            $message = array(
+            $message = [
                 "message" => __('invalid_otp'),
                 "status" => 3
-            );
+            ];
             echo json_encode($message);
             exit;
         }
@@ -1061,16 +1061,16 @@ Class Controller_Passengers extends Controller_Website
         $otp_result = $passengers->update_otp($email, $random_key, $otp, COMPANY_CID);
         if ($otp_result == 3) {
             Message::success(__('otp_already_verified') . '-' . COMPANY_SITENAME);
-            $message = array(
+            $message = [
                 "message" => __('otp_already_verified'),
                 "status" => 2
-            );
+            ];
             echo json_encode($message);
             exit;
         } else if ($otp_result == 1) {
             $mail              = "";
             $link              = URL_BASE . 'passengers/validateotp/?key=' . $random_key;
-            $replace_variables = array(
+            $replace_variables = [
                 REPLACE_LOGO => URL_BASE . PUBLIC_FOLDER_IMGPATH . '/logo.png',
                 REPLACE_SITENAME => COMPANY_SITENAME,
                 REPLACE_USERNAME => '',
@@ -1081,7 +1081,7 @@ Class Controller_Passengers extends Controller_Website
                 REPLACE_ACTLINK => $link,
                 REPLACE_COPYRIGHTS => SITE_COPYRIGHT,
                 REPLACE_COPYRIGHTYEAR => COPYRIGHT_YEAR
-            );
+            ];
             //$message           = $this->emailtemplate->emailtemplate(DOCROOT . TEMPLATEPATH . 'otp_pass_website.html', $replace_variables);
 			if ($this->lang != 'en') {
 				if (file_exists(DOCROOT . TEMPLATEPATH . $this->lang . '/otp_pass_website-' . $this->lang . '.html')) {
@@ -1118,18 +1118,18 @@ Class Controller_Passengers extends Controller_Website
             $result = file_get_contents("http://s1.freesmsapi.com/messages/send?skey=b5cedd7a407366c4b4459d3509d4cebf&message=".urlencode($message)."&senderid=NAJIK&recipient=$to");
             }*/
             Message::success(__('resend_otp') . '-' . COMPANY_SITENAME);
-            $message = array(
+            $message = [
                 "message" => __('resend_otp'),
                 "email" => $email,
                 "status" => 1
-            );
+            ];
             echo json_encode($message);
             exit;
         } else {
-            $message = array(
+            $message = [
                 "message" => __('otp_already_verified_try_again'),
                 "status" => 3
-            );
+            ];
             echo json_encode($message);
             exit;
         }
@@ -1157,7 +1157,7 @@ Class Controller_Passengers extends Controller_Website
 				if ($result) {
 					$mail              = "";
 					
-					$replace_variables = array(
+					$replace_variables = [
 						REPLACE_LOGO => EMAILTEMPLATELOGO,
 						REPLACE_SITENAME => COMPANY_SITENAME,
 						REPLACE_USERNAME => ucfirst($result['name']),
@@ -1169,7 +1169,7 @@ Class Controller_Passengers extends Controller_Website
 						SITE_DESCRIPTION => $this->app_description,
 						REPLACE_COPYRIGHTS => SITE_COPYRIGHT,
 						REPLACE_COPYRIGHTYEAR => COPYRIGHT_YEAR
-					);
+					];
 				   
 					if ($this->lang != 'en') {
 						if (file_exists(DOCROOT . TEMPLATEPATH . $this->lang . '/user-forgotpassword-' . $this->lang . '.html')) {
@@ -1230,7 +1230,7 @@ Class Controller_Passengers extends Controller_Website
                 $phone    = $result['phone'];
                 $password = $result['org_password'];
             }
-            $replace_variables = array(
+            $replace_variables = [
                 REPLACE_LOGO => EMAILTEMPLATELOGO,
                 REPLACE_SITENAME => COMPANY_SITENAME,
                 REPLACE_USERNAME => $name,
@@ -1243,7 +1243,7 @@ Class Controller_Passengers extends Controller_Website
                 REPLACE_COPYRIGHTYEAR => COPYRIGHT_YEAR,
 				REPLACE_ANDROID_PASSENGER_APP => ANDROID_PASSENGER_APP,
                 REPLACE_IOS_PASSENGER_APP => IOS_PASSENGER_APP
-            );
+            ];
             //$message           = $this->emailtemplate->emailtemplate(DOCROOT . TEMPLATEPATH . 'driver-register.html', $replace_variables);
 			if ($this->lang != 'en') {
 				if (file_exists(DOCROOT . TEMPLATEPATH . $this->lang . '/driver-register-' . $this->lang . '.html')) {
@@ -1308,7 +1308,7 @@ Class Controller_Passengers extends Controller_Website
                 $result = $siteusers->login($phone, $password, $remember);
                 if ($result == 1) {
 					
-                    $formvalues = Arr::extract($_REQUEST, array(
+                    $formvalues = Arr::extract($_REQUEST, [
                         'c_location',
                         'd_location',
                         'n_passengers',
@@ -1316,7 +1316,7 @@ Class Controller_Passengers extends Controller_Website
                         'driver_id',
                         'pickupdrop',
                         'waitingtime'
-                    ));
+                    ]);
                     $isbooking  = $_REQUEST['isbooking'];
                     if ($isbooking == '1') {
                         //$usrid =$this->session->get('id');
@@ -1355,13 +1355,13 @@ Class Controller_Passengers extends Controller_Website
             if ($_POST) {
                 /**Send entered values to model for validation**/
                 //  print_r($_POST); 
-                $formvalues = Arr::extract($_POST, array(
+                $formvalues = Arr::extract($_POST, [
                     'lphone',
                     'popup_creditcard_no',
                     'popup_creditcard_cvv',
                     'expdatemonth',
                     'expdateyear'
-                ));
+                ]);
                 // $signup_id=$siteusers->signup($formvalues,$random_key);
                 $result     = $siteusers->update_phonenumber($formvalues, $usrid);
                 if ($result == 1) {
@@ -1406,12 +1406,12 @@ Class Controller_Passengers extends Controller_Website
         $creditcard_cvv   = $_GET['creditcard_cvv'];
         $expdatemonth     = $_GET['expdatemonth'];
         $expdateyear      = $_GET['expdateyear'];
-        $array            = array(
+        $array            = [
             'creditcard_no' => $creditcard_no,
             'creditcard_cvv' => $creditcard_cvv,
             'expdatemonth' => $expdatemonth,
             'expdateyear' => $expdateyear
-        );
+        ];
         $creditcard_valid = $siteusers->authorize_creditcard($array);
         //print_r($creditcard_valid);exit;
         echo $creditcard_valid . '~' . $phone_exist;
@@ -1457,12 +1457,12 @@ Class Controller_Passengers extends Controller_Website
         $expdatemonth           = $_GET['expdatemonth'];
         $expdateyear            = $_GET['expdateyear'];
         $referral_code          = $_GET['referral_code'];
-        $array                  = array(
+        $array                  = [
             'creditcard_no' => $creditcard_no,
             'creditcard_cvv' => $creditcard_cvv,
             'expdatemonth' => $expdatemonth,
             'expdateyear' => $expdateyear
-        );
+        ];
         /*$civilres = $siteusers->civilid_isValid($_GET['civil_id']);
 	$civildup = $siteusers->civilid_duplicate($_GET['civil_id']);*/
 		
@@ -1498,7 +1498,7 @@ Class Controller_Passengers extends Controller_Website
     public function action_profile()
     {
         $siteusers = Model::factory('passengers');
-        $errors    = array();
+        $errors    = [];
         $this->is_login_status();
         //$this->is_login(); 		
         $passenger_id = $this->session->get('id');
@@ -1539,16 +1539,16 @@ Class Controller_Passengers extends Controller_Website
     {
         $passengers        = Model::factory('passengers');
         /**To Set Errors Null to avoid error if not set in view**/
-        $errors            = array();
+        $errors            = [];
         $view              = View::factory(USERVIEW . 'forgot_password')->bind('validator', $validator)->bind('errors', $errors)->bind('success', $success)->bind('email_error', $email_error);
         /**To generate random key if user enter email at forgot password**/
         $random_key        = text::random($type = 'alnum', $length = 7);
         /**To get the form submit button name**/
         $change_pwd_submit = arr::get($_REQUEST, 'submit_forgot_password');
         if ($change_pwd_submit && Validation::factory($_POST)) {
-            $validator = $passengers->validate_forgotpwd(arr::extract($_POST, array(
+            $validator = $passengers->validate_forgotpwd(arr::extract($_POST, [
                 'email'
-            )));
+            ]));
             if ($validator->check()) {
                 $email_exist = $passengers->check_email_passengers($_POST['email'], COMPANY_CID);
                 if ($email_exist == 1) {
@@ -1557,7 +1557,7 @@ Class Controller_Passengers extends Controller_Website
                     $result            = $passengers->check_passengers_det($_POST['email']);
                     $mail              = "";
                     $link              = URL_BASE . 'passengers/forget_pwd_activateaccount/?email=' . $_POST['email']. '&key='.$expirekey;
-                    $replace_variables = array(
+                    $replace_variables = [
                         REPLACE_LOGO => EMAILTEMPLATELOGO,
                         REPLACE_SITENAME => COMPANY_SITENAME,
                         REPLACE_NAME => ucfirst($result['name']),
@@ -1567,7 +1567,7 @@ Class Controller_Passengers extends Controller_Website
                         REPLACE_ACTLINK => $link,
                         REPLACE_COPYRIGHTS => SITE_COPYRIGHT,
                         REPLACE_COPYRIGHTYEAR => COPYRIGHT_YEAR
-                    );
+                    ];
                     //$message           = $this->emailtemplate->emailtemplate(DOCROOT . TEMPLATEPATH . 'customer_forget_pwd_activation.html', $replace_variables);
 					if ($this->lang != 'en') {
 						if (file_exists(DOCROOT . TEMPLATEPATH . $this->lang . '/customer_forget_pwd_activation-' . $this->lang . '.html')) {
@@ -1702,7 +1702,7 @@ Class Controller_Passengers extends Controller_Website
             }
             else {*/
             /**Check user by sending values to model **/
-            $formvalues       = Arr::extract($_GET, array(
+            $formvalues       = Arr::extract($_GET, [
                 'c_location',
                 'd_location',
                 'n_passengers',
@@ -1714,7 +1714,7 @@ Class Controller_Passengers extends Controller_Website
                 'pass_logid',
                 'driver_away_in_km',
                 'notes'
-            ));
+            ]);
             $driver_id        = mysql_real_escape_string($_GET['driver_id']);
             $driver_model     = Model::factory('driver');
             $driver_details   = $driver_model->get_driver_profile_details($driver_id);
@@ -1747,9 +1747,9 @@ Class Controller_Passengers extends Controller_Website
                     $passenger_logid    = $result['pass_logid'];
                     //$passenger_logid = $passengerid[0]['id'];
                     $api                = Model::factory('api');
-                    $config_array       = $api->select_site_settings(array(
+                    $config_array       = $api->select_site_settings([
                         'notification_settings'
-                    ), SITEINFO);
+                    ], SITEINFO);
                     $bookinglog_details = $api->get_passengerlog_notify($passenger_logid);
                     if (count($config_array) > 0) {
                         $notification_time = $config_array[0]['notification_settings'];
@@ -1762,7 +1762,7 @@ Class Controller_Passengers extends Controller_Website
                     $city_result       = Db::query(Database::SELECT, $city_query)->execute()->as_array();
                     $cityname          = $city_result[0]['city_name'];
                     $driver_away_in_km = round($formvalues['driver_away_in_km'], 2);
-                    $booking_details   = array(
+                    $booking_details   = [
                         "approx_fare" => $bookinglog_details[0]['approx_fare'],
                         "drop_latitude" => $bookinglog_details[0]['drop_latitude'],
                         "bookedby" => BOOK_BY_PASSENGER,
@@ -1784,7 +1784,7 @@ Class Controller_Passengers extends Controller_Website
                         "cityname" => $cityname,
                         "pickup_latitude" => $bookinglog_details[0]['pickup_latitude'],
                         "pickup_time" => $time
-                    );
+                    ];
                     // Passenger Details 
                     $passenger_details = $api->passenger_profile($bookinglog_details[0]['passengers_id']);
                     $passenger_name    = $profile_image = "";
@@ -1800,7 +1800,7 @@ Class Controller_Passengers extends Controller_Website
                     }
                     $taxi_speed     = $api->get_taxi_speed($formvalues['taxi_id']);
                     $estimated_time = $api->estimated_time($driver_away_in_km, $taxi_speed);
-                    $msg            = array(
+                    $msg            = [
                         "message" => 'You have new trip request.Kindly response the request',
                         "status" => 1,
                         "Passenger_logid" => $passenger_logid,
@@ -1808,7 +1808,7 @@ Class Controller_Passengers extends Controller_Website
                         "notification_time" => $notification_time,
                         "estimated_time" => $estimated_time,
                         "notes" => $notes
-                    );
+                    ];
                     //print_r($msg);exit;
                     Message::success(__('save_booking_success'));
                     //echo __('save_booking_success');
@@ -1816,25 +1816,25 @@ Class Controller_Passengers extends Controller_Website
                     //---------------------------------- ANDROID ----------------------------------//
                     //$apikey = "AIzaSyAlFdMOAPiPDdcGdJtrxPmdRNiyWPeAvdQ"; //first for taximobility
                     $driver_android_api = $commonmodel->select_site_settings('driver_android_key', SITEINFO);
-                    $registrationIDs    = array(
+                    $registrationIDs    = [
                         $device_token
-                    );
+                    ];
                     // Message to be sent
                     if (!empty($registrationIDs)) {
                         // Set POST variables
                         $url     = 'https://android.googleapis.com/gcm/send';
                         //print_r($registrationIDs);exit;
-                        $fields  = array(
+                        $fields  = [
                             'registration_ids' => $registrationIDs,
-                            'data' => array(
+                            'data' => [
                                 "message" => $msg,
                                 "title" => SITE_NAME
-                            )
-                        );
-                        $headers = array(
+                            ]
+                        ];
+                        $headers = [
                             'Authorization: key=' . $driver_android_api,
                             'Content-Type: application/json'
-                        );
+                        ];
                         // Open connection
                         $ch      = curl_init();
                         // Set the url, number of POST vars, POST data
@@ -1974,7 +1974,7 @@ Class Controller_Passengers extends Controller_Website
 			$charisma = 'charisma-app-arabic';	
 		}
         /*** Dashboard Style & Scripts ***/
-        $dashstyles                       = array(
+        $dashstyles                       = [
             CSSPATH . 'dashboard/bootstrap-responsive.css' => 'screen',
             CSSPATH . 'dashboard/'.$charisma.'.css' => 'screen',
             CSSPATH . 'dashboard/jquery-ui-1.8.21.custom.css' => 'screen',
@@ -1984,8 +1984,8 @@ Class Controller_Passengers extends Controller_Website
             CSSPATH . 'dashboard/noty_theme_default.css' => 'screen',
             CSSPATH . 'dashboard/jquery.iphone.toggle.css' => 'screen',
             CSSPATH . 'dashboard/opa-icons.css' => 'screen'
-        );
-        $dashscripts                      = array(
+        ];
+        $dashscripts                      = [
             SCRIPTPATH . 'dashboard/jquery-ui-1.8.21.custom.min.js',
             SCRIPTPATH . 'dashboard/bootstrap-transition.js',
             SCRIPTPATH . 'dashboard/bootstrap-alert.js',
@@ -2006,7 +2006,7 @@ Class Controller_Passengers extends Controller_Website
             SCRIPTPATH . 'dashboard/jquery.history.js',
             SCRIPTPATH . 'dashboard/charisma.js',
             SCRIPTPATH . 'highcharts.js'
-        );
+        ];
         //all Completed Status with transaction
         $passengers_all_total_compl_trans = $passengers->get_total_passenger_favourite_trip($userid, 1, 'A', '1', COMPANY_CID);
         //print_r($passengers_all_total_compl_trans[0]['co_nt']);
@@ -2015,15 +2015,15 @@ Class Controller_Passengers extends Controller_Website
         if ($page_no == 0 || $page_no == 'index')
             $page_no = PAGE_NO;
         $offset                        = REC_PER_PAGE * ($page_no - 1);
-        $pag_data                      = Pagination::factory(array(
-            'current_page' => array(
+        $pag_data                      = Pagination::factory([
+            'current_page' => [
                 'source' => 'query_string',
                 'key' => 'page'
-            ),
+            ],
             'items_per_page' => REC_PER_PAGE,
             'total_items' => $passengers_all_total_compl_trans[0]['co_nt'],
             'view' => 'pagination/punbb'
-        ));
+        ]);
         //all Completed Status with transaction
         $passengers_all_compl_trans    = $passengers->get_passenger_favourite_trip($userid, 1, 'A', '1', $offset, REC_PER_PAGE);
         $view                          = View::factory(USERVIEW . 'favourite_trip')->bind('passengers_all_compl_trans', $passengers_all_compl_trans)->bind('dashstyles', $dashstyles)->bind('dashscripts', $dashscripts)->bind('pag_data', $pag_data)->bind('offset', $offset)->bind('userid', $userid);
@@ -2052,7 +2052,7 @@ Class Controller_Passengers extends Controller_Website
     public function action_ajaxforgotpassword()
     {
         $siteusers   = Model::factory('siteusers');
-        $errors      = array();
+        $errors      = [];
         /**To generate random key if user enter email at forgot password**/
         $random_key  = text::random($type = 'alnum', $length = 7);
         $email_exist = $siteusers->check_email($_POST['email']);
@@ -2063,7 +2063,7 @@ Class Controller_Passengers extends Controller_Website
                 $forgotpassword    = $this->emailtemplate->get_template_content(FORGOT_PASSWORD);
                 $subject           = $forgotpassword[0]['email_subject'];
                 $content           = $forgotpassword[0]['email_content'];
-                $replace_variables = array(
+                $replace_variables = [
                     REPLACE_LOGO => EMAILTEMPLATELOGO,
                     REPLACE_SITENAME => COMPANY_SITENAME,
                     REPLACE_USERNAME => ucfirst($result[0]['name']),
@@ -2075,7 +2075,7 @@ Class Controller_Passengers extends Controller_Website
                     SITE_DESCRIPTION => $this->app_description,
                     REPLACE_COPYRIGHTS => SITE_COPYRIGHT,
                     REPLACE_COPYRIGHTYEAR => COPYRIGHT_YEAR
-                );
+                ];
                 //$message           = $this->emailtemplate->emailtemplate(DOCROOT . TEMPLATEPATH . 'mail_template.html', $replace_variables, $content);
 				if ($this->lang != 'en') {
 					if (file_exists(DOCROOT . TEMPLATEPATH . $this->lang . '/mail_template-' . $this->lang . '.html')) {
@@ -2326,7 +2326,7 @@ Class Controller_Passengers extends Controller_Website
     {
         $passengers = Model::factory('passengers');
         /**To Set Errors Null to avoid error if not set in view**/
-        $errors     = array();
+        $errors     = [];
         /**Check Whether the user is logged in**/
         $this->is_login();
         $this->is_login_status();
@@ -2342,7 +2342,7 @@ Class Controller_Passengers extends Controller_Website
 			$charisma = 'charisma-app-arabic';	
 		}
         /*** Dashboard Style & Scripts ***/
-        $dashstyles           = array(
+        $dashstyles           = [
             CSSPATH . 'dashboard/bootstrap-responsive.css' => 'screen',
             CSSPATH . 'dashboard/'.$charisma.'.css' => 'screen',
             CSSPATH . 'dashboard/jquery-ui-1.8.21.custom.css' => 'screen',
@@ -2352,8 +2352,8 @@ Class Controller_Passengers extends Controller_Website
             CSSPATH . 'dashboard/noty_theme_default.css' => 'screen',
             CSSPATH . 'dashboard/jquery.iphone.toggle.css' => 'screen',
             CSSPATH . 'dashboard/opa-icons.css' => 'screen'
-        );
-        $dashscripts          = array(
+        ];
+        $dashscripts          = [
             SCRIPTPATH . 'dashboard/jquery-ui-1.8.21.custom.min.js',
             SCRIPTPATH . 'dashboard/bootstrap-transition.js',
             SCRIPTPATH . 'dashboard/bootstrap-alert.js',
@@ -2374,11 +2374,11 @@ Class Controller_Passengers extends Controller_Website
             SCRIPTPATH . 'dashboard/jquery.history.js',
             SCRIPTPATH . 'dashboard/charisma.js',
             SCRIPTPATH . 'highcharts.js'
-        );
+        ];
         $_POST                = Arr::map('trim', $this->request->post());
         if ($submit_profile_form2 && Validation::factory($_POST)) {
             /**Send entered values to model for validation**/
-            $validator = $passengers->validate_passengers_profilesettings(arr::extract($_POST, array(
+            $validator = $passengers->validate_passengers_profilesettings(arr::extract($_POST, [
                 'name',
                 'phone',
                 'address',
@@ -2387,7 +2387,7 @@ Class Controller_Passengers extends Controller_Website
                 'creditcard_cvv',
                 'expdatemonth',
                 'expdateyear'
-            )));
+            ]));
             if (!empty($_FILES['profile_picture']['name'])) {
                 $img_name   = uniqid() . $_FILES['profile_picture']['name'];
                 $image_type = explode('.', $img_name);
@@ -2505,7 +2505,7 @@ Class Controller_Passengers extends Controller_Website
     {
         $passengers = Model::factory('passengers');
         /*To set errors in array if errors not set*/
-        $errors     = array();
+        $errors     = [];
         /*checks if user logged or not*/
         $this->is_login();
         $this->is_login_status();
@@ -2519,7 +2519,7 @@ Class Controller_Passengers extends Controller_Website
 			$charisma = 'charisma-app-arabic';	
 		}
         /*** Dashboard Style & Scripts ***/
-        $dashstyles         = array(
+        $dashstyles         = [
             CSSPATH . 'dashboard/bootstrap-responsive.css' => 'screen',
             CSSPATH . 'dashboard/'.$charisma.'.css' => 'screen',
             CSSPATH . 'dashboard/jquery-ui-1.8.21.custom.css' => 'screen',
@@ -2529,8 +2529,8 @@ Class Controller_Passengers extends Controller_Website
             CSSPATH . 'dashboard/noty_theme_default.css' => 'screen',
             CSSPATH . 'dashboard/jquery.iphone.toggle.css' => 'screen',
             CSSPATH . 'dashboard/opa-icons.css' => 'screen'
-        );
-        $dashscripts        = array(
+        ];
+        $dashscripts        = [
             SCRIPTPATH . 'dashboard/jquery-ui-1.8.21.custom.min.js',
             SCRIPTPATH . 'dashboard/bootstrap-transition.js',
             SCRIPTPATH . 'dashboard/bootstrap-alert.js',
@@ -2551,7 +2551,7 @@ Class Controller_Passengers extends Controller_Website
             SCRIPTPATH . 'dashboard/jquery.history.js',
             SCRIPTPATH . 'dashboard/charisma.js',
             SCRIPTPATH . 'highcharts.js'
-        );
+        ];
         $id                 = $userid;
         $usrid              = $id = $userid;
         $submit_change_pass = arr::get($_REQUEST, 'submit_change_pass');
@@ -2559,11 +2559,11 @@ Class Controller_Passengers extends Controller_Website
             $userid1              = $this->session->get('id');
             //$userid2 =$this->session->get('userid');
             $userid               = isset($userid1) ? $userid1 : '';
-            $validator_changepass = $passengers->validate_changepwd(arr::extract($_POST, array(
+            $validator_changepass = $passengers->validate_changepwd(arr::extract($_POST, [
                 'old_password',
                 'new_password',
                 'confirm_password'
-            )));
+            ]));
             //print_r($validator_changepass);exit;
             if ($validator_changepass->check()) {
                 $oldpass_check = $passengers->check_pass($_POST['old_password'], $userid);
@@ -2575,7 +2575,7 @@ Class Controller_Passengers extends Controller_Website
                             //$signup_cont=$this->emailtemplate->get_template_content(USER_CHANGE_PASSWORD);
                             //$subject=$signup_cont[0]['email_subject'];
                             //$content=$signup_cont[0]['email_content'];	
-                            $replace_variables = array(
+                            $replace_variables = [
                                 REPLACE_LOGO => EMAILTEMPLATELOGO,
                                 REPLACE_SITENAME => COMPANY_SITENAME,
                                 REPLACE_USERNAME => ucfirst($result['name']),
@@ -2587,7 +2587,7 @@ Class Controller_Passengers extends Controller_Website
                                 SITE_DESCRIPTION => $this->app_description,
                                 REPLACE_COPYRIGHTS => SITE_COPYRIGHT,
                                 REPLACE_COPYRIGHTYEAR => COPYRIGHT_YEAR
-                            );
+                            ];
                            // $message           = $this->emailtemplate->emailtemplate(DOCROOT . TEMPLATEPATH . 'user-changepassword.html', $replace_variables);
 							if ($this->lang != 'en') {
 								if (file_exists(DOCROOT . TEMPLATEPATH . $this->lang . '/user-changepassword-' . $this->lang . '.html')) {
@@ -2651,7 +2651,7 @@ Class Controller_Passengers extends Controller_Website
     public function action_transactionlog()
     {
         $passengers = Model::factory('passengers');
-        $errors     = array();
+        $errors     = [];
         $this->is_login();
         $this->is_login_status();
         $userid                                   = $this->session->get('id');
@@ -2661,7 +2661,7 @@ Class Controller_Passengers extends Controller_Website
 		} else {
 			$charisma = 'charisma-app-arabic';	
 		}
-        $dashstyles                               = array(
+        $dashstyles                               = [
             CSSPATH . 'dashboard/bootstrap-responsive.css' => 'screen',
             CSSPATH . 'dashboard/'.$charisma.'.css' => 'screen',
             CSSPATH . 'dashboard/jquery-ui-1.8.21.custom.css' => 'screen',
@@ -2671,8 +2671,8 @@ Class Controller_Passengers extends Controller_Website
             CSSPATH . 'dashboard/noty_theme_default.css' => 'screen',
             CSSPATH . 'dashboard/jquery.iphone.toggle.css' => 'screen',
             CSSPATH . 'dashboard/opa-icons.css' => 'screen'
-        );
-        $dashscripts                              = array(
+        ];
+        $dashscripts                              = [
             SCRIPTPATH . 'dashboard/jquery-ui-1.8.21.custom.min.js',
             SCRIPTPATH . 'dashboard/bootstrap-transition.js',
             SCRIPTPATH . 'dashboard/bootstrap-alert.js',
@@ -2693,7 +2693,7 @@ Class Controller_Passengers extends Controller_Website
             SCRIPTPATH . 'dashboard/jquery.history.js',
             SCRIPTPATH . 'dashboard/charisma.js',
             SCRIPTPATH . 'highcharts.js'
-        );
+        ];
         //all Completed Status with transaction
         $passenger_tot_cancel_transaction_details = $passengers->passenger_tot_cancel_transaction_details($id, COMPANY_CID);
         //print_r($passenger_tot_cancel_transaction_details[0]['tot']);
@@ -2702,15 +2702,15 @@ Class Controller_Passengers extends Controller_Website
         if ($page_no == 0 || $page_no == 'index')
             $page_no = PAGE_NO;
         $offset                        = REC_PER_PAGE * ($page_no - 1);
-        $pag_data                      = Pagination::factory(array(
-            'current_page' => array(
+        $pag_data                      = Pagination::factory([
+            'current_page' => [
                 'source' => 'query_string',
                 'key' => 'page'
-            ),
+            ],
             'items_per_page' => REC_PER_PAGE,
             'total_items' => count($passenger_tot_cancel_transaction_details),
             'view' => 'pagination/punbb'
-        ));
+        ]);
         /*$all_transaction_list = $manage_transaction->front_driver_transaction_details('','',$userid,'','',$offset, REC_PER_PAGE);*/
         $all_transaction_list          = $passengers->passenger_cancel_transaction_details($id, COMPANY_CID, $offset, REC_PER_PAGE);
         $view                          = View::factory(USERVIEW . 'transaction_log')->bind('dashstyles', $dashstyles)->bind('dashscripts', $dashscripts)->bind('pag_data', $pag_data)->bind('all_transaction_list', $all_transaction_list)->bind('offset', $offset)->bind('userid', $id)->bind('errors', $errors);
@@ -2726,7 +2726,7 @@ Class Controller_Passengers extends Controller_Website
     public function action_completed_transactionlog()
     {
         $passengers = Model::factory('passengers');
-        $errors     = array();
+        $errors     = [];
         $this->is_login();
         $this->is_login_status();
         $userid      = $this->session->get('id');
@@ -2736,7 +2736,7 @@ Class Controller_Passengers extends Controller_Website
 		} else {
 			$charisma = 'charisma-app-arabic';	
 		}
-        $dashstyles  = array(
+        $dashstyles  = [
             CSSPATH . 'dashboard/bootstrap-responsive.css' => 'screen',
             CSSPATH . 'dashboard/'.$charisma.'.css' => 'screen',
             CSSPATH . 'dashboard/jquery-ui-1.8.21.custom.css' => 'screen',
@@ -2746,8 +2746,8 @@ Class Controller_Passengers extends Controller_Website
             CSSPATH . 'dashboard/noty_theme_default.css' => 'screen',
             CSSPATH . 'dashboard/jquery.iphone.toggle.css' => 'screen',
             CSSPATH . 'dashboard/opa-icons.css' => 'screen'
-        );
-        $dashscripts = array(
+        ];
+        $dashscripts = [
             SCRIPTPATH . 'dashboard/jquery-ui-1.8.21.custom.min.js',
             SCRIPTPATH . 'dashboard/bootstrap-transition.js',
             SCRIPTPATH . 'dashboard/bootstrap-alert.js',
@@ -2768,7 +2768,7 @@ Class Controller_Passengers extends Controller_Website
             SCRIPTPATH . 'dashboard/jquery.history.js',
             SCRIPTPATH . 'dashboard/charisma.js',
             SCRIPTPATH . 'highcharts.js'
-        );
+        ];
         //pagination loads here
         $page_no     = isset($_GET['page']) ? $_GET['page'] : 0;
         if ($page_no == 0 || $page_no == 'index')
@@ -2860,9 +2860,9 @@ Class Controller_Passengers extends Controller_Website
             curl_setopt($ch, CURLOPT_POSTFIELDS, '');
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
             curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
-            curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+            curl_setopt($ch, CURLOPT_HTTPHEADER, [
                 $req_req->to_header()
-            ));
+            ]);
             curl_setopt($ch, CURLOPT_URL, $this->domain . "/requestToken");
             curl_setopt($ch, CURLOPT_POST, 1);
             $output = curl_exec($ch);
@@ -2887,9 +2887,9 @@ Class Controller_Passengers extends Controller_Website
             curl_setopt($ch, CURLOPT_POSTFIELDS, '');
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
             curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
-            curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+            curl_setopt($ch, CURLOPT_HTTPHEADER, [
                 $acc_req->to_header()
-            ));
+            ]);
             curl_setopt($ch, CURLOPT_URL, $this->domain . "/accessToken");
             curl_setopt($ch, CURLOPT_POST, 1);
             $output = curl_exec($ch);
@@ -2926,14 +2926,14 @@ Class Controller_Passengers extends Controller_Website
                     }
                     //set linkedin details in session
                     //================================
-                    $this->session->set('linkdin_details', array(
+                    $this->session->set('linkdin_details', [
                         'username' => $uname,
                         'name' => $uname,
                         'pubprofile' => htmlspecialchars($profile_url),
                         'profileimage' => htmlspecialchars($image_url),
                         'access_token' => $oauth['oauth_token'],
                         'secret_key' => $oauth['oauth_token_secret']
-                    ));
+                    ]);
                     $linkdin_add = $this->session->get('linkdin_add');
                     if ($linkdin_add == 'addlinkdin') {
                         $this->request->redirect("socialnetwork/linkedin_user_add");
@@ -2985,7 +2985,7 @@ Class Controller_Passengers extends Controller_Website
                 //==========================
                 $connect                 = $siteusers->people_connect($usrid, $connec_id);
                 //print_r($details); print_r($cur_user);  print_r($details1);exit;
-                $replace_variables       = array(
+                $replace_variables       = [
                     REPLACE_LOGO => EMAILTEMPLATELOGO,
                     REPLACE_SITENAME => COMPANY_SITENAME,
                     REPLACE_EMAIL => $cur_user[0]['email'],
@@ -2993,7 +2993,7 @@ Class Controller_Passengers extends Controller_Website
                     REPLACE_SITEEMAIL => CONTACT_EMAIL,
                     REPLACE_COPYRIGHTS => SITE_COPYRIGHT,
                     REPLACE_COPYRIGHTYEAR => COPYRIGHT_YEAR
-                );
+                ];
                 //$message                 = $this->emailtemplate->emailtemplate(DOCROOT . TEMPLATEPATH . 'connect.html', $replace_variables);
 				if ($this->lang != 'en') {
 					if (file_exists(DOCROOT . TEMPLATEPATH . $this->lang . '/connect-' . $this->lang . '.html')) {
@@ -3004,12 +3004,12 @@ Class Controller_Passengers extends Controller_Website
 				} else {
 					$message = $this->emailtemplate->emailtemplate(DOCROOT . TEMPLATEPATH . 'connect.html', $replace_variables);
 				}
-                $mail                    = array(
+                $mail                    = [
                     "to" => $details[0]['email'],
                     "from" => CONTACT_EMAIL,
                     "subject" => "Invitation to connect on taximobility",
                     "message" => $message
-                );
+                ];
                 $emailstatus             = $this->email_send($mail, 'smtp');
                 /*
                  * 						
@@ -3067,15 +3067,15 @@ Class Controller_Passengers extends Controller_Website
         if ($page_no == 0 || $page_no == 'index')
             $page_no = 1;
         $offset                           = REC_PER_PAGE * ($page_no - 1);
-        $pag_data                         = Pagination::factory(array(
-            'current_page' => array(
+        $pag_data                         = Pagination::factory([
+            'current_page' => [
                 'source' => 'query_string',
                 'key' => 'page'
-            ),
+            ],
             'total_items' => count($recent_con), //total items available
             'items_per_page' => 6, //total items per page
             'view' => 'pagination/punbb' //pagination style
-        ));
+        ]);
         //get recent connections list
         //============================
         $recent_con_list                  = $siteusers->get_recent_connections_list($offset, 6, $conid);
@@ -3089,7 +3089,7 @@ Class Controller_Passengers extends Controller_Website
      *****curl_function****
      *@ purpose of social network auto post and connect
      */
-    public function curl_function($req_url = "", $type = "", $arguments = array())
+    public function curl_function($req_url = "", $type = "", $arguments = [])
     {
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $req_url);
@@ -3110,7 +3110,7 @@ Class Controller_Passengers extends Controller_Website
     {
         $siteusers = Model::factory('siteusers');
         /**To Set Errors Null to avoid error if not set in view**/
-        $errors    = array();
+        $errors    = [];
         /**Check Whether the user is logged in**/
         $this->is_login();
         $this->is_login_status();
@@ -3148,7 +3148,7 @@ Class Controller_Passengers extends Controller_Website
 			$charisma = 'charisma-app-arabic';	
 		}
         /*** Dashboard Style & Scripts ***/
-        $dashstyles                       = array(
+        $dashstyles                       = [
             CSSPATH . 'dashboard/bootstrap-responsive.css' => 'screen',
             CSSPATH . 'dashboard/'.$charisma.'.css' => 'screen',
             CSSPATH . 'dashboard/jquery-ui-1.8.21.custom.css' => 'screen',
@@ -3158,8 +3158,8 @@ Class Controller_Passengers extends Controller_Website
             CSSPATH . 'dashboard/noty_theme_default.css' => 'screen',
             CSSPATH . 'dashboard/jquery.iphone.toggle.css' => 'screen',
             CSSPATH . 'dashboard/opa-icons.css' => 'screen'
-        );
-        $dashscripts                      = array(
+        ];
+        $dashscripts                      = [
             SCRIPTPATH . 'dashboard/jquery-ui-1.8.21.custom.min.js',
             SCRIPTPATH . 'dashboard/bootstrap-transition.js',
             SCRIPTPATH . 'dashboard/bootstrap-alert.js',
@@ -3180,7 +3180,7 @@ Class Controller_Passengers extends Controller_Website
             SCRIPTPATH . 'dashboard/jquery.history.js',
             SCRIPTPATH . 'dashboard/charisma.js',
             SCRIPTPATH . 'highcharts.js'
-        );
+        ];
         //all Completed Status with transaction
         $passengers_all_total_compl_trans = $passengers->get_total_passenger_log_transactions($userid, 1, 'A', '1', COMPANY_CID);
         //print_r(count($passengers_all_total_compl_trans));
@@ -3189,15 +3189,15 @@ Class Controller_Passengers extends Controller_Website
         if ($page_no == 0 || $page_no == 'index')
             $page_no = PAGE_NO;
         $offset                        = REC_PER_PAGE * ($page_no - 1);
-        $pag_data                      = Pagination::factory(array(
-            'current_page' => array(
+        $pag_data                      = Pagination::factory([
+            'current_page' => [
                 'source' => 'query_string',
                 'key' => 'page'
-            ),
+            ],
             'items_per_page' => REC_PER_PAGE,
             'total_items' => count($passengers_all_total_compl_trans),
             'view' => 'pagination/punbb'
-        ));
+        ]);
         //all Completed Status with transaction
         $passengers_all_compl_trans    = $passengers->get_passenger_log_transactions($userid, 1, 'A', '1', $offset, REC_PER_PAGE, COMPANY_CID);
         $view                          = View::factory(USERVIEW . 'completedjourney')->bind('passengers_all_compl_trans', $passengers_all_compl_trans)->bind('dashstyles', $dashstyles)->bind('dashscripts', $dashscripts)->bind('pag_data', $pag_data)->bind('offset', $offset)->bind('userid', $userid);
@@ -3218,7 +3218,7 @@ Class Controller_Passengers extends Controller_Website
 			$charisma = 'charisma-app-arabic';	
 		}
         /*** Dashboard Style & Scripts ***/
-        $dashstyles                 = array(
+        $dashstyles                 = [
             CSSPATH . 'dashboard/bootstrap-responsive.css' => 'screen',
             CSSPATH . 'dashboard/'.$charisma.'.css' => 'screen',
             CSSPATH . 'dashboard/jquery-ui-1.8.21.custom.css' => 'screen',
@@ -3228,8 +3228,8 @@ Class Controller_Passengers extends Controller_Website
             CSSPATH . 'dashboard/noty_theme_default.css' => 'screen',
             CSSPATH . 'dashboard/jquery.iphone.toggle.css' => 'screen',
             CSSPATH . 'dashboard/opa-icons.css' => 'screen'
-        );
-        $dashscripts                = array(
+        ];
+        $dashscripts                = [
             SCRIPTPATH . 'dashboard/jquery-ui-1.8.21.custom.min.js',
             SCRIPTPATH . 'dashboard/bootstrap-transition.js',
             SCRIPTPATH . 'dashboard/bootstrap-alert.js',
@@ -3250,7 +3250,7 @@ Class Controller_Passengers extends Controller_Website
             SCRIPTPATH . 'dashboard/jquery.history.js',
             SCRIPTPATH . 'dashboard/charisma.js',
             SCRIPTPATH . 'highcharts.js'
-        );
+        ];
         //all Completed Status with transaction
         $passengers_total_all_compl = $passengers->get_total_passenger_log_details($userid, 1, 'A', '1', COMPANY_CID);
         //print_r($passengers_total_all_compl);exit;
@@ -3259,15 +3259,15 @@ Class Controller_Passengers extends Controller_Website
         if ($page_no == 0 || $page_no == 'index')
             $page_no = PAGE_NO;
         $offset                        = REC_PER_PAGE * ($page_no - 1);
-        $pag_data                      = Pagination::factory(array(
-            'current_page' => array(
+        $pag_data                      = Pagination::factory([
+            'current_page' => [
                 'source' => 'query_string',
                 'key' => 'page'
-            ),
+            ],
             'items_per_page' => REC_PER_PAGE,
             'total_items' => $passengers_total_all_compl[0]['co_nt'],
             'view' => 'pagination/punbb'
-        ));
+        ]);
         //all Completed Status
         //$passengers_all_compl = $passengers->get_passenger_log_details($userid,1,'A','1',$offset,REC_PER_PAGE);
         $passengers_all_compl          = $passengers->get_passenger_log_details($userid, 1, 'A', '1', $offset, REC_PER_PAGE, COMPANY_CID);
@@ -3417,12 +3417,12 @@ Class Controller_Passengers extends Controller_Website
         $creditcard_cvv   = $_GET['creditcard_cvv'];
         $expdatemonth     = $_GET['expdatemonth'];
         $expdateyear      = $_GET['expdateyear'];
-        $array            = array(
+        $array            = [
             'creditcard_no' => $creditcard_no,
             'creditcard_cvv' => $creditcard_cvv,
             'expdatemonth' => $expdatemonth,
             'expdateyear' => $expdateyear
-        );
+        ];
         $creditcard_valid = $passengers->authorize_creditcard($array);
         echo $creditcard_valid;
         exit;
@@ -3439,7 +3439,7 @@ Class Controller_Passengers extends Controller_Website
     {
         $passengers      = Model::factory('passengers');
         /**To Set Errors Null to avoid error if not set in view**/
-        $errors          = array();
+        $errors          = [];
         $siteusers       = Model::factory('siteusers');
         /**To get the form submit button name**/
         $country_details = $siteusers->country_details();
@@ -3466,7 +3466,7 @@ Class Controller_Passengers extends Controller_Website
                     //$forgotpassword=$this->emailtemplate->get_template_content(FORGOT_PASSWORD);
                     //$subject=$forgotpassword[0]['email_subject'];
                     //$content=$forgotpassword[0]['email_content'];
-                    $replace_variables = array(
+                    $replace_variables = [
                         REPLACE_LOGO => EMAILTEMPLATELOGO,
                         REPLACE_SITENAME => COMPANY_SITENAME,
                         REPLACE_USERNAME => ucfirst($result['name']),
@@ -3478,7 +3478,7 @@ Class Controller_Passengers extends Controller_Website
                         SITE_DESCRIPTION => $this->app_description,
                         REPLACE_COPYRIGHTS => SITE_COPYRIGHT,
                         REPLACE_COPYRIGHTYEAR => COPYRIGHT_YEAR
-                    );
+                    ];
                     //$message           = $this->emailtemplate->emailtemplate(DOCROOT . TEMPLATEPATH . 'user-forgotpassword.html', $replace_variables);
 					if ($this->lang != 'en') {
 						if (file_exists(DOCROOT . TEMPLATEPATH . $this->lang . '/user-forgotpassword-' . $this->lang . '.html')) {
@@ -3587,17 +3587,17 @@ Class Controller_Passengers extends Controller_Website
                             $payment_types      = 0;
 							
                             $transaction_detail = $passengers->cancel_triptransact_details_ct($cancel_trip_array, $cancellation_nfree, $payment_types);
-                            $pushmessage        = array(
+                            $pushmessage        = [
                                 "message" => __('trip_cancelled_passenger'),
                                 "status" => 2
-                            );
+                            ];
                            
-                            $message            = array(
+                            $message            = [
                                 "message" => __('trip_cancel_passenger'),
                                 "cancellation_from" => __('Free'),
                                 "cancellation_amount" => 0,
                                 "status" => 2
-                            ); //with out cancellation fee
+                            ]; //with out cancellation fee
                             echo __('trip_cancel_passenger');
                             exit;
                         } else {
@@ -3613,18 +3613,18 @@ Class Controller_Passengers extends Controller_Website
                                     try {
                                         $siteinfo_details           = $api_model->siteinfo_details();
                                          $auto_id = $this->commonmodel->get_auto_id(MDB_TRANSACTION);
-                                        $insert_array               = array(
+                                        $insert_array               = [
 											"_id" => $auto_id,
                                             "passengers_log_id" => $passenger_log_id,
                                             "remarks" => $remarks,
                                             "payment_type" => $cancel_trip_array['pay_mod_id'],
                                             "amt" => $total,
                                             'current_date' => new \MongoDB\BSON\UTCDateTime(strtotime($this->currentdate) * 1000),
-                                        );
+                                        ];
                                         $transaction                = $this->commonmodel->insert(MDB_TRANSACTION, $insert_array);
-                                        $update_travel_status_array = array(
+                                        $update_travel_status_array = [
                                             "travel_status" => (int)4
-                                        ); // Passenger Cancelled
+                                        ]; // Passenger Cancelled
                                         $result_sts_update          = $api->update_table(MDB_PASSENGERS_LOGS, $update_travel_status_array, '_id', (int)$passenger_log_id);
                                         $cancel_from                = __('Cash');
                                         //to reduce the wallet amount while cancelling the trip
@@ -3639,32 +3639,32 @@ Class Controller_Passengers extends Controller_Website
 											
 											$result = $api->sendSms($to,$message);
                                         }
-                                        $pushmessage    = array(
+                                        $pushmessage    = [
                                             "message" => __('trip_cancelled_passenger'),
                                             "status" => 2
-                                        );
+                                        ];
                                         $d_device_token = $get_passenger_log_det[0]['driver_device_token'];
                                         $d_device_type  = $get_passenger_log_det[0]['driver_device_type'];
-                                        $message        = array(
+                                        $message        = [
                                             "message" => __('trip_cancel_passenger'),
                                             "cancellation_from" => $cancel_from,
                                             "cancellation_amount" => $total,
                                             "status" => 1
-                                        );
+                                        ];
                                         echo json_encode($message);
                                     }
                                     catch (Kohana_Exception $e) {
                                         //	print_r($e);
-                                        $message = array(
+                                        $message = [
                                             "message" => __('try_again'),
                                             "status" => 3
-                                        );
+                                        ];
                                     }
                                 } else {
-                                    $message = array(
+                                    $message = [
                                         "message" => __('invalid_trip'),
                                         "status" => 3
-                                    );
+                                    ];
                                 }
                             } else {
                                 $card_type       = '';
@@ -3679,11 +3679,11 @@ Class Controller_Passengers extends Controller_Website
                                     $cancelAmount   = isset($cancelArr[1]) ? $cancelArr[1] : 0;
                                     if ($payment_status == 0) {
                                         $gateway_response = isset($_SESSION['paymentresponse']['L_LONGMESSAGE0']) ? $_SESSION['paymentresponse']['L_LONGMESSAGE0'] : 'Payment Failed';
-                                        $message          = array(
+                                        $message          = [
                                             "message" => __('cancel_payment_failed'),
                                             "gateway_response" => $gateway_response,
                                             "status" => 0
-                                        );
+                                        ];
                                         echo json_encode($message);
                                         break;
                                     } else if ($payment_status == 1) {
@@ -3698,16 +3698,16 @@ Class Controller_Passengers extends Controller_Website
                                             $message           = str_replace("##SITE_NAME##", SITE_NAME, $message);
 											$result = $this->commonmodel->send_sms($to,$message);
                                         }
-                                        $message          = array(
+                                        $message          = [
                                             "message" => __('trip_cancel_passenger'),
                                             "cancellation_from" => __('credit_card'),
                                             "cancellation_amount" => $cancelAmount,
                                             "status" => 1
-                                        );
-                                        $pushmessage      = array(
+                                        ];
+                                        $pushmessage      = [
                                             "message" => __('trip_cancelled_passenger'),
                                             "status" => 2
-                                        );
+                                        ];
                                         $d_device_token   = $get_passenger_log_det[0]['driver_device_token'];
                                         $d_device_type    = $get_passenger_log_det[0]['driver_device_type'];
 										
@@ -3715,25 +3715,25 @@ Class Controller_Passengers extends Controller_Website
                                         echo json_encode($message);
                                         break;
                                     } else if ($payment_status == -1) {
-                                        $message = array(
+                                        $message = [
                                             "message" => __('invalid_trip'),
                                             "status" => 3
-                                        );
+                                        ];
                                         echo json_encode($message);
                                         break;
                                     }
                                 } else if (count($carddetails) == 0 && count($no_default_card) > 0) {
-                                    $message = array(
+                                    $message = [
                                         "message" => __('passenger_has_no_default_creditcard'),
                                         "status" => 5
-                                    );
+                                    ];
                                     echo json_encode($message);
                                     break;
                                 } else {
-                                    $message = array(
+                                    $message = [
                                         "message" => __('cancel_no_creditcard'),
                                         "status" => 4
-                                    );
+                                    ];
                                     echo json_encode($message);
                                     break;
                                 }
@@ -3803,7 +3803,7 @@ Class Controller_Passengers extends Controller_Website
                     //$siteinfo_details  = $api_model->siteinfo_details();
                     $total             = $api_model->get_passenger_cancel_faredetail($passenger_log_id);
                    // $update_commission = $Commonmodel->update_commission($passenger_log_id, $total, $siteinfo_details[0]['admin_commission']);
-                    $insert_array      = array(
+                    $insert_array      = [
                         "passengers_log_id" => $passenger_log_id,
                         "remarks" => $remarks,
                         "payment_type" => $pay_mod_id,
@@ -3811,7 +3811,7 @@ Class Controller_Passengers extends Controller_Website
                        // "admin_amount" => $update_commission['admin_commission'],
                       //  "company_amount" => $update_commission['company_commission'],
                      //   "trans_packtype" => $update_commission['trans_packtype']
-                    );
+                    ];
                     $transaction       = $Commonmodel->insert(TRANS, $insert_array);
                     $send_mail_status  = $this->send_mail_passenger($passenger_log_id, 4);
                     echo __('trip_fare_updated');
@@ -3829,12 +3829,12 @@ Class Controller_Passengers extends Controller_Website
                 //$this->request->redirect("/passengers/dashboard");									
             }
         } else {
-            $cancel_array   = array(
+            $cancel_array   = [
                 "passenger_log_id" => $passenger_log_id,
                 "travel_status" => $travel_status,
                 "remarks" => $remarks,
                 "pay_mod_id" => $pay_mod_id
-            );
+            ];
             $payment_status = $this->cancel_trippayment($cancel_array, $cancellation_nfree);
             if ($payment_status == 0) {
                 echo $_SESSION['paymentresponse']['L_LONGMESSAGE0'];
@@ -3966,7 +3966,7 @@ Class Controller_Passengers extends Controller_Website
 			<tr><td width='80px' align='center'>" . $distance_km . "	" . __('km') . "</td><td width='80px' align='center'>" . $trip_minutes . "</td></tr>
 			</tbody></table></td></tr>";
             $mail              = "";
-            $replace_variables = array(
+            $replace_variables = [
                 REPLACE_LOGO => URL_BASE . PUBLIC_FOLDER_IMGPATH . '/logo.png',
                 REPLACE_SITENAME => $this->app_name,
                 REPLACE_USERNAME => $name,
@@ -3982,7 +3982,7 @@ Class Controller_Passengers extends Controller_Website
                 REPLACE_COMPANYDOMAIN => $this->domain_name,
                 REPLACE_COPYRIGHTS => SITE_COPYRIGHT,
                 REPLACE_COPYRIGHTYEAR => COPYRIGHT_YEAR
-            );
+            ];
             /* Added for language email template */
             if ($this->lang != 'en') {
                 if (file_exists(DOCROOT . TEMPLATEPATH . $this->lang . '/tripcomplete-mail-' . $this->lang . '.html')) {
@@ -4023,7 +4023,7 @@ Class Controller_Passengers extends Controller_Website
 			<tr style='color:#808080'><td>" . __('cancel_fare') . "</td><td style='color:#000'>" . COMPANY_CURRENCY . "	" . $cancelFare . "</td></tr>
 			<tr style='color:#808080'><td>" . __('Current_Location') . "</td><td style='word-break:break-word;border-collapse:collapse!important;text-align:left;display:table-cell;line-height:16px;padding:0px;color:#000'>" . $pickup_location . "</td></tr>";
         $mail              = "";
-        $replace_variables = array(
+        $replace_variables = [
             REPLACE_LOGO => URL_BASE . PUBLIC_FOLDER_IMGPATH . '/logo.png',
             REPLACE_SITENAME => $this->app_name,
             REPLACE_USERNAME => $passenger_name,
@@ -4033,7 +4033,7 @@ Class Controller_Passengers extends Controller_Website
             REPLACE_COMPANYDOMAIN => $this->domain_name,
             REPLACE_COPYRIGHTS => SITE_COPYRIGHT,
             REPLACE_COPYRIGHTYEAR => COPYRIGHT_YEAR
-        );
+        ];
         /* Added for language email template */
         if ($this->lang != 'en') {
             if (file_exists(DOCROOT . TEMPLATEPATH . $this->lang . '/tripcancel-' . $this->lang . '.html')) {
@@ -4076,7 +4076,7 @@ Class Controller_Passengers extends Controller_Website
         }
         $orderlist .= '</p><p style="padding-left:5px;">' . __('complete_from1') . '' . $passenger_log_details[0]['current_location'] . ' </p><p style="padding-left:5px;"> To : ' . $passenger_log_details[0]['drop_location'] . '</p>' . '<p>' . __('total_cost') . ':' . CURRENCY . ' ' . $passenger_log_details[0]['amt'] . '</p>' . '<p>' . __('track_id') . ': ' . $log_id . '</p>';
         $mail              = "";
-        $replace_variables = array(
+        $replace_variables = [
             REPLACE_LOGO => URL_BASE . PUBLIC_FOLDER_IMGPATH . '/logo.png',
             REPLACE_SITENAME => COMPANY_SITENAME,
             REPLACE_USERNAME => $name,
@@ -4088,7 +4088,7 @@ Class Controller_Passengers extends Controller_Website
             REPLACE_ORDERLIST => $orderlist,
             REPLACE_COPYRIGHTS => SITE_COPYRIGHT,
             REPLACE_COPYRIGHTYEAR => COPYRIGHT_YEAR
-        );
+        ];
         //$message           = $this->emailtemplate->emailtemplate(DOCROOT . TEMPLATEPATH . 'tripcomplete-mail.html', $replace_variables);
 		if ($this->lang != 'en') {
 			if (file_exists(DOCROOT . TEMPLATEPATH . $this->lang . '/tripcomplete-mail-' . $this->lang . '.html')) {
@@ -4188,7 +4188,7 @@ Class Controller_Passengers extends Controller_Website
         $nvpstr   = $response;
         curl_close($curl);
         $intial   = 0;
-        $nvpArray = array();
+        $nvpArray = [];
         while (strlen($nvpstr)) {
             //postion of Key
             $keypos                       = strpos($nvpstr, '=');
@@ -4201,10 +4201,10 @@ Class Controller_Passengers extends Controller_Website
             $nvpArray[urldecode($keyval)] = urldecode($valval);
             $nvpstr                       = substr($nvpstr, $valuepos + 1, strlen($nvpstr));
         }
-        $_SESSION["paymentresponse"] = array();
+        $_SESSION["paymentresponse"] = [];
         $_SESSION["paymentresponse"] = $nvpArray;
         if (isset($_SESSION["paymentresponse"]) && !empty($_SESSION["paymentresponse"])) {
-            $paymentresponse = array();
+            $paymentresponse = [];
             $ack             = strtoupper($_SESSION['paymentresponse']["ACK"]);
             if ($ack == "SUCCESS" || $ack == "SUCCESSWITHWARNING") {
                 $invoceno           = commonfunction::randomkey_generator();
@@ -4230,7 +4230,7 @@ Class Controller_Passengers extends Controller_Website
                 $orderlist         = '';
                 $orderlist         = '<p><b>' . __('complete_from') . '</b><br />' . __('complete_from1') . '' . $passenger_log_details[0]['current_location'] . ' <br /> To : ' . $passenger_log_details[0]['drop_location'] . '</p>' . '<p>' . __('cancel_date') . $this->currentdate . '</p>' . '<p>' . __('total_cost') . ':' . CURRENCY . ' ' . $values['total_fare'] . '</p>' . '<p>' . __('transactionid_label') . ': ' . $paymentresponse['TRANSACTIONID'] . '</p>';
                 $mail              = "";
-                $replace_variables = array(
+                $replace_variables = [
                     REPLACE_LOGO => URL_BASE . PUBLIC_FOLDER_IMGPATH . '/logo.png',
                     REPLACE_SITENAME => COMPANY_SITENAME,
                     REPLACE_USERNAME => $name,
@@ -4242,7 +4242,7 @@ Class Controller_Passengers extends Controller_Website
                     REPLACE_ORDERLIST => $orderlist,
                     REPLACE_COPYRIGHTS => SITE_COPYRIGHT,
                     REPLACE_COPYRIGHTYEAR => COPYRIGHT_YEAR
-                );
+                ];
                 //$message           = $this->emailtemplate->emailtemplate(DOCROOT . TEMPLATEPATH . 'tripcomplete-mail.html', $replace_variables);
 				if ($this->lang != 'en') {
 					if (file_exists(DOCROOT . TEMPLATEPATH . $this->lang . '/tripcomplete-mail-' . $this->lang . '.html')) {
@@ -4282,7 +4282,7 @@ Class Controller_Passengers extends Controller_Website
     {
         $passengers = Model::factory('passengers');
         /*To set errors in array if errors not set*/
-        $errors     = array();
+        $errors     = [];
         /*checks if user logged or not*/
         $this->is_login();
         $this->is_login_status();
@@ -4298,7 +4298,7 @@ Class Controller_Passengers extends Controller_Website
 			$charisma = 'charisma-app-arabic';	
 		}
         /*** Dashboard Style & Scripts ***/
-        $dashstyles             = array(
+        $dashstyles             = [
             CSSPATH . 'dashboard/bootstrap-responsive.css' => 'screen',
             CSSPATH . 'dashboard/'.$charisma.'.css' => 'screen',
             CSSPATH . 'dashboard/jquery-ui-1.8.21.custom.css' => 'screen',
@@ -4308,8 +4308,8 @@ Class Controller_Passengers extends Controller_Website
             CSSPATH . 'dashboard/noty_theme_default.css' => 'screen',
             CSSPATH . 'dashboard/jquery.iphone.toggle.css' => 'screen',
             CSSPATH . 'dashboard/opa-icons.css' => 'screen'
-        );
-        $dashscripts            = array(
+        ];
+        $dashscripts            = [
             SCRIPTPATH . 'dashboard/jquery-ui-1.8.21.custom.min.js',
             SCRIPTPATH . 'dashboard/bootstrap-transition.js',
             SCRIPTPATH . 'dashboard/bootstrap-alert.js',
@@ -4330,7 +4330,7 @@ Class Controller_Passengers extends Controller_Website
             SCRIPTPATH . 'dashboard/jquery.history.js',
             SCRIPTPATH . 'dashboard/charisma.js',
             SCRIPTPATH . 'highcharts.js'
-        );
+        ];
         $id                     = $userid;
         
         $childlistcount = $passengers->get_passenger_childlist_count($id,'');
@@ -4342,15 +4342,15 @@ Class Controller_Passengers extends Controller_Website
         if ($page_no == 0 || $page_no == 'index')
             $page_no = PAGE_NO;
         $offset      = REC_PER_PAGE * ($page_no - 1);
-        $pag_data    = Pagination::factory(array(
-            'current_page' => array(
+        $pag_data    = Pagination::factory([
+            'current_page' => [
                 'source' => 'query_string',
                 'key' => 'page'
-            ),
+            ],
             'items_per_page' => REC_PER_PAGE,
             'total_items' => $childlistcount,
             'view' => 'pagination/punbb'
-        ));
+        ]);
 		
         $childlist = $passengers->get_passenger_childlist($id,'',$offset,REC_PER_PAGE,''); // added 0 param
         $view                          = View::factory(USERVIEW . 'childlist')->bind('validator', $_POST)->bind('errors', $errors)->bind('dashstyles', $dashstyles)->bind('dashscripts', $dashscripts)->bind('childlist', $childlist)->bind('pag_data', $pag_data)->bind('offset', $offset)->bind('userid', $userid);
@@ -4364,7 +4364,7 @@ Class Controller_Passengers extends Controller_Website
     {
         $passengers = Model::factory('passengers');
         /*To set errors in array if errors not set*/
-        $errors     = array();
+        $errors     = [];
         /*checks if user logged or not*/
         $this->is_login();
         $this->is_login_status();
@@ -4378,7 +4378,7 @@ Class Controller_Passengers extends Controller_Website
 		}
 		
 		/*** Dashboard Style & Scripts ***/
-        $dashstyles          = array(
+        $dashstyles          = [
             CSSPATH . 'dashboard/bootstrap-responsive.css' => 'screen',
             CSSPATH . 'dashboard/'.$charisma.'.css' => 'screen',
             CSSPATH . 'dashboard/jquery-ui-1.8.21.custom.css' => 'screen',
@@ -4388,8 +4388,8 @@ Class Controller_Passengers extends Controller_Website
             CSSPATH . 'dashboard/noty_theme_default.css' => 'screen',
             CSSPATH . 'dashboard/jquery.iphone.toggle.css' => 'screen',
             CSSPATH . 'dashboard/opa-icons.css' => 'screen'
-        );
-        $dashscripts         = array(
+        ];
+        $dashscripts         = [
             SCRIPTPATH . 'dashboard/jquery-ui-1.8.21.custom.min.js',
             SCRIPTPATH . 'dashboard/bootstrap-transition.js',
             SCRIPTPATH . 'dashboard/bootstrap-alert.js',
@@ -4410,13 +4410,13 @@ Class Controller_Passengers extends Controller_Website
             SCRIPTPATH . 'dashboard/jquery.history.js',
             SCRIPTPATH . 'dashboard/charisma.js',
             SCRIPTPATH . 'highcharts.js'
-        );
+        ];
         $submit_child_details = arr::get($_REQUEST, 'submit_child_details');
 		
 		$account_types = $passengers->getChildAccounts($this->lang);
 		
         if ($submit_child_details && Validation::factory($_POST)) {
-            $validator_child_details = $passengers->send_request_validation(arr::extract($_POST, array(
+            $validator_child_details = $passengers->send_request_validation(arr::extract($_POST, [
 				'parent_id',
                 'account_type',
 				'name',
@@ -4424,7 +4424,7 @@ Class Controller_Passengers extends Controller_Website
                 'email',                
                 'allow_creditcard',
 				'trip_alert'
-            )));
+            ]));
             
             if ($validator_child_details->check()) {
 				$api                 = Model::factory('mobileapi115');
@@ -4452,11 +4452,11 @@ Class Controller_Passengers extends Controller_Website
 					if($alreadyExist == 0) {
 						if($requested == 0) {
 							$requestDetails = $api->insert_child_request($account_type,$passenger_id,$name,$phone,$email,$phone_exist);	
-							$pushmessage           = array(
+							$pushmessage           = [
 								"message" => str_replace("%s",$name,__('sent_child_account')),
 								"parent_id" => $passenger_id,
 								 "status" => 1
-							);
+							];
 							$get_passenger_details = $api->get_passenger_details($phone, 1);
 							$parentInfo = $this->commonmodel->getParent($passenger_id);
 							$username   = $parentInfo['name'].' '.$parentInfo['lastname'];
@@ -4474,7 +4474,7 @@ Class Controller_Passengers extends Controller_Website
 								$p_device_type     = $get_passenger_details[0]['device_type'];
 								//$p_send_notification = $api->send_passenger_mobile_pushnotification($p_device_token,$p_device_type,$pushmessage,$this->customer_google_api);
 							}
-							$replace_variables=array(REPLACE_LOGO=>URL_BASE.PUBLIC_FOLDER_IMGPATH.'/logo.png',REPLACE_SITENAME=>$this->app_name,REPLACE_USERNAME=>'',REPLACE_SITELINK=>URL_BASE.'users/contactinfo/',REPLACE_SITEEMAIL=>$this->siteemail,REPLACE_SITEURL=>URL_BASE,REPLACE_PARENTID=>$username,REPLACE_COPYRIGHTS=>SITE_COPYRIGHT,REPLACE_ANDROID_PASSENGER_APP => ANDROID_PASSENGER_APP,REPLACE_IOS_PASSENGER_APP => IOS_PASSENGER_APP);									
+							$replace_variables=[REPLACE_LOGO=>URL_BASE.PUBLIC_FOLDER_IMGPATH.'/logo.png',REPLACE_SITENAME=>$this->app_name,REPLACE_USERNAME=>'',REPLACE_SITELINK=>URL_BASE.'users/contactinfo/',REPLACE_SITEEMAIL=>$this->siteemail,REPLACE_SITEURL=>URL_BASE,REPLACE_PARENTID=>$username,REPLACE_COPYRIGHTS=>SITE_COPYRIGHT,REPLACE_ANDROID_PASSENGER_APP => ANDROID_PASSENGER_APP,REPLACE_IOS_PASSENGER_APP => IOS_PASSENGER_APP];									
 							$from     = $this->siteemail;
 							if ($this->lang != 'en') {
 								if (file_exists(DOCROOT . TEMPLATEPATH . $this->lang . '/send_request-' . $this->lang . '.html')) {
@@ -4519,7 +4519,7 @@ Class Controller_Passengers extends Controller_Website
 							$username   = $parentInfo['name'].' '.$parentInfo['lastname'];
 							$updateChild = $api->update_child($passenger_id);
 							
-							$replace_variables=array(REPLACE_LOGO=>URL_BASE.PUBLIC_FOLDER_IMGPATH.'/logo.png',REPLACE_SITENAME=>$this->app_name,REPLACE_USERNAME=>'',REPLACE_OTP=>$otp,REPLACE_SITELINK=>URL_BASE.'users/contactinfo/',REPLACE_SITEEMAIL=>$this->siteemail,REPLACE_SITEURL=>URL_BASE,REPLACE_ANDROID_PASSENGER_APP => ANDROID_PASSENGER_APP,REPLACE_IOS_PASSENGER_APP => IOS_PASSENGER_APP,REPLACE_PARENTID=>$username,REPLACE_COPYRIGHTS=>SITE_COPYRIGHT,REPLACE_ACTLINK=>URL_BASE.'passengers/activate_account/?phone='.$phone.'&otp='.base64_encode($otp));									
+							$replace_variables=[REPLACE_LOGO=>URL_BASE.PUBLIC_FOLDER_IMGPATH.'/logo.png',REPLACE_SITENAME=>$this->app_name,REPLACE_USERNAME=>'',REPLACE_OTP=>$otp,REPLACE_SITELINK=>URL_BASE.'users/contactinfo/',REPLACE_SITEEMAIL=>$this->siteemail,REPLACE_SITEURL=>URL_BASE,REPLACE_ANDROID_PASSENGER_APP => ANDROID_PASSENGER_APP,REPLACE_IOS_PASSENGER_APP => IOS_PASSENGER_APP,REPLACE_PARENTID=>$username,REPLACE_COPYRIGHTS=>SITE_COPYRIGHT,REPLACE_ACTLINK=>URL_BASE.'passengers/activate_account/?phone='.$phone.'&otp='.base64_encode($otp)];									
 							$from     = $this->siteemail;
 							if ($this->lang != 'en') {
 								if (file_exists(DOCROOT . TEMPLATEPATH . $this->lang . '/child_registration_web' . $this->lang . '.html')) {
@@ -4584,7 +4584,7 @@ Class Controller_Passengers extends Controller_Website
     {
         $passengers = Model::factory('passengers');
         /*To set errors in array if errors not set*/
-        $errors     = array();
+        $errors     = [];
         /*checks if user logged or not*/
         $this->is_login();
         $this->is_login_status();
@@ -4598,7 +4598,7 @@ Class Controller_Passengers extends Controller_Website
 			$charisma = 'charisma-app-arabic';	
 		}
         /*** Dashboard Style & Scripts ***/
-        $dashstyles             = array(
+        $dashstyles             = [
             CSSPATH . 'dashboard/bootstrap-responsive.css' => 'screen',
             CSSPATH . 'dashboard/'.$charisma.'.css' => 'screen',
             CSSPATH . 'dashboard/jquery-ui-1.8.21.custom.css' => 'screen',
@@ -4608,8 +4608,8 @@ Class Controller_Passengers extends Controller_Website
             CSSPATH . 'dashboard/noty_theme_default.css' => 'screen',
             CSSPATH . 'dashboard/jquery.iphone.toggle.css' => 'screen',
             CSSPATH . 'dashboard/opa-icons.css' => 'screen'
-        );
-        $dashscripts            = array(
+        ];
+        $dashscripts            = [
             SCRIPTPATH . 'dashboard/jquery-ui-1.8.21.custom.min.js',
             SCRIPTPATH . 'dashboard/bootstrap-transition.js',
             SCRIPTPATH . 'dashboard/bootstrap-alert.js',
@@ -4630,7 +4630,7 @@ Class Controller_Passengers extends Controller_Website
             SCRIPTPATH . 'dashboard/jquery.history.js',
             SCRIPTPATH . 'dashboard/charisma.js',
             SCRIPTPATH . 'highcharts.js'
-        );
+        ];
         $id                     = $userid;
         $card_type              = "";
         $default                = 'no';
@@ -4643,19 +4643,19 @@ Class Controller_Passengers extends Controller_Website
         if ($page_no == 0 || $page_no == 'index')
             $page_no = PAGE_NO;
 			$offset      = REC_PER_PAGE * ($page_no - 1);
-			$pag_data    = Pagination::factory(array(
-            'current_page' => array(
+			$pag_data    = Pagination::factory([
+            'current_page' => [
                 'source' => 'query_string',
                 'key' => 'page'
-            ),
+            ],
             'items_per_page' => REC_PER_PAGE,
             'total_items' => $all_creditcard_details,
             'view' => 'pagination/punbb'
-        ));
+        ]);
         $carddetails = $passengers->get_creadit_card_details($id, $card_type, $default);
         // print_r($result);
         $update_post = arr::get($_REQUEST, 'update');
-        $post        = array();
+        $post        = [];
         if ($update_post) {
             if (isset($_REQUEST['default_card'])) {
                 $post                = $_REQUEST;
@@ -4684,7 +4684,7 @@ Class Controller_Passengers extends Controller_Website
     {
         $passengers = Model::factory('passengers');
         /*To set errors in array if errors not set*/
-        $errors     = array();
+        $errors     = [];
         /*checks if user logged or not*/
         $this->is_login();
         $this->is_login_status();
@@ -4697,7 +4697,7 @@ Class Controller_Passengers extends Controller_Website
 			$charisma = 'charisma-app-arabic';	
 		}
         /*** Dashboard Style & Scripts ***/
-        $dashstyles          = array(
+        $dashstyles          = [
             CSSPATH . 'dashboard/bootstrap-responsive.css' => 'screen',
             CSSPATH . 'dashboard/'.$charisma.'.css' => 'screen',
             CSSPATH . 'dashboard/jquery-ui-1.8.21.custom.css' => 'screen',
@@ -4707,8 +4707,8 @@ Class Controller_Passengers extends Controller_Website
             CSSPATH . 'dashboard/noty_theme_default.css' => 'screen',
             CSSPATH . 'dashboard/jquery.iphone.toggle.css' => 'screen',
             CSSPATH . 'dashboard/opa-icons.css' => 'screen'
-        );
-        $dashscripts         = array(
+        ];
+        $dashscripts         = [
             SCRIPTPATH . 'dashboard/jquery-ui-1.8.21.custom.min.js',
             SCRIPTPATH . 'dashboard/bootstrap-transition.js',
             SCRIPTPATH . 'dashboard/bootstrap-alert.js',
@@ -4729,27 +4729,27 @@ Class Controller_Passengers extends Controller_Website
             SCRIPTPATH . 'dashboard/jquery.history.js',
             SCRIPTPATH . 'dashboard/charisma.js',
             SCRIPTPATH . 'highcharts.js'
-        );
+        ];
         $submit_card_details = arr::get($_REQUEST, 'submit_card_details');
         if ($submit_card_details && Validation::factory($_POST)) {
             //print_r($_POST); exit;
-            $validator_card_details = $passengers->validate_card_details(arr::extract($_POST, array(
+            $validator_card_details = $passengers->validate_card_details(arr::extract($_POST, [
                 'card_type',
                 'org_creditcard_no',
                 'org_creditcard_cvv',
                 'expdatemonth',
                 'expdateyear'
-            )));
+            ]));
             $creditcard_no          = $_POST['org_creditcard_no'];
             $creditcard_cvv         = $_POST['org_creditcard_cvv'];
             $expdatemonth           = $_POST['expdatemonth'];
             $expdateyear            = $_POST['expdateyear'];
-            $array                  = array(
+            $array                  = [
                 'creditcard_no' => $creditcard_no,
                 'creditcard_cvv' => $creditcard_cvv,
                 'expdatemonth' => $expdatemonth,
                 'expdateyear' => $expdateyear
-            );
+            ];
             //$creditcard_valid = $passengers->authorize_creditcard($array);
             $card_exist             = $passengers->check_card_exist($creditcard_no, $userid);
             $authorize_status       = $passengers->isVAlidCreditCard($creditcard_no, "", true);
@@ -4790,7 +4790,7 @@ Class Controller_Passengers extends Controller_Website
         $card_id    = $this->request->param('id');
         $passengers = Model::factory('passengers');
         /*To set errors in array if errors not set*/
-        $errors     = array();
+        $errors     = [];
         /*checks if user logged or not*/
         $this->is_login();
         $this->is_login_status();
@@ -4803,7 +4803,7 @@ Class Controller_Passengers extends Controller_Website
 		} else {
 			$charisma = 'charisma-app-arabic';	
 		}
-        $dashstyles          = array(
+        $dashstyles          = [
             CSSPATH . 'dashboard/bootstrap-responsive.css' => 'screen',
             CSSPATH . 'dashboard/'.$charisma.'.css' => 'screen',
             CSSPATH . 'dashboard/jquery-ui-1.8.21.custom.css' => 'screen',
@@ -4813,8 +4813,8 @@ Class Controller_Passengers extends Controller_Website
             CSSPATH . 'dashboard/noty_theme_default.css' => 'screen',
             CSSPATH . 'dashboard/jquery.iphone.toggle.css' => 'screen',
             CSSPATH . 'dashboard/opa-icons.css' => 'screen'
-        );
-        $dashscripts         = array(
+        ];
+        $dashscripts         = [
             SCRIPTPATH . 'dashboard/jquery-ui-1.8.21.custom.min.js',
             SCRIPTPATH . 'dashboard/bootstrap-transition.js',
             SCRIPTPATH . 'dashboard/bootstrap-alert.js',
@@ -4835,29 +4835,29 @@ Class Controller_Passengers extends Controller_Website
             SCRIPTPATH . 'dashboard/jquery.history.js',
             SCRIPTPATH . 'dashboard/charisma.js',
             SCRIPTPATH . 'highcharts.js'
-        );
+        ];
         $card_details        = $passengers->get_card_details($card_id,$userid);
         //echo '<pre>';print_r($card_details);exit;
         $submit_card_details = arr::get($_REQUEST, 'submit_card_details');
         if ($submit_card_details && Validation::factory($_POST)) {
             //print_r($_POST); exit;
-            $validator_card_details = $passengers->validate_card_details(arr::extract($_POST, array(
+            $validator_card_details = $passengers->validate_card_details(arr::extract($_POST, [
                 'card_type',
                 'org_creditcard_no',
                 'org_creditcard_cvv',
                 'expdatemonth',
                 'expdateyear'
-            )));
+            ]));
             $creditcard_no          = $_POST['org_creditcard_no'];
             $creditcard_cvv         = $_POST['org_creditcard_cvv'];
             $expdatemonth           = $_POST['expdatemonth'];
             $expdateyear            = $_POST['expdateyear'];
-            $array                  = array(
+            $array                  = [
                 'creditcard_no' => $creditcard_no,
                 'creditcard_cvv' => $creditcard_cvv,
                 'expdatemonth' => $expdatemonth,
                 'expdateyear' => $expdateyear
-            );
+            ];
             //$creditcard_valid = $passengers->authorize_creditcard($array);
             $authorize_status       = $passengers->isVAlidCreditCard($creditcard_no, "", true);
 	    $authorize_status       = 1; // To be removed as in Phase 2, added based on client request
@@ -4910,7 +4910,7 @@ Class Controller_Passengers extends Controller_Website
         $name   = $this->session->get('name');
         if (($userid != null) && ($email != null)) {
             $subject           = __('telltofrien_subject');
-            $replace_variables = array(
+            $replace_variables = [
                 REPLACE_LOGO => EMAILTEMPLATELOGO,
                 REPLACE_SITENAME => COMPANY_SITENAME,
                 REPLACE_NAME => $name,
@@ -4921,7 +4921,7 @@ Class Controller_Passengers extends Controller_Website
                 REPLACE_SITEURL => URL_BASE,
                 REPLACE_COPYRIGHTS => SITE_COPYRIGHT,
                 REPLACE_COPYRIGHTYEAR => COPYRIGHT_YEAR
-            );
+            ];
             //print_r($replace_variables);exit;
             //$message           = $this->emailtemplate->emailtemplate(DOCROOT . TEMPLATEPATH . 'telltofriend.html', $replace_variables);
 			if ($this->lang != 'en') {
@@ -4958,8 +4958,8 @@ Class Controller_Passengers extends Controller_Website
     {
 		$passengers  = Model::factory('passengers');
         $api         = Model::factory('mobileapi115');
-        $errors      = array();
-		$post_values = array();
+        $errors      = [];
+		$post_values = [];
         $phone       = isset($_GET['phone']) ? $_GET['phone'] : '';
 		$otp         = isset($_GET['otp']) ? $_GET['otp'] : '';
 		$otp         = base64_decode($otp);
@@ -4977,7 +4977,7 @@ Class Controller_Passengers extends Controller_Website
 						$notify->setNotificationType(2);
 						$notify->sendNotification();
 						
-						$replace_variables = array(
+						$replace_variables = [
                             REPLACE_LOGO => EMAILTEMPLATELOGO,
                             REPLACE_SITENAME => COMPANY_SITENAME,
                             REPLACE_USERNAME => $passInfo['name'],
@@ -4990,7 +4990,7 @@ Class Controller_Passengers extends Controller_Website
                             REPLACE_COPYRIGHTYEAR => COPYRIGHT_YEAR,
                             REPLACE_ANDROID_PASSENGER_APP => ANDROID_PASSENGER_APP,
                             REPLACE_IOS_PASSENGER_APP => IOS_PASSENGER_APP
-                        );                        
+                        ];                        
 						if ($this->lang != 'en') {
 							if (file_exists(DOCROOT . TEMPLATEPATH . $this->lang . '/driver-register-' . $this->lang . '.html')) {
 								$message = $this->emailtemplate->emailtemplate(DOCROOT . TEMPLATEPATH . $this->lang . '/driver-register-' . $this->lang . '.html', $replace_variables);
@@ -5043,7 +5043,7 @@ Class Controller_Passengers extends Controller_Website
     {
         if (! Upload::valid($image) OR
             ! Upload::not_empty($image) OR
-            ! Upload::type($image, array('jpg', 'jpeg', 'png', 'gif','mp4','flv','avi','wmv','mov')))
+            ! Upload::type($image, ['jpg', 'jpeg', 'png', 'gif','mp4','flv','avi','wmv','mov']))
         {
             return FALSE;
         }
@@ -5064,7 +5064,7 @@ Class Controller_Passengers extends Controller_Website
 		} else {
 			$charisma = 'charisma-app-arabic';	
 		}
-        $dashstyles          = array(
+        $dashstyles          = [
             CSSPATH . 'dashboard/bootstrap-responsive.css' => 'screen',
             CSSPATH . 'dashboard/'.$charisma.'.css' => 'screen',
             CSSPATH . 'dashboard/jquery-ui-1.8.21.custom.css' => 'screen',
@@ -5074,8 +5074,8 @@ Class Controller_Passengers extends Controller_Website
             CSSPATH . 'dashboard/noty_theme_default.css' => 'screen',
             CSSPATH . 'dashboard/jquery.iphone.toggle.css' => 'screen',
             CSSPATH . 'dashboard/opa-icons.css' => 'screen'
-        );
-        $dashscripts         = array(
+        ];
+        $dashscripts         = [
             SCRIPTPATH . 'dashboard/jquery-ui-1.8.21.custom.min.js',
             SCRIPTPATH . 'dashboard/bootstrap-transition.js',
             SCRIPTPATH . 'dashboard/bootstrap-alert.js',
@@ -5096,7 +5096,7 @@ Class Controller_Passengers extends Controller_Website
             SCRIPTPATH . 'dashboard/jquery.history.js',
             SCRIPTPATH . 'dashboard/charisma.js',
             SCRIPTPATH . 'highcharts.js'
-        );
+        ];
         $commonmodel = Model::factory('commonmodel');
         
         if($userid != '')
@@ -5105,11 +5105,11 @@ Class Controller_Passengers extends Controller_Website
             {
                 $id = $_GET['_id'];
                 //$mobile = Controller::factory('mobile101');
-                $invoice_pay = $commonmodel->select_all('invoice_schedule_trip', array('_id'=>(int)$id),array());
+                $invoice_pay = $commonmodel->select_all('invoice_schedule_trip', ['_id'=>(int)$id],[]);
                 //print_r($invoice_pay); die();
                 if( count($invoice_pay) > 0 )
                 {
-                    $param = array('amt'=>$invoice_pay[0]['amount'], '_id'=>$invoice_pay[0]['_id'],'passenger_id'=>$invoice_pay[0]['passenger_id'],'from'=>'schedule');
+                    $param = ['amt'=>$invoice_pay[0]['amount'], '_id'=>$invoice_pay[0]['_id'],'passenger_id'=>$invoice_pay[0]['passenger_id'],'from'=>'schedule'];
                     $hes = $commonmodel->hasabe_auth($param);
                     if($hes->status == 'success')
                     {
@@ -5124,7 +5124,7 @@ Class Controller_Passengers extends Controller_Website
                 die();
                 
             }
-            $invoice    = $commonmodel->select_all('invoice_schedule_trip',array('passenger_id'=>$userid),array());
+            $invoice    = $commonmodel->select_all('invoice_schedule_trip',['passenger_id'=>$userid],[]);
             $view   = View::factory(USERVIEW.'scheduletrip_invoice')
                     ->bind('inv_details',$invoice)->bind('dashstyles', $dashstyles)
                     ->bind('dashscripts', $dashscripts);

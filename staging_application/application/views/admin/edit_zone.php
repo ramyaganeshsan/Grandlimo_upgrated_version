@@ -6,7 +6,7 @@ $destination_name = $destination_lat = $destination_lng = '';
 $source_polygon = $destination_polygon = '';
 $source_polygon = $destination_polygon = '';
 
-$source_polygon_array = isset($zone_detail['loc']['coordinates'][0])?$zone_detail['loc']['coordinates'][0]:array();
+$source_polygon_array = isset($zone_detail['loc']['coordinates'][0])?$zone_detail['loc']['coordinates'][0]:[];
 $source_polygon_coor = '';
 
 if(!empty($source_polygon_array)){
