@@ -96,6 +96,15 @@ var url = buildMongoUrl(dbconfig);
 (async function connectMongo() {
   try {
     await db.connect(url, dbconfig.db);
+    console.info(
+      "Mongo connected successfully to " +
+        dbconfig.host +
+        ":" +
+        dbconfig.port +
+        " (db: " +
+        dbconfig.db +
+        ")"
+    );
     const siteinforesults = await apimodel.SiteSettings(q);
     if (siteinforesults && siteinforesults.length > 0) {
       global.settings = siteinforesults[0];
@@ -320,5 +329,12 @@ require("./websocket")(io);
 var port = normalizePort(process.env.PORT || "4000");
 app.set("port", port);
 
-server.listen(port);
+server.on("error", function (err) {
+  console.error("Unable to start server on port " + port + ".", err);
+  process.exit(1);
+});
+
+server.listen(port, function () {
+  console.info("Server connected to the port " + port);
+});
 module.exports = app;
