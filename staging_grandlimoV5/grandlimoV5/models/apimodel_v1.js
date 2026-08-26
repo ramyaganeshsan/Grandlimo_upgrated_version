@@ -3836,7 +3836,7 @@ exports.update_promocode_new = async function (q, promocode, passenger_phone) {
           //console.log('err---->promo',err);
           //console.log('results---->promo',results);
 
-          if (promo_results.result.nModified == 0) {
+          if (promo_results.modifiedCount == 0) {
             //let match_array2 = {'promocode':'TESSSS','customer_number':'9600763489'};
             let match_array2 = {
               promocode: promocode,
@@ -3847,7 +3847,7 @@ exports.update_promocode_new = async function (q, promocode, passenger_phone) {
               const promo_results2 = await collection.updateOne(
               match_array2,
               { $inc: { total_applied: 1 } });
-                              //console.log('promo_results2---->promo',promo_results2.result.nModified);
+                              //console.log('promo_results2---->promo',promo_results2.modifiedCount);
                               deferred.resolve(promo_results2);
               
             } catch (err) {

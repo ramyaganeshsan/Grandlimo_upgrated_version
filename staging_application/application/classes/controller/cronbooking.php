@@ -412,7 +412,7 @@ Search the driver based on current update of the every driver **/
 
 		$match = array(
 						'moved'=> array('$in'=>array(1,2)),
-						'pickup_time' => array('$lte' => new MongoDate(strtotime($datetime)))
+						'pickup_time' => array('$lte' => new \MongoDB\BSON\UTCDateTime(strtotime($datetime) * 1000))
 					);
 
 		$delete = $this->mongo_db->remove(MDB_PASSENGERS_LOGS,$match);
@@ -431,7 +431,7 @@ Search the driver based on current update of the every driver **/
         $arguments = array(array('$match'=>array(
 						'moved'=> 0,
 						'travel_status'=> 0,
-						'pickup_time' => array('$lte' => new MongoDate(strtotime($datetime)))
+						'pickup_time' => array('$lte' => new \MongoDB\BSON\UTCDateTime(strtotime($datetime) * 1000))
 					)),
 					array('$limit' => 1000),
 				);

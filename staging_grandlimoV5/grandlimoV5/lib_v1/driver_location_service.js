@@ -1,10 +1,10 @@
 var apimodel = require("../models/apimodel_v1");
+var moment = require("moment-timezone");
 var q = require("q");
 var haversine = require("haversine");
 var validate = require("validate.js");
 var i18n = require("i18n");
 var config = require("../config/common_config.json");
-var time = require("time");
 var dateFormat = require("dateformat");
 var dateformatter = require("date-format-php");
 var common = require("../lib_v1/common");
@@ -204,10 +204,10 @@ exports.check_trip_request = function (q, data) {
 
   var message = { status: 0 };
 
-  var now = new time.Date();
-  now.setTimezone(config.TIME_ZONE);
+  var now = moment();
+  now.tz(config.TIME_ZONE);
   start_date = dateFormat(
-    new Date(now.toLocaleDateString()),
+    new Date(now.format("M/D/YYYY")),
     "yyyy-mm-dd 00:00:00"
   );
 

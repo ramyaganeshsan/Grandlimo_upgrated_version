@@ -1,11 +1,11 @@
 var apimodel = require("../models/passapimodel");
+var moment = require("moment-timezone");
 var favicon = require("../config/favicon.json");
 var config = require("../config/common_config.json");
 var q = require("q");
 var validator = require("validator");
 var validate = require("validate.js");
 var dateFormat = require("dateformat");
-var time = require("time");
 //var i18n = require('i18n');
 var t = require("../config/table_config.json");
 var uniqid = require("uniqid");
@@ -156,7 +156,7 @@ exports.update_ratings_comments = function (q, req) {
               apimodel
                 .update_ratings_completed(q, trip_id, update_array)
                 .then(function (update_ratings_completed) {
-                  //if(update_ratings.result.nModified == 1 && update_ratings_completed.result.nModified == 1)
+                  //if(update_ratings.modifiedCount == 1 && update_ratings_completed.modifiedCount == 1)
                   //{
                   message.message = req.__("rate_comment_updated");
                   message.status = 1;
@@ -239,18 +239,18 @@ function ValidateUpdateRatings(q, input) {
 
 // function getCurrentDate(timezone,date_format){
 
-// 	var now = new time.Date();
-// 	now.setTimezone(timezone);
-// 	return dateFormat(new Date(now.toLocaleDateString()),"yyyy-mm-dd");
+// 	var now = moment();
+// 	now.tz(timezone);
+// 	return dateFormat(new Date(now.format("M/D/YYYY")),"yyyy-mm-dd");
 // }
 
 // function getStartingDateAndEndingDate(timezone){
-// 	var now = new time.Date();
-// 	now.setTimezone(timezone);
-// 	start_date=dateFormat(new Date(now.toLocaleDateString()),"yyyy-mm-dd 00:00:00");
-// 	ending_date=dateFormat(new Date(now.toLocaleDateString()),"yyyy-mm-dd 23:59:59");
+// 	var now = moment();
+// 	now.tz(timezone);
+// 	start_date=dateFormat(new Date(now.format("M/D/YYYY")),"yyyy-mm-dd 00:00:00");
+// 	ending_date=dateFormat(new Date(now.format("M/D/YYYY")),"yyyy-mm-dd 23:59:59");
 
-// 	var start_date = new time.Date(start_date, timezone);
-// 	var ending_date = new time.Date(ending_date, timezone);
-// 	return [new Date(start_date.toLocaleString()), new Date(ending_date.toLocaleString())]
+// 	var start_date = moment.tz(start_date, timezone);
+// 	var ending_date = moment.tz(ending_date, timezone);
+// 	return [new Date(start_date.format("M/D/YYYY, h:mm:ss A")), new Date(ending_date.format("M/D/YYYY, h:mm:ss A"))]
 // }

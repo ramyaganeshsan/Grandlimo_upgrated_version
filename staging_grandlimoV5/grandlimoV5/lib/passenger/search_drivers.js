@@ -8,7 +8,6 @@ var fs = require('fs');
 var validate = require("validate.js");
 var dateFormat = require('dateformat');	
 var md5 = require('md5');	
-var time = require('time');
 //var i18n = require('i18n');
 var t=require('../../config/table_config.json');
 var uniqid = require('uniqid');
@@ -1480,20 +1479,13 @@ function convert_date_to_iso(pickup_time)
     return new Date(pickup_time);
 }
 
-function getCurrentDate(timezone,date_format){
-
-	var now = new time.Date();
-	now.setTimezone(timezone);						
-	return dateFormat(new Date(now.toLocaleDateString()),"yyyy-mm-dd");			
+function getCurrentDate(timezone, date_format) {
+  return moment.tz(timezone || "UTC").format("YYYY-MM-DD");
 }
 
-function getStartingDateAndEndingDate(timezone){
-	var now = new time.Date();
-	now.setTimezone(timezone);							
-	start_date=dateFormat(new Date(now.toLocaleDateString()),"yyyy-mm-dd 00:00:00");		
-	ending_date=dateFormat(new Date(now.toLocaleDateString()),"yyyy-mm-dd 23:59:59");
-
-	var start_date = new time.Date(start_date, timezone);			
-	var ending_date = new time.Date(ending_date, timezone);			
-	return [new Date(start_date.toLocaleString()), new Date(ending_date.toLocaleString())]		
+function getStartingDateAndEndingDate(timezone) {
+  var zone = timezone || "UTC";
+  var start = moment.tz(zone).startOf("day").toDate();
+  var end = moment.tz(zone).hour(23).minute(59).second(59).millisecond(0).toDate();
+  return [start, end];
 }

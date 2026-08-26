@@ -59,8 +59,8 @@ Class Model_Manager extends Model
 			$match_query['company._id'] = $company_id;
 		}
 		if ($currentdate!="" && $enddate!="") {
-			$match_query['mapping.mapping_startdate'] = array('$gte' => new MongoDate(strtotime($currentdate)));
-			$match_query['mapping.mapping_enddate'] = array('$lt' => new MongoDate(strtotime($enddate)));
+			$match_query['mapping.mapping_startdate'] = array('$gte' => new \MongoDB\BSON\UTCDateTime(strtotime($currentdate) * 1000));
+			$match_query['mapping.mapping_enddate'] = array('$lt' => new \MongoDB\BSON\UTCDateTime(strtotime($enddate) * 1000));
 		}
 		$arguments = array(
             array(
@@ -266,8 +266,8 @@ Class Model_Manager extends Model
 			$match_query['company._id'] = $company_id;
 		}
 		if ($currentdate!="" && $enddate!="") {
-			$match_query['mapping.mapping_startdate'] = array('$gte' => new MongoDate(strtotime($currentdate)));
-			$match_query['mapping.mapping_enddate'] = array('$lt' => new MongoDate(strtotime($enddate)));
+			$match_query['mapping.mapping_startdate'] = array('$gte' => new \MongoDB\BSON\UTCDateTime(strtotime($currentdate) * 1000));
+			$match_query['mapping.mapping_enddate'] = array('$lt' => new \MongoDB\BSON\UTCDateTime(strtotime($enddate) * 1000));
 		}
 		//echo "<pre>"; print_r($match_query); exit;
 		$arguments = array(
@@ -387,7 +387,7 @@ Class Model_Manager extends Model
 		$match_query['driver_id'] = array('$in' => $ids);
 		$match_query['travel_status'] = 1;
 		if($startdate!="" && $enddate!=""){
-			$match_query['createdate'] = array('$gte'=>new MongoDate(strtotime($startdate)),'$lte'=>new MongoDate(strtotime($enddate)));
+			$match_query['createdate'] = array('$gte'=>new \MongoDB\BSON\UTCDateTime(strtotime($startdate) * 1000),'$lte'=>new \MongoDB\BSON\UTCDateTime(strtotime($enddate) * 1000));
 		}
 		$match_query['travel_status'] = 1;
 		$arguments=array(
@@ -584,7 +584,7 @@ Class Model_Manager extends Model
 		$match_query = array();
 		$match_query['plog.travel_status'] = 1;
 		if($start!=''&& $end!=''){
-			$match_query['plog.pickup_time'] = array('$gte'=>new MongoDate(strtotime($start)),'$lte'=>new MongoDate(strtotime($end)));
+			$match_query['plog.pickup_time'] = array('$gte'=>new \MongoDB\BSON\UTCDateTime(strtotime($start) * 1000),'$lte'=>new \MongoDB\BSON\UTCDateTime(strtotime($end) * 1000));
 		}
 		if($company_id != 0 && $company_id!=""){
 			$match_query['plog.company_id'] = (int)$company_id;

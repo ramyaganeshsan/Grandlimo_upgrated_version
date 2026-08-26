@@ -657,7 +657,7 @@ class Model_Commonmodel extends Model
                 'travel_status' => $travel_status,
                 'payment_type' => $pay_choosen_flag,
                 'passengers_id' => array('$in'=>array((int)$passenger_id)),
-                'actual_pickup_time' => array('$gte' => new MongoDate(strtotime($weekstart_time)),'$lte' => new MongoDate(strtotime($end_time))),
+                'actual_pickup_time' => array('$gte' => new \MongoDB\BSON\UTCDateTime(strtotime($weekstart_time) * 1000),'$lte' => new \MongoDB\BSON\UTCDateTime(strtotime($end_time) * 1000)),
             );
                  //print_r($match_array);
             $arguments = array(
@@ -781,7 +781,7 @@ class Model_Commonmodel extends Model
                 'travel_status' => $travel_status,
                 'payment_type' => $pay_choosen_flag,
                 'passenger.pay_by'=>(int)$pay_mod,
-                'actual_pickup_time' => array('$gte' => new MongoDate(strtotime($weekstart_time)),'$lte' => new MongoDate(strtotime($end_time))),
+                'actual_pickup_time' => array('$gte' => new \MongoDB\BSON\UTCDateTime(strtotime($weekstart_time) * 1000),'$lte' => new \MongoDB\BSON\UTCDateTime(strtotime($end_time) * 1000)),
             );
                  //print_r($match_array);
             $arguments = array(

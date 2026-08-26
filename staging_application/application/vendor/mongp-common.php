@@ -19,10 +19,10 @@ class mongoConnection
         if (self::$db === null)
         {
             try {
-                $m = new MongoClient('mongodb://localhost:27017');
+                $m = new \MongoDB\Client('mongodb://localhost:27017');
                // $m = new MongoClient('mongodb://192.168.1.105:27017');
 
-            } catch (MongoConnectionException $e) {
+            } catch (\Exception $e) {
                 die('Failed to connect to MongoDB '.$e->getMessage());
             }
             self::$db = $m;

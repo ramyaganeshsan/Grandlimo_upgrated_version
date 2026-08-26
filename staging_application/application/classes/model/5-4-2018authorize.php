@@ -496,8 +496,8 @@ class Model_Authorize extends Model
 				'phone' => $phone,
 				//'discount' => (int)$post['discount'],
 				'pay_by' => (int)$post['pay_by'],
-				'lateral_start_date' => new MongoDate(strtotime($startdate)),
-				'lateral_end_date' => new MongoDate(strtotime($enddate)),
+				'lateral_start_date' => new \MongoDB\BSON\UTCDateTime(strtotime($startdate) * 1000),
+				'lateral_end_date' => new \MongoDB\BSON\UTCDateTime(strtotime($enddate) * 1000),
                             'trip_amt_limit' =>$post['trip_amt_limit']
 			);	
 		} else {

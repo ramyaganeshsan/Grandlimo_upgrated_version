@@ -2710,7 +2710,7 @@ class Controller_Add extends Controller_Siteadmin
                         $current_date   = date('Y-m-d H:i:s', time());
                         $couponDetails = [
                             "coupon" => $post_values['coupon_code'],
-                            "givenAt" => new MongoDate(strtotime($current_date)),
+                            "givenAt" => new \MongoDB\BSON\UTCDateTime(strtotime($current_date) * 1000),
                             "driverId" => null,
                             "passengerId" => (int)$passenger[0]['_id'],
                             "deductedPoints" => COUPON_REDEEN_AMOUNT,
@@ -2794,7 +2794,7 @@ class Controller_Add extends Controller_Siteadmin
                         $current_date   = date('Y-m-d H:i:s', time());
                         $couponDetails = [
                             "coupon" => $post_values['coupon_code'],
-                            "givenAt" => new MongoDate(strtotime($current_date)),
+                            "givenAt" => new \MongoDB\BSON\UTCDateTime(strtotime($current_date) * 1000),
                             "driverId" => (int)$post_values['driver_id'],
                             "passengerId" => (int)$passenger[0]['_id'],
                             "deductedPoints" => COUPON_REDEEN_AMOUNT,
@@ -2855,7 +2855,7 @@ class Controller_Add extends Controller_Siteadmin
                     "sent_status" => 0, // 0 -> not completed, 1 -> completed.
                     "message" => $post_values['description'],
                     "title" => $post_values['title'],
-                    "created_date" => new MongoDate(strtotime($current_date)),
+                    "created_date" => new \MongoDB\BSON\UTCDateTime(strtotime($current_date) * 1000),
                     "code" => "",
                     "type" => "all" // all, android, ios
                 ];

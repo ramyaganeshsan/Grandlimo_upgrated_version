@@ -3619,7 +3619,7 @@ Class Controller_Passengers extends Controller_Website
                                             "remarks" => $remarks,
                                             "payment_type" => $cancel_trip_array['pay_mod_id'],
                                             "amt" => $total,
-                                            'current_date' => new MongoDate(strtotime($this->currentdate)),
+                                            'current_date' => new \MongoDB\BSON\UTCDateTime(strtotime($this->currentdate) * 1000),
                                         );
                                         $transaction                = $this->commonmodel->insert(MDB_TRANSACTION, $insert_array);
                                         $update_travel_status_array = array(

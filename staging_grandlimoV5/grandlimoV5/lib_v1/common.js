@@ -1,4 +1,4 @@
-var querystring = require("querystring");
+var moment = require("moment-timezone");
 var apimodel = require("../models/apimodel_v1");
 var passapimodel = require("../models/passapimodel_v1");
 var push = require("../lib_v1/push/push");
@@ -87,12 +87,12 @@ exports.send_sms = function (
           // 	to = '917708259410';
           // /** Test indian no purpose */
           // console.log(to,'------<tooooo');
-          // const postData = querystring.stringify({
+          // const postData = new URLSearchParams({
           // 	'companyId':'ZOLVEN3',
           // 	'pword':'ZOLVEN3',
           // 	'smsMessage':msg,
           // 	'phoneNumber':to
-          // });
+          // }).toString();
           // console.log('http://119.235.1.63:4050/Sms.svc/SendSms?'+postData);
           //  axios.get('http://119.235.1.63:4050/Sms.svc/SendSms?'+postData)
           // 	  .then(response => {
@@ -102,7 +102,7 @@ exports.send_sms = function (
           // 	    console.log(error,'--------error----->111');
           // 	  });
 
-          // const postData = querystring.stringify({
+          // const postData = new URLSearchParams({
           // 	'username': global.settings.smsbox_username,
           // 	'password': global.settings.smsbox_password,
           // 	'customerid': global.settings.smsbox_customerid,
@@ -112,7 +112,7 @@ exports.send_sms = function (
           // 	'defdate': '',
           // 	'isblink': 'false',
           // 	'isflash': 'false'
-          // });
+          // }).toString();
 
           // axios.get('http://www.smsbox.com/smsgateway/services/messaging.asmx/Http_SendSMS?' + postData)
           // 	.then(response => {
@@ -126,7 +126,7 @@ exports.send_sms = function (
 
           /* Sasidharan Jan 25 2023 */
           /* Please move this details into DB */
-          const postData = querystring.stringify({
+          const postData = new URLSearchParams({
             username: "GrandLimo",
             password: "@1234Cas",
             type: "0",
@@ -136,7 +136,7 @@ exports.send_sms = function (
             destination: to,
             source: "GRAND LIMO",
             message: msg,
-          });
+          }).toString();
           axios
             .get("https://api.rmlconnect.net:8443/bulksms/bulksms?" + postData)
             .then((response) => {
@@ -760,7 +760,7 @@ exports.passenger_update_drop_location = function (q, trip_id, update_array) {
             try {
               var tripdetails = {};
 
-              if (update_drop.result.nModified == 1) {
+              if (update_drop.modifiedCount == 1) {
                 //console.log('drop0004');
 
                 tripdetails.details = {
@@ -812,28 +812,26 @@ exports.passenger_update_drop_location = function (q, trip_id, update_array) {
 };
 
 function getCurrentDate(timezone, date_format) {
-  var now = new time.Date();
-  now.setTimezone(timezone);
-  return dateFormat(new Date(now.toLocaleDateString()), "yyyy-mm-dd");
+  return moment.tz(timezone || "UTC").format("YYYY-MM-DD");
 }
 
 function getStartingDateAndEndingDate(timezone) {
-  var now = new time.Date();
-  now.setTimezone(timezone);
+  var now = moment();
+  now.tz(timezone);
   start_date = dateFormat(
-    new Date(now.toLocaleDateString()),
+    new Date(now.format("M/D/YYYY")),
     "yyyy-mm-dd 00:00:00"
   );
   ending_date = dateFormat(
-    new Date(now.toLocaleDateString()),
+    new Date(now.format("M/D/YYYY")),
     "yyyy-mm-dd 23:59:59"
   );
 
-  var start_date = new time.Date(start_date, timezone);
-  var ending_date = new time.Date(ending_date, timezone);
+  var start_date = moment.tz(start_date, timezone);
+  var ending_date = moment.tz(ending_date, timezone);
   return [
-    new Date(start_date.toLocaleString()),
-    new Date(ending_date.toLocaleString()),
+    new Date(start_date.format("M/D/YYYY, h:mm:ss A")),
+    new Date(ending_date.format("M/D/YYYY, h:mm:ss A")),
   ];
 }
 
@@ -1688,7 +1686,7 @@ exports.update_waiting_timer = function (q, data) {
                     status: 3,
                   };
 
-                  if (update_timer.result.nModified == 1) {
+                  if (update_timer.modifiedCount == 1) {
                     if (start_status == 1) {
                       socket_msg.message = i18n.__("timer_started");
                       socket_msg.total_waiting_time =
@@ -1868,14 +1866,7 @@ exports.sendPush = function (passenger_id, msg) {
 };
 
 function getBeforeTwoDays(timezone, date_format) {
-  var d = new time.Date();
-  d.setTimezone(timezone);
-  //var d = new Date();
-  var before_days = d.setDate(d.getDate() - 2);
-  ////////console.log(d.getTimezone(),'-------->time zone');
-  return new Date(before_days);
-  ////////console.log(new Date(before_days),'------------dayssss');
-  //return dateFormat(new Date(now.toLocaleDateString()),"yyyy-mm-dd 00:00:00");
+  return moment.tz(timezone || "UTC").subtract(2, "days").toDate();
 }
 
 function calculate_percentage(secs_diff, percentage) {

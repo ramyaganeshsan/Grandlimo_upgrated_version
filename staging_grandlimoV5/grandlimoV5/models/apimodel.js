@@ -4290,7 +4290,7 @@ exports.update_promocode_new = async function (q, promocode, passenger_phone) {
     match_array,
     { $inc: { total_applied: 1 } });
 
-          if (promo_results.result.nModified == 0) {
+          if (promo_results.modifiedCount == 0) {
             let match_array2 = {
               promocode: promocode,
               customer_number: passenger_phone,

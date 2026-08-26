@@ -6415,7 +6415,7 @@ class Controller_Manage extends Controller_Siteadmin
             if (count($driver_shift) > 0) {
                 $this->currentdate  = Commonfunction::getCurrentTimeStamp();
                 $shiftupdate_arrary = array(
-                    "shift_end" => new MongoDate(strtotime($this->currentdate))
+                    "shift_end" => new \MongoDB\BSON\UTCDateTime(strtotime($this->currentdate) * 1000)
                 );
                 $driver_shift_id    = isset($driver_shift[0]['driver_shift_id']) ? $driver_shift[0]['driver_shift_id'] : '';
                 $transaction        = $this->commonmodel->update(MDB_SHIFT_HISTORY, $shiftupdate_arrary, 'driver_shift_id', $driver_shift_id);

@@ -27,7 +27,6 @@ var giftCard = require("../../lib_v1/giftcard");
 var i18n = require("i18n");
 var q = require("q");
 var fs = require("fs");
-const url = require("url");
 const hesabeModel = require("./hesabe.model.js");
 const hesabe = require("./hesabe.js");
 

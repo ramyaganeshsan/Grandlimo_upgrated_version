@@ -6432,7 +6432,7 @@ class Controller_Manage extends Controller_Siteadmin
             if (count($driver_shift) > 0) {
                 $this->currentdate  = Commonfunction::getCurrentTimeStamp();
                 $shiftupdate_arrary = array(
-                    "shift_end" => new MongoDate(strtotime($this->currentdate))
+                    "shift_end" => new \MongoDB\BSON\UTCDateTime(strtotime($this->currentdate) * 1000)
                 );
                 $driver_shift_id    = isset($driver_shift[0]['driver_shift_id']) ? $driver_shift[0]['driver_shift_id'] : '';
                 $transaction        = $this->commonmodel->update(MDB_SHIFT_HISTORY, $shiftupdate_arrary, 'driver_shift_id', $driver_shift_id);
@@ -11256,8 +11256,8 @@ public function action_gift_card_logs()
                     //     "company_id" => (int)$cid,
                     //     "promocode" => $value['Unique ID'],
                     //     "package" => (int)$package,
-                    //     "start_date" => new MongoDate(strtotime($startDate)),
-                    //     "expire_date" => new MongoDate(strtotime($endDate)),
+                    //     "start_date" => new \MongoDB\BSON\UTCDateTime(strtotime($startDate) * 1000),
+                    //     "expire_date" => new \MongoDB\BSON\UTCDateTime(strtotime($endDate) * 1000),
                     //     "createdate" => $currenttime,
                     //     "fixed_fare_amt"=>(int)0,
                     //     "promo_type" => "1",
@@ -11296,8 +11296,8 @@ public function action_gift_card_logs()
                         "company_id" => (int)$cid,
                         "promocode" => $value['Unique ID'],
                         "package" => (int)$package,
-                        "start_date" => new MongoDate(strtotime($startDate)),
-                        "expire_date" => new MongoDate(strtotime($endDate)),
+                        "start_date" => new \MongoDB\BSON\UTCDateTime(strtotime($startDate) * 1000),
+                        "expire_date" => new \MongoDB\BSON\UTCDateTime(strtotime($endDate) * 1000),
                         "createdate" => $currenttime,
                         "fixed_fare_amt"=>(int)0,
                         "promo_type" => "1",
@@ -11500,7 +11500,7 @@ public function action_gift_card_logs()
                                           "trip_amount" => $tripAmount,
                                           "previous_amount" => $paymentInfo['trip_amount'],
                                           "actual_paid_amount" => $amount,
-                                          'last_update' => new MongoDate(strtotime($current_date)),
+                                          'last_update' => new \MongoDB\BSON\UTCDateTime(strtotime($current_date) * 1000),
                                       ];
 
                                       if($tripAmount <= 0) {

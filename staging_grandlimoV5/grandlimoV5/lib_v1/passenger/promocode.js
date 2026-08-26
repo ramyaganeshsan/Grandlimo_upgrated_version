@@ -1,4 +1,5 @@
 var apimodel = require("../../models/passapimodel_v1");
+var moment = require("moment-timezone");
 var favicon = require("../../config/favicon.json");
 var config = require("../../config/common_config.json");
 var q = require("q");
@@ -8,7 +9,6 @@ var fs = require("fs");
 var validate = require("validate.js");
 var dateFormat = require("dateformat");
 var md5 = require("md5");
-var time = require("time");
 //var i18n = require('i18n');
 var t = require("../../config/table_config.json");
 var uniqid = require("uniqid");
@@ -479,7 +479,7 @@ function check_promocode(
             var promo_limit = promocode_details.promo_limit;
             var current_date = new Date();
             var current_time = calcTime("Kuwait", "+3");
-            var now = new time.Date();
+            var now = moment();
             var promo_starttime = promo_start.getTime();
             var promo_endtime = promo_end.getTime();
 
@@ -567,7 +567,7 @@ function check_promocode(
                   var current_date = new Date();
                   //var current_time =  current_date.getTime();
                   var current_time = calcTime("Kuwait", "+3");
-                  var now = new time.Date();
+                  var now = moment();
                   //console.log("current_time1",current_time);
                   //console.log("current_time2",current_date);
                   //console.log("promo_start",promo_start);
@@ -652,9 +652,7 @@ function check_promocode(
 }
 
 function getCurrentDate(timezone, date_format) {
-  var now = new time.Date();
-  now.setTimezone(timezone);
-  return dateFormat(new Date(now.toLocaleDateString()), "yyyy-mm-dd");
+  return moment.tz(timezone || "UTC").format("YYYY-MM-DD");
 }
 
 function validateGiftCard(q, promocode) {
@@ -709,22 +707,22 @@ function validateGiftCard(q, promocode) {
 }
 
 function getStartingDateAndEndingDate(timezone) {
-  var now = new time.Date();
-  now.setTimezone(timezone);
+  var now = moment();
+  now.tz(timezone);
   start_date = dateFormat(
-    new Date(now.toLocaleDateString()),
+    new Date(now.format("M/D/YYYY")),
     "yyyy-mm-dd 00:00:00"
   );
   ending_date = dateFormat(
-    new Date(now.toLocaleDateString()),
+    new Date(now.format("M/D/YYYY")),
     "yyyy-mm-dd 23:59:59"
   );
 
-  var start_date = new time.Date(start_date, timezone);
-  var ending_date = new time.Date(ending_date, timezone);
+  var start_date = moment.tz(start_date, timezone);
+  var ending_date = moment.tz(ending_date, timezone);
   return [
-    new Date(start_date.toLocaleString()),
-    new Date(ending_date.toLocaleString()),
+    new Date(start_date.format("M/D/YYYY, h:mm:ss A")),
+    new Date(ending_date.format("M/D/YYYY, h:mm:ss A")),
   ];
 }
 

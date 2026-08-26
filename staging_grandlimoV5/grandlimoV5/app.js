@@ -5,8 +5,7 @@ var express = require("express"),
   path = require("path"),
   favicon = require("serve-favicon"),
   logger = require("morgan"),
-  cookieParser = require("cookie-parser"),
-  bodyParser = require("body-parser");
+  cookieParser = require("cookie-parser");
 
 var db = require("./config/dbconnection");
 var dbconfig = require("./config/database.json");
@@ -18,7 +17,6 @@ var i18n = require("i18n");
 var socket = require("socket.io");
 var fs = require("fs");
 var appRoot = require("app-root-path");
-var time = require("time");
 var moment = require("moment-timezone");
 var dateformatter = require("date-format-php");
 var urlencode = require("urlencode");
@@ -63,22 +61,21 @@ app.set("view engine", "pug");
 app.use("/public", express.static("public"));
 
 app.use(
-  bodyParser.urlencoded({
+  express.urlencoded({
     parameterLimit: 100000,
     limit: "50mb",
     extended: true,
   })
 );
 
-app.use(bodyParser.json({ limit: "50mb", type: "application/json" }));
-app.use(bodyParser.json());
+app.use(express.json({ limit: "50mb", type: "application/json" }));
 
 var options = {
   inflate: true,
   limit: "1mb",
   type: "application/json",
 };
-app.use(bodyParser.raw(options));
+app.use(express.raw(options));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 
@@ -113,20 +110,10 @@ var url = buildMongoUrl(dbconfig);
 
 app.get("/access", function (req, res) {
   try {
-    const time = require("time");
-    var dateFormat = require("dateformat");
-
-    var now = new time.Date();
-
-    console.log("query", req.query);
-
     if (req.query.date != undefined) {
       var current_date = req.query.date;
     } else {
-      var current_date = dateFormat(
-        new Date(now.toLocaleString()),
-        "yyyy-mm-dd-HH"
-      );
+      var current_date = moment().format("YYYY-MM-DD-HH");
     }
 
     var filename = "access_" + current_date + ".json";

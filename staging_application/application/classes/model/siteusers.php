@@ -1620,7 +1620,7 @@ return $result;
 			'subject' => $sign['subject'],
 			'message'=> $message,
 			'phone' =>  $sign['phone'],
-			'sent_date' =>  new MongoDate(strtotime($current_time))
+			'sent_date' =>  new \MongoDB\BSON\UTCDateTime(strtotime($current_time) * 1000)
 			
 		);	
 			$insert      = $this->mongo_db->Insert(MDB_CONTACTS,$fieldname_array);

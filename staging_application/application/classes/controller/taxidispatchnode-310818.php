@@ -1941,7 +1941,7 @@ class Controller_Taxidispatchnode extends Controller_Dispatchadminnode
                 "status" => 0,
                 "rejected_timeout_drivers" => "",
                 //"createdate" => $company_all_currenttimestamp
-                "createdate" =>new MongoDate(strtotime($company_all_currenttimestamp))
+                "createdate" =>new \MongoDB\BSON\UTCDateTime(strtotime($company_all_currenttimestamp) * 1000)
             );
             //Inserting to Driver request table Table 
             $driver_request        = $this->common_model->insert(MDB_REQUEST_HISTORY, $insert_array);

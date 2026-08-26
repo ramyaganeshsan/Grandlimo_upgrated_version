@@ -272,7 +272,7 @@ public function update_driverimage($image,$userid)
     }
     public function forgot_password_phone($array_data, $value, $random_key)
     {
-        $mdate  = new MongoDate(strtotime($this->currentdate));
+        $mdate  = new \MongoDB\BSON\UTCDateTime(strtotime($this->currentdate) * 1000);
         $pass   = md5($random_key);
         $pwd_arr = array('password' => $pass, 'org_password' => $random_key,'updated_date'=>$mdate);
         $update = $this->mongo_db->Update(MDB_PEOPLE,array('phone'=>$value['phone_no'],'driver_code'=>$value['driver_code']),
@@ -1194,7 +1194,7 @@ AND mapping_enddate >= '" . $start_time . "' and mapping_enddate >= '$current_ti
         return $result;*/
        
        //MongoDB
-       $match_query = array("\$and" => array(array("pickup_time"=>array('$gte' => new MongoDate(strtotime($start)),'$lt'=>  new MongoDate(strtotime($end)))),array('taxi_id' => (int)$id),array('travel_status' => 1)));
+       $match_query = array("\$and" => array(array("pickup_time"=>array('$gte' => new \MongoDB\BSON\UTCDateTime(strtotime($start) * 1000),'$lt'=>  new \MongoDB\BSON\UTCDateTime(strtotime($end) * 1000))),array('taxi_id' => (int)$id),array('travel_status' => 1)));
        //$match_query = array("\$and" => array(array("pickup_time"=>array('$gte' => $start,'$lt'=> $end)),array('taxi_id' => (int)$id),array('travel_status' => 1)));
        //print_r($match_query);//exit;
        $arguments = array(

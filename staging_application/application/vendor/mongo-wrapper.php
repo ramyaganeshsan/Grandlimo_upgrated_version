@@ -18,9 +18,9 @@ class Mongo{
     public function __construct($host, $user, $pwd, $db){
         try{
             $userpass = strlen($user)? $user.":".$pwd."@" : "";
-            $dbcon = new \MongoClient("mongodb://{$userpass}{$host}", array("connect"=>TRUE));
+            $dbcon = new \MongoDB\Client("mongodb://{$userpass}{$host}");
             $this->db = $dbcon->$db;
-        }catch(\MongoConnectionException $e){
+        }catch(\Exception $e){
             echo $e->getCode()." - ".$e->getMessage();
             die();
         }
@@ -33,9 +33,9 @@ class Mongo{
      */
     public function insert($data, $opts = array()){
             
-        $data['_id'] = (!isset($data['_id']))? new \MongoId() : $data['_id'];
+        $data['_id'] = (!isset($data['_id']))? new \MongoDB\BSON\ObjectId() : $data['_id'];
         try{
-            $this->collection->insert($data, array_merge($opts, array("w" => 1)));//use w to avoid identical inserts
+            $this->collection->insertOne($data);
             $this->last_insert = $data['_id'];
             return $this;
         }catch(\Exception $e){
@@ -61,7 +61,7 @@ class Mongo{
         if($fields == null)
             $this->result = $this->collection->find($params);
         else
-            $this->result = $this->collection->find($params, $fields);
+            $this->result = $this->collection->find($params, array("projection" => $fields));
         return $this;
     }
     /**
@@ -172,8 +172,8 @@ class Mongo{
      */
     public function result(){
         $list = array();
-        while($this->result->hasNext()){
-            $list[] = $this->result->getNext();
+        foreach($this->result as $doc){
+            $list[] = $doc;
         }
         return $list;
     }
@@ -185,7 +185,7 @@ class Mongo{
      * @return $this
      */    
     public function remove($params=array()){
-        $this->collection->remove($params);
+        $this->collection->deleteMany($params);
         return $this;
     }
     

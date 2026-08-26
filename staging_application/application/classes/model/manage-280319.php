@@ -3841,7 +3841,7 @@ Class Model_Manage extends Model
 						'photo' => '$people.profile_picture',
 						'driver_status' => '$people.status',
 						'updatetime_difference' => array('$subtract'=>
-								array(new MongoDate(strtotime($this->currentdate)),'$driver.update_date'))
+								array(new \MongoDB\BSON\UTCDateTime(strtotime($this->currentdate) * 1000),'$driver.update_date'))
 					)
 				),
 				array('$skip'	=> (int)$offset ),
@@ -7495,7 +7495,7 @@ Class Model_Manage extends Model
     {
 		
         if($current_date != 1){
-			$match_query =  array('passengers_id' => (int)$id,'msg_status' => $msg_status,'driver_reply'=>$driver_reply,'travel_status' => (int)$travel_status,'$and' => array(array('pickup_time' =>  array('$gte'=>new MongoDate(strtotime($fromdate))) ),array('pickup_time' =>  array('$lte'=>new MongoDate(strtotime($todate))) ) ) );
+			$match_query =  array('passengers_id' => (int)$id,'msg_status' => $msg_status,'driver_reply'=>$driver_reply,'travel_status' => (int)$travel_status,'$and' => array(array('pickup_time' =>  array('$gte'=>new \MongoDB\BSON\UTCDateTime(strtotime($fromdate) * 1000)) ),array('pickup_time' =>  array('$lte'=>new \MongoDB\BSON\UTCDateTime(strtotime($todate) * 1000)) ) ) );
 		}else{
 			$match_query =  array('passengers_id' => (int)$id,'msg_status' => $msg_status,'driver_reply'=>$driver_reply,'travel_status' => (int)$travel_status);
 		}
@@ -8025,19 +8025,19 @@ Class Model_Manage extends Model
 				$match_query['promocode'] = new MongoRegex("/$keyword/i");
 			}
 			if (!empty($search['startdate']) && !empty($search['enddate'])) {
-				$match_query['start_date'] = array('$gte' => new MongoDate(strtotime($search["startdate"])), '$lte' => new MongoDate(strtotime($search["enddate"])));
+				$match_query['start_date'] = array('$gte' => new \MongoDB\BSON\UTCDateTime(strtotime($search["startdate"]) * 1000), '$lte' => new \MongoDB\BSON\UTCDateTime(strtotime($search["enddate"]) * 1000));
             }elseif(!empty($search['startdate'])) {
-				$match_query['start_date'] = array('$gte' => new MongoDate(strtotime($search["startdate"])));
+				$match_query['start_date'] = array('$gte' => new \MongoDB\BSON\UTCDateTime(strtotime($search["startdate"]) * 1000));
             }elseif(!empty($search['enddate'])) {
-				$match_query['start_date'] = array('$lte' => new MongoDate(strtotime($search["enddate"])));
+				$match_query['start_date'] = array('$lte' => new \MongoDB\BSON\UTCDateTime(strtotime($search["enddate"]) * 1000));
             }
 			
 			if (!empty($search['e_startdate']) && !empty($search['e_enddate'])) {
-				$match_query['expire_date'] = array('$gte' => new MongoDate(strtotime($search["e_startdate"])), '$lte' => new MongoDate(strtotime($search["e_enddate"])));
+				$match_query['expire_date'] = array('$gte' => new \MongoDB\BSON\UTCDateTime(strtotime($search["e_startdate"]) * 1000), '$lte' => new \MongoDB\BSON\UTCDateTime(strtotime($search["e_enddate"]) * 1000));
             }elseif(!empty($search['e_startdate'])) {
-				$match_query['expire_date'] = array('$gte' => new MongoDate(strtotime($search["e_startdate"])));
+				$match_query['expire_date'] = array('$gte' => new \MongoDB\BSON\UTCDateTime(strtotime($search["e_startdate"]) * 1000));
             }elseif(!empty($search['e_enddate'])) {
-				$match_query['expire_date'] = array('$lte' => new MongoDate(strtotime($search["e_enddate"])));
+				$match_query['expire_date'] = array('$lte' => new \MongoDB\BSON\UTCDateTime(strtotime($search["e_enddate"]) * 1000));
             }
 			
             if (!empty($search['company'])) {
@@ -8218,7 +8218,7 @@ Class Model_Manage extends Model
 		$match = array();
 		$match['driver_id'] = (int)$driver_id;
 		$match['driver_reply'] = "A";
-		$match['pickup_time'] = array('$gte'=> new MongoDate(strtotime($start_time)));
+		$match['pickup_time'] = array('$gte'=> new \MongoDB\BSON\UTCDateTime(strtotime($start_time) * 1000));
 		$match['travel_status'] = array('$in' => array(9,5,3,2));
 		if ($company_id != "" && $company_id != 0) {
 			$match['company_id'] = (int)$company_id;
@@ -9343,7 +9343,7 @@ Class Model_Manage extends Model
 			$_id = $rs_first_key + 1;
             
             $current_date      = date('Y-m-d H:i:s', time());
-            $currentdate = new MongoDate(strtotime($current_date));
+            $currentdate = new \MongoDB\BSON\UTCDateTime(strtotime($current_date) * 1000);
 
             $data = array('_id'=>$_id,
 				'message' => $pushmessage,
@@ -9826,7 +9826,7 @@ Class Model_Manage extends Model
 			"passenger_id"=>(int)$data['passenger_id'],
 			"change_amount"=>(double)$data['add_amt'],
 			"wallet_amount"=>$data['current_wallet_amt'],
-            "created_date" => new MongoDate(strtotime($this->currentdate)),
+            "created_date" => new \MongoDB\BSON\UTCDateTime(strtotime($this->currentdate) * 1000),
             "created_by" => (int)$this->user_createdby,
             "recharge_type" =>(int)1,
 	    "notes"=>$data['notes']
@@ -9940,7 +9940,7 @@ Class Model_Manage extends Model
                 $additional_amt = $add_amt;
            // } 
 
-            $currentdate = new MongoDate(strtotime($this->currentdate));
+            $currentdate = new \MongoDB\BSON\UTCDateTime(strtotime($this->currentdate) * 1000);
 
             $update_data      = array(
             "wallet_amount"=>(double)$update_wallet_amt,
@@ -9971,7 +9971,7 @@ Class Model_Manage extends Model
             "passenger_id"=>(int)$data['passenger_id'],
             "change_amount"=>(double)$data['add_amt'],
             "wallet_amount"=>(double)$data['current_wallet_amt'],
-            "created_date" => new MongoDate(strtotime($this->currentdate)),
+            "created_date" => new \MongoDB\BSON\UTCDateTime(strtotime($this->currentdate) * 1000),
             "created_by" => (int)$data['passenger_id'],
             "recharge_type" =>(int)$data['recharge_type'],
             //"transaction_id" =>(int)$data['transaction_id'],
@@ -10391,7 +10391,7 @@ Class Model_Manage extends Model
 			$status = 'D';
 		}
 
-		$career_data = array('_id' => (int)$inc_id,'title'=>$arr['title'],'title_ar'=>$arr['title_ar'],'description'=>$arr['description'],'description_ar'=>$arr['description_ar'],'status'=>$status,'created_date' => new MongoDate(strtotime($this->currentdate)) );
+		$career_data = array('_id' => (int)$inc_id,'title'=>$arr['title'],'title_ar'=>$arr['title_ar'],'description'=>$arr['description'],'description_ar'=>$arr['description_ar'],'status'=>$status,'created_date' => new \MongoDB\BSON\UTCDateTime(strtotime($this->currentdate) * 1000) );
 
 		$result = $this->mongo_db->insert(MDB_CARRERS_LIST,$career_data);
 
@@ -10591,7 +10591,7 @@ Class Model_Manage extends Model
 			$_id = $rs_first_key + 1;
             
             $current_date      = date('Y-m-d H:i:s', time());
-            $currentdate = new MongoDate(strtotime($current_date));
+            $currentdate = new \MongoDB\BSON\UTCDateTime(strtotime($current_date) * 1000);
 
             $data = array('_id'=>$_id,
             	'title'=>$title,
@@ -10801,7 +10801,7 @@ Class Model_Manage extends Model
     public function update_website_content($post){
 
     	 $current_date      = date('Y-m-d H:i:s', time());
-         $currentdate = new MongoDate(strtotime($current_date));
+         $currentdate = new \MongoDB\BSON\UTCDateTime(strtotime($current_date) * 1000);
 
          $home_page = array('vehicle_type'=>$post['vehicle_type'],'vehicle_type_arabic'=> $post['vehicle_type_arabic'],'vehicle_description'=>$post['vehicle_description'],'vehicle_description_arabic'=>$post['vehicle_description_arabic'],'meet_driver'=>$post['meet_driver'],'meet_driver_arabic'=>$post['meet_driver_arabic'],'meet_driver_description'=>$post['meet_driver_description'],'meet_driver_description_arabic'=>$post['meet_driver_description_arabic'],'website_certificate'=>$post['website_certificate'],'website_certificate_arabic'=>$post['website_certificate_arabic'],'website_certificate_description'=>$post['website_certificate_description'],'website_certificate_description_arabic'=>$post['website_certificate_description_arabic'],'banner_title'=>$post['banner_title'],'banner_title_arabic'=>$post['banner_title_arabic'],'banner_description'=>$post['banner_description'],'banner_description_arabic'=>$post['banner_description_arabic'],'pick_at_title'=>$post['pick_at_title'],'pick_at_title_arabic'=>$post['pick_at_title_arabic'],'pick_at_description'=>$post['pick_at_description'],'pick_at_description_arabic'=>$post['pick_at_description_arabic'],'card_payment'=>$post['card_payment'],'card_payment_arabic'=>$post['card_payment_arabic'],'card_description'=>$post['card_description'],'card_description_arabic'=>$post['card_description_arabic'],'secure_title'=>$post['secure_title'],'secure_title_arabic'=>$post['secure_title_arabic'],'secure_description'=>$post['secure_description'],'secure_description_arabic'=>$post['secure_description_arabic'],'update_date'=>$currentdate);
 
@@ -10941,7 +10941,7 @@ Class Model_Manage extends Model
     public function update_website_features_content($post){
 
     	 $current_date      = date('Y-m-d H:i:s', time());
-         $currentdate = new MongoDate(strtotime($current_date));
+         $currentdate = new \MongoDB\BSON\UTCDateTime(strtotime($current_date) * 1000);
 
          $home_page = array('banner_content'=>$post['banner_content'],'banner_content_arabic'=> $post['banner_content_arabic'],'feature_title'=>$post['feature_title'],'feature_title_arabic'=>$post['feature_title_arabic'],'feature_description'=>$post['feature_description'],'feature_description_arabic'=>$post['feature_description_arabic'],'gps'=>$post['gps'],'gps_arabic'=>$post['gps_arabic'],'gps_description'=>$post['gps_description'],'gps_description_arabic'=>$post['gps_description_arabic'],'fare_quote'=>$post['fare_quote'],'fare_quote_arabic'=>$post['fare_quote_arabic'],'fare_quote_description'=>$post['fare_quote_description'],'fare_quote_description_arabic'=>$post['fare_quote_description_arabic'],'social_share'=>$post['social_share'],'social_share_arabic'=>$post['social_share_arabic'],'social_share_description'=>$post['social_share_description'],'social_share_description_arabic'=>$post['social_share_description_arabic'],'rate_your_driver'=>$post['rate_your_driver'],'rate_your_driver_arabic'=>$post['rate_your_driver_arabic'],'rate_your_driver_description'=>$post['rate_your_driver_description'],'rate_your_driver_description_arabic'=>$post['rate_your_driver_description_arabic'],'reliability'=>$post['reliability'],'reliability_arabic'=>$post['reliability_arabic'],'reliability_description'=>$post['reliability_description'],'reliability_description_arabic'=>$post['reliability_description_arabic'],'schedule_ride'=>$post['schedule_ride'],'schedule_ride_arabic'=>$post['schedule_ride_arabic'],'schedule_ride_decription'=>$post['schedule_ride_decription'],'schedule_ride_decription_arabic'=>$post['schedule_ride_decription_arabic'],'update_date'=>$currentdate);
 
@@ -11089,7 +11089,7 @@ Class Model_Manage extends Model
     public function update_website_how_works_content($post){
 
     	 $current_date      = date('Y-m-d H:i:s', time());
-         $currentdate = new MongoDate(strtotime($current_date));
+         $currentdate = new \MongoDB\BSON\UTCDateTime(strtotime($current_date) * 1000);
 
          $home_page = array('banner_content'=>$post['banner_content'],'banner_content_arabic'=> $post['banner_content_arabic'],'how_its_work'=>$post['how_its_work'],'how_its_work_arabic'=>$post['how_its_work_arabic'],'how_its_work_description'=>$post['how_its_work_description'],'how_its_work_description_arabic'=>$post['how_its_work_description_arabic'],'booking'=>$post['booking'],'booking_arabic'=>$post['booking_arabic'],'booking_description'=>$post['booking_description'],'booking_description_arabic'=>$post['booking_description_arabic'],'select_car'=>$post['select_car'],'select_car_arabic'=>$post['select_car_arabic'],'select_car_description'=>$post['select_car_description'],'select_car_description_arabic'=>$post['select_car_description_arabic'],'airport_pickup'=>$post['airport_pickup'],'airport_pickup_arabic'=>$post['airport_pickup_arabic'],'airport_pickup_description'=>$post['airport_pickup_description'],'airport_pickup_description_arabic'=>$post['airport_pickup_description_arabic'],'fare'=>$post['fare'],'fare_arabic'=>$post['fare_arabic'],'fare_description'=>$post['fare_description'],'fare_description_arabic'=>$post['fare_description_arabic'],'ride_confirm'=>$post['ride_confirm'],'ride_confirm_arabic'=>$post['ride_confirm_arabic'],'ride_confirm_description'=>$post['ride_confirm_description'],'ride_confirm_description_arabic'=>$post['ride_confirm_description_arabic'],'ride_complete'=>$post['ride_complete'],'ride_complete_arabic'=>$post['ride_complete_arabic'],'ride_complete_description'=>$post['ride_complete_description'],'ride_complete_description_arabic'=>$post['ride_complete_description_arabic'],'rate_driver'=>$post['rate_driver'],'rate_driver_arabic'=>$post['rate_driver_arabic'],'rate_driver_description'=>$post['rate_driver_description'],'rate_driver_description_arabic'=>$post['rate_driver_description_arabic'],'update_date'=>$currentdate);
 
@@ -11134,7 +11134,7 @@ Class Model_Manage extends Model
     public function update_website_pricing_content($post){
 
     	 $current_date      = date('Y-m-d H:i:s', time());
-         $currentdate = new MongoDate(strtotime($current_date));  
+         $currentdate = new \MongoDB\BSON\UTCDateTime(strtotime($current_date) * 1000);  
 
          $home_page = array('banner_content'=>$post['banner_content'],'banner_content_arabic'=> $post['banner_content_arabic'],'pricing'=>$post['pricing'],'pricing_arabic'=>$post['pricing_arabic'],'pricing_description'=>$post['pricing_description'],'pricing_description_arabic'=>$post['pricing_description_arabic'],'update_date'=>$currentdate);
 
@@ -11179,7 +11179,7 @@ Class Model_Manage extends Model
     public function update_website_careers_content($post){
 
     	 $current_date      = date('Y-m-d H:i:s', time());
-         $currentdate = new MongoDate(strtotime($current_date));  
+         $currentdate = new \MongoDB\BSON\UTCDateTime(strtotime($current_date) * 1000);  
 
          $home_page = array('banner_content'=>$post['banner_content'],'banner_content_arabic'=> $post['banner_content_arabic'],'career'=>$post['career'],'career_arabic'=>$post['career_arabic'],'career_description'=>$post['career_description'],'career_description_arabic'=>$post['career_description_arabic'],'update_date'=>$currentdate);
 
@@ -11207,7 +11207,7 @@ Class Model_Manage extends Model
     public function update_website_cms_content($post){
 
     	 $current_date      = date('Y-m-d H:i:s', time());
-         $currentdate = new MongoDate(strtotime($current_date));  
+         $currentdate = new \MongoDB\BSON\UTCDateTime(strtotime($current_date) * 1000);  
 
          $page = isset($post['type'])?$post['type']:"";
 
@@ -12492,7 +12492,7 @@ Class Model_Manage extends Model
         }
 
     	 $current_date      = date('Y-m-d H:i:s', time());
-         $currentdate = new MongoDate(strtotime($current_date));
+         $currentdate = new \MongoDB\BSON\UTCDateTime(strtotime($current_date) * 1000);
 
          $fields = array('certificate_name'=>$post['certificate_name'],'certificate_name_arabic'=> $post['certificate_name_arabic'],'certificate_description'=>$post['certificate_description'],'certificate_description_arabic'=>$post['certificate_description_arabic'],'status'=>$web_status,'update_date'=>$currentdate); 
 

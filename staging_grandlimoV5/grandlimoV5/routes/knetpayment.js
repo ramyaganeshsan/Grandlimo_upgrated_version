@@ -1,3 +1,4 @@
+var { withQuery } = require("../utils/withQuery");
 var express = require("express"),
   router = express.Router();
 
@@ -12,7 +13,6 @@ var shared = require("../utils/shared");
 var i18n = require("i18n");
 var q = require("q");
 var fs = require("fs");
-const url = require("url");
 
 module.exports = function (app) {
   //http://192.168.1.73:4000/knet/payment_success?Status=1&PaymentToken=1533886676&PaymentId=5285449381082220&PaidOn=2018-08-10%2010%3A38%3A47&Variable1=1626&Variable2=4.000&Variable3=0.0015272944967283&Variable4=19&Variable5=0.00&Method=1&AdministrativeCharge=0  router.get('/payment_response', function (req, res) {
@@ -57,7 +57,7 @@ module.exports = function (app) {
 
     console.log("redirecturl", redirect_url);
     console.log("response_query", response_query);
-    res.redirect(url.format({ pathname: redirect_url, query: response_query }));
+    res.redirect(withQuery(redirect_url, response_query));
   });
 
   router.get("/tap_error", function (req, res) {
@@ -695,7 +695,7 @@ module.exports = function (app) {
       redirect_url = protocol + hostname + "/knet/wallet_cancel";
     }
 
-    res.redirect(url.format({ pathname: redirect_url, query: response_query }));
+    res.redirect(withQuery(redirect_url, response_query));
   });
 
   router.get("/wallet_cancel", function (req, res) {
