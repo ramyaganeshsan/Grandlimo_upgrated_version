@@ -431,7 +431,7 @@ foreach ($all_shift_logs as $key => $shift_val) {
 
     $driver_logs_key = Commonfunction::get_array_id($driver_id,$all_company_list);
 
-    $driver_trip_data = isset($all_company_list[$driver_logs_key]['tripdet'])?$all_company_list[$driver_logs_key]['tripdet']:array();  
+    $driver_trip_data = isset($all_company_list[$driver_logs_key]['tripdet'])?$all_company_list[$driver_logs_key]['tripdet']:[];  
 
     //print_r($driver_trip_data);exit; 
 

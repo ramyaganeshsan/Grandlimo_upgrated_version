@@ -53,9 +53,9 @@ Search the driver based on current update of the every driver **/
 		$cronbooking_model = Model::factory('cronbooking');
 		$records = $cronbooking_model->get_lateral_booking();
 		
-		$array = array();
-		$result = array();
-		$transaction_id = array();
+		$array = [];
+		$result = [];
+		$transaction_id = [];
 		foreach($records as $key=>$val) {
 			foreach($val['details'] as $detail) {
 				$transaction_id[] = $detail['transaction_id'];
@@ -82,7 +82,7 @@ Search the driver based on current update of the every driver **/
 					$message         = str_replace("##NAME##", $res['passenger_name'], $message);
 					$result 		 = $api->sendSMS($to, $message);					
 				}
-				$replace_variables = array(
+				$replace_variables = [
 					REPLACE_LOGO => URL_BASE . PUBLIC_FOLDER_IMGPATH . '/logo.png',
 					REPLACE_SITENAME => $this->app_name,
 					REPLACE_USERNAME => '',
@@ -93,7 +93,7 @@ Search the driver based on current update of the every driver **/
 					REPLACE_PAY => CURRENCY.$res['tripfare'],
 					REPLACE_COPYRIGHTS => SITE_COPYRIGHT,
 					REPLACE_COPYRIGHTYEAR => COPYRIGHT_YEAR
-				);
+				];
 				if ($this->lang != 'en') {
 					if (file_exists(DOCROOT . TEMPLATEPATH . $this->lang . '/lateral-' . $this->lang . '.html')) {
 						$message = $this->emailtemplate->emailtemplate(DOCROOT . TEMPLATEPATH . $this->lang . '/lateral-' . $this->lang . '.html', $replace_variables);
@@ -196,7 +196,7 @@ Search the driver based on current update of the every driver **/
 					$message         = str_replace("##NAME##", $name, $message);
 					$result 		 = $api->sendSMS($to, $message);					
 				}
-				$replace_variables = array(
+				$replace_variables = [
 					REPLACE_LOGO => URL_BASE . PUBLIC_FOLDER_IMGPATH . '/logo.png',
 					REPLACE_SITENAME => $this->app_name,
 					REPLACE_USERNAME => '',
@@ -208,7 +208,7 @@ Search the driver based on current update of the every driver **/
 					REPLACE_EXPIRY_DATE =>  $email_date,
 					REPLACE_COPYRIGHTS => SITE_COPYRIGHT,
 					REPLACE_COPYRIGHTYEAR => COPYRIGHT_YEAR
-				);
+				];
 				if ($this->lang != 'en') {
 					if (file_exists(DOCROOT . TEMPLATEPATH . $this->lang . '/expiry_date_notification-' . $this->lang . '.html')) {
 						$message = $this->emailtemplate->emailtemplate(DOCROOT . TEMPLATEPATH . $this->lang . '/expiry_date_notification-' . $this->lang . '.html', $replace_variables);
@@ -241,7 +241,7 @@ Search the driver based on current update of the every driver **/
 	public function action_service_notification() {
 		$getServiceList = $this->cronbooking_model->getTaxiService();
 		foreach($getServiceList as $key => $list) {
-			$replace_variables = array(
+			$replace_variables = [
 				REPLACE_LOGO => URL_BASE . PUBLIC_FOLDER_IMGPATH . '/logo.png',
 				REPLACE_SITENAME => $this->app_name,
 				REPLACE_SITELINK => URL_BASE . 'users/contactinfo/',
@@ -252,7 +252,7 @@ Search the driver based on current update of the every driver **/
 				REPLACE_TAXINO =>  $list['taxi_no'],
 				REPLACE_COPYRIGHTS => SITE_COPYRIGHT,
 				REPLACE_COPYRIGHTYEAR => COPYRIGHT_YEAR
-			);
+			];
 
 			if ($this->lang != 'en') {
 				if (file_exists(DOCROOT . TEMPLATEPATH . $this->lang . '/limousine_service-' . $this->lang . '.html')) {
@@ -296,11 +296,11 @@ Search the driver based on current update of the every driver **/
 
 		$this->mongo_db = MangoDB::instance('default'); 
 
-        $arguments = array(array('$match'=>array(
-						'moved'=>array('$ne' => 1), 'travel_status'=> 1 
-					)),
-					array('$limit' => 5000),
-				);
+        $arguments = [['$match'=>[
+						'moved'=>['$ne' => 1], 'travel_status'=> 1 
+					]],
+					['$limit' => 5000],
+				];
 
 		$complete_result = $this->mongo_db->aggregate(MDB_PASSENGERS_LOGS,$arguments);
 
@@ -310,27 +310,27 @@ Search the driver based on current update of the every driver **/
 
 				$trip_id = $value['_id'];
 
-		        $check_arguments = array(array('$match'=>array(
+		        $check_arguments = [['$match'=>[
 								'_id'=> $trip_id
-							))
-						);
+							]]
+						];
 				$check_result = $this->mongo_db->aggregate(MDB_PASSENGERSLOGS_COMPLETED,$check_arguments);
 
 				if(!empty($check_result['result'])){
-                	$set_query = array(
+                	$set_query = [
 	                'moved' => 1,
-	                );
-	                $result = $this->mongo_db->update(MDB_PASSENGERS_LOGS,array('_id' => (int)$trip_id),array( '$set'=> $set_query ));
+	                ];
+	                $result = $this->mongo_db->update(MDB_PASSENGERS_LOGS,['_id' => (int)$trip_id],[ '$set'=> $set_query ]);
 				}
 				else
 				{
 
 					$insert_result = $this->mongo_db->Insert(MDB_PASSENGERSLOGS_COMPLETED,$complete_result['result'][$i]);
 
-	                $set_query = array(
+	                $set_query = [
 	                'moved' => 1,
-	                );
-	                $result = $this->mongo_db->update(MDB_PASSENGERS_LOGS,array('_id' => (int)$trip_id),array( '$set'=> $set_query ));					
+	                ];
+	                $result = $this->mongo_db->update(MDB_PASSENGERS_LOGS,['_id' => (int)$trip_id],[ '$set'=> $set_query ]);					
 				}	
                 
 
@@ -352,12 +352,12 @@ Search the driver based on current update of the every driver **/
 
 		$this->mongo_db = MangoDB::instance('default'); 
 
-        $arguments = array(array('$match'=>array(
-						'moved'=>array('$ne' => 1), 
-						'travel_status'=> array('$in'=>array(4,8))
-					)),
-					array('$limit' => 5000),
-				);
+        $arguments = [['$match'=>[
+						'moved'=>['$ne' => 1], 
+						'travel_status'=> ['$in'=>[4,8]]
+					]],
+					['$limit' => 5000],
+				];
 
 		$complete_result = $this->mongo_db->aggregate(MDB_PASSENGERS_LOGS,$arguments);
 
@@ -368,28 +368,28 @@ Search the driver based on current update of the every driver **/
 
 				$trip_id = $value['_id'];
 
-		        $check_arguments = array(array('$match'=>array(
+		        $check_arguments = [['$match'=>[
 								'_id'=> $trip_id
-							))
-						);
+							]]
+						];
 				$check_result = $this->mongo_db->aggregate(MDB_PASSENGERSLOGS_CANCELLED,$check_arguments);
 
 				if(!empty($check_result['result'])){
 
-                	$set_query = array(
+                	$set_query = [
 	                'moved' => 1,
-	                );
-	                $result = $this->mongo_db->update(MDB_PASSENGERS_LOGS,array('_id' => (int)$trip_id),array( '$set'=> $set_query ));
+	                ];
+	                $result = $this->mongo_db->update(MDB_PASSENGERS_LOGS,['_id' => (int)$trip_id],[ '$set'=> $set_query ]);
 				}
 				else
 				{
 
 					$insert_result = $this->mongo_db->Insert(MDB_PASSENGERSLOGS_CANCELLED,$complete_result['result'][$i]);
 
-	                $set_query = array(
+	                $set_query = [
 	                'moved' => 1,
-	                );
-	                $result = $this->mongo_db->update(MDB_PASSENGERS_LOGS,array('_id' => (int)$trip_id),array( '$set'=> $set_query ));					
+	                ];
+	                $result = $this->mongo_db->update(MDB_PASSENGERS_LOGS,['_id' => (int)$trip_id],[ '$set'=> $set_query ]);					
 				}	
 
                 $i++;
@@ -410,10 +410,10 @@ Search the driver based on current update of the every driver **/
 		$this->mongo_db = MangoDB::instance('default'); 
         $datetime = date('Y-m-d 23:59:59', strtotime('-2 days', strtotime(date('Y-m-d'))));
 
-		$match = array(
-						'moved'=> array('$in'=>array(1,2)),
-						'pickup_time' => array('$lte' => new \MongoDB\BSON\UTCDateTime(strtotime($datetime) * 1000))
-					);
+		$match = [
+						'moved'=> ['$in'=>[1,2]],
+						'pickup_time' => ['$lte' => new \MongoDB\BSON\UTCDateTime(strtotime($datetime) * 1000)]
+					];
 
 		$delete = $this->mongo_db->remove(MDB_PASSENGERS_LOGS,$match);
 		
@@ -428,13 +428,13 @@ Search the driver based on current update of the every driver **/
 		$this->mongo_db = MangoDB::instance('default'); 
 		$datetime = date('Y-m-d 23:50:00', strtotime('-1 days', strtotime(date('Y-m-d'))));
 
-        $arguments = array(array('$match'=>array(
+        $arguments = [['$match'=>[
 						'moved'=> 0,
 						'travel_status'=> 0,
-						'pickup_time' => array('$lte' => new \MongoDB\BSON\UTCDateTime(strtotime($datetime) * 1000))
-					)),
-					array('$limit' => 1000),
-				);
+						'pickup_time' => ['$lte' => new \MongoDB\BSON\UTCDateTime(strtotime($datetime) * 1000)]
+					]],
+					['$limit' => 1000],
+				];
 
 		$complete_result = $this->mongo_db->aggregate(MDB_PASSENGERS_LOGS,$arguments);
 
@@ -444,27 +444,27 @@ Search the driver based on current update of the every driver **/
 
 				$trip_id = $value['_id'];
 
-		        $check_arguments = array(array('$match'=>array(
+		        $check_arguments = [['$match'=>[
 								'_id'=> $trip_id
-							))
-						);
+							]]
+						];
 				$check_result = $this->mongo_db->aggregate(MDB_PASSENGERSLOGS_MISSED,$check_arguments);
 
 				if(!empty($check_result['result'])){
-                	$set_query = array(
+                	$set_query = [
 	                'moved' => 2,
-	                );
-	                $result = $this->mongo_db->update(MDB_PASSENGERS_LOGS,array('_id' => (int)$trip_id),array( '$set'=> $set_query ));
+	                ];
+	                $result = $this->mongo_db->update(MDB_PASSENGERS_LOGS,['_id' => (int)$trip_id],[ '$set'=> $set_query ]);
 				}
 				else
 				{
 
 					$insert_result = $this->mongo_db->Insert(MDB_PASSENGERSLOGS_MISSED,$complete_result['result'][$i]);
 
-	                $set_query = array(
+	                $set_query = [
 	                'moved' => 2,
-	                );
-	                $result = $this->mongo_db->update(MDB_PASSENGERS_LOGS,array('_id' => (int)$trip_id),array( '$set'=> $set_query ));					
+	                ];
+	                $result = $this->mongo_db->update(MDB_PASSENGERS_LOGS,['_id' => (int)$trip_id],[ '$set'=> $set_query ]);					
 				}	
                 
 

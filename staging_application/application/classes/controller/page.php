@@ -19,7 +19,7 @@ Class Controller_Page extends Controller_Website
 
 		$about_us_page_content = $this->cms->get_website_page_content('about_us_page');
 		//print_r($about_us_page_content);exit;
-		$about_us_page_content = isset($about_us_page_content[0])?$about_us_page_content[0]:array();
+		$about_us_page_content = isset($about_us_page_content[0])?$about_us_page_content[0]:[];
 
 		$view= View::factory(USERVIEW.'cms_pages')
 					->bind('cmscontent', $content_cms)->bind('lang',$this->lang)->bind('page_content',$about_us_page_content);
@@ -303,7 +303,7 @@ Class Controller_Page extends Controller_Website
 		$content_cms = $this->cms->getcmscontent('privacy-policy');
 		//echo '<pre>';print_r($content_cms);exit;
 		
-		$privacyPolicy = isset($content_cms) && !empty($content_cms) ? $content_cms : array();
+		$privacyPolicy = isset($content_cms) && !empty($content_cms) ? $content_cms : [];
 
 		$view= View::factory(USERVIEW.'cms_pages')
 					->bind('cmscontent', $content_cms)->bind('lang',$this->lang)->bind('page_content',$privacyPolicy);
@@ -321,7 +321,7 @@ Class Controller_Page extends Controller_Website
 
 		$terms_content = $this->cms->get_website_page_content('terms_and_conditions_page');
 		//print_r($about_us_page_content);exit;
-		$terms_content = isset($terms_content[0])?$terms_content[0]:array();		
+		$terms_content = isset($terms_content[0])?$terms_content[0]:[];		
 		//echo '<pre>';print_r($content_cms);exit;
 		$view= View::factory(USERVIEW.'cms_pages')
 					->bind('cmscontent', $content_cms)->bind('lang',$this->lang)->bind('page_content',$terms_content);
@@ -450,7 +450,7 @@ Class Controller_Page extends Controller_Website
 
 		//print_r($_POST);print_r($_FILES);exit;
 
-		$errors = array();
+		$errors = [];
 		$post_values = $_POST;
 		/*$validator   = $this->cms->validate_resume_data($post_values, $_FILES);
 		//print_r($validator->check());exit;
@@ -496,7 +496,7 @@ Class Controller_Page extends Controller_Website
 
             	$status = $this->cms->add_resumes($post_values,$image_name);
 
-            	$replace_variables =  array('##USER##'=> $name,REPLACE_SITEURL => URL_BASE,  REPLACE_COPYRIGHTS => SITE_COPYRIGHT, REPLACE_COPYRIGHTYEAR => COPYRIGHT_YEAR,REPLACE_SITENAME => $this->app_name);
+            	$replace_variables =  ['##USER##'=> $name,REPLACE_SITEURL => URL_BASE,  REPLACE_COPYRIGHTS => SITE_COPYRIGHT, REPLACE_COPYRIGHTYEAR => COPYRIGHT_YEAR,REPLACE_SITENAME => $this->app_name];
 
             	$message = $this->emailtemplate->emailtemplate(DOCROOT . TEMPLATEPATH . 'careers_request.html', $replace_variables);
 
@@ -534,23 +534,23 @@ Class Controller_Page extends Controller_Website
 
 		//echo $this->lang; exit;
         /**To Set Errors Null to avoid error if not set in view**/
-        $errors        = array();
+        $errors        = [];
         /** Call the model and get the values**/
         $company       = Model::factory('siteusers');
         $cms           = Model::factory('cms');
         /**To get the form submit button name**/
         $signup_submit = arr::get($_REQUEST, 'submit_company');
         $service       = arr::get($_REQUEST, 'service');
-        $postvalues    = array();
+        $postvalues    = [];
         $postvalues = $_POST;
         /**Send entered values to model for validation**/
-        $validator  = $this->cms->validate_contactus(arr::extract($_POST, array(
+        $validator  = $this->cms->validate_contactus(arr::extract($_POST, [
             'name',
             'email',
             'phone',
             'subject',
             'message'            
-        )));
+        ]));
 
         /**If validation success without error **/
         if ($validator->check()) {
@@ -562,7 +562,7 @@ Class Controller_Page extends Controller_Website
 
             if ($signup_id) {
                 $mail              = "";
-                $replace_variables = array(
+                $replace_variables = [
                     REPLACE_LOGO => EMAILTEMPLATELOGO,
                     REPLACE_SITENAME => $this->app_name,
                     REPLACE_NAME => $_POST['name'],
@@ -574,7 +574,7 @@ Class Controller_Page extends Controller_Website
                     REPLACE_SITEURL => URL_BASE,
                     REPLACE_COPYRIGHTS => SITE_COPYRIGHT,
                     REPLACE_COPYRIGHTYEAR => COPYRIGHT_YEAR
-                );
+                ];
                 //$message           = $this->emailtemplate->emailtemplate(DOCROOT . TEMPLATEPATH . 'Contact.html', $replace_variables);
                 if ($this->lang != 'en') {
                     if (file_exists(DOCROOT . TEMPLATEPATH . $this->lang . '/Contact-' . $this->lang . '.html')) {
@@ -606,13 +606,13 @@ Class Controller_Page extends Controller_Website
                
                
                 /******* Send Response mail to users *******/
-                $replace_variables = array(
+                $replace_variables = [
                     REPLACE_SITENAME => $this->app_name,
                     REPLACE_SITEURL => URL_BASE,
                     REPLACE_NAME => $_POST['name'],
                     REPLACE_COPYRIGHTS => SITE_COPYRIGHT,
                     REPLACE_COPYRIGHTYEAR => COPYRIGHT_YEAR
-                );
+                ];
                 //$message           = $this->emailtemplate->emailtemplate(DOCROOT . TEMPLATEPATH . 'email_auto_response.html', $replace_variables);
                 if ($this->lang != 'en') {
                     if (file_exists(DOCROOT . TEMPLATEPATH . $this->lang . '/email_auto_response-' . $this->lang . '.html')) {
@@ -631,7 +631,7 @@ Class Controller_Page extends Controller_Website
                 
                 Message::success(__('contact_request_sent_successfully'));
 
-                $response = array('status'=>200,'message'=>'Contact request sent successfully');
+                $response = ['status'=>200,'message'=>'Contact request sent successfully'];
                 
             }
         } else {
@@ -639,7 +639,7 @@ Class Controller_Page extends Controller_Website
             $errors = $validator->errors('errors');   
             print_r($errors);
             exit;        
-            $response = array('status'=>401,'error'=>$errors);
+            $response = ['status'=>401,'error'=>$errors];
         }
         
         echo json_encode($response);exit;

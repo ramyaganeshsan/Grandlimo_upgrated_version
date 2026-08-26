@@ -47,7 +47,7 @@
             </tr>
             <tr>
 				<td valign="top" width="20%"><label><?php echo __('transport_layer_security');?></label><span class="star">*</span></td>   	
-				<td> <?php  $transport_layer = array( "ssl" => "SSL","tls" => "TLS","ssh" => "SSH","ipsec" => "IPSEC"); ?>
+				<td> <?php  $transport_layer = [ "ssl" => "SSL","tls" => "TLS","ssh" => "SSH","ipsec" => "IPSEC"]; ?>
 				   <div class="selector" id="uniform-user_type">
 				   <select name="transport_layer_security">
 						<option><?php echo __('select_label'); ?></option>
@@ -61,7 +61,7 @@
 
             <tr>
 		<td valign="top" width="20%"><label><?php echo __('status');?></label><span class="star">*</span></td>   	
-		<td> <?php  $transport_layer = array( "1" => "Yes","0" => "No"); ?>
+		<td> <?php  $transport_layer = [ "1" => "Yes","0" => "No"]; ?>
 			   <div class="selector" id="uniform-user_type">
 			   <select name="smtp">
 			        <option><?php echo __('select_label'); ?></option>

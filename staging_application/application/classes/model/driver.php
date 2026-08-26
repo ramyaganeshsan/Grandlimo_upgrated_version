@@ -57,26 +57,26 @@ Class Model_Driver extends Model
         if ($arr['password'] == 'Password') {
             $arr['password'] = "";
         }
-        return Validation::factory($arr)->rule('email', 'not_empty')->rule('email', 'email')->rule('password', 'not_empty')->rule('password', 'min_length', array(
+        return Validation::factory($arr)->rule('email', 'not_empty')->rule('email', 'email')->rule('password', 'not_empty')->rule('password', 'min_length', [
             ':value',
             '5'
-        ))->rule('password', 'valid_password', array(
+        ])->rule('password', 'valid_password', [
             ':value',
             '/^[A-Za-z0-9@#$%!^&*(){}?-_<>=+|~`\'".,:;[]+]*$/u'
-        ));
+        ]);
     }
     /** Validate Profile Settings **/
     public function validate_driver_profilesettings($arr)
     {
         return Validation::factory($arr)->rule('name', 'not_empty')
         //->rule('name','illegal_chars',array(':value','/^[\p{L}-.,_; \'0-9]*$/u'))
-            ->rule('name', 'min_length', array(
+            ->rule('name', 'min_length', [
             ':value',
             '4'
-        ))->rule('name', 'max_length', array(
+        ])->rule('name', 'max_length', [
             ':value',
             '32'
-        ))->rule('phone', 'not_empty')->rule('phone', 'numeric') //num
+        ])->rule('phone', 'not_empty')->rule('phone', 'numeric') //num
             ->rule('address', 'not_empty');
         //->rule('description','illegal_chars',array(':value','/^[\p{L}-.,_; \'0-9]*$/u'));						
     }
@@ -93,11 +93,11 @@ Class Model_Driver extends Model
         if (count($result) == 1 && ($result[0]['status'] == 'A' || $result[0]['status'] == 'M')) {
             //Whenever user logged into the application, Add their IP and other details..
             $login_time   = $this->currentdate;
-            $sql_query    = array(
+            $sql_query    = [
                 'last_login' => $login_time,
                 "login_status" => "S",
                 "login_from" => "W"
-            );
+            ];
             $result_login = DB::update(PEOPLE)->set($sql_query)->where('phone', '=', $phone)->execute();
             $this->session->set("id", $result["0"]["id"]);
             $this->session->set("email", $result["0"]["email"]);
@@ -120,7 +120,7 @@ Class Model_Driver extends Model
     // Updating User Details
 public function update_driverimage($image,$userid)
 {
-    $query = $this->mongo_db->find(MDB_PEOPLE,array('_id' => (int)$userid),array('profile_picture'));
+    $query = $this->mongo_db->find(MDB_PEOPLE,['_id' => (int)$userid],['profile_picture']);
     $result = iterator_to_array($query);
     
     if(isset($result[$userid]['profile_picture']) && $result[$userid]['profile_picture']!=""){
@@ -132,21 +132,21 @@ public function update_driverimage($image,$userid)
         }
     }
     $mdate = $this->currentdate;
-    $query = array();
+    $query = [];
     $query['updated_date'] = $mdate;
     if(isset($image)){
         $query[ 'profile_picture' ]=$image;
     }
-    $result = $this->mongo_db->update(MDB_PEOPLE,array('_id'=>(int)$userid),array('$set'=>$query),array('upsert'=>false));
+    $result = $this->mongo_db->update(MDB_PEOPLE,['_id'=>(int)$userid],['$set'=>$query],['upsert'=>false]);
     return (empty($result['err']))?1:$result['err'];
 }
     public function update_user_settings($array_data, $post_value_array, $userid)
     {
         $mdate     = $this->currentdate;
         // Update user records in the database
-        $sql_query = (array(
+        $sql_query = ([
             'updated_date' => $mdate
-        )); //'location' =>$array_data['location'] ,'industry' =>$array_data['industry'],'smart_tags' => $array_data['smart_tags'],
+        ]); //'location' =>$array_data['location'] ,'industry' =>$array_data['industry'],'smart_tags' => $array_data['smart_tags'],
         if (isset($array_data['name']) && $array_data['name'] != "") {
             $name              = $array_data['name'];
             $sql_query['name'] = $name;
@@ -170,11 +170,11 @@ public function update_driverimage($image,$userid)
     {
         $sql = "SELECT * FROM " . PEOPLE . " WHERE id = '$id' ";
         return Db::query(Database::SELECT, $sql)->execute()->as_array();
-        $result = $this->mongo_db->find(MDB_PEOPLE, array(
+        $result = $this->mongo_db->find(MDB_PEOPLE, [
             '_id' => (int) $id
-        ));
+        ]);
         $res    = iterator_to_array($result);
-        return (!empty($res)) ? $res : array();
+        return (!empty($res)) ? $res : [];
     }
     // Validating User Details while Updating User Details
     /**Get User Details at User Profile Page**/
@@ -183,7 +183,7 @@ public function update_driverimage($image,$userid)
         $lat    = $this->lat;
         $lon    = $this->lon;
         $rad    = '';
-        $result = array();
+        $result = [];
         if ($userid != null) {
             if ($rad == "") {
                 if (($lat != null) && ($lon != null)) {
@@ -205,10 +205,10 @@ public function update_driverimage($image,$userid)
     // Validating Forgot Password Details
     public function validate_forgotpwd($arr)
     {
-        return Validation::factory($arr)->rule('email', 'email')->rule('email', 'max_length', array(
+        return Validation::factory($arr)->rule('email', 'email')->rule('email', 'max_length', [
             ':value',
             '100'
-        ))->rule('email', 'not_empty');
+        ])->rule('email', 'not_empty');
     }
     // Check Whether Passenger Email is Already Exist or Not
     public function check_email_driver($email = "")
@@ -223,7 +223,7 @@ public function update_driverimage($image,$userid)
     }
     public function check_phone_passengers($phone = "")
     {
-        $match_query=array();
+        $match_query=[];
 		$match_query['phone'] = $phone;
         if (COMPANY_CID != 0) {
 			$match_query['company_id'] = (int)COMPANY_CID;
@@ -233,7 +233,7 @@ public function update_driverimage($image,$userid)
     }
     public function new_check_phone_passengers($data)
     {
-        $match_query=array();
+        $match_query=[];
 		$match_query['phone'] = $data['phone_no'];
 		$match_query['driver_code'] = $data['driver_code'];
         if (COMPANY_CID != 0) {
@@ -258,11 +258,11 @@ public function update_driverimage($image,$userid)
         $mdate  = $this->currentdate;
         $pass   = md5($random_key);
         // Create a new user record in the database
-        $result = DB::update(PEOPLE)->set(array(
+        $result = DB::update(PEOPLE)->set([
             'password' => $pass,
             'org_password' => $random_key,
             'updated_date' => $mdate
-        ))->where('email', '=', $array_data['email'])->where('status', '=', 'A')->where('company_id', '=', COMPANY_CID)->execute();
+        ])->where('email', '=', $array_data['email'])->where('status', '=', 'A')->where('company_id', '=', COMPANY_CID)->execute();
         if ($result) {
             $rs = DB::select('name', 'username', 'email', 'password', 'phone')->from(PEOPLE)->where('email', '=', $post_value_array['email'])->where('status', '=', 'A')->where('company_id', '=', COMPANY_CID)->execute()->as_array();
             return $rs;
@@ -274,14 +274,14 @@ public function update_driverimage($image,$userid)
     {
         $mdate  = new \MongoDB\BSON\UTCDateTime(strtotime($this->currentdate) * 1000);
         $pass   = md5($random_key);
-        $pwd_arr = array('password' => $pass, 'org_password' => $random_key,'updated_date'=>$mdate);
-        $update = $this->mongo_db->Update(MDB_PEOPLE,array('phone'=>$value['phone_no'],'driver_code'=>$value['driver_code']),
-                                          array('$set'=>$pwd_arr),array('upsert'=>true));
+        $pwd_arr = ['password' => $pass, 'org_password' => $random_key,'updated_date'=>$mdate];
+        $update = $this->mongo_db->Update(MDB_PEOPLE,['phone'=>$value['phone_no'],'driver_code'=>$value['driver_code']],
+                                          ['$set'=>$pwd_arr],['upsert'=>true]);
         $result = (isset($update['err'])) ? 0 :1;
         if ($result) {
-            $project = array('name', 'email', 'password', 'phone');
-            $res = $this->mongo_db->find_one(MDB_PEOPLE,array('phone'=>$value['phone_no'],'driver_code'=>$value['driver_code'],'status'=>'A'),$project);
-            return (isset($res)) ? $res : array();
+            $project = ['name', 'email', 'password', 'phone'];
+            $res = $this->mongo_db->find_one(MDB_PEOPLE,['phone'=>$value['phone_no'],'driver_code'=>$value['driver_code'],'status'=>'A'],$project);
+            return (isset($res)) ? $res : [];
         } else {
             return 0;
         }
@@ -293,11 +293,11 @@ public function update_driverimage($image,$userid)
         $mdate  = $this->currentdate;
         $pass   = md5($array_data['confirm_password']);
         // Create a new user record in the database
-        $result = DB::update(PEOPLE)->set(array(
+        $result = DB::update(PEOPLE)->set([
             'password' => $pass,
             'org_password' => $array_data['confirm_password'],
             'updated_date' => $mdate
-        ))->where('id', '=', $userid)->execute();
+        ])->where('id', '=', $userid)->execute();
         if (count($result) == SUCESS) {
             $rs = DB::select('name', 'password', 'email', 'phone')->from(PEOPLE)->where('id', '=', $userid)->execute()->as_array();
             return $rs;
@@ -306,58 +306,58 @@ public function update_driverimage($image,$userid)
     // Validating Change Password Details
     public function validate_changepwd($arr)
     {
-        return Validation::factory($arr)->rule('old_password', 'not_empty')->rule('old_password', 'valid_password', array(
+        return Validation::factory($arr)->rule('old_password', 'not_empty')->rule('old_password', 'valid_password', [
             ':value',
             '/^[A-Za-z0-9@#$%!^&*(){}?-_<>=+|~`\'".,:;[]+]*$/u'
-        ))->rule('old_password', 'max_length', array(
+        ])->rule('old_password', 'max_length', [
             ':value',
             '16'
-        ))->rule('new_password', 'not_empty')->rule('new_password', 'valid_password', array(
+        ])->rule('new_password', 'not_empty')->rule('new_password', 'valid_password', [
             ':value',
             '/^[A-Za-z0-9@#$%!^&*(){}?-_<>=+|~`\'".,:;[]+]*$/u'
-        ))->rule('new_password', 'min_length', array(
+        ])->rule('new_password', 'min_length', [
             ':value',
             '5'
-        ))->rule('new_password', 'max_length', array(
+        ])->rule('new_password', 'max_length', [
             ':value',
             '16'
-        ))->rule('confirm_password', 'not_empty')->rule('confirm_password', 'valid_password', array(
+        ])->rule('confirm_password', 'not_empty')->rule('confirm_password', 'valid_password', [
             ':value',
             '/^[A-Za-z0-9@#$%!^&*(){}?-_<>=+|~`\'".,:;[]+]*$/u'
-        ))->rule('confirm_password', 'matches', array(
+        ])->rule('confirm_password', 'matches', [
             ':validation',
             'new_password',
             'confirm_password'
-        ))->rule('confirm_password', 'min_length', array(
+        ])->rule('confirm_password', 'min_length', [
             ':value',
             '5'
-        ))->rule('confirm_password', 'max_length', array(
+        ])->rule('confirm_password', 'max_length', [
             ':value',
             '16'
-        ));
+        ]);
     }
     /**Validating Reset Password Details **/
     public function validate_resetpwd($arr)
     {
         return Validation::factory($arr)->rule('new_password', 'not_empty')
         //->rule('new_password','alpha_dash')
-            ->rule('new_password', 'valid_password', array(
+            ->rule('new_password', 'valid_password', [
             ':value',
             '/^[A-Za-z0-9@#$%!^&*(){}?-_<>=+|~`\'".,:;[]+]*$/u'
-        ))->rule('new_password', 'max_length', array(
+        ])->rule('new_password', 'max_length', [
             ':value',
             '16'
-        ))->rule('conf_password', 'not_empty')
+        ])->rule('conf_password', 'not_empty')
         //->rule('conf_password','alpha_dash')
             
         //->rule('conf_password', array(':equals','new_password'))
-            ->rule('conf_password', 'valid_password', array(
+            ->rule('conf_password', 'valid_password', [
             ':value',
             '/^[A-Za-z0-9@#$%!^&*(){}?-_<>=+|~`\'".,:;[]+]*$/u'
-        ))->rule('conf_password', 'max_length', array(
+        ])->rule('conf_password', 'max_length', [
             ':value',
             '16'
-        ));
+        ]);
     }
     // Check Whether the Eneterd Password is Correct While User Change Password
     public function check_pass($pass = "", $userid = "")
@@ -392,13 +392,13 @@ public function update_driverimage($image,$userid)
      */
     public function validate_email($arr)
     {
-        return Validation::factory($arr)->rule('email', 'not_empty')->rule('email', 'max_length', array(
+        return Validation::factory($arr)->rule('email', 'not_empty')->rule('email', 'max_length', [
             ':value',
             '50'
-        ))->rule('email', 'Model_Authorize::check_label_not_empty', array(
+        ])->rule('email', 'Model_Authorize::check_label_not_empty', [
             ":value",
             __('enter_email')
-        ))->rule('email', 'email_domain')->rule('email', 'Model_Authorize::unique_email');
+        ])->rule('email', 'email_domain')->rule('email', 'Model_Authorize::unique_email');
     }
     public function logged_user_status()
     {
@@ -437,53 +437,53 @@ public function update_driverimage($image,$userid)
     {
         //MongoDB
         $result = $this->mongo_db->find_one(MDB_PEOPLE,
-            array(
+            [
                 '_id' => (int)$id
-            ),
-            array(
+            ],
+            [
                 'name',
                 'notification_setting',
                 'company_id'
-            )
+            ]
         );
-        return (!empty($result))?$result:array();
+        return (!empty($result))?$result:[];
     }
     
     public function get_my_trips($id)
     {
-        $match_query    = array('driver_id' => (int)$id,'travel_status' => 1);
-        $match_query2   = array('dlh.status' => 'A');
-        $arguments = array(
-            array('$match'	=> $match_query),
-            array('$lookup' 		=> array(
+        $match_query    = ['driver_id' => (int)$id,'travel_status' => 1];
+        $match_query2   = ['dlh.status' => 'A'];
+        $arguments = [
+            ['$match'	=> $match_query],
+            ['$lookup' 		=> [
                     'from'			=>	MDB_LOCATION_HISTORY,
                     'localField'	=> "driver_id",
                     'foreignField'	=> "driver_id",
                     'localField'	=> "_id",
                     'foreignField'	=> "trip_id",
                     'as'			=> "dlh"
-                )
-            ),
-            array('$unwind'=>'$dlh'),
-            array('$match'	=> $match_query2),
-            array(
-                '$project' => array('_id'=>0,
+                ]
+            ],
+            ['$unwind'=>'$dlh'],
+            ['$match'	=> $match_query2],
+            [
+                '$project' => ['_id'=>0,
                     'passengers_log_id' => '$_id',
                     'active_record' => '$dlh.loc',
                     'current_location' => '$current_location',
                     'drop_location' => '$drop_location',
-                )
-            ),
-            array(
+                ]
+            ],
+            [
                 '$skip' => 0
-            ),
-            array(
+            ],
+            [
               '$limit' => 3
-            )
-        );
+            ]
+        ];
         $result = $this->mongo_db->aggregate(MDB_PASSENGERS_LOGS,$arguments);
         //echo "<pre>"; print_r($result); exit;
-        return (!empty($result['result']))?$result['result']:array();
+        return (!empty($result['result']))?$result['result']:[];
     }
     
     //Function used to get the get_driver_logs $driver_id,'R','A','1',COMPANY_CID);
@@ -496,10 +496,10 @@ public function update_driverimage($image,$userid)
         } else {
           /*  $timezone_base_query = "select time_zone from  company where cid='$company_id'";
             $timezone_fetch      = Db::query(Database::SELECT, $timezone_base_query)->execute()->as_array();*/
-            $time_arguments = array(array('$match'=>array('_id'=>(int)$company_id)),
-									array('$unwind'=>'$companydetails'),
-									array('$project'=>array('time_zone'=>'$companydetails.time_zone'))
-								);
+            $time_arguments = [['$match'=>['_id'=>(int)$company_id]],
+									['$unwind'=>'$companydetails'],
+									['$project'=>['time_zone'=>'$companydetails.time_zone']]
+								];
             
             $time = $this->mongo_db->aggregate(MDB_COMPANY,$time_arguments); 
 			$timezone_fetch = $time['result'];
@@ -520,31 +520,31 @@ public function update_driverimage($image,$userid)
         return $result;*/
     
         //MongoDB
-        $match_query = array("\$and" => array(array("pickup_time"=>array('$gte' => $start_time)),array('driver_id' => (int)$id),array('travel_status' => (int)$travel_status),array('msg_status' => $msg_status),array('driver_reply' => $driver_reply) ));
+        $match_query = ["\$and" => [["pickup_time"=>['$gte' => $start_time]],['driver_id' => (int)$id],['travel_status' => (int)$travel_status],['msg_status' => $msg_status],['driver_reply' => $driver_reply] ]];
         //print_r($match_query);//exit;
-        $arguments = array(
-            array('$match'	=> $match_query),
-            array('$lookup' 		=> array(
+        $arguments = [
+            ['$match'	=> $match_query],
+            ['$lookup' 		=> [
                     'from'			=>	MDB_PASSENGERS,
                     'localField'	=> '_id',
                     'foreignField'	=> "passengers_log_id",
                     'as'			=> "passengers"
-                )
-            ),
-            array('$unwind'=>'$passengers'),
-            array(
-                '$project' => array(
+                ]
+            ],
+            ['$unwind'=>'$passengers'],
+            [
+                '$project' => [
                     'name' => '$passengers.name',
                     'current_location' => '$current_location',
                     'drop_location' => '$drop_location',
                     'no_passengers' => '$no_passengers',
                     'pickup_time' => '$pickup_time',
-                )
-            ),
-            array(
-                '$sort' => array('_id' => -1 )
-            )
-        );
+                ]
+            ],
+            [
+                '$sort' => ['_id' => -1 ]
+            ]
+        ];
 
         $table=MDB_PASSENGERS_LOGS;
         if($travel_status==1)
@@ -558,43 +558,43 @@ public function update_driverimage($image,$userid)
 
         $result = $this->mongo_db->aggregate($table,$arguments);
         //echo "<pre>"; print_r($result); exit;
-        return (!empty($result['result']))?$result['result']:array();
+        return (!empty($result['result']))?$result['result']:[];
     }
     //Function used to find the completed logs
     public function get_driver_logs_completed($id, $msg_status, $driver_reply = null, $travel_status = null, $start = null, $limit = null)
     {
-        $match_query = array('driver_id' => (int)$id, 'travel_status' => (int)$travel_status, 'msg_status' => $msg_status, 'driver_reply' => $driver_reply);
+        $match_query = ['driver_id' => (int)$id, 'travel_status' => (int)$travel_status, 'msg_status' => $msg_status, 'driver_reply' => $driver_reply];
         //print_r($match_query);//exit;
-        $arguments = array(
-            array('$match'	=> $match_query),
-            array('$lookup' 		=> array(
+        $arguments = [
+            ['$match'	=> $match_query],
+            ['$lookup' 		=> [
                     'from'			=>	MDB_PEOPLE,
                     'localField'	=> 'driver_id',
                     'foreignField'	=> "_id",
                     'as'			=> "people"
-                )
-            ),
-            array('$unwind'=>'$people'),
-            array(
-                '$project' => array(
+                ]
+            ],
+            ['$unwind'=>'$people'],
+            [
+                '$project' => [
                     'name' => '$people.name',
                     'current_location' => '$current_location',
                     'drop_location' => '$drop_location',
                     'no_passengers' => '$no_passengers',
                     'pickup_time' => '$pickup_time',
-                )
-            ),
-            array(
-                '$sort' => array('_id' => -1 )
-            ),
-            array(
+                ]
+            ],
+            [
+                '$sort' => ['_id' => -1 ]
+            ],
+            [
               '$limit' => (int)$start
-            ),
-	    array(
+            ],
+	    [
                 '$skip' => (int)$limit
-            )
+            ]
             
-        );
+        ];
 
         $table=MDB_PASSENGERS_LOGS;
         if($travel_status==1)
@@ -608,7 +608,7 @@ public function update_driverimage($image,$userid)
 
         $result = $this->mongo_db->aggregate($table,$arguments);
         //echo "<pre>"; print_r($result); exit;
-        return (!empty($result['result']))?$result['result']:array();
+        return (!empty($result['result']))?$result['result']:[];
     }
     //Function used to getting upcoming trips with first in fisrt
     //Function used to get all driver logs with transactions
@@ -622,36 +622,36 @@ public function update_driverimage($image,$userid)
     public function get_taxi_logs_completed_transaction($id, $msg_status, $driver_reply = null, $travel_status = null, $start = null, $limit = null,$find_count = FALSE)
     {
         
-        $match_query = array('taxi_id' => (int)$id, 'msg_status' => $msg_status, 'driver_reply' => $driver_reply, 'travel_status' => (int)$travel_status );
-        $arguments = array(
-            array('$match'	=> $match_query),
-            array('$lookup' 		=> array(
+        $match_query = ['taxi_id' => (int)$id, 'msg_status' => $msg_status, 'driver_reply' => $driver_reply, 'travel_status' => (int)$travel_status ];
+        $arguments = [
+            ['$match'	=> $match_query],
+            ['$lookup' 		=> [
                     'from'			=>	PASSENGERS,
                     'localField'	=> 'passengers_id',
                     'foreignField'	=> "_id",
                     'as'			=> "passengers"
-                )
-            ),
-            array('$unwind' => '$passengers'),
-            array('$lookup' 		=> array(
+                ]
+            ],
+            ['$unwind' => '$passengers'],
+            ['$lookup' 		=> [
                     'from'			=>	MDB_TRANSACTION,
                     'localField'	=> '_id',
                     'foreignField'	=> "passengers_log_id",
                     'as'			=> "trans"
-                )
-            ),
-            array('$unwind' => '$trans')
+                ]
+            ],
+            ['$unwind' => '$trans']
             
-           );
+           ];
 				if($find_count ){
-					$carguments = array(
-                array(
-                   '$project' => array('_id'=>0,
+					$carguments = [
+                [
+                   '$project' => ['_id'=>0,
                     'id' => '$_id',
                   
-                    )
-                )
-                );
+                    ]
+                ]
+                ];
 				 $merge_arguments = array_merge($arguments,$carguments);
 
                 $table=MDB_PASSENGERS_LOGS;
@@ -668,9 +668,9 @@ public function update_driverimage($image,$userid)
 					return (!empty($result['result']))?count($result['result']):0;
 				}else{
 				
-				$carguments = array(
-                array(
-                   '$project' => array('_id'=>0,
+				$carguments = [
+                [
+                   '$project' => ['_id'=>0,
                     'id' => '$_id',
                     'distance' => '$distance',
                     'distance_unit'=>'$trans.distance_unit',
@@ -680,20 +680,20 @@ public function update_driverimage($image,$userid)
                     'drop_location'=>'$drop_location',
                     'no_passengers'=>'$no_passengers',
                     'pickup_time' => '$pickup_time',
-                    )
-                ),
-                  array(
-                '$sort' => array(
+                    ]
+                ],
+                  [
+                '$sort' => [
                     '_id' => -1
-                ),
-            ),
-                array(
+                ],
+            ],
+                [
                     '$skip' => (int)$start
-                ),
-                array(
+                ],
+                [
                   '$limit' => (int)$limit
-                )
-				);
+                ]
+				];
 			 $merge_arguments = array_merge($arguments,$carguments);
 
             $table=MDB_PASSENGERS_LOGS;
@@ -707,7 +707,7 @@ public function update_driverimage($image,$userid)
             }
 
             $result = $this->mongo_db->aggregate($table,$merge_arguments);
-             return (!empty($result['result']))?$result['result']:array();
+             return (!empty($result['result']))?$result['result']:[];
 			}
             
         
@@ -726,38 +726,38 @@ public function update_driverimage($image,$userid)
         return $result;*/
         
         //MongoDB
-        $match_query = array('driver_id' => (int)$id, 'msg_status' => $msg_status, 'driver_reply' => $driver_reply, 'travel_status' => (int)$travel_status );
-        $arguments = array(
-            array('$match'	=> $match_query),
-            array('$lookup'         => array(
+        $match_query = ['driver_id' => (int)$id, 'msg_status' => $msg_status, 'driver_reply' => $driver_reply, 'travel_status' => (int)$travel_status ];
+        $arguments = [
+            ['$match'	=> $match_query],
+            ['$lookup'         => [
                     'from'          =>  PASSENGERS,
                     'localField'    => 'passengers_id',
                     'foreignField'  => "_id",
                     'as'            => "passengers"
-                )
-            ),
-            array('$unwind' => '$passengers'), 
-            array('$lookup'         => array(
+                ]
+            ],
+            ['$unwind' => '$passengers'], 
+            ['$lookup'         => [
                     'from'          => 'ratings',
                     'localField'    => 'rating',
                     'foreignField'  => "ratings_no",
                     'as'            => "ratingsinfo"
-                )
-            ),
-            array('$unwind' => '$ratingsinfo'),
-            array(
-                '$sort' => array(
+                ]
+            ],
+            ['$unwind' => '$ratingsinfo'],
+            [
+                '$sort' => [
                     '_id' => -1
-                ),
-            ),
-        );
+                ],
+            ],
+        ];
         if($find_count){
-            $carguments = array(
-                array('$group' => array("_id" => 0,
-                        "count" => array( '$sum' => 1 ),
-                    )
-                ),
-            );
+            $carguments = [
+                ['$group' => ["_id" => 0,
+                        "count" => [ '$sum' => 1 ],
+                    ]
+                ],
+            ];
             $merge_arguments = array_merge($arguments,$carguments);
 
             $table=MDB_PASSENGERS_LOGS;
@@ -775,9 +775,9 @@ public function update_driverimage($image,$userid)
             return (!empty($result['result'][0]['count']))?$result['result'][0]['count']:0;
         } else {
             //echo $start.'=='.$limit.'=='.$find_count;exit;
-            $carguments = array(
-                array(
-                    '$project' => array('_id'=>0,
+            $carguments = [
+                [
+                    '$project' => ['_id'=>0,
                         'id' => '$_id',
                         'rating' => '$rating',
                         'comments' => '$comments',
@@ -786,15 +786,15 @@ public function update_driverimage($image,$userid)
                         'driver_tags'=>'$driver_tags',
                         'ratings_title'=>'$ratingsinfo.ratings_title',
                         'createdate'=>'$createdate',
-                    )
-                ),
-                array(
+                    ]
+                ],
+                [
                     '$skip' => (int)$start
-                ),
-                array(
+                ],
+                [
                   '$limit' => (int)$limit
-                )
-            );
+                ]
+            ];
             $merge_arguments = array_merge($arguments,$carguments);
 
             $table=MDB_PASSENGERS_LOGS;
@@ -809,11 +809,11 @@ public function update_driverimage($image,$userid)
 
             $result = $this->mongo_db->aggregate($table,$merge_arguments);
             //echo "<pre>"; print_r($result); exit;
-            return (!empty($result['result']))?$result['result']:array();
+            return (!empty($result['result']))?$result['result']:[];
         }
     }
     public function getDriverShiftStatus($id) {
-        $result = $this->mongo_db->find_one(MDB_DRIVER_INFO,array('_id'=>(int)$id),array('shift_status'));
+        $result = $this->mongo_db->find_one(MDB_DRIVER_INFO,['_id'=>(int)$id],['shift_status']);
         return $result;
     }
     // Function used to get Drivers comments Today and Totally
@@ -863,41 +863,41 @@ public function update_driverimage($image,$userid)
     /*** Get Passenger Profile details using passenger log id ***/
     public function get_passenger_log_details($passengerlog_id = "")
     {
-		$arguments = array(
-			array('$match' => array('_id' => (int)$passengerlog_id)),
-			array('$lookup' =>
-				array(
+		$arguments = [
+			['$match' => ['_id' => (int)$passengerlog_id]],
+			['$lookup' =>
+				[
                     'from' => MDB_COMPANY,
                     'localField' => "company_id",
                     'foreignField' => "_id",
                     'as' => "company"
-                )
-            ),
-            array('$unwind' => '$company'),
+                ]
+            ],
+            ['$unwind' => '$company'],
 			
-			array(
+			[
                 '$lookup' =>
-				array(
+				[
 					'from'=>MDB_PASSENGERS,
 					'localField'=> "passengers_id",
 					'foreignField' => "_id",
 					'as'=> "passengers"
-				)
-            ),
-            array('$unwind'=>'$passengers'),
+				]
+            ],
+            ['$unwind'=>'$passengers'],
 			
-			array(
-                '$lookup' => array(
+			[
+                '$lookup' => [
 					'from' => MDB_PEOPLE,
 					'localField' => 'driver_id',
 					'foreignField' => "_id",
 					'as' => "people"
-				)
-			),
-			array('$unwind' => '$people'),
+				]
+			],
+			['$unwind' => '$people'],
             
-			array('$project' =>
-				array(
+			['$project' =>
+				[
 					'passengers_log_id' => '$_id',
                     'get_companyid' => '$company._id',
 					'driver_name' => '$people.name',
@@ -907,11 +907,11 @@ public function update_driverimage($image,$userid)
                     'passenger_email' => '$passengers.email',
                     'passenger_creditcard_no' => '$passengers.creditcard_details.creditcard_no',
                     'passenger_phone' => '$passengers.phone',
-				)
-			)							
-		);
+				]
+			]							
+		];
 		$result = $this->mongo_db->aggregate(MDB_PASSENGERS_LOGS,$arguments);
-		return (!empty($result['result'])?$result['result']:array());
+		return (!empty($result['result'])?$result['result']:[]);
     }
     /*** Get Passenger Profile details with tranaction using passenger log id ***/
     public function get_passenger_log_tranaction_details($passengerlog_id = "")
@@ -1008,8 +1008,8 @@ company_model_fare.waiting_time,company_model_fare.min_km,company_model_fare.bel
         return $result;*/
         
         //MongoDB
-		$result = $this->mongo_db->find_one(MDB_DRIVER_INFO,array('_id'=>(int)$id),array('shift_status','update_date','loc.coordinates','status'));
-		return (!empty($result))?$result:array();
+		$result = $this->mongo_db->find_one(MDB_DRIVER_INFO,['_id'=>(int)$id],['shift_status','update_date','loc.coordinates','status']);
+		return (!empty($result))?$result:[];
     }
     public function get_shift_status($id)
     {
@@ -1021,10 +1021,10 @@ company_model_fare.waiting_time,company_model_fare.min_km,company_model_fare.bel
                     ],
                     'limit'=>1
                 ];
-                $res = $this->mongo_db->find(MDB_SHIFT_HISTORY,array('driver_id' => (int)$id),array())->sort(array('_id'=>-1))->limit(1);
+                $res = $this->mongo_db->find(MDB_SHIFT_HISTORY,['driver_id' => (int)$id],[])->sort(['_id'=>-1])->limit(1);
         $result = $res;
         $result = iterator_to_array($result);        
-        return (!empty($result)) ? Commonfunction::change_key($result) : array();
+        return (!empty($result)) ? Commonfunction::change_key($result) : [];
     }
     /** Driver Current Travel Availability **/
     public function check_driver_travel_availability($driver_id, $pickup_time)
@@ -1038,9 +1038,9 @@ company_model_fare.waiting_time,company_model_fare.min_km,company_model_fare.bel
         $start_date = date('Y-m-d 00:00:01');
         //echo $start_date.'='.$pickup_time;
         //MongoDB
-        $result = $this->mongo_db->find(MDB_PASSENGERS_LOGS,array('driver_id'=>(int)$driver_id,'driver_reply'=>'A','travel_status'=>1,'pickup_time'=>array('$gte'=>$start_date,'$lt'=>$pickup_time)),array('driver_id','current_location','drop_location','_id','msg_status','driver_reply'))->sort(array('_id'=>-1))->limit(1);
+        $result = $this->mongo_db->find(MDB_PASSENGERS_LOGS,['driver_id'=>(int)$driver_id,'driver_reply'=>'A','travel_status'=>1,'pickup_time'=>['$gte'=>$start_date,'$lt'=>$pickup_time]],['driver_id','current_location','drop_location','_id','msg_status','driver_reply'])->sort(['_id'=>-1])->limit(1);
         //echo '<pre>';print_r(iterator_to_array($result));exit;
-        return (!empty($result))?iterator_to_array($result):array();
+        return (!empty($result))?iterator_to_array($result):[];
     }
     //Update Driver Break Status
     public function update_driver_break_status($id, $status, $stat = null)
@@ -1050,34 +1050,34 @@ company_model_fare.waiting_time,company_model_fare.min_km,company_model_fare.bel
         } else {
             $break_status = 'F';
         }
-        $sql_query = array(
+        $sql_query = [
             'status' => $break_status
-        );
+        ];
         DB::update(DRIVER)->set($sql_query)->where('driver_id', '=', $id)->execute();
     }
     //Update Driver Shift Status
     public function update_driver_shift_status($id, $status, $stat = null)
     {
-      $sql_query          = array(
+      $sql_query          = [
             'shift_status' => 'OUT'
-        );
-        $notification_query = array(
+        ];
+        $notification_query = [
             'notification_setting' => 0
-        );
+        ];
         if ($status == 1) {
             $shift_status = 'IN';
-            $sql_query          = array(
+            $sql_query          = [
                 'shift_status' => 'IN'
-            );
-            $notification_query = array(
+            ];
+            $notification_query = [
                 'notification_setting' => 1
-            );
+            ];
         }
-		$result = $this->mongo_db->update(MDB_DRIVER_INFO,array('_id' => (int)$id),
-                                          array('$set'=>$sql_query),array('upsert'=>false));
+		$result = $this->mongo_db->update(MDB_DRIVER_INFO,['_id' => (int)$id],
+                                          ['$set'=>$sql_query],['upsert'=>false]);
         
-        $result1 = $this->mongo_db->update(MDB_PEOPLE,array('_id' => (int)$id),
-                                           array('$set'=>$notification_query),array('upsert'=>false));
+        $result1 = $this->mongo_db->update(MDB_PEOPLE,['_id' => (int)$id],
+                                           ['$set'=>$notification_query],['upsert'=>false]);
     }
     //Update Driver Status
     public function update_driver_status($id, $status, $field, $flag)
@@ -1088,21 +1088,21 @@ company_model_fare.waiting_time,company_model_fare.min_km,company_model_fare.bel
         }
         //Acceptred Status
         if ($status == 'A') {
-            $sql_query = array(
+            $sql_query = [
                 'driver_reply' => $status,
                 'time_to_reach_passen' => $field,
                 'travel_status' => '9',
                 'msg_status' => 'R'
-            );
+            ];
         }
         //Rejected Status and Adding the Driver Comments 
         else {
-            $sql_query = array(
+            $sql_query = [
                 'driver_reply' => $status,
                 'driver_comments' => $field,
                 'travel_status' => '10',
                 'msg_status' => 'R'
-            );
+            ];
         }
         if ($driver_reply == '') {
             DB::update(PASSENGERS_LOG)->set($sql_query)->where('passengers_log_id', '=', $id)->execute();
@@ -1115,12 +1115,12 @@ company_model_fare.waiting_time,company_model_fare.min_km,company_model_fare.bel
         } else {
             // Driver cancel the drip when pick up
             if ($flag == 1) {
-                $sql_query = array(
+                $sql_query = [
                     'travel_status' => '10',
                     'driver_reply' => $status,
                     'driver_comments' => $field,
                     'msg_status' => 'R'
-                );
+                ];
                 DB::update(PASSENGERS_LOG)->set($sql_query)->where('passengers_log_id', '=', $id)->execute();
                 if ($status == 'R')
                     return 2;
@@ -1185,11 +1185,11 @@ AND mapping_enddate >= '" . $start_time . "' and mapping_enddate >= '$current_ti
     //Update the Journey Status
     public function update_journey_status($id, $msg_status, $driver_reply, $travel_status)
     {
-        $sql_query = array(
+        $sql_query = [
             'msg_status' => $msg_status,
             'driver_reply' => $driver_reply,
             'travel_status' => $travel_status
-        );
+        ];
         //print_r($sql_query);
         $result    = DB::update(PASSENGERS_LOG)->set($sql_query)->where('passengers_log_id', '=', $id)->execute();
     }
@@ -1206,42 +1206,42 @@ AND mapping_enddate >= '" . $start_time . "' and mapping_enddate >= '$current_ti
             $end   = $cur_day;
         }
         //MongoDB
-        $match_query = array("\$and" => array(array("pickup_time"=>array('$gte' => $start,'$lt'=> $end)),array('driver_id' => (int)$id),array('travel_status' => 1)));
+        $match_query = ["\$and" => [["pickup_time"=>['$gte' => $start,'$lt'=> $end]],['driver_id' => (int)$id],['travel_status' => 1]]];
        //print_r($match_query);//exit;
-        $arguments = array(
-            array('$match'	=> $match_query),
-            array('$lookup' 		=> array(
+        $arguments = [
+            ['$match'	=> $match_query],
+            ['$lookup' 		=> [
                     'from'			=>	MDB_TRANSACTION,
                     'localField'	=> '_id',
                     'foreignField'	=> "passengers_log_id",
                     'as'			=> "trans"
-                )
-            ),
-            array('$unwind'=>'$trans'),
-            array(
-                '$project' => array(
+                ]
+            ],
+            ['$unwind'=>'$trans'],
+            [
+                '$project' => [
                     'fare' => '$trans.fare',
-                    'month' => array( '$substr' => array( '$pickup_time', 5, 2 ) ),
-                    'day' => array( '$substr'=> array( '$pickup_time', 8, 2 ) ),
-                )
-            ),
-            array('$group' => array('_id' => array('date' => '$day','month' => '$month'),
-                    'fare' => array( '$sum' => '$fare' ),
-                    'date' => array( '$first' => '$day' ),
-                    'month' => array( '$first' => '$month' ),
-                    'trips' => array( '$sum' => 1 ),
-                    )
-            ),
-            array(
+                    'month' => [ '$substr' => [ '$pickup_time', 5, 2 ] ],
+                    'day' => [ '$substr'=> [ '$pickup_time', 8, 2 ] ],
+                ]
+            ],
+            ['$group' => ['_id' => ['date' => '$day','month' => '$month'],
+                    'fare' => [ '$sum' => '$fare' ],
+                    'date' => [ '$first' => '$day' ],
+                    'month' => [ '$first' => '$month' ],
+                    'trips' => [ '$sum' => 1 ],
+                    ]
+            ],
+            [
                 '$skip' => 0
-            ),
-            array(
+            ],
+            [
               '$limit' => (int)$limit
-            )
-        );
+            ]
+        ];
         $result = $this->mongo_db->aggregate(MDB_PASSENGERSLOGS_COMPLETED,$arguments);
         //echo "<pre>"; print_r($result); exit;
-        return (!empty($result['result']))?$result['result']:array();
+        return (!empty($result['result']))?$result['result']:[];
     }
     public function get_trans_of_taxi($id, $limit, $days_ago = '', $cur_day = '')
     {
@@ -1260,41 +1260,41 @@ AND mapping_enddate >= '" . $start_time . "' and mapping_enddate >= '$current_ti
         return $result;*/
        
        //MongoDB
-       $match_query = array("\$and" => array(array("pickup_time"=>array('$gte' => new \MongoDB\BSON\UTCDateTime(strtotime($start) * 1000),'$lt'=>  new \MongoDB\BSON\UTCDateTime(strtotime($end) * 1000))),array('taxi_id' => (int)$id),array('travel_status' => 1)));
+       $match_query = ["\$and" => [["pickup_time"=>['$gte' => new \MongoDB\BSON\UTCDateTime(strtotime($start) * 1000),'$lt'=>  new \MongoDB\BSON\UTCDateTime(strtotime($end) * 1000)]],['taxi_id' => (int)$id],['travel_status' => 1]]];
        //$match_query = array("\$and" => array(array("pickup_time"=>array('$gte' => $start,'$lt'=> $end)),array('taxi_id' => (int)$id),array('travel_status' => 1)));
        //print_r($match_query);//exit;
-       $arguments = array(
-            array('$match'	=> $match_query),
-            array('$lookup' 		=> array(
+       $arguments = [
+            ['$match'	=> $match_query],
+            ['$lookup' 		=> [
                     'from'			=>	MDB_TRANSACTION,
                     'localField'	=> '_id',
                     'foreignField'	=> "passengers_log_id",
                     'as'			=> "trans"
-                )
-            ),
-            array('$unwind'=>'$trans'),
-            array(
-                '$project' => array(
+                ]
+            ],
+            ['$unwind'=>'$trans'],
+            [
+                '$project' => [
                     'fare' => '$trans.fare',
-                    "month" => array( '$substr' => array( '$pickup_time', 5, 2 ) ),
-                    "day" => array( '$substr'=> array( '$pickup_time', 8, 2 ) ),
-                )
-            ),
-            array('$group' => array("_id" => array("date" => '$day',"month" => '$month'),
-                    "fare" => array( '$sum' => '$fare' ),
-                    "trips" => array( '$sum' => 1 ),
-                    )
-            ),
-            array(
+                    "month" => [ '$substr' => [ '$pickup_time', 5, 2 ] ],
+                    "day" => [ '$substr'=> [ '$pickup_time', 8, 2 ] ],
+                ]
+            ],
+            ['$group' => ["_id" => ["date" => '$day',"month" => '$month'],
+                    "fare" => [ '$sum' => '$fare' ],
+                    "trips" => [ '$sum' => 1 ],
+                    ]
+            ],
+            [
                 '$skip' => 0
-            ),
-            array(
+            ],
+            [
               '$limit' => (int)$limit
-            )
-        );
+            ]
+        ];
         $result = $this->mongo_db->aggregate(MDB_PASSENGERSLOGS_COMPLETED,$arguments);
         //echo "<pre>"; print_r($result); exit;
-        return (!empty($result['result']))?$result['result']:array();
+        return (!empty($result['result']))?$result['result']:[];
     }
     //** function to get total transaction count of a taxi **//
     public function get_total_trans_taxi($id)
@@ -1306,59 +1306,59 @@ AND mapping_enddate >= '" . $start_time . "' and mapping_enddate >= '$current_ti
         return $result;*/
         
        //MongoDB
-       $match_query = array("\$and" => array(array('taxi_id' => (int)$id),array('travel_status' => 1)));
-       $arguments = array(
-            array('$match'	=> $match_query),
-            array('$lookup' 		=> array(
+       $match_query = ["\$and" => [['taxi_id' => (int)$id],['travel_status' => 1]]];
+       $arguments = [
+            ['$match'	=> $match_query],
+            ['$lookup' 		=> [
                     'from'			=>	MDB_TRANSACTION,
                     'localField'	=> '_id',
                     'foreignField'	=> "passengers_log_id",
                     'as'			=> "trans"
-                )
-            ),
-            array('$unwind'=>'$trans'),
-            array('$group' => array("_id" => 0,
-                    "count" => array( '$sum' => 1 ),
-                    )
-            ),
-        );
+                ]
+            ],
+            ['$unwind'=>'$trans'],
+            ['$group' => ["_id" => 0,
+                    "count" => [ '$sum' => 1 ],
+                    ]
+            ],
+        ];
         $result = $this->mongo_db->aggregate(MDB_PASSENGERSLOGS_COMPLETED,$arguments);
         //echo "<pre>"; print_r($result); exit;
         return (!empty($result['result']))?$result['result'][0]['count']:0;
     }
     public function get_taxi_trips($id)
     {
-        $match_query = array("\$and" => array(array('taxi_id' => (int)$id),array('travel_status' => 1),array('dlh.status' => 'A')));
-        $match_query2 = array("\$and" => array(array('dlh.status' => 'A')));
-        $arguments = array(
-            array('$lookup' 		=> array(
+        $match_query = ["\$and" => [['taxi_id' => (int)$id],['travel_status' => 1],['dlh.status' => 'A']]];
+        $match_query2 = ["\$and" => [['dlh.status' => 'A']]];
+        $arguments = [
+            ['$lookup' 		=> [
                     'from'			=>	MDB_LOCATION_HISTORY,
                     'localField'	=> "driver_id",
                     'foreignField'	=> "driver_id",
                     'localField'	=> "_id",
                     'foreignField'	=> "trip_id",
                     'as'			=> "dlh"
-                )
-            ),
-            array('$unwind'=>'$dlh'),
-            array('$match'	=> $match_query2),
-            array(
-                '$project' => array('_id'=>0,
+                ]
+            ],
+            ['$unwind'=>'$dlh'],
+            ['$match'	=> $match_query2],
+            [
+                '$project' => ['_id'=>0,
                     'passengers_log_id' => '$_id',
                     'active_record' => '$dlh.loc',
                     'current_location' => '$current_location',
                     'drop_location' => '$drop_location',
-                )
-            ),
-            array(
+                ]
+            ],
+            [
                 '$skip' => 0
-            ),
-            array(
+            ],
+            [
               '$limit' => 3
-            )
-        );
+            ]
+        ];
         $result = $this->mongo_db->aggregate(MDB_PASSENGERSLOGS_COMPLETED,$arguments);
-        return (!empty($result['result']))?$result['result']:array();
+        return (!empty($result['result']))?$result['result']:[];
     }
     //Function used to get all driver break and service logs 
     public function count_get_driver_logs_service($id)
@@ -1372,43 +1372,43 @@ AND mapping_enddate >= '" . $start_time . "' and mapping_enddate >= '$current_ti
     //Function used to get all Shift logs
     public function count_get_driver_shift_logs($id)
     {
-        $result = $this->mongo_db->count(MDB_SHIFT_HISTORY,array('driver_id' => (int)$id));
+        $result = $this->mongo_db->count(MDB_SHIFT_HISTORY,['driver_id' => (int)$id]);
         return (isset($result)) ? $result : 0;
     }
     public function get_driver_shift_logs($id, $start, $limit)
     {    
 		
-		$sort = array('$sort' => array('_id' => 1)); // Asc
+		$sort = ['$sort' => ['_id' => 1]]; // Asc
 		
 		if(isset($_REQUEST['order'])) { 
 			if($_REQUEST['order'] == 'desc') { // Desc
-				$sort = array('$sort' => array('_id' => -1));
+				$sort = ['$sort' => ['_id' => -1]];
 			}
 		}
         //MongoDB
-        $match_query = array('driver_id' =>(int)$id);
+        $match_query = ['driver_id' =>(int)$id];
         
-        $arguments = array(
-            array('$match'	=> $match_query),
-            array('$lookup' 		=> array(
+        $arguments = [
+            ['$match'	=> $match_query],
+            ['$lookup' 		=> [
                     'from'			=>	MDB_TAXI,
                     'localField'	=> "taxi_id",
                     'foreignField'	=> "_id",
                     'as'			=> "taxi"
-                )
-            ),
-            array('$unwind'=>'$taxi'),
-              array('$lookup' 		=> array(
+                ]
+            ],
+            ['$unwind'=>'$taxi'],
+              ['$lookup' 		=> [
                     'from'			=>	MDB_PEOPLE,
                     'localField'	=> "driver_id",
                     'foreignField'	=> "_id",
                     'as'			=> "driver"
-                )
-            ),
-            array('$unwind'=>'$driver'),
+                ]
+            ],
+            ['$unwind'=>'$driver'],
             $sort,
-            array(
-                '$project' => array('_id'=>0,
+            [
+                '$project' => ['_id'=>0,
                     'driver_id' => '$driver_id',
                     'reason' => '$reason',
                     'shift_start' =>'$shift_start',
@@ -1419,19 +1419,19 @@ AND mapping_enddate >= '" . $start_time . "' and mapping_enddate >= '$current_ti
                     'start_km' => '$start_km',
                     'end_km' => '$end_km',
                     'shift_status' => '$status',
-                )
-            ),
+                ]
+            ],
             
-            array(
+            [
                 '$skip' => (int)$limit
-            ),
-            array(
+            ],
+            [
               '$limit' => (int)$start
-            )
-        );
+            ]
+        ];
         $result = $this->mongo_db->aggregate(MDB_SHIFT_HISTORY,$arguments);
   //~ echo "<pre>"; print_r($result); exit;
-        return (!empty($result['result']))?$result['result']:array();
+        return (!empty($result['result']))?$result['result']:[];
     }
     public function getTaxiforDriver($id)
     {
@@ -1454,7 +1454,7 @@ AND mapping_enddate >= '" . $start_time . "' and mapping_enddate >= '$current_ti
         $passengerlog_query   = "select * from " . PASSENGERS_LOG . " where passengers_log_id='$passenger_logid'";
         $passengerlog_results = Db::query(Database::SELECT, $passengerlog_query)->execute()->as_array();
         $company_id           = $passengerlog_results[0]['company_id'];
-        $trans_commission     = array();
+        $trans_commission     = [];
         /** Commission Part **/
         $first_query          = "select * from " . PACKAGE_REPORT . " join " . PACKAGE . " on " . PACKAGE . ".package_id =" . PACKAGE_REPORT . ".upgrade_packageid  where " . PACKAGE_REPORT . ".upgrade_companyid = " . $company_id . "  order by upgrade_id desc limit 0,1";
         $first_results        = Db::query(Database::SELECT, $first_query)->execute()->as_array();
@@ -1519,70 +1519,70 @@ AND mapping_enddate >= '" . $start_time . "' and mapping_enddate >= '$current_ti
         $end_date        = (date('Y-m-d')).' 23:59:59';
         //MongoDB
         //Rejection query starts
-        $match_query = array("\$and" => array(array("createdate"=>array('$gte' => $start_date,'$lt'=> $end_date)),array('driver_id' => (int)$driver_id)));
-        $rejected_arguments = array(
-            array('$match'	=> $match_query),
-            array(
-                '$project' => array(
+        $match_query = ["\$and" => [["createdate"=>['$gte' => $start_date,'$lt'=> $end_date]],['driver_id' => (int)$driver_id]]];
+        $rejected_arguments = [
+            ['$match'	=> $match_query],
+            [
+                '$project' => [
                     'createdate' => '$createdate',
-                    'year' => array( '$substr' => array( '$createdate', 0, 4 ) ),
-                    'month' => array( '$substr' => array( '$createdate', 5, 2 ) ),
-                    'day' => array( '$substr'=> array( '$createdate', 8, 2 ) ),
-                )
-            ),
-            array('$group' => array('_id' => array('year' => '$year','date' => '$day','month' => '$month'),
-                'createdate' => array('$first' => '$createdate'),
-                'rejected_count' => array( '$sum' => 1 ),
-                )
-            )
-        );
+                    'year' => [ '$substr' => [ '$createdate', 0, 4 ] ],
+                    'month' => [ '$substr' => [ '$createdate', 5, 2 ] ],
+                    'day' => [ '$substr'=> [ '$createdate', 8, 2 ] ],
+                ]
+            ],
+            ['$group' => ['_id' => ['year' => '$year','date' => '$day','month' => '$month'],
+                'createdate' => ['$first' => '$createdate'],
+                'rejected_count' => [ '$sum' => 1 ],
+                ]
+            ]
+        ];
         $rejected_trips = $this->mongo_db->aggregate(MDB_REJECTION_HISTORY,$rejected_arguments);
         //Rejection query End
         //Cancelled query starts
-        $match_query = array("\$and" => array(array("createdate"=>array('$gte' => $start_date,'$lt'=> $end_date)),array('driver_id' => (int)$driver_id),array('driver_reply' => 'C')));
-        $cancelled_arguments = array(
-            array('$match'	=> $match_query),
-            array(
-                '$project' => array(
+        $match_query = ["\$and" => [["createdate"=>['$gte' => $start_date,'$lt'=> $end_date]],['driver_id' => (int)$driver_id],['driver_reply' => 'C']]];
+        $cancelled_arguments = [
+            ['$match'	=> $match_query],
+            [
+                '$project' => [
                     'createdate' => '$createdate',
-                    'year' => array( '$substr' => array( '$createdate', 0, 4 ) ),
-                    'month' => array( '$substr' => array( '$createdate', 5, 2 ) ),
-                    'day' => array( '$substr'=> array( '$createdate', 8, 2 ) ),
-                )
-            ),
-            array('$group' => array('_id' => array('year' => '$year','date' => '$day','month' => '$month'),
-                'createdate' => array('$first' => '$createdate'),
-                'cancelled_count' => array( '$sum' => 1 ),
-                )
-            )
-        );
+                    'year' => [ '$substr' => [ '$createdate', 0, 4 ] ],
+                    'month' => [ '$substr' => [ '$createdate', 5, 2 ] ],
+                    'day' => [ '$substr'=> [ '$createdate', 8, 2 ] ],
+                ]
+            ],
+            ['$group' => ['_id' => ['year' => '$year','date' => '$day','month' => '$month'],
+                'createdate' => ['$first' => '$createdate'],
+                'cancelled_count' => [ '$sum' => 1 ],
+                ]
+            ]
+        ];
         $cancelled_trips = $this->mongo_db->aggregate(MDB_PASSENGERSLOGS_CANCELLED,$cancelled_arguments);
         //Cancelled query End
         //Completed query starts
-        $match_query = array("\$and" => array(array("createdate"=>array('$gte' => $start_date,'$lt'=> $end_date)),array('driver_id' => (int)$driver_id),array('driver_reply' => 'A'),array('travel_status' => 1)));
-        $completed_arguments = array(
-            array('$match'	=> $match_query),
-            array(
-                '$project' => array(
+        $match_query = ["\$and" => [["createdate"=>['$gte' => $start_date,'$lt'=> $end_date]],['driver_id' => (int)$driver_id],['driver_reply' => 'A'],['travel_status' => 1]]];
+        $completed_arguments = [
+            ['$match'	=> $match_query],
+            [
+                '$project' => [
                     'createdate' => '$createdate',
-                    'year' => array( '$substr' => array( '$createdate', 0, 4 ) ),
-                    'month' => array( '$substr' => array( '$createdate', 5, 2 ) ),
-                    'day' => array( '$substr'=> array( '$createdate', 8, 2 ) ),
-                )
-            ),
-            array('$group' => array('_id' => array( 'year' => '$year','date' => '$day','month' => '$month'),
-                'createdate' => array('$first' => '$createdate'),
-                'completed_count' => array( '$sum' => 1 ),
-                )
-            )
-        );
+                    'year' => [ '$substr' => [ '$createdate', 0, 4 ] ],
+                    'month' => [ '$substr' => [ '$createdate', 5, 2 ] ],
+                    'day' => [ '$substr'=> [ '$createdate', 8, 2 ] ],
+                ]
+            ],
+            ['$group' => ['_id' => [ 'year' => '$year','date' => '$day','month' => '$month'],
+                'createdate' => ['$first' => '$createdate'],
+                'completed_count' => [ '$sum' => 1 ],
+                ]
+            ]
+        ];
          
         $completed_trips = $this->mongo_db->aggregate(MDB_PASSENGERSLOGS_COMPLETED,$completed_arguments);
-        $result = array(
-            'completed_trips' => (isset($completed_trips['result']))?$completed_trips['result']:array(),
-            'rejected_trips' => (isset($rejected_trips['result']))?$rejected_trips['result']:array(),
-            'cancelled_trips' => (isset($cancelled_trips['result']))?$cancelled_trips['result']:array()
-        );
+        $result = [
+            'completed_trips' => (isset($completed_trips['result']))?$completed_trips['result']:[],
+            'rejected_trips' => (isset($rejected_trips['result']))?$rejected_trips['result']:[],
+            'cancelled_trips' => (isset($cancelled_trips['result']))?$cancelled_trips['result']:[]
+        ];
         //print_r($result); exit;
         return $result;
     }  
@@ -1602,19 +1602,19 @@ AND mapping_enddate >= '" . $start_time . "' and mapping_enddate >= '$current_ti
         }
         
         //MongoDB
-        $match_query = array('driver_id' => (int)$id,'driver_reply' => 'A', 'pickup_time'=>array('$gte'=>$start_time,'$lte'=>$end_time), "travel_status"=> array('$in'=>array(5,2)));
-        $arguments = array(
-            array('$match'	=> $match_query),
-            array('$lookup' 		=> array(
+        $match_query = ['driver_id' => (int)$id,'driver_reply' => 'A', 'pickup_time'=>['$gte'=>$start_time,'$lte'=>$end_time], "travel_status"=> ['$in'=>[5,2]]];
+        $arguments = [
+            ['$match'	=> $match_query],
+            ['$lookup' 		=> [
                     'from'			=>	PASSENGERS,
                     'localField'	=> 'driver_id',
                     'foreignField'	=> "_id",
                     'as'			=> "people"
-                )
-            ),
-            array('$unwind' => '$people'),
-            array(
-                '$project' => array('_id'=>0,
+                ]
+            ],
+            ['$unwind' => '$people'],
+            [
+                '$project' => ['_id'=>0,
                     'id' => '$_id',
                     'approx_distance' => '$approx_distance',
                     'approx_fare'=>'$approx_fare',
@@ -1623,20 +1623,20 @@ AND mapping_enddate >= '" . $start_time . "' and mapping_enddate >= '$current_ti
                     'current_location'=>'$current_location',
                     'drop_location'=>'$drop_location',
                     'travel_status' => '$travel_status',
-                )
-            ),
-            array(
-                '$sort' => array(
+                ]
+            ],
+            [
+                '$sort' => [
                     '_id' => -1
-                ),
-            ),
-            array(
+                ],
+            ],
+            [
               '$limit' => (int)1
-            )
-        );
+            ]
+        ];
         $result = $this->mongo_db->aggregate(MDB_PASSENGERS_LOGS,$arguments);
         //echo "<pre>"; print_r($result); exit;
-        return (!empty($result['result']))?$result['result']:array();
+        return (!empty($result['result']))?$result['result']:[];
     }
     
     //** function to get total transaction count of a driver **//
@@ -1648,22 +1648,22 @@ AND mapping_enddate >= '" . $start_time . "' and mapping_enddate >= '$current_ti
         return $result;*/
     
         //MongoDB
-       $match_query = array("\$and" => array(array('driver_id' => (int)$id),array('travel_status' => 1)));
-       $arguments = array(
-            array('$match'	=> $match_query),
-            array('$lookup' 		=> array(
+       $match_query = ["\$and" => [['driver_id' => (int)$id],['travel_status' => 1]]];
+       $arguments = [
+            ['$match'	=> $match_query],
+            ['$lookup' 		=> [
                     'from'			=>	MDB_TRANSACTION,
                     'localField'	=> '_id',
                     'foreignField'	=> "passengers_log_id",
                     'as'			=> "trans"
-                )
-            ),
-            array('$unwind'=>'$trans'),
-            array('$group' => array("_id" => 0,
-                    "count" => array( '$sum' => 1 ),
-                    )
-            ),
-        );
+                ]
+            ],
+            ['$unwind'=>'$trans'],
+            ['$group' => ["_id" => 0,
+                    "count" => [ '$sum' => 1 ],
+                    ]
+            ],
+        ];
         $result = $this->mongo_db->aggregate(MDB_PASSENGERSLOGS_COMPLETED,$arguments);
         //echo "<pre>"; print_r($result); exit;
         return (!empty($result['result']) && isset($result['result'][0]['count']))?$result['result'][0]['count']:0;
@@ -1673,34 +1673,34 @@ AND mapping_enddate >= '" . $start_time . "' and mapping_enddate >= '$current_ti
     public function get_total_ratings_driver($id)
     {
         //MongoDB
-        $match_query = array('driver_id' => (int)$id, 'travel_status' => 1, 'rating' => array('$ne' => 0));
+        $match_query = ['driver_id' => (int)$id, 'travel_status' => 1, 'rating' => ['$ne' => 0]];
         //print_r($match_query);//exit;
-        $arguments = array(
-            array('$match'	=> $match_query),
-            array('$lookup' 		=> array(
+        $arguments = [
+            ['$match'	=> $match_query],
+            ['$lookup' 		=> [
                     'from'			=>	MDB_TRANSACTION,
                     'localField'	=> '_id',
                     'foreignField'	=> "passengers_log_id",
                     'as'			=> "trans"
-                )
-            ),
-            array('$unwind'=>'$trans'),
-            array(
-                '$project' => array(
+                ]
+            ],
+            ['$unwind'=>'$trans'],
+            [
+                '$project' => [
                     'rating' => '$rating',
-                    'month' => array( '$substr' => array( '$pickup_time', 5, 2 ) ),
-                    'day' => array( '$substr'=> array( '$pickup_time', 8, 2 ) ),
-                )
-            ),
-            array('$group' => array('_id' => array('date' => '$day','month' => '$month'),
-                    'total_ratings' => array( '$sum' => '$rating' ),
-                    'trip_cnt' => array( '$sum' => 1 ),
-                    )
-            )
-        );
+                    'month' => [ '$substr' => [ '$pickup_time', 5, 2 ] ],
+                    'day' => [ '$substr'=> [ '$pickup_time', 8, 2 ] ],
+                ]
+            ],
+            ['$group' => ['_id' => ['date' => '$day','month' => '$month'],
+                    'total_ratings' => [ '$sum' => '$rating' ],
+                    'trip_cnt' => [ '$sum' => 1 ],
+                    ]
+            ]
+        ];
         $result = $this->mongo_db->aggregate(MDB_PASSENGERSLOGS_COMPLETED,$arguments);
         //echo "<pre>"; print_r($result); exit;
-        return (!empty($result['result']))?$result['result']:array();
+        return (!empty($result['result']))?$result['result']:[];
     }
    
     //** function to get overall trip statistics count **//

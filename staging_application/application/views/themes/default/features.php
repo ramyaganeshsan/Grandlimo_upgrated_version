@@ -1,6 +1,6 @@
 <?php  defined('SYSPATH') OR die("No direct access allowed."); 
 
-$pricing_page_content = isset($pricing_page[0])?$pricing_page[0]:array();
+$pricing_page_content = isset($pricing_page[0])?$pricing_page[0]:[];
 
 ?>
 <div class="inner_page_container">

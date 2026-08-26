@@ -1,6 +1,6 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 
-return array(
+return [
 'button_login' => 'Log In',
 'button_signup' => 'Sign Up',
 'button_update' => 'Update',
@@ -2870,4 +2870,4 @@ provided by its licensed drivers who undergo rigorous training and screening to 
 'confirmation'=>'For request confirmation',
 'missed_trip_log' => 'Missed Trip Details',
 'download_app_links' => 'Please download our app from the following links',
-); 
+]; 

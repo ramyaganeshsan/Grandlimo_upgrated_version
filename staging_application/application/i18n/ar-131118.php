@@ -1,6 +1,6 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 
-return array(
+return [
 '(or)' => '(او)',
 ':size msg' => 'وحجم الصورة لن تكون أكبر من 2M',
 ':type msg' => 'نوع الصورة يكون  .jpg, .gif, .png',
@@ -2697,4 +2697,4 @@ provided by its licensed drivers who undergo rigorous training and screening to 
 'contact_request_sent_successfully'=>'تم إرسال طلب الاتصال بنجاح',
 'booking_request_sent_successfully'=>'تم إرسال طلب الحجز بنجاح',
 
-); 
+]; 

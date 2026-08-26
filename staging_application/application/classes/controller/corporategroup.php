@@ -50,20 +50,20 @@ class Controller_CorporateGroup extends Controller_Siteadmin
 
         /**To get the form submit button name**/
         $signup_submit       = arr::get($_REQUEST, 'submit_zone');
-        $errors              = array();
-        $post_values         = array();
+        $errors              = [];
+        $post_values         = [];
         if ($signup_submit && Validation::factory($_POST)) {
 
             $post_values = Arr::map('trim', $this->request->post());
 
-            $form_values = Arr::extract($post_values, array(
+            $form_values = Arr::extract($post_values, [
                 'corporate_group_name',
                 'wallet_positive_limit',
                 'wallet_max_limit_check',
                 'surge_pricing',
                 'corporate_passengers_list'
 
-            ));
+            ]);
             $validator   = $this->corporategroup_model->validate_add_corporate_group($form_values);
 
             if ($validator->check()) {
@@ -98,8 +98,8 @@ class Controller_CorporateGroup extends Controller_Siteadmin
         $corporate_group_detail = $this->corporategroup_model->corporate_group_detail($id);
 
         $zone_submit = arr::get($_REQUEST, 'submit_editzone');
-        $errors        = array();
-        $post_values   = array();
+        $errors        = [];
+        $post_values   = [];
 
         if ($zone_submit && Validation::factory($_POST)) {
 
@@ -109,13 +109,13 @@ class Controller_CorporateGroup extends Controller_Siteadmin
 
 
 			//echo '<pre>'; print_r($values); exit();
-            $validator = $this->corporategroup_model->validate_edit_corporate_group(arr::extract($values, array(
+            $validator = $this->corporategroup_model->validate_edit_corporate_group(arr::extract($values, [
                 'corporate_group_name',
                 'wallet_positive_limit',
                 'wallet_max_limit_check',
                 'surge_pricing',
                 'corporate_passengers_list'
-            )),$id);
+            ]),$id);
             if ($validator->check()) {
                  $signup_id = $this->corporategroup_model->edit_corporate_group($post_values,$id);
                 if ($signup_id == 1) {
@@ -156,15 +156,15 @@ class Controller_CorporateGroup extends Controller_Siteadmin
         if ( $page_no == 0 || $page_no == 'index' )
             $page_no = PAGE_NO;
         $offset                     = REC_PER_PAGE * ( $page_no - 1 );
-        $pag_data                   = Pagination::factory( array(
-             'current_page' => array(
+        $pag_data                   = Pagination::factory( [
+             'current_page' => [
                  'source' => 'query_string',
                 'key' => 'page' 
-            ),
+            ],
             'items_per_page' => REC_PER_PAGE,
             'total_items' => count($corporate_group_details),
             'view' => 'pagination/punbb' 
-        ) );
+        ] );
 		$corporate_group_details = $this->corporategroup_model->manage_corporate_group_search($keyword,$status,$offset, REC_PER_PAGE);
         //****pagination ends here***//
 
@@ -230,10 +230,10 @@ class Controller_CorporateGroup extends Controller_Siteadmin
 
     public function action_passengers_list(){
         if(isset($_REQUEST['keyword'])) {
-            $passengers_list = $this->corporategroup_model->passengers_list( $_REQUEST['keyword'] ,isset($_REQUEST['selected'])?$_REQUEST['selected']:array() );
+            $passengers_list = $this->corporategroup_model->passengers_list( $_REQUEST['keyword'] ,isset($_REQUEST['selected'])?$_REQUEST['selected']:[] );
             echo json_encode($passengers_list);exit;
         } else {
-            echo json_encode(array());exit;
+            echo json_encode([]);exit;
         }
     }
 

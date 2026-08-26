@@ -1,6 +1,6 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 
-return array(
+return [
 'button_login' => 'Log In',
 'button_signup' => 'Sign Up',
 'button_update' => 'Update',
@@ -2882,4 +2882,4 @@ provided by its licensed drivers who undergo rigorous training and screening to 
 'amount_credit_debit'=>'Credit/Debit Amount',
 'passenger_wallet_logs'=>'Passenger Wallet Logs',
 'payment_failed_try_again'=>'Payment failed. Please try again'
-); 
+]; 

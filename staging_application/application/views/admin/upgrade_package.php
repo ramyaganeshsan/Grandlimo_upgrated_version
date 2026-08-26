@@ -3,33 +3,33 @@
 $text_credit_card     = 'Credit Card';
 $text_paypal='Paypal Express checkout';
 
-$months = array();
+$months = [];
 	
 for ($i = 1; $i <= 12; $i++) {
-	$months[] = array(
-		'text'  => strftime('%B', mktime(0, 0, 0, $i, 1, 2000)), 
+	$months[] = [
+		'text'  => date('F', mktime(0, 0, 0, $i, 1, 2000)), 
 		'value' => sprintf('%02d', $i)
-	);
+	];
 }
 
 $today = getdate();
 
-$year_valid = array();
+$year_valid = [];
 
 for ($i = $today['year'] - 10; $i < $today['year'] + 1; $i++) {	
-	$year_valid[] = array(
-		'text'  => strftime('%Y', mktime(0, 0, 0, 1, 1, $i)), 
-		'value' => strftime('%Y', mktime(0, 0, 0, 1, 1, $i))
-	);
+	$year_valid[] = [
+		'text'  => date('Y', mktime(0, 0, 0, 1, 1, $i)), 
+		'value' => date('Y', mktime(0, 0, 0, 1, 1, $i))
+	];
 }
 
-$year_expire = array();
+$year_expire = [];
 
 for ($i = $today['year']; $i < $today['year'] + 11; $i++) {
-	$year_expire[] = array(
-		'text'  => strftime('%Y', mktime(0, 0, 0, 1, 1, $i)),
-		'value' => strftime('%Y', mktime(0, 0, 0, 1, 1, $i)) 
-	);
+	$year_expire[] = [
+		'text'  => date('Y', mktime(0, 0, 0, 1, 1, $i)),
+		'value' => date('Y', mktime(0, 0, 0, 1, 1, $i)) 
+	];
 }
 	
 ?>

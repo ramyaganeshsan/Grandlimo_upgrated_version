@@ -32,7 +32,7 @@ Class Controller_Users extends Controller_Website
         View::bind_global('siteinfo', $siteinfo);
         $this->session->set('siteinfo', $siteinfo);
         //$this->session->set('lang', 'en');
-        $this->countryArr = array(
+        $this->countryArr = [
             "AM" => "Armenia",
             "AR" => "Argentina",
             "AG" => "Antigua And Barbuda",
@@ -279,7 +279,7 @@ Class Controller_Users extends Controller_Website
             "USA" => "US",
             "GBR" => "UK",
             "UAE" => "UAE"
-        );
+        ];
         /*
         $this->paypal_db = Model::factory('paypal');	
         $this->paypalconfig = $this->paypal_db->getpaypalconfig(); 
@@ -305,18 +305,18 @@ Class Controller_Users extends Controller_Website
         $slider_settings = $siteusers->slider_settings();//echo "<pre>"; print_r($slider_settings);exit;
         /////// Slider Settings ///////
         $signup_submit   = arr::get($_REQUEST, 'submit_company');
-        $postvalues      = array();
+        $postvalues      = [];
         if ($signup_submit && Validation::factory($_POST)) {
             $postvalues = $_POST;
             /**Send entered values to model for validation**/
-            $validator  = $siteusers->validate_contactus(arr::extract($_POST, array(
+            $validator  = $siteusers->validate_contactus(arr::extract($_POST, [
                 'name',
                 'email',
                 'phone',
                 'subject',
                 'message',
                 'security_code'
-            )));
+            ]));
             /**If validation success without error **/
             if ($validator->check()) {
                 $signup_id = $siteusers->contactus_add($_POST, COMPANY_CID);
@@ -328,7 +328,7 @@ Class Controller_Users extends Controller_Website
                 if ($signup_id) {
                     $mail = "";
                     if (COMPANY_CID == 0) {
-                        $replace_variables = array(
+                        $replace_variables = [
                             REPLACE_LOGO => EMAILTEMPLATELOGO,
                             REPLACE_SITENAME => SUBDOMAIN,
                             REPLACE_NAME => $_POST['name'],
@@ -338,9 +338,9 @@ Class Controller_Users extends Controller_Website
                             REPLACE_MESSAGE => $message,
                             REPLACE_SITEEMAIL => $this->siteemail,
                             REPLACE_SITEURL => URL_BASE
-                        );
+                        ];
                     } else {
-                        $replace_variables = array(
+                        $replace_variables = [
                             REPLACE_LOGO => EMAILTEMPLATELOGO,
                             REPLACE_SITENAME => SUBDOMAIN,
                             REPLACE_NAME => $_POST['name'],
@@ -350,7 +350,7 @@ Class Controller_Users extends Controller_Website
                             REPLACE_SITEURL => URL_BASE,
                             REPLACE_COPYRIGHTS => SITE_COPYRIGHT,
                             REPLACE_COPYRIGHTYEAR => COPYRIGHT_YEAR
-                        );
+                        ];
                     }
                     //$message = $this->emailtemplate->emailtemplate(DOCROOT . TEMPLATEPATH . 'booknow_company.html', $replace_variables);
                     if ($this->lang != 'en') {
@@ -495,7 +495,7 @@ Class Controller_Users extends Controller_Website
     {
         $siteusers      = Model::factory('siteusers');
         $activation_key = Commonfunction::admin_random_user_password_generator();
-        $errors         = array();
+        $errors         = [];
         $id             = $this->session->get('id');
         //$userid = $this->session->get('userid');
         $usrid          = $id; // isset($userid)?$userid:$id; 
@@ -507,20 +507,20 @@ Class Controller_Users extends Controller_Website
         /**If session is set it should not allow login page through URL**/
         if (!isset($usrid)) {
             /**To Set Errors Null to avoid error if not set in view**/
-            $errors        = array();
+            $errors        = [];
             /*To get selected language at user side*/
             $lang_select   = arr::get($_REQUEST, 'language');
             /**To get the form submit button name**/
             $signup_submit = arr::get($_REQUEST, 'submit_signup');
             if ($signup_submit && Validation::factory($_POST)) {
                 /**Send entered values to model for validation**/
-                $validator   = $siteusers->validate_signup(arr::extract($_POST, array(
+                $validator   = $siteusers->validate_signup(arr::extract($_POST, [
                     'name',
                     'lastname',
                     'email',
                     'password',
                     'repassword'
-                )));
+                ]));
                 /**To check email already exists or not,if exists return 1**/
                 $email_exist = $siteusers->check_email($_POST['email']);
                 /**If validation success without error **/
@@ -551,7 +551,7 @@ Class Controller_Users extends Controller_Website
                         $profile_rslt = $siteusers->profile_complete($this->session->get('id'), WEBSITE_SIGNUP);
                         if ($signup_id == 1) {
                             $mail              = "";
-                            $replace_variables = array(
+                            $replace_variables = [
                                 REPLACE_LOGO => EMAILTEMPLATELOGO,
                                 REPLACE_SITENAME => $this->app_name,
                                 REPLACE_USERNAME => ucfirst($_POST['name']),
@@ -562,7 +562,7 @@ Class Controller_Users extends Controller_Website
                                 REPLACE_SITEURL => URL_BASE,
                                 REPLACE_COPYRIGHTS => SITE_COPYRIGHT,
                                 REPLACE_COPYRIGHTYEAR => COPYRIGHT_YEAR
-                            );
+                            ];
                             $message           = $this->emailtemplate->emailtemplate(DOCROOT . TEMPLATEPATH . 'registertemp.html', $replace_variables);
                             $to                = $_POST['email'];
                             $from              = $this->siteemail;
@@ -621,15 +621,15 @@ Class Controller_Users extends Controller_Website
         $siteusers     = Model::factory('siteusers');
         /**Check if session set or not and if set it should not show login page**/
         if (!isset($usrid)) {
-            $errors       = array();
+            $errors       = [];
             /**To get the form submit button name**/
             $login_submit = arr::get($_REQUEST, 'submit_login');
             if ($login_submit && Validation::factory($_POST)) {
                 /**Send entered values to model for validation**/
-                $validator = $siteusers->validate_login(arr::extract($_POST, array(
+                $validator = $siteusers->validate_login(arr::extract($_POST, [
                     'email',
                     'password'
-                )));
+                ]));
                 /**If validation success without error **/
                 if ($validator->check()) {
                     //check if email is exist or not
@@ -713,16 +713,16 @@ Class Controller_Users extends Controller_Website
     {
         $siteusers         = Model::factory('siteusers');
         /**To Set Errors Null to avoid error if not set in view**/
-        $errors            = array();
+        $errors            = [];
         $view              = View::factory(USERVIEW . 'forgot_password')->bind('validator', $validator)->bind('errors', $errors)->bind('success', $success)->bind('email_error', $email_error);
         /**To generate random key if user enter email at forgot password**/
         $random_key        = text::random($type = 'alnum', $length = 7);
         /**To get the form submit button name**/
         $change_pwd_submit = arr::get($_REQUEST, 'submit_forgot_password');
         if ($change_pwd_submit && Validation::factory($_POST)) {
-            $validator = $siteusers->validate_forgotpwd(arr::extract($_POST, array(
+            $validator = $siteusers->validate_forgotpwd(arr::extract($_POST, [
                 'email'
-            )));
+            ]));
             if ($validator->check()) {
                 $email_exist = $siteusers->check_email($_POST['email']);
                 if ($email_exist == 1) {
@@ -732,7 +732,7 @@ Class Controller_Users extends Controller_Website
                         $forgotpassword    = $this->emailtemplate->get_template_content(FORGOT_PASSWORD);
                         $subject           = $forgotpassword[0]['email_subject'];
                         $content           = $forgotpassword[0]['email_content'];
-                        $replace_variables = array(
+                        $replace_variables = [
                             REPLACE_LOGO => EMAILTEMPLATELOGO,
                             REPLACE_SITENAME => $this->app_name,
                             REPLACE_USERNAME => ucfirst($result[0]['name']),
@@ -744,7 +744,7 @@ Class Controller_Users extends Controller_Website
                             SITE_DESCRIPTION => $this->app_description,
                             REPLACE_COPYRIGHTS => SITE_COPYRIGHT,
                             REPLACE_COPYRIGHTYEAR => COPYRIGHT_YEAR
-                        );
+                        ];
                         $message           = $this->emailtemplate->emailtemplate(DOCROOT . TEMPLATEPATH . 'mail_template.html', $replace_variables, $content);
                         $to                = $_POST['email'];
                         $from              = $this->siteemail;
@@ -785,7 +785,7 @@ Class Controller_Users extends Controller_Website
     public function action_ajaxforgotpassword()
     {
         $siteusers   = Model::factory('siteusers');
-        $errors      = array();
+        $errors      = [];
         /**To generate random key if user enter email at forgot password**/
         $random_key  = text::random($type = 'alnum', $length = 7);
         $email_exist = $siteusers->check_email($_POST['email']);
@@ -796,7 +796,7 @@ Class Controller_Users extends Controller_Website
                 $forgotpassword    = $this->emailtemplate->get_template_content(FORGOT_PASSWORD);
                 $subject           = $forgotpassword[0]['email_subject'];
                 $content           = $forgotpassword[0]['email_content'];
-                $replace_variables = array(
+                $replace_variables = [
                     REPLACE_LOGO => EMAILTEMPLATELOGO,
                     REPLACE_SITENAME => $this->app_name,
                     REPLACE_USERNAME => ucfirst($result[0]['name']),
@@ -808,7 +808,7 @@ Class Controller_Users extends Controller_Website
                     SITE_DESCRIPTION => $this->app_description,
                     REPLACE_COPYRIGHTS => SITE_COPYRIGHT,
                     REPLACE_COPYRIGHTYEAR => COPYRIGHT_YEAR
-                );
+                ];
                 $message           = $this->emailtemplate->emailtemplate(DOCROOT . TEMPLATEPATH . 'mail_template.html', $replace_variables, $content);
                 $to                = $_POST['email'];
                 $from              = $this->siteemail;
@@ -847,7 +847,7 @@ Class Controller_Users extends Controller_Website
     public function action_setting()
     {
         $siteusers = Model::factory('siteusers');
-        $errors    = array();
+        $errors    = [];
         $this->is_login();
         $this->is_login_status();
         $userid = $this->session->get('id');
@@ -888,7 +888,7 @@ Class Controller_Users extends Controller_Website
         $view                          = View::factory(USERVIEW . 'setting')->bind('validator', $validator)->bind('errors', $errors)->bind('user', $user)->bind('email_exists', $email_exists)->bind('user_email_setting', $user_email_setting)->bind('usrid', $userid)->bind('site_socialnetwork', $site_socialnetwork)->bind('site_twitter_socialnetwork', $site_twitter_socialnetwork)->bind('site_googleplus_socialnetwork', $site_googleplus_socialnetwork)->bind('data', $_POST);
         View::bind_global('settingfaqdetails', $settingfaqdetails);
         $submit_profile_form2    = arr::get($_REQUEST, 'submit_user_profile_edit');
-        $_FILES                  = array();
+        $_FILES                  = [];
         //To check if user photo existing in database		
         $image_name              = $siteusers->check_photo($id);
         $submit_profile          = arr::get($_REQUEST, 'submit_user_profile'); //submit_user_profile
@@ -896,14 +896,14 @@ Class Controller_Users extends Controller_Website
         $_POST                   = Arr::map('trim', $this->request->post());
         if ($submit_profile_form2 && Validation::factory($_POST)) {
             /**Send entered values to model for validation**/
-            $validator   = $siteusers->validate_user_profilesettings(arr::extract($_POST, array(
+            $validator   = $siteusers->validate_user_profilesettings(arr::extract($_POST, [
                 'name',
                 'lastname',
                 'email',
                 'description',
                 'school',
                 'education'
-            )));
+            ]));
             $email_exist = $siteusers->check_email_update($_POST['email'], $id);
             /**If email exists show error message**/
             if ($email_exist > 0) {
@@ -935,7 +935,7 @@ Class Controller_Users extends Controller_Website
     {
         $siteusers = Model::factory('siteusers');
         /**To Set Errors Null to avoid error if not set in view**/
-        $errors    = array();
+        $errors    = [];
         /**Check Whether the user is logged in**/
         $this->is_login();
         $this->is_login_status();
@@ -951,11 +951,11 @@ Class Controller_Users extends Controller_Website
         $site_googleplus_socialnetwork = $Socialnetwork->get_googleplus_account(GOOGLEPLUS, $usrid);
         $settingfaqdetails             = $siteusers->get_settingfaq_details();
         $view                          = View::factory(USERVIEW . 'setting')->bind('validator', $validator)->bind('errors', $errors)->bind('user', $user)->bind('user_email_setting', $user_email_setting)->bind('email_exists', $email_exists)->bind('data', $_POST)->bind('usrid', $userid)->bind('site_socialnetwork', $site_socialnetwork)->bind('site_twitter_socialnetwork', $site_twitter_socialnetwork)->bind('site_googleplus_socialnetwork', $site_googleplus_socialnetwork);
-        $_FILES                        = array();
+        $_FILES                        = [];
         $submit_profile_optional       = arr::get($_REQUEST, 'submit_user_profile_optional');
         $_POST                         = Arr::map('trim', $this->request->post());
         if ($submit_profile_optional && Validation::factory($_POST)) {
-            $validator = $siteusers->validate_user_profilesettings_optional(arr::extract($_POST, array(
+            $validator = $siteusers->validate_user_profilesettings_optional(arr::extract($_POST, [
                 'phone',
                 'dob',
                 'organisation',
@@ -964,7 +964,7 @@ Class Controller_Users extends Controller_Website
                 'user_paypal_account',
                 'account_balance_amt',
                 'group'
-            )));
+            ]));
             if ($validator) {
                 $result = $siteusers->update_user_settings_optional($_POST, $id);
                 Message::success(__('user_success_update'));
@@ -983,41 +983,41 @@ Class Controller_Users extends Controller_Website
     // profile ajax load
     public function action_load()
     {
-        $json      = array();
-        $get       = Arr::extract($_GET, array(
+        $json      = [];
+        $get       = Arr::extract($_GET, [
             'data'
-        ));
+        ]);
         $data      = explode(",", $get['data']);
         $start     = $data[0];
         $limit     = $data[1];
         $siteusers = Model::factory('siteusers');
-        $errors    = array();
+        $errors    = [];
         $userid    = $this->session->get('id');
         $id        = $userid; // isset($userid)?$userid:$usrid;
         $site      = Model::factory('site');
         if ($userid = $this->session->get('id')) {
             $jobs_likeids = $siteusers->get_user_jobslikeid($userid); //print_r($jobs_likeids); exit;
-            $jobs_likeid  = array();
+            $jobs_likeid  = [];
             foreach ($jobs_likeids as $jobs_likeid_extract) {
                 $jobs_likeid[] = $jobs_likeid_extract['care_id'];
             }
         } else {
             $jobs_likeid = null;
         }
-        $caregorylist   = array();
+        $caregorylist   = [];
         $parentcategory = $site->get_parentcategory();
         //$wishlisting=$siteusers->wishlisted_cares($id,$this->get_location); 
         $wishlisting    = $siteusers->wishlisted_cares_load($start, $limit, $id, $this->get_location);
         foreach ($parentcategory as $caty) {
             $subcategory    = $site->subcategory($caty["id"]);
-            $caregorylist[] = array(
+            $caregorylist[] = [
                 "id" => $caty["id"],
                 "category_name" => $caty["category_name"],
                 "parent_category" => $caty["parent_category"],
                 "status" => $caty["status"],
                 "created_date" => $caty["created_date"],
                 "subcategory" => $subcategory
-            );
+            ];
         }
         View::bind_global('caregorylist', $caregorylist);
         $view           = View::factory(USERVIEW . 'profile_scroll')->bind('validator', $validator)->bind('validator_changepass', $validator_changepass)->bind('errors', $errors)->bind('user', $user)->bind('notify_user', $notify_user)->bind('email_exists', $email_exists)->bind('data', $_POST)->bind('show', $show)->bind('care_follow', $care_follow)->bind('following', $following)->bind('followers', $followers)->bind('following_detail', $following_detail)->bind('followers_detail', $followers_detail)->bind('userid', $userid)->bind('jobs_likeid', $jobs_likeid)->bind('wishlisting', $wishlisting);
@@ -1075,7 +1075,7 @@ Class Controller_Users extends Controller_Website
     public function action_profile()
     {
         $siteusers = Model::factory('siteusers');
-        $errors    = array();
+        $errors    = [];
         $this->is_login_status();
         //$this->is_login(); 		
         $userid = $this->session->get('id');
@@ -1083,25 +1083,25 @@ Class Controller_Users extends Controller_Website
         $site   = Model::factory('site');
         if ($userid = $this->session->get('id')) {
             $jobs_likeids = $siteusers->get_user_jobslikeid($userid); //print_r($jobs_likeids); exit;
-            $jobs_likeid  = array();
+            $jobs_likeid  = [];
             foreach ($jobs_likeids as $jobs_likeid_extract) {
                 $jobs_likeid[] = $jobs_likeid_extract['care_id'];
             }
         } else {
             $jobs_likeid = null;
         }
-        $caregorylist   = array();
+        $caregorylist   = [];
         $parentcategory = $site->get_parentcategory();
         foreach ($parentcategory as $caty) {
             $subcategory    = $site->subcategory($caty["id"]);
-            $caregorylist[] = array(
+            $caregorylist[] = [
                 "id" => $caty["id"],
                 "category_name" => $caty["category_name"],
                 "parent_category" => $caty["parent_category"],
                 "status" => $caty["status"],
                 "created_date" => $caty["created_date"],
                 "subcategory" => $subcategory
-            );
+            ];
         }
         View::bind_global('caregorylist', $caregorylist);
         $view                    = View::factory(USERVIEW . 'profile')->bind('validator', $validator)->bind('validator_changepass', $validator_changepass)->bind('errors', $errors)->bind('user', $user)->bind('notify_user', $notify_user)->bind('email_exists', $email_exists)->bind('data', $_POST)->bind('show', $show)->bind('care_follow', $care_follow)->bind('following', $following)->bind('followers', $followers)->bind('following_detail', $following_detail)->bind('followers_detail', $followers_detail)->bind('userid', $userid)->bind('jobs_likeid', $jobs_likeid)->bind('profile_completeness', $profile_completeness)->bind('wishlisting', $wishlisting);
@@ -1172,7 +1172,7 @@ Class Controller_Users extends Controller_Website
     {
         $siteusers = Model::factory('siteusers');
         /**To Set Errors Null to avoid error if not set in view**/
-        $errors    = array();
+        $errors    = [];
         /**Check Whether the user is logged in**/
         $this->is_login();
         $this->is_login_status();
@@ -1189,13 +1189,13 @@ Class Controller_Users extends Controller_Website
         //$lang_select =arr::get($_REQUEST,'language');
         //$submit_profile =arr::get($_REQUEST,'submit_user_profile');
         $submit_profile_form2 = arr::get($_REQUEST, 'submit_user_profile_edit');
-        $_FILES               = array();
+        $_FILES               = [];
         //To check if user photo existing in database		
         $image_name           = $siteusers->check_photo($id);
         $_POST                = Arr::map('trim', $this->request->post());
         if ($submit_profile_form2 && Validation::factory($_POST)) {
             /**Send entered values to model for validation**/
-            $validator   = $siteusers->validate_user_profilesettings(arr::extract($_POST, array(
+            $validator   = $siteusers->validate_user_profilesettings(arr::extract($_POST, [
                 'name',
                 'lastname',
                 'email',
@@ -1209,7 +1209,7 @@ Class Controller_Users extends Controller_Website
                 'website',
                 'user_paypal_account',
                 'account_balance_amt'
-            )));
+            ]));
             $email_exist = $siteusers->check_email_update($_POST['email'], $id);
             /**If email exists show error message**/
             if ($email_exist > 0) {
@@ -1241,7 +1241,7 @@ Class Controller_Users extends Controller_Website
     {
         $siteusers = Model::factory('siteusers');
         /**To Set Errors Null to avoid error if not set in view**/
-        $errors    = array();
+        $errors    = [];
         /**Check Whether the user is logged in**/
         $this->is_login();
         $this->is_login_status();
@@ -1267,9 +1267,9 @@ Class Controller_Users extends Controller_Website
         $_POST          = Arr::map('trim', $this->request->post());
         if ($submit_profile && Validation::factory($_POST, $_FILES)) {
             /**Send entered values to model for validation**/
-            $validator = $siteusers->validate_user_settings(array_merge($_POST, array(
+            $validator = $siteusers->validate_user_settings(array_merge($_POST, [
                 'photo'
-            )), $_FILES); //'location','industry','smart_tags',
+            ]), $_FILES); //'location','industry','smart_tags',
             if ($validator->check()) {
                 $IMG_NAME = "";
                 /*Uploading and saving image*/
@@ -1377,7 +1377,7 @@ Class Controller_Users extends Controller_Website
     {
         $siteusers = Model::factory('siteusers');
         /*To set errors in array if errors not set*/
-        $errors    = array();
+        $errors    = [];
         /*checks if user logged or not*/
         $this->is_login();
         $this->is_login_status();
@@ -1399,11 +1399,11 @@ Class Controller_Users extends Controller_Website
             $userid1              = $this->session->get('id');
             //$userid2 =$this->session->get('userid');
             $userid               = isset($userid1) ? $userid1 : '';
-            $validator_changepass = $siteusers->validate_changepwd(arr::extract($_POST, array(
+            $validator_changepass = $siteusers->validate_changepwd(arr::extract($_POST, [
                 'old_password',
                 'new_password',
                 'confirm_password'
-            )));
+            ]));
             //print_r($validator_changepass);exit;
             if ($validator_changepass->check()) {
                 $oldpass_check = $siteusers->check_pass($_POST['old_password'], $userid);
@@ -1415,7 +1415,7 @@ Class Controller_Users extends Controller_Website
                             $signup_cont       = $this->emailtemplate->get_template_content(USER_CHANGE_PASSWORD);
                             $subject           = $signup_cont[0]['email_subject'];
                             $content           = $signup_cont[0]['email_content'];
-                            $replace_variables = array(
+                            $replace_variables = [
                                 REPLACE_LOGO => EMAILTEMPLATELOGO,
                                 REPLACE_SITENAME => $this->app_name,
                                 REPLACE_USERNAME => ucfirst($result[0]['name']),
@@ -1427,7 +1427,7 @@ Class Controller_Users extends Controller_Website
                                 SITE_DESCRIPTION => $this->app_description,
                                 REPLACE_COPYRIGHTS => SITE_COPYRIGHT,
                                 REPLACE_COPYRIGHTYEAR => COPYRIGHT_YEAR
-                            );
+                            ];
                             $message           = $this->emailtemplate->emailtemplate(DOCROOT . TEMPLATEPATH . 'mail_template.html', $replace_variables, $content);
                             $to                = $result[0]['email'];
                             $from              = $this->siteemail;
@@ -1548,7 +1548,7 @@ Class Controller_Users extends Controller_Website
         $siteusers = Model::factory('siteusers');
         $site      = Model::factory('site');
         /**To Set Errors Null to avoid error if not set in view**/
-        $errors    = array();
+        $errors    = [];
         /**Check Whether the user is logged in**/
         $this->is_login();
         $this->is_login_status();
@@ -1556,20 +1556,20 @@ Class Controller_Users extends Controller_Website
         $userid            = $this->session->get('id');
         $rating            = $siteusers->getRatingDeatils($userid);
         $care_usermsg_send = $siteusers->getcareuser_msg_send($userid);
-        $caregorylist      = array();
+        $caregorylist      = [];
         $parentcategory    = $site->get_parentcategory();
         $followers         = $siteusers->get_user_carefollows($userid); //$siteusers->get_followers($userid);
         $wish_list         = $siteusers->getWishlist($userid);
         foreach ($parentcategory as $caty) {
             $subcategory    = $site->subcategory($caty["id"]);
-            $caregorylist[] = array(
+            $caregorylist[] = [
                 "id" => $caty["id"],
                 "category_name" => $caty["category_name"],
                 "parent_category" => $caty["parent_category"],
                 "status" => $caty["status"],
                 "created_date" => $caty["created_date"],
                 "subcategory" => $subcategory
-            );
+            ];
         }
         $care_usermsg_reci     = $siteusers->getcareuser_msg_received($userid);
         $id                    = $userid;
@@ -1629,7 +1629,7 @@ Class Controller_Users extends Controller_Website
         /** get current user jobs like if logged in **/
         if ($userid = $this->session->get('id')) {
             $jobs_likeids = $siteusers->get_user_jobslikeid($userid); //print_r($jobs_likeids); exit;
-            $jobs_likeid  = array();
+            $jobs_likeid  = [];
             foreach ($jobs_likeids as $jobs_likeid_extract) {
                 $jobs_likeid[] = $jobs_likeid_extract['care_id'];
             }
@@ -1640,17 +1640,17 @@ Class Controller_Users extends Controller_Website
     }
     public function action_dashboardload() //carelist
     {
-        $json      = array();
-        $get       = Arr::extract($_GET, array(
+        $json      = [];
+        $get       = Arr::extract($_GET, [
             'data'
-        ));
+        ]);
         $data      = explode(",", $get['data']);
         $start     = $data[0];
         $limit     = $data[1];
         $siteusers = Model::factory('siteusers');
         $site      = Model::factory('site');
         /**To Set Errors Null to avoid error if not set in view**/
-        $errors    = array();
+        $errors    = [];
         /**Check Whether the user is logged in**/
         $this->is_login();
         $this->is_login_status();
@@ -1659,18 +1659,18 @@ Class Controller_Users extends Controller_Website
         //$usrid = $this->session->get('userid');
         $care_usermsg_send = $siteusers->getcareuser_msg_send($userid);
         //print_r($care_usermsg_send);exit;
-        $caregorylist      = array();
+        $caregorylist      = [];
         $parentcategory    = $site->get_parentcategory();
         foreach ($parentcategory as $caty) {
             $subcategory    = $site->subcategory($caty["id"]);
-            $caregorylist[] = array(
+            $caregorylist[] = [
                 "id" => $caty["id"],
                 "category_name" => $caty["category_name"],
                 "parent_category" => $caty["parent_category"],
                 "status" => $caty["status"],
                 "created_date" => $caty["created_date"],
                 "subcategory" => $subcategory
-            );
+            ];
         }
         $care_usermsg_reci     = $siteusers->getcareuser_msg_received($userid);
         $id                    = $userid;
@@ -1721,7 +1721,7 @@ Class Controller_Users extends Controller_Website
         /** get current user jobs like if logged in **/
         if ($userid = $this->session->get('id')) {
             $jobs_likeids = $siteusers->get_user_jobslikeid($userid); //print_r($jobs_likeids); exit;
-            $jobs_likeid  = array();
+            $jobs_likeid  = [];
             foreach ($jobs_likeids as $jobs_likeid_extract) {
                 $jobs_likeid[] = $jobs_likeid_extract['care_id'];
             }
@@ -1784,7 +1784,7 @@ Class Controller_Users extends Controller_Website
         $siteusers      = Model::factory('siteusers');
         $site           = Model::factory('site');
         $subcategory    = $site->category($scatid);
-        $result         = array();
+        $result         = [];
         $subcategorycnt = count($subcategory);
         if ($subcategorycnt > 0) {
             foreach ($subcategory as $sc) {
@@ -1795,13 +1795,13 @@ Class Controller_Users extends Controller_Website
                 } else {
                     $category_image_path = CATEGORYPATH . DEFAULT_CATEGORYIMG;
                 }
-                $result = array(
+                $result = [
                     "sid" => $sc["id"],
                     "category_name" => $sc["category_name"],
                     "category_desc" => $sc["category_desc"],
                     "category_image" => $category_image_path,
                     "parent_categoryinfo" => $sc["parent_categoryinfo"]
-                );
+                ];
             }
         }
         echo json_encode($result);
@@ -1900,7 +1900,7 @@ Class Controller_Users extends Controller_Website
         $this->is_login();
         $this->is_login_status();
         $siteusers               = Model::factory('siteusers');
-        $errors                  = array();
+        $errors                  = [];
         $id                      = $this->session->get('id');
         //$userid = $this->session->get('userid');
         $usrid                   = $id; // $usrid = isset($userid)?$userid:$id;
@@ -1917,15 +1917,15 @@ Class Controller_Users extends Controller_Website
         if ($page_no == 0 || $page_no == 'index')
             $page_no = 1;
         $offset   = REC_PER_PAGE * ($page_no - 1);
-        $pag_data = Pagination::factory(array(
-            'current_page' => array(
+        $pag_data = Pagination::factory([
+            'current_page' => [
                 'source' => 'query_string',
                 'key' => 'page'
-            ),
+            ],
             'total_items' => $count_user_list, //total items available
             'items_per_page' => REC_PER_PAGE, //total items per page
             'view' => 'pagination/punbb' //pagination style
-        ));
+        ]);
         //print_r($_POST);exit;
         /**To Get All Job List According to the pagination condition**/
         if ($radius == "All") {
@@ -1983,9 +1983,9 @@ Class Controller_Users extends Controller_Website
             curl_setopt($ch, CURLOPT_POSTFIELDS, '');
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
             curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
-            curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+            curl_setopt($ch, CURLOPT_HTTPHEADER, [
                 $req_req->to_header()
-            ));
+            ]);
             curl_setopt($ch, CURLOPT_URL, $this->domain . "/requestToken");
             curl_setopt($ch, CURLOPT_POST, 1);
             $output = curl_exec($ch);
@@ -2010,9 +2010,9 @@ Class Controller_Users extends Controller_Website
             curl_setopt($ch, CURLOPT_POSTFIELDS, '');
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
             curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
-            curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+            curl_setopt($ch, CURLOPT_HTTPHEADER, [
                 $acc_req->to_header()
-            ));
+            ]);
             curl_setopt($ch, CURLOPT_URL, $this->domain . "/accessToken");
             curl_setopt($ch, CURLOPT_POST, 1);
             $output = curl_exec($ch);
@@ -2049,14 +2049,14 @@ Class Controller_Users extends Controller_Website
                     }
                     //set linkedin details in session
                     //================================
-                    $this->session->set('linkdin_details', array(
+                    $this->session->set('linkdin_details', [
                         'username' => $uname,
                         'name' => $uname,
                         'pubprofile' => htmlspecialchars($profile_url),
                         'profileimage' => htmlspecialchars($image_url),
                         'access_token' => $oauth['oauth_token'],
                         'secret_key' => $oauth['oauth_token_secret']
-                    ));
+                    ]);
                     $linkdin_add = $this->session->get('linkdin_add');
                     if ($linkdin_add == 'addlinkdin') {
                         $this->request->redirect("socialnetwork/linkedin_user_add");
@@ -2114,15 +2114,15 @@ Class Controller_Users extends Controller_Website
         if ($page_no == 0 || $page_no == 'index')
             $page_no = 1;
         $offset                           = REC_PER_PAGE * ($page_no - 1);
-        $pag_data                         = Pagination::factory(array(
-            'current_page' => array(
+        $pag_data                         = Pagination::factory([
+            'current_page' => [
                 'source' => 'query_string',
                 'key' => 'page'
-            ),
+            ],
             'total_items' => $rec_con_count, //total items available
             'items_per_page' => REC_PER_PAGE, //total items per page
             'view' => 'pagination/punbb' //pagination style
-        ));
+        ]);
         //get recent connections list
         //============================
         $recent_con_list                  = $siteusers->get_recent_connections_list($offset, REC_PER_PAGE, $id);
@@ -2202,15 +2202,15 @@ Class Controller_Users extends Controller_Website
             if ($page_no == 0 || $page_no == 'index')
                 $page_no = 1;
             $offset                  = REC_PER_PAGE * ($page_no - 1);
-            $pag_data                = Pagination::factory(array(
-                'current_page' => array(
+            $pag_data                = Pagination::factory([
+                'current_page' => [
                     'source' => 'query_string',
                     'key' => 'page'
-                ),
+                ],
                 'total_items' => $count_user_list, //total items available
                 'items_per_page' => REC_PER_PAGE, //total items per page
                 'view' => 'pagination/punbb' //pagination style
-            ));
+            ]);
             //get filter settings for distance and matches
             //============================================
             $get_logged_user_details = $siteusers->get_logged_user_details($usrid);
@@ -2276,7 +2276,7 @@ Class Controller_Users extends Controller_Website
                 //==========================
                 $connect                 = $siteusers->people_connect($usrid, $connec_id);
                 //print_r($details); print_r($cur_user);  print_r($details1);exit;
-                $replace_variables       = array(
+                $replace_variables       = [
                     REPLACE_LOGO => EMAILTEMPLATELOGO,
                     REPLACE_SITENAME => $this->app_name,
                     REPLACE_EMAIL => $cur_user[0]['email'],
@@ -2284,7 +2284,7 @@ Class Controller_Users extends Controller_Website
                     REPLACE_SITEEMAIL => $this->siteemail,
                     REPLACE_COPYRIGHTS => SITE_COPYRIGHT,
                     REPLACE_COPYRIGHTYEAR => COPYRIGHT_YEAR
-                );
+                ];
                 //$message                 = $this->emailtemplate->emailtemplate(DOCROOT . TEMPLATEPATH . 'connect.html', $replace_variables);
                 
                 if ($this->lang != 'en') {
@@ -2296,12 +2296,12 @@ Class Controller_Users extends Controller_Website
                 } else {
                     $message = $this->emailtemplate->emailtemplate(DOCROOT . TEMPLATEPATH . 'connect.html', $replace_variables);
                 }
-                $mail                    = array(
+                $mail                    = [
                     "to" => $details[0]['email'],
                     "from" => $this->siteemail,
                     "subject" => "Invitation to connect on taximobility",
                     "message" => $message
-                );
+                ];
                 $emailstatus             = $this->email_send($mail, 'smtp');
                 /*
                  * 						
@@ -2359,15 +2359,15 @@ Class Controller_Users extends Controller_Website
         if ($page_no == 0 || $page_no == 'index')
             $page_no = 1;
         $offset                           = REC_PER_PAGE * ($page_no - 1);
-        $pag_data                         = Pagination::factory(array(
-            'current_page' => array(
+        $pag_data                         = Pagination::factory([
+            'current_page' => [
                 'source' => 'query_string',
                 'key' => 'page'
-            ),
+            ],
             'total_items' => count($recent_con), //total items available
             'items_per_page' => 6, //total items per page
             'view' => 'pagination/punbb' //pagination style
-        ));
+        ]);
         //get recent connections list
         //============================
         $recent_con_list                  = $siteusers->get_recent_connections_list($offset, 6, $conid);
@@ -2424,7 +2424,7 @@ Class Controller_Users extends Controller_Website
         //$userid = $this->session->get('userid');
         $usrid            = $id; //isset($userid)?$userid:$id;	
         $siteusers        = Model::factory('siteusers');
-        $errors           = array();
+        $errors           = [];
         /**To Get Page Number in pagination**/
         $page_no          = isset($_GET['page']) ? $_GET['page'] : 0;
         /**To get Active Total user jobs**/
@@ -2436,15 +2436,15 @@ Class Controller_Users extends Controller_Website
         if ($page_no == 0 || $page_no == 'index')
             $page_no = 1;
         $offset                           = REC_PER_PAGE * ($page_no - 1);
-        $pag_data                         = Pagination::factory(array(
-            'current_page' => array(
+        $pag_data                         = Pagination::factory([
+            'current_page' => [
                 'source' => 'query_string',
                 'key' => 'page'
-            ),
+            ],
             'total_items' => $count_user_list, //total items available
             'items_per_page' => REC_PER_PAGE, //total items per page
             'view' => 'pagination/punbb' //pagination style
-        ));
+        ]);
         /**To Get All Job List According to the pagination condition**/
         $all_user_list                    = $siteusers->get_allconnection_requestlist($offset, REC_PER_PAGE, $usrid);
         $all_user_clist                   = $siteusers->get_allconnection_confirmlist($offset, REC_PER_PAGE, $usrid);
@@ -2630,7 +2630,7 @@ Class Controller_Users extends Controller_Website
         //spiliting foursquare details
         foreach ($user_details->response as $user):
         endforeach;
-        $errors            = array();
+        $errors            = [];
         $email             = isset($user->contact->email) ? $user->contact->email : '';
         $fname             = isset($user->firstName) ? $user->firstName : '';
         $photo             = isset($user->photo) ? $user->photo : '';
@@ -2650,15 +2650,15 @@ Class Controller_Users extends Controller_Website
         if (count($get_email) == 0) {
             //get form submit request
             $submit = arr::get($_REQUEST, 'submit_social_acc_signup');
-            $email  = arr::extract($_POST, array(
+            $email  = arr::extract($_POST, [
                 'email'
-            ));
+            ]);
             if (isset($submit)) {
                 $validate = $siteusers->validate_email($email);
                 if ($validate->check()) {
                     $password = Commonfunction::randomkey_generator();
                     if (isset($user_details)) {
-                        $insert = $this->commonmodel->insert(PEOPLE, array(
+                        $insert = $this->commonmodel->insert(PEOPLE, [
                             'username' => $fname,
                             'email' => $email['email'],
                             'photo' => $photo,
@@ -2673,12 +2673,12 @@ Class Controller_Users extends Controller_Website
                             'login_country_code' => $country_code,
                             'created_date' => Commonfunction::getCurrentTimeStamp(),
                             'user_type' => NORMALUSER
-                        ));
+                        ]);
                         if ($insert) {
                             $this->session->set('id', $insert[0]);
                             $this->session->set('username', $fname);
                             $details           = $siteusers->get_twitter_usr_details($email['email']);
-                            $replace_variables = array(
+                            $replace_variables = [
                                 REPLACE_LOGO => EMAILTEMPLATELOGO,
                                 REPLACE_SITENAME => $this->app_name,
                                 REPLACE_USERNAME => ucfirst($details[0]['username']),
@@ -2688,14 +2688,14 @@ Class Controller_Users extends Controller_Website
                                 REPLACE_SITEEMAIL => $this->siteemail,
                                 REPLACE_COPYRIGHTS => SITE_COPYRIGHT,
                                 REPLACE_COPYRIGHTYEAR => COPYRIGHT_YEAR
-                            );
+                            ];
                             $message           = $this->emailtemplate->emailtemplate(DOCROOT . TEMPLATEPATH . 'registertemp.html', $replace_variables);
-                            $mail              = array(
+                            $mail              = [
                                 "to" => $details[0]['email'],
                                 "from" => $this->siteemail,
                                 "subject" => "Registration success",
                                 "message" => $message
-                            );
+                            ];
                             $emailstatus       = $this->email_send($mail, 'smtp');
                             Message::success(__('sucessfull_registration') . $this->app_name);
                             $this->request->redirect("/");
@@ -2708,7 +2708,7 @@ Class Controller_Users extends Controller_Website
             $view                    = View::factory(USERVIEW . 'social_account_signup')->bind('errors', $errors)->bind('email_exist', $email_exist);
             $this->template->content = $view;
         } else {
-            $this->commonmodel->update(PEOPLE, array(
+            $this->commonmodel->update(PEOPLE, [
                 'last_login' => commonfunction::getCurrentTimeStamp(),
                 'latitude' => $lat,
                 'langitude' => $lng,
@@ -2716,13 +2716,13 @@ Class Controller_Users extends Controller_Website
                 'login_state' => $state,
                 'login_country' => $country,
                 'login_country_code' => $country_code
-            ), 'id', $get_email[0]['id']);
+            ], 'id', $get_email[0]['id']);
             $this->session->set('userid', $get_email[0]['id']);
             $this->session->set('username', $get_email[0]['username']);
             $this->session->set('email', $get_email[0]['email']);
-            Message::success(__('logged_in_successfully', array(
+            Message::success(__('logged_in_successfully', [
                 ':param' => ($this->app_name)
-            )));
+            ]));
             $this->session->delete('oauth_token', 'oauth_token_secret');
             $this->request->redirect("users/editprofile");
         }
@@ -2731,7 +2731,7 @@ Class Controller_Users extends Controller_Website
      *****curl_function****
      *@ purpose of social network auto post and connect
      */
-    public function curl_function($req_url = "", $type = "", $arguments = array())
+    public function curl_function($req_url = "", $type = "", $arguments = [])
     {
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $req_url);
@@ -2764,7 +2764,7 @@ Class Controller_Users extends Controller_Website
         //=============================================
         $radius                  = Arr::get($_REQUEST, "rad");
         $siteusers               = Model::factory('siteusers');
-        $errors                  = array();
+        $errors                  = [];
         $get_logged_user_details = $siteusers->get_logged_user_details($usrid);
         /**To Get Page Number in pagination**/
         $page_no                 = isset($_GET['page']) ? $_GET['page'] : 0;
@@ -2773,15 +2773,15 @@ Class Controller_Users extends Controller_Website
         if ($page_no == 0 || $page_no == 'index')
             $page_no = 1;
         $offset                      = REC_PER_PAGE * ($page_no - 1);
-        $pag_data                    = Pagination::factory(array(
-            'current_page' => array(
+        $pag_data                    = Pagination::factory([
+            'current_page' => [
                 'source' => 'query_string',
                 'key' => 'page'
-            ),
+            ],
             'total_items' => $count_user_list, //total items available
             'items_per_page' => REC_PER_PAGE, //total items per page
             'view' => 'pagination/punbb' //pagination style
-        ));
+        ]);
         /**To Get All Job List According to the pagination condition**/
         $all_user_list               = $siteusers->all_user_list($offset, REC_PER_PAGE, $get_logged_user_details, $usrid, $radius);
         $all_user_checkinlist        = $siteusers->all_user_checkinlist($offset, REC_PER_PAGE, $get_logged_user_details, $usrid);
@@ -2865,9 +2865,9 @@ Class Controller_Users extends Controller_Website
             //get form submit request
             $search_post         = arr::get($_REQUEST, 'chat_reply');
             if (isset($search_post) && $_POST) {
-                $validator = $chat->validate_add_chat(arr::extract($_POST, array(
+                $validator = $chat->validate_add_chat(arr::extract($_POST, [
                     'chat_msg'
-                )));
+                ]));
                 if ($validator->check()) {
                     $add_chat = $chat->add_chat_message($usrid, $val, $_POST, $par_id, $subpar_id, $srtype);
                     if ($add_chat > 0) {
@@ -2943,14 +2943,14 @@ Class Controller_Users extends Controller_Website
         if (isset($search_post) && Validation::factory($_POST)) {
             //****send validation fields into model for checking rules***//
             //===================================================================
-            $validator = $siteusers->validate_contact(arr::extract($_POST, array(
+            $validator = $siteusers->validate_contact(arr::extract($_POST, [
                 'name1',
                 'email',
                 'phone',
                 'type',
                 'subject',
                 'message'
-            )));
+            ]));
             //validation starts here			 		
             if ($validator->check()) {
                 //*********page edit process starts here*************//
@@ -2959,7 +2959,7 @@ Class Controller_Users extends Controller_Website
                 $follow_cont       = $this->emailtemplate->get_template_content(CONTACT_US);
                 $subject           = $follow_cont[0]['email_subject'];
                 $content           = $follow_cont[0]['email_content'];
-                $replace_variables = array(
+                $replace_variables = [
                     REPLACE_LOGO => EMAILTEMPLATELOGO,
                     NAME => isset($_POST['name1']) ? $_POST['name1'] : '',
                     REPLACE_EMAIL => isset($_POST['email']) ? $_POST['email'] : '',
@@ -2972,14 +2972,14 @@ Class Controller_Users extends Controller_Website
                     SITE_DESCRIPTION => $this->app_description,
                     REPLACE_COPYRIGHTS => SITE_COPYRIGHT,
                     REPLACE_COPYRIGHTYEAR => COPYRIGHT_YEAR
-                );
+                ];
                 $message           = $this->emailtemplate->emailtemplate(DOCROOT . TEMPLATEPATH . 'mail_template.html', $replace_variables, $content);
-                $mail              = array(
+                $mail              = [
                     "to" => $this->siteemail,
                     "from" => $this->siteemail,
                     "subject" => $subject,
                     "message" => $message
-                );
+                ];
                 $emailstatus       = $this->email_send($mail, 'smtp');
                 //Flash message 
                 Message::success('Message has been sent to admin successfully'); // __('') Sucessfully saved
@@ -3028,7 +3028,7 @@ Class Controller_Users extends Controller_Website
         $this->is_login_status();
         $userid                = $this->session->get('id');
         /**To Set Errors Null to avoid error if not set in view**/
-        $errors                = array();
+        $errors                = [];
         $this->userjobs        = Model::factory('siteusers');
         $clear_amount          = isset($_POST['clear_amount']) ? $_POST['clear_amount'] : "";
         //$palpal_exist= $this->userjobs->get_paypal_account($userid);
@@ -3078,7 +3078,7 @@ Class Controller_Users extends Controller_Website
         //=================================       	  
         $care_usermsg_send = $this->userjobs->getcareuser_msg_send($userid);
         View::bind_global('care_usermsg_sen', $care_usermsg_send);
-        $errors            = array();
+        $errors            = [];
         $this->userjobs    = Model::factory('siteusers');
         $view              = View::factory(USERVIEW . 'withdraw')->bind('total_amount', $bal); //$cleared_amount	
         /* ***********    Global decalration  ***********  */
@@ -3124,7 +3124,7 @@ Class Controller_Users extends Controller_Website
         $this->is_login_status();
         $userid                = $this->session->get('id');
         /**To Set Errors Null to avoid error if not set in view**/
-        $errors                = array();
+        $errors                = [];
         $this->userjobs        = Model::factory('siteusers');
         $clear_amount          = isset($_POST['clear_amount']) ? $_POST['clear_amount'] : "";
         /*      
@@ -3173,12 +3173,12 @@ Class Controller_Users extends Controller_Website
         //========================================================================    
         $order_complete_amount_total = $bal;
         $order_complete_amount       = $order_complete_amount_total;
-        $withdraw_status             = array(
+        $withdraw_status             = [
             WITHDRAW_SUCESS
-        );
-        $withdraw_status_insert      = array(
+        ];
+        $withdraw_status_insert      = [
             WITHDRAW_PENDING
-        );
+        ];
         $withdraw_amount             = $this->userjobs->get_withdraw_pending_amount($userid, $withdraw_status);
         $withdraw_amount             = count($withdraw_amount) > 0 ? $withdraw_amount[0]['amount'] : 0;
         $cleared_amount              = ($order_complete_amount - $withdraw_amount);
@@ -3194,10 +3194,10 @@ Class Controller_Users extends Controller_Website
             $withdraw_max               = isset($withdraw_settings_details[0]['max_amount']) ? $withdraw_settings_details[0]['max_amount'] : '';
             $withdraw_commission_status = isset($withdraw_settings_details[0]['enable_transaction_fee']) ? $withdraw_settings_details[0]['enable_transaction_fee'] : '';
             $withdraw_commission_amount = isset($withdraw_settings_details[0]['transaction_fee']) ? $withdraw_settings_details[0]['transaction_fee'] : '';
-            $validator                  = $this->userjobs->validate_withdraw_amount(arr::extract($_POST, array(
+            $validator                  = $this->userjobs->validate_withdraw_amount(arr::extract($_POST, [
                 'payment_method',
                 'amount'
-            )), $withdraw_min, $withdraw_max);
+            ]), $withdraw_min, $withdraw_max);
             if ($validator->check()) {
                 if ($_POST['amount'] > 0) {
                     $amount                     = $_POST['amount'];
@@ -3291,15 +3291,15 @@ Class Controller_Users extends Controller_Website
         if ($page_no == 0 || $page_no == 'index')
             $page_no = 1;
         $offset            = 10 * ($page_no - 1);
-        $pag_data          = Pagination::factory(array(
-            'current_page' => array(
+        $pag_data          = Pagination::factory([
+            'current_page' => [
                 'source' => 'query_string',
                 'key' => 'page'
-            ),
+            ],
             'total_items' => $withdraw_page, //total items available
             'items_per_page' => 10, //total items per page
             'view' => 'pagination/punbb' //pagination style
-        ));
+        ]);
         $care_usermsg_send = $userjobs->getcareuser_msg_send($userid);
         View::bind_global('care_usermsg_sen', $care_usermsg_send);
         $all_withdraw_amount = $userjobs->get_withdraw_page($userid, $offset, 10);
@@ -3333,7 +3333,7 @@ Class Controller_Users extends Controller_Website
     {
         $siteusers = Model::factory('siteusers');
         /**To Set Errors Null to avoid error if not set in view**/
-        $errors    = array();
+        $errors    = [];
         /**Check Whether the user is logged in**/
         $this->is_login();
         $this->is_login_status();
@@ -3406,7 +3406,7 @@ Class Controller_Users extends Controller_Website
         /**If session is set it should not allow login page through URL**/
         if (!$this->session->get('id')) {
             /**To Set Errors Null to avoid error if not set in view**/
-            $errors               = array();
+            $errors               = [];
             /** Call the model and get the values**/
             $company              = Model::factory('siteusers');
             /** Get list from country,city,state details**/
@@ -3417,11 +3417,11 @@ Class Controller_Users extends Controller_Website
             $registration_content = $this->commonmodel->getcontents('company_registration');
             /**To get the form submit button name**/
             $signup_submit        = arr::get($_REQUEST, 'submit_company');
-            $postvalues           = array();
+            $postvalues           = [];
             if ($signup_submit && Validation::factory($_POST)) {
                 $postvalues = $_POST;
                 /**Send entered values to model for validation**/
-                $validator  = $company->validate_company_signup(arr::extract($_POST, array(
+                $validator  = $company->validate_company_signup(arr::extract($_POST, [
                     'firstname',
                     'lastname',
                     'email',
@@ -3437,7 +3437,7 @@ Class Controller_Users extends Controller_Website
                     'password',
                     'confirm_password',
                     'time_zone'
-                )));
+                ]));
                 /**If validation success without error **/
                 if ($validator->check()) {
                     $checkmail_exist = $company->check_email($_POST['email']);
@@ -3445,7 +3445,7 @@ Class Controller_Users extends Controller_Website
                         $signup_id = $company->company_signup($_POST, $validator);
                         if ($signup_id) {
                             $mail              = "";
-                            $replace_variables = array(
+                            $replace_variables = [
                                 REPLACE_LOGO => EMAILTEMPLATELOGO,
                                 REPLACE_SITENAME => $this->app_name,
                                 REPLACE_COMPANYNAME => ucfirst($_POST['companyname']),
@@ -3456,7 +3456,7 @@ Class Controller_Users extends Controller_Website
                                 REPLACE_SITEURL => URL_BASE,
                                 REPLACE_COPYRIGHTS => SITE_COPYRIGHT,
                                 REPLACE_COPYRIGHTYEAR => COPYRIGHT_YEAR
-                            );
+                            ];
                             $message           = $this->emailtemplate->emailtemplate(DOCROOT . TEMPLATEPATH . 'company_registert_admin_notification.html', $replace_variables);
                             $to                = SITE_EMAIL_CONTACT;
                             $from              = $this->siteemail;
@@ -3566,25 +3566,25 @@ Class Controller_Users extends Controller_Website
     {
 		//echo $this->lang; exit;
         /**To Set Errors Null to avoid error if not set in view**/
-        $errors        = array();
+        $errors        = [];
         /** Call the model and get the values**/
         $company       = Model::factory('siteusers');
         $cms           = Model::factory('cms');
         /**To get the form submit button name**/
         $signup_submit = arr::get($_REQUEST, 'submit_company');
         $service       = arr::get($_REQUEST, 'service');
-        $postvalues    = array();
+        $postvalues    = [];
         if ($signup_submit && Validation::factory($_POST)) {
             $postvalues = $_POST;
             /**Send entered values to model for validation**/
-            $validator  = $company->validate_contactus(arr::extract($_POST, array(
+            $validator  = $company->validate_contactus(arr::extract($_POST, [
                 'name',
                 'email',
                 'phone',
                 'subject',
                 'message',
                 'security_code'
-            )));
+            ]));
             /**If validation success without error **/
             if ($validator->check()) {
                 
@@ -3594,7 +3594,7 @@ Class Controller_Users extends Controller_Website
                 $signup_id = $company->contactus_add($_POST, COMPANY_CID);
                 if ($signup_id) {
                     $mail              = "";
-                    $replace_variables = array(
+                    $replace_variables = [
                         REPLACE_LOGO => EMAILTEMPLATELOGO,
                         REPLACE_SITENAME => $this->app_name,
                         REPLACE_NAME => $_POST['name'],
@@ -3606,7 +3606,7 @@ Class Controller_Users extends Controller_Website
                         REPLACE_SITEURL => URL_BASE,
                         REPLACE_COPYRIGHTS => SITE_COPYRIGHT,
                         REPLACE_COPYRIGHTYEAR => COPYRIGHT_YEAR
-                    );
+                    ];
                     //$message           = $this->emailtemplate->emailtemplate(DOCROOT . TEMPLATEPATH . 'Contact.html', $replace_variables);
                     if ($this->lang != 'en') {
                         if (file_exists(DOCROOT . TEMPLATEPATH . $this->lang . '/Contact-' . $this->lang . '.html')) {
@@ -3636,13 +3636,13 @@ Class Controller_Users extends Controller_Website
                    
                    
                     /******* Send Response mail to users *******/
-                    $replace_variables = array(
+                    $replace_variables = [
                         REPLACE_SITENAME => $this->app_name,
                         REPLACE_SITEURL => URL_BASE,
                         REPLACE_NAME => $_POST['name'],
                         REPLACE_COPYRIGHTS => SITE_COPYRIGHT,
                         REPLACE_COPYRIGHTYEAR => COPYRIGHT_YEAR
-                    );
+                    ];
                     //$message           = $this->emailtemplate->emailtemplate(DOCROOT . TEMPLATEPATH . 'email_auto_response.html', $replace_variables);
                     if ($this->lang != 'en') {
                         if (file_exists(DOCROOT . TEMPLATEPATH . $this->lang . '/email_auto_response-' . $this->lang . '.html')) {
@@ -3681,19 +3681,19 @@ Class Controller_Users extends Controller_Website
     public function action_contactuslive()
     {
         /**To get the form submit button name**/
-        $postvalues = array();
+        $postvalues = [];
         if ($_POST) {
             $company    = Model::factory('siteusers');
             $postvalues = $_POST;
             /**Send entered values to model for validation**/
-            $validator  = $company->validate_contactus(arr::extract($_POST, array(
+            $validator  = $company->validate_contactus(arr::extract($_POST, [
                 'name',
                 'email',
                 'phone',
                 'subject',
                 'message',
                 'security_code'
-            )));
+            ]));
             /**If validation success without error **/
             if ($validator->check()) {
                 $signup_id = $company->contactus_add($_POST, COMPANY_CID);
@@ -3737,7 +3737,7 @@ Class Controller_Users extends Controller_Website
                     curl_close($ch); //close connection
                     /* CURL FUNCTION FOR CONTACT CRM */
                     $mail              = "";
-                    $replace_variables = array(
+                    $replace_variables = [
                         REPLACE_LOGO => EMAILTEMPLATELOGO,
                         REPLACE_SITENAME => $this->app_name,
                         REPLACE_NAME => $_POST['name'],
@@ -3749,7 +3749,7 @@ Class Controller_Users extends Controller_Website
                         REPLACE_SITEURL => URL_BASE,
                         REPLACE_COPYRIGHTS => SITE_COPYRIGHT,
                         REPLACE_COPYRIGHTYEAR => COPYRIGHT_YEAR
-                    );
+                    ];
                     $message           = $this->emailtemplate->emailtemplate(DOCROOT . TEMPLATEPATH . 'Contact.html', $replace_variables);
                     if (COMPANY_CID == 0) {
                         $to = 'sales@taximobility.com,mahes@taximobility.com';
@@ -3879,9 +3879,9 @@ Class Controller_Users extends Controller_Website
     ///////////////////// 
     public function action_new_login()
     {
-		$errors        = array();
-        $postvalues    = array();
-        $validator     = array();
+		$errors        = [];
+        $postvalues    = [];
+        $validator     = [];
         $view                    = View::factory(USERVIEW . 'newlogin')->bind('validator', $validator)->bind('errors', $errors)->bind('postvalue', $postvalues);
         $this->template->content       = $view;
 		$this->template->meta_desc     = $this->meta_description;
@@ -3890,9 +3890,9 @@ Class Controller_Users extends Controller_Website
     }
     public function action_new_signup()
     {
-		$errors        = array();
-        $postvalues    = array();
-        $validator     = array();
+		$errors        = [];
+        $postvalues    = [];
+        $validator     = [];
         $view                    = View::factory(USERVIEW . 'newsignup')->bind('validator', $validator)->bind('errors', $errors)->bind('postvalue', $postvalues);
         $this->template->content       = $view;
 		$this->template->meta_desc     = $this->meta_description;
@@ -3940,7 +3940,7 @@ Class Controller_Users extends Controller_Website
 
             $booking_date = date('d-m-Y H:i a', time());
 
-               $replace_variables =  array('##PICKUP##'=> $pickup_loc,'##DROP##'=> $drop_loc,'##PHONE##'=> $phone,'##EMAIL##'=> $email,'##CAR_TYPE##'=> $car_type,'##DATE##'=> $p_date,'##TIME##'=> $p_time,'##PASSENGER##'=> $passenger,'##BAGGAGE##'=>$baggage,'##FLIGHT_NO##'=> $flight_no,REPLACE_SITEURL => URL_BASE,  REPLACE_COPYRIGHTS => SITE_COPYRIGHT, REPLACE_COPYRIGHTYEAR => COPYRIGHT_YEAR,REPLACE_SITENAME => $this->app_name,'##BOOKING_TIME##'=>$booking_date,'##PICKUP_TYPE##'=>$pickup_type);
+               $replace_variables =  ['##PICKUP##'=> $pickup_loc,'##DROP##'=> $drop_loc,'##PHONE##'=> $phone,'##EMAIL##'=> $email,'##CAR_TYPE##'=> $car_type,'##DATE##'=> $p_date,'##TIME##'=> $p_time,'##PASSENGER##'=> $passenger,'##BAGGAGE##'=>$baggage,'##FLIGHT_NO##'=> $flight_no,REPLACE_SITEURL => URL_BASE,  REPLACE_COPYRIGHTS => SITE_COPYRIGHT, REPLACE_COPYRIGHTYEAR => COPYRIGHT_YEAR,REPLACE_SITENAME => $this->app_name,'##BOOKING_TIME##'=>$booking_date,'##PICKUP_TYPE##'=>$pickup_type];
 
                $message = $this->emailtemplate->emailtemplate(DOCROOT . TEMPLATEPATH . 'booking_request.html', $replace_variables);
 
@@ -4000,7 +4000,7 @@ Class Controller_Users extends Controller_Website
 
             $booking_confirm_content = $this->cms->get_website_page_content('booking_confirm_page');
 
-            $booking_confirm_content = isset($booking_confirm_content[0]) ? $booking_confirm_content[0]: array();
+            $booking_confirm_content = isset($booking_confirm_content[0]) ? $booking_confirm_content[0]: [];
 
             $view= View::factory(USERVIEW.'booking_success')->bind('lang',$this->lang)->bind('booking_image',$booking_image)->bind('booking_confirm_content',$booking_confirm_content)->bind('booking_id',$booking_id);
             $this->template->content = $view;
@@ -4014,18 +4014,18 @@ Class Controller_Users extends Controller_Website
     {
         //echo $this->lang; exit;
         /**To Set Errors Null to avoid error if not set in view**/
-        $errors        = array();
+        $errors        = [];
         /** Call the model and get the values**/
         $company       = Model::factory('siteusers');
         //$cms           = Model::factory('cms');
         /**To get the form submit button name**/
         $signup_submit = arr::get($_REQUEST, 'submit_company');
         $service       = arr::get($_REQUEST, 'service');
-        $postvalues    = array();
+        $postvalues    = [];
         $postvalues = $_POST;
         
         /**Send entered values to model for validation**/
-        $validator  = $this->cms->validate_save_booking_request(arr::extract($_POST, array(
+        $validator  = $this->cms->validate_save_booking_request(arr::extract($_POST, [
                         'pickup',
                         'drop',
                         'phone',
@@ -4040,7 +4040,7 @@ Class Controller_Users extends Controller_Website
                         'pickup_lng',
                         'drop_lat',
                         'drop_lng',         
-                    )));
+                    ]));
         /**If validation success without error **/
         if ($validator->check()) {        
 
@@ -4053,12 +4053,12 @@ Class Controller_Users extends Controller_Website
                 $_SESSION['booking_model'] = $model_id;
                 $_SESSION['booking_confirm'] = 1; 
 
-                $response = array('status'=>200,'message'=>'Booking request sent successfully');
+                $response = ['status'=>200,'message'=>'Booking request sent successfully'];
         
         } else {
             
             $errors = $validator->errors('errors');           
-            $response = array('status'=>401,'error'=>$errors);
+            $response = ['status'=>401,'error'=>$errors];
         }
         
         echo json_encode($response);exit;
@@ -4068,9 +4068,9 @@ Class Controller_Users extends Controller_Website
         if(isset($_POST['phone']) && !empty($_POST['phone'])) {
             $result = $this->cms->getPassengerDetails($_POST['phone'], $_POST['country_code']);
             $name = isset($result['name']) ? $result['name'] : "";
-            echo json_encode(array("name" => $name));
+            echo json_encode(["name" => $name]);
         } else {
-            echo json_encode(array("name" => ""));
+            echo json_encode(["name" => ""]);
         }
         exit;
     }

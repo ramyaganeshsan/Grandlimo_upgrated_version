@@ -18,8 +18,8 @@ else
 	$not_setting = "OFF";
 }
 if($get_transaction){
-	  $fare = array();
-	  $month = array();
+	  $fare = [];
+	  $month = [];
 	foreach($get_transaction as $vl)
 	{
 		if($vl['fare'] != NULL){
@@ -35,17 +35,17 @@ if($get_transaction){
 	}
 	$display ="display:block;";
 }else{
-	$fare = array();
-	$month = array();
+	$fare = [];
+	$month = [];
 	$display ="display:none;";
 }
 ?>
 <?php 
 if((!empty($get_trip_statitics['completed_trips']))||(!empty($get_trip_statitics['rejected_trips']))|| (!empty($get_trip_statitics['cancelled_trips']))){
-	  $createdate = array();
-	  $reject_trips = array();
-	  $cancelled_trips = array();
-	  $completed_trips = array();
+	  $createdate = [];
+	  $reject_trips = [];
+	  $cancelled_trips = [];
+	  $completed_trips = [];
 	  $display_trip ='';
 	  $a=0;
 	  $b=0;
@@ -138,10 +138,10 @@ if((!empty($get_trip_statitics['completed_trips']))||(!empty($get_trip_statitics
 
 	$display_trip ="display:block;";
 }else{
-	$createdate = array();
-	$reject_trips = array();
-	$cancelled_trips = array();
-	$completed_trips = array();
+	$createdate = [];
+	$reject_trips = [];
+	$cancelled_trips = [];
+	$completed_trips = [];
 	$display_trip ="display:none;";
 }
 ?>
@@ -1164,7 +1164,7 @@ $(document).ready(function(){
 			</div>
 			<div>
 				
-					<?php $tdvalue = array(); if(count($get_driver_shift_logs)>0) { ?>
+					<?php $tdvalue = []; if(count($get_driver_shift_logs)>0) { ?>
 					<?php 
 					$temp=""; $i = 0; $j = 1;
 					foreach($get_driver_shift_logs as $key => $values) { ?>

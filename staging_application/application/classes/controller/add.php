@@ -52,14 +52,14 @@ class Controller_Add extends Controller_Siteadmin
         
         /**To get the form submit button name**/
         $signup_submit = arr::get($_REQUEST, 'submit_addmotor');
-        $errors        = array();
-        $post_values   = array();
+        $errors        = [];
+        $post_values   = [];
         if ($signup_submit && Validation::factory($_POST)) {
             $post_values = $_POST;
             $post        = Arr::map('trim', $this->request->post());
-            $validator   = $this->add_model->validate_addmotor(arr::extract($post, array(
+            $validator   = $this->add_model->validate_addmotor(arr::extract($post, [
                 'companyname'
-            )));
+            ]));
             if ($validator->check()) {
                 $signup_id = $this->add_model->addmotor($post);
                 if ($signup_id == 1) {
@@ -86,13 +86,13 @@ class Controller_Add extends Controller_Siteadmin
         
         /**To get the form submit button name**/
         $signup_submit = arr::get($_REQUEST, 'submit_addmodel');
-        $errors        = array();
-        $post_values   = array();
+        $errors        = [];
+        $post_values   = [];
         $motor_details = $this->add_model->motor_details();
         if ($signup_submit && Validation::factory($_POST)) {
             $post_values = $_POST;
             $post        = Arr::map('trim', $this->request->post());
-            $validator   = $this->add_model->validate_addmodel(arr::extract($post, array(
+            $validator   = $this->add_model->validate_addmodel(arr::extract($post, [
                 'companyname',
                 'model_name',
                 'model_size',
@@ -109,7 +109,7 @@ class Controller_Add extends Controller_Siteadmin
                 'night_timing_from',
                 'night_timing_to',
                 'night_fare'
-            )));
+            ]));
             if ($validator->check()) {
                 $signup_id = $this->add_model->addmodel($post);
                 if ($signup_id == 1) {
@@ -136,8 +136,8 @@ class Controller_Add extends Controller_Siteadmin
         $add_fare      = Model::factory('add');
         /**To get the form submit button name**/
         $signup_submit = arr::get($_REQUEST, 'submit_addfare');
-        $errors        = array();
-        $post_values   = array();
+        $errors        = [];
+        $post_values   = [];
         $model_details = $add_fare->modeldetails();
         if ($signup_submit && Validation::factory($_POST)) {
             $post_values  = $_POST;
@@ -148,7 +148,7 @@ class Controller_Add extends Controller_Siteadmin
                 $this->request->redirect("manage/fare");
             }
             $post      = Arr::map('trim', $this->request->post());
-            $validator = $add_fare->validate_addfare(arr::extract($post, array(
+            $validator = $add_fare->validate_addfare(arr::extract($post, [
                 'model_name',
                 'model_size',
                 'waiting_time',
@@ -168,7 +168,7 @@ class Controller_Add extends Controller_Siteadmin
                 'evening_timing_from',
                 'evening_timing_to',
                 'evening_fare'
-            )));
+            ]));
             if ($validator->check()) {
                 $signup_id = $add_fare->addfare($post);
                 if ($signup_id == 1) {
@@ -222,11 +222,11 @@ class Controller_Add extends Controller_Siteadmin
         $currencycode    = $this->all_currency_code;
         /**To get the form submit button name**/
         $signup_submit   = arr::get($_REQUEST, 'submit_addcompany');        
-        $errors          = array();
-        $post_values     = array();
+        $errors          = [];
+        $post_values     = [];
         if ($signup_submit && Validation::factory($_POST, $_FILES)) {
             $post_values = Arr::map('trim', $this->request->post());
-            $validator   = $this->add_model->validate_addcompany(arr::extract($post_values, array(
+            $validator   = $this->add_model->validate_addcompany(arr::extract($post_values, [
                 'firstname',
                 'lastname',
                 'email',
@@ -243,7 +243,7 @@ class Controller_Add extends Controller_Siteadmin
                 'currency_code',
                 'currency_symbol',
                 'time_zone'
-            )), $_FILES);
+            ]), $_FILES);
             //'paypal_api_username','paypal_api_password','paypal_api_signature','payment_method',
             if (!isset($_POST['paymodstatus'])) {
                 $check_paystatus = 0;
@@ -260,7 +260,7 @@ class Controller_Add extends Controller_Siteadmin
                 $signup_id = $this->add_model->addcompany($post_values, $_FILES);
                 if ($signup_id == 1) {
                     $mail              = "";
-                    $replace_variables = array(
+                    $replace_variables = [
                         REPLACE_LOGO => EMAILTEMPLATELOGO,
                         REPLACE_SITENAME => COMPANY_SITENAME,
                         REPLACE_DOMAINNAME => $_POST['domain_name'],
@@ -272,7 +272,7 @@ class Controller_Add extends Controller_Siteadmin
                         REPLACE_SITEURL => URL_BASE,
                         REPLACE_COPYRIGHTS => SITE_COPYRIGHT,
                         REPLACE_COPYRIGHTYEAR => COPYRIGHT_YEAR
-                    );
+                    ];
                     $message           = $this->emailtemplate->emailtemplate(DOCROOT . TEMPLATEPATH . 'registertemp.html', $replace_variables);
                     $to                = $_POST['email'];
                     $from              = CONTACT_EMAIL;
@@ -322,12 +322,12 @@ class Controller_Add extends Controller_Siteadmin
         
         /**To get the form submit button name**/
         $signup_submit = arr::get($_REQUEST, 'submit_addcompany');
-        $errors        = array();
-        $post_values   = array();
+        $errors        = [];
+        $post_values   = [];
         if ($signup_submit && Validation::factory($_POST, $_FILES)) {
             $post_values = $_POST;
             $post        = Arr::map('trim', $this->request->post());
-            $validator   = $this->add_model->validate_addmoderator(arr::extract($post, array(
+            $validator   = $this->add_model->validate_addmoderator(arr::extract($post, [
                 'name',
                 'email',
                 'sales_person_email',
@@ -337,7 +337,7 @@ class Controller_Add extends Controller_Siteadmin
                 'message',
                 'time_zone',
                 'no_of_taxi'
-            )));
+            ]));
             if ($validator->check()) {
                 $company = Model::factory('company');
                 if ($post_values['time_zone']) {
@@ -380,7 +380,7 @@ class Controller_Add extends Controller_Siteadmin
                 $save_free_trial = $company->save_moderator_trial($post);
                 if (count($save_free_trial) > 0) {
                     $mail              = "";
-                    $replace_variables = array(
+                    $replace_variables = [
                         REPLACE_LOGO => EMAILTEMPLATELOGO,
                         REPLACE_SITENAME => COMPANY_SITENAME,
                         REPLACE_EMAIL => $post['email'],
@@ -397,7 +397,7 @@ class Controller_Add extends Controller_Siteadmin
                         REPLACE_SALES_PERSON_EMAIL => $_POST['sales_person_email'],
                         REPLACE_COPYRIGHTS => SITE_COPYRIGHT,
                         REPLACE_COPYRIGHTYEAR => COPYRIGHT_YEAR
-                    );
+                    ];
                     $message           = $this->emailtemplate->emailtemplate(DOCROOT . TEMPLATEPATH . 'get_free_quotes.html', $replace_variables);
                     $to                = 'mahes@taximobility.com,sales@taximobility.com';
                     //$to = 'pandiarajan.v@ndot.in';
@@ -483,7 +483,7 @@ class Controller_Add extends Controller_Siteadmin
                         }
                         $passengerdriver_details .= '</table>';
                         $passengerdriver_details .= '<img src="##SITEURL##public/images/email_temp_spacer-header.jpg" width="520px" height="20px" alt="##SITENAME##"/>';
-                        $replace_variables = array(
+                        $replace_variables = [
                             REPLACE_LOGO => EMAILTEMPLATELOGO,
                             REPLACE_SITENAME => COMPANY_SITENAME,
                             REPLACE_USERNAME => $_POST['name'],
@@ -496,7 +496,7 @@ class Controller_Add extends Controller_Siteadmin
                             REPLACE_COMPANYDOMAIN => $domain,
                             REPLACE_COPYRIGHTS => SITE_COPYRIGHT,
                             REPLACE_COPYRIGHTYEAR => COPYRIGHT_YEAR
-                        );
+                        ];
                         // Place the content to Email templete 
                         //$message           = $this->emailtemplate->emailtemplate(DOCROOT . TEMPLATEPATH . 'autotrail_company_registration.html', $replace_variables);
 						if ($this->lang != 'en') {
@@ -580,19 +580,19 @@ class Controller_Add extends Controller_Siteadmin
         
         /**To get the form submit button name**/
         $signup_submit = arr::get($_REQUEST, 'submit_addcompany');
-        $errors        = array();
-        $post_values   = array();
+        $errors        = [];
+        $post_values   = [];
         if ($signup_submit && Validation::factory($_POST)) {
             $post_values = $_POST;
             $post        = Arr::map('trim', $this->request->post());
             //print_r($post);
-            $validator   = $this->add_model->validate_createlogin(arr::extract($post, array(
+            $validator   = $this->add_model->validate_createlogin(arr::extract($post, [
                 'firstname',
                 'lastname',
                 'phone',
                 'no_of_login',
                 'company_id'
-            )));
+            ]));
             if ($validator->check()) {
                 $signup_id         = $this->add_model->create_login($post);
                 $driver_details    = $this->add_model->view_login($post);
@@ -634,8 +634,8 @@ class Controller_Add extends Controller_Siteadmin
        //echo '<pre>';print_r($model_details_new);exit;
 		 /**To get the form submit button name**/
         $signup_submit       = arr::get($_REQUEST, 'submit_addtaxi');
-        $errors              = array();
-        $post_values         = array();
+        $errors              = [];
+        $post_values         = [];
         if ($signup_submit && Validation::factory($_POST, $_FILES)) {
 			$post_values   = Arr::map('trim', $this->request->post());
             $validator   = $this->add_model->validate_addtaxi($post_values, $_FILES);
@@ -699,7 +699,7 @@ class Controller_Add extends Controller_Siteadmin
 							if (!file_exists($PNG_TEMP_DIR))
 							mkdir($PNG_TEMP_DIR);
 							$errorCorrectionLevel = 'L';
-							if (isset($_REQUEST['level']) && in_array($_REQUEST['level'], array('L','M','Q','H')))
+							if (isset($_REQUEST['level']) && in_array($_REQUEST['level'], ['L','M','Q','H']))
 								$errorCorrectionLevel = $_REQUEST['level'];    
 								$matrixPointSize = 4;
 							if (isset($_REQUEST['size']))
@@ -778,12 +778,12 @@ class Controller_Add extends Controller_Siteadmin
         $getuniqueId         = $this->add_model->getDriverUniqueId();
         $uniqueId            = str_pad($getuniqueId, 4, "0", STR_PAD_LEFT);
         $dcPrefix            = "GL";
-        $errors              = array();
-        $post_values         = array();
+        $errors              = [];
+        $post_values         = [];
         if ($signup_submit && Validation::factory($_POST)) {
             $post_values = $_POST;
             $post        = Arr::map('trim', $this->request->post());            
-            $form_values = Arr::extract($post, array(
+            $form_values = Arr::extract($post, [
                 'firstname',
                 'lastname',
                 'dob',
@@ -810,10 +810,10 @@ class Controller_Add extends Controller_Siteadmin
                 'twitter_account',
                 'facebook_account',
                 'instagram_account',
-            ));
-            $file_values = Arr::extract($_FILES, array(
+            ]);
+            $file_values = Arr::extract($_FILES, [
                 'photo','website_photo',
-            ));
+            ]);
             $values      = Arr::merge($form_values, $file_values);
             $validator   = $this->add_model->validate_adddriver($values);
             if ($validator->check()) {
@@ -869,7 +869,7 @@ class Controller_Add extends Controller_Siteadmin
                 //$signup_id=$this->add_model->add_driver($_POST);
                 if ($signup_id == 1) {
                     $mail              = "";
-                    $replace_variables = array(
+                    $replace_variables = [
                         REPLACE_LOGO => EMAILTEMPLATELOGO,
                         REPLACE_SITENAME => COMPANY_SITENAME,
                         REPLACE_USERNAME => $post['firstname'],
@@ -883,7 +883,7 @@ class Controller_Add extends Controller_Siteadmin
                         REPLACE_COPYRIGHTYEAR => COPYRIGHT_YEAR,
                         REPLACE_ANDROID_PASSENGER_APP => ANDROID_PASSENGER_APP,
                         REPLACE_IOS_PASSENGER_APP => IOS_PASSENGER_APP,
-                    );
+                    ];
                     //$message           = $this->emailtemplate->emailtemplate(DOCROOT . TEMPLATEPATH . 'driver-register.html', $replace_variables);
 					if ($this->lang != 'en') {
 						if (file_exists(DOCROOT . TEMPLATEPATH . $this->lang . '/driver-register-' . $this->lang . '.html')) {
@@ -948,20 +948,20 @@ class Controller_Add extends Controller_Siteadmin
         /**To get the form submit button name**/
         $signup_submit = arr::get($_REQUEST, 'submit_addfield');
         $field_type    = arr::get($_REQUEST, 'field_type');
-        $errors        = array();
-        $post_values   = array();
+        $errors        = [];
+        $post_values   = [];
         if ($signup_submit && Validation::factory($_POST)) {
             $post_values = $_POST;
             $post        = Arr::map('trim', $this->request->post());
-            $values      = Arr::extract($post, array(
+            $values      = Arr::extract($post, [
                 'field_labelname',
                 'field_name',
                 'field_type'
-            ));
+            ]);
             if ($field_type != 'Textbox') {
-                $field_values = Arr::extract($post, array(
+                $field_values = Arr::extract($post, [
                     'field_value'
-                ));
+                ]);
                 $values       = Arr::merge($values, $field_values);
             }
             $validator = $this->add_model->validate_addfield($values);
@@ -991,19 +991,19 @@ class Controller_Add extends Controller_Siteadmin
         
         /**To get the form submit button name**/
         $signup_submit = arr::get($_REQUEST, 'submit_addpackage');
-        $errors        = array();
-        $post_values   = array();
+        $errors        = [];
+        $post_values   = [];
         if ($signup_submit && Validation::factory($_POST)) {
             $post_values = $_POST;
             $post        = Arr::map('trim', $this->request->post());
-            $form_values = Arr::extract($post, array(
+            $form_values = Arr::extract($post, [
                 'package_name',
                 'package_description',
                 'no_of_taxi',
                 'no_of_driver',
                 'package_price',
                 'days_expire'
-            ));
+            ]);
             $validator   = $this->add_model->validate_addpackage($form_values);
             if ($validator->check()) {
                 $signup_id = $this->add_model->add_package($post);
@@ -1030,17 +1030,17 @@ class Controller_Add extends Controller_Siteadmin
         
         /**To get the form submit button name**/
         $signup_submit = arr::get($_REQUEST, 'submit_addcountry');
-        $errors        = array();
-        $post_values   = array();
+        $errors        = [];
+        $post_values   = [];
         if ($signup_submit && Validation::factory($_POST)) {
             $post_values        = Arr::map('trim', $this->request->post());
-            $validator   = $this->add_model->validate_addcountry(arr::extract($post_values, array(
+            $validator   = $this->add_model->validate_addcountry(arr::extract($post_values, [
                 'country_name',
                 'iso_country_code',
                 'telephone_code',
                 'currency_code',
                 'currency_symbol'
-            )));
+            ]));
             if ($validator->check()) {
                 $signup_id = $this->add_model->addcountry($post_values);
                 if ($signup_id == 1) {
@@ -1070,8 +1070,8 @@ class Controller_Add extends Controller_Siteadmin
         
         /**To get the form submit button name**/
         $signup_submit = arr::get($_REQUEST, 'submit_addcity');
-        $errors        = array();
-        $post_values   = array();
+        $errors        = [];
+        $post_values   = [];
         $country_details = $this->add_model->country_details_new();
         $state_details = $this->add_model->get_city_state_details($countryid = '');
         $def_country_name = isset($post_values['country_name'])?$post_values['country_name']:DEFAULT_COUNTRY;
@@ -1081,13 +1081,13 @@ class Controller_Add extends Controller_Siteadmin
            // if isset($post_values['country_name']) {
                 $state_details = $this->add_model->get_city_state_details($def_country_name);
           //  }
-            $validator = $this->add_model->validate_addcity(arr::extract($post_values, array(
+            $validator = $this->add_model->validate_addcity(arr::extract($post_values, [
                 //'country_name',
                 //'state_name',
                 'city_name',
                 'zipcode',
                // 'city_model_fare'
-            )));
+            ]));
             if ($validator->check()) {
                 $signup_id = $this->add_model->addcity($post_values);
                 if ($signup_id == 1) {
@@ -1139,15 +1139,15 @@ class Controller_Add extends Controller_Siteadmin
         
         /**To get the form submit button name**/
         $signup_submit = arr::get($_REQUEST, 'submit_addstate');
-        $errors        = array();
-        $post_values   = array();
+        $errors        = [];
+        $post_values   = [];
         $country_details = $this->add_model->country_detail();
         if ($signup_submit && Validation::factory($_POST)) {
             $post_values        = Arr::map('trim', $this->request->post());
-            $validator   = $this->add_model->validate_addstate(arr::extract($post_values, array(
+            $validator   = $this->add_model->validate_addstate(arr::extract($post_values, [
                 'country_name',
                 'state_name'
-            )));
+            ]));
             if ($validator->check()) {
                 $signup_id = $this->add_model->addstate($post_values);
                 if ($signup_id == 1) {
@@ -1325,11 +1325,11 @@ class Controller_Add extends Controller_Siteadmin
         $city_details        = $this->add_model->city_details();
         $all_companies_list = $this->add_model->taxicompany_details();
         $state_details       = $this->add_model->state_details();
-        $errors              = array();
-        $post_values         = array();
+        $errors              = [];
+        $post_values         = [];
         if ($signup_submit && Validation::factory($_POST)) {
             $post_values = Arr::map('trim', $this->request->post());
-            $validator   = $this->add_model->validate_addmanager(arr::extract($post_values, array(
+            $validator   = $this->add_model->validate_addmanager(arr::extract($post_values, [
                 'firstname',
                 'lastname',
                 'email',
@@ -1341,7 +1341,7 @@ class Controller_Add extends Controller_Siteadmin
                 //'state',
                 'city',
                 'company_name'
-            )));
+            ]));
             if ($validator->check()) {
                 $signup_id = $this->add_model->addmanager($post_values);
                 if ($signup_id == 1) {
@@ -1351,7 +1351,7 @@ class Controller_Add extends Controller_Siteadmin
 					//print_r($company_dets);exit;
                     //if there is no domain name comes go to product url
                     $companyDomain     = (count($company_dets) > 0 && isset($company_dets[$post_values['company_name']]['companyinfo']['company_domain'])) ? $company_dets[$post_values['company_name']]['companyinfo']['company_domain'] : 'www';
-                    $replace_variables = array(
+                    $replace_variables = [
                         REPLACE_LOGO => EMAILTEMPLATELOGO,
                         REPLACE_SITENAME => COMPANY_SITENAME,
                         REPLACE_DOMAINNAME => $companyDomain,
@@ -1363,7 +1363,7 @@ class Controller_Add extends Controller_Siteadmin
                         REPLACE_SITEURL => URL_BASE,
                         REPLACE_COPYRIGHTS => SITE_COPYRIGHT,
                         REPLACE_COPYRIGHTYEAR => COPYRIGHT_YEAR
-                    );
+                    ];
                     //$message           = $this->emailtemplate->emailtemplate(DOCROOT . TEMPLATEPATH . 'register_dispatcher.html', $replace_variables);
 					if ($this->lang != 'en') {
                         if (file_exists(DOCROOT . TEMPLATEPATH . $this->lang . '/register_dispatcher-' . $this->lang . '.html')) {
@@ -1481,12 +1481,12 @@ class Controller_Add extends Controller_Siteadmin
         $taxicompany_details = $this->add_model->taxicompany_details();
         $driver_details      = $this->add_model->driver_details();
         $taxi_details        = $this->add_model->taxi_details();
-        $errors              = array();
-        $post_values         = array();
+        $errors              = [];
+        $post_values         = [];
         if ($signup_submit && Validation::factory($_POST)) {
             $post_values = $_POST;
             $post        = Arr::map('trim', $this->request->post());
-            $validator   = $this->add_model->validate_addassigntaxi(arr::extract($post, array(
+            $validator   = $this->add_model->validate_addassigntaxi(arr::extract($post, [
                 'company_name',
                 'country',
                 'state',
@@ -1495,11 +1495,11 @@ class Controller_Add extends Controller_Siteadmin
                 'taxi',
                 'startdate',
                 'enddate'
-            )));
+            ]));
             if ($validator->check()) {
                 $update            = $this->add_model->addassigntaxi($post);
                 $mail              = "";
-                $replace_variables = array(
+                $replace_variables = [
                     REPLACE_LOGO => EMAILTEMPLATELOGO,
                     REPLACE_SITENAME => COMPANY_SITENAME,
                     REPLACE_USERNAME => $update[0]['name'],
@@ -1509,7 +1509,7 @@ class Controller_Add extends Controller_Siteadmin
                     REPLACE_SITEURL => URL_BASE,
                     REPLACE_COPYRIGHTS => SITE_COPYRIGHT,
                     REPLACE_COPYRIGHTYEAR => COPYRIGHT_YEAR
-                );
+                ];
                 $message           = $this->emailtemplate->emailtemplate(DOCROOT . TEMPLATEPATH . 'assign_taxi.html', $replace_variables);
                 $to                = 'suresh.g@ndot.in';//$update[0]['email'];
                 $from              = CONTACT_EMAIL;
@@ -1559,15 +1559,15 @@ class Controller_Add extends Controller_Siteadmin
         $count_details = $this->add_model->getassignedlist($country_id, $state_id, $city_id, $company_name, $driver_id, $taxi_id, $startdate, $enddate,NULL,NULL,TRUE);
         if ($page_no)
             $offset = REC_PER_PAGE * ($page_no - 1);
-        $pag_data         = Pagination::factory(array(
-            'current_page' => array(
+        $pag_data         = Pagination::factory([
+            'current_page' => [
                 'source' => 'query_string',
                 'key' => 'page'
-            ),
+            ],
             'items_per_page' => REC_PER_PAGE,
             'total_items' => $count_details,
             'view' => 'pagination/punajax'
-        ));
+        ]);
         $getmodel_details = $this->add_model->getassignedlist($country_id, $state_id, $city_id, $company_name, $driver_id, $taxi_id, $startdate, $enddate, $offset, REC_PER_PAGE);
         $count            = count($getmodel_details);
         $output .= '<div class="widget">
@@ -1731,8 +1731,8 @@ class Controller_Add extends Controller_Siteadmin
         if ($field_count == 0) {
             $this->request->redirect("admin/upgradereports");
         }
-        $errors      = array();
-        $post_values = array();
+        $errors      = [];
+        $post_values = [];
         if ($signup_submit && Validation::factory($_POST)) {
             $post_values = $_POST;
             $signup_id   = $this->add_model->packageupgrade($_POST, $company_id);
@@ -1759,8 +1759,8 @@ class Controller_Add extends Controller_Siteadmin
         if ($field_count == 0) {
             $this->request->redirect("admin/upgradereports");
         }
-        $errors      = array();
-        $post_values = array();
+        $errors      = [];
+        $post_values = [];
         if ($signup_submit && Validation::factory($_POST)) {
             $post_values = $_POST;
             $signup_id   = $this->add_model->packageupgrade($_POST, $company_id);
@@ -1801,17 +1801,17 @@ class Controller_Add extends Controller_Siteadmin
         $menu_details  = $this->add_model->get_menus();
         /**To get the form submit button name**/
         $signup_submit = arr::get($_REQUEST, 'submit_addmanager');
-        $errors        = array();
-        $post_values   = array();
+        $errors        = [];
+        $post_values   = [];
         if ($signup_submit && Validation::factory($_POST)) {
             $post_values = $_POST;
             $post        = Arr::map('trim', $this->request->post());
-            $validator   = $this->add_model->validate_addcontents(arr::extract($post, array(
+            $validator   = $this->add_model->validate_addcontents(arr::extract($post, [
                 'menu_name',
                 'meta_title',
                 'meta_keyword',
                 'meta_description'
-            )));
+            ]));
             
             if ($validator->check()) {
                 /*$menu_name_exits = $this->add_model->menu_content_exits($post);
@@ -1847,15 +1847,15 @@ class Controller_Add extends Controller_Siteadmin
         $count_details  = $this->add_model->countdriverassignedlist($driver_id, $startdate, $enddate);
         if ($page_no)
             $offset = REC_PER_PAGE * ($page_no - 1);
-        $pag_data         = Pagination::factory(array(
-            'current_page' => array(
+        $pag_data         = Pagination::factory([
+            'current_page' => [
                 'source' => 'query_string',
                 'key' => 'page'
-            ),
+            ],
             'items_per_page' => REC_PER_PAGE,
             'total_items' => $count_details,
             'view' => 'pagination/punmad'
-        ));
+        ]);
         $getmodel_details = $this->add_model->getdriverassignedlist($driver_id, $startdate, $enddate, $offset, REC_PER_PAGE);
         $count            = count($getmodel_details);
         $output .= '<div class="widget">
@@ -1984,15 +1984,15 @@ class Controller_Add extends Controller_Siteadmin
         
         /**To get the form submit button name**/
         $signup_submit = arr::get($_REQUEST, 'submit_menu');
-        $errors        = array();
-        $post_values   = array();
+        $errors        = [];
+        $post_values   = [];
         if ($signup_submit && Validation::factory($_POST)) {
             $post_values = $_POST;
             $post        = Arr::map('trim', $this->request->post());
-            $validator   = $this->add_model->validate_addmenu(arr::extract($post, array(
+            $validator   = $this->add_model->validate_addmenu(arr::extract($post, [
                 'menu_name',
                 'slug'
-            )));
+            ]));
             if ($validator->check()) {
                 /*$menu_name_exits = $this->add_model->menu_name_exits($_POST);
                 if ($menu_name_exits == 1) {
@@ -2027,13 +2027,13 @@ class Controller_Add extends Controller_Siteadmin
         
         /**To get the form submit button name**/
         $signup_submit = arr::get($_REQUEST, 'submit_mile');
-        $errors        = array();
-        $post_values   = array();
+        $errors        = [];
+        $post_values   = [];
         if ($signup_submit && Validation::factory($_POST)) {
             $post        = Arr::map('trim', $this->request->post());
-            $validator   = $this->add_model->validate_addmile(arr::extract($post, array(
+            $validator   = $this->add_model->validate_addmile(arr::extract($post, [
                 'mile'
-            )));
+            ]));
             if ($validator->check()) {
                 $mile_name_exits = $this->add_model->mile_name_exits($_POST);
                 if ($mile_name_exits == 1) {
@@ -2065,11 +2065,11 @@ class Controller_Add extends Controller_Siteadmin
         /**To get the form submit button name**/
         $signup_submit   = arr::get($_REQUEST, 'submit_addadmin');
         $country_details = $this->add_model->country_details();
-        $errors          = array();
-        $post_values     = array();
+        $errors          = [];
+        $post_values     = [];
         if ($signup_submit && Validation::factory($_POST)) {
             $post_values        = Arr::map('trim', $this->request->post());
-            $validator   = $this->add_model->validate_addadmin(arr::extract($post_values, array(
+            $validator   = $this->add_model->validate_addadmin(arr::extract($post_values, [
                 'firstname',
                 'lastname',
                 'email',
@@ -2079,12 +2079,12 @@ class Controller_Add extends Controller_Siteadmin
                 'address',
                 'country',
                 'company_name'
-            )));
+            ]));
             if ($validator->check()) {
                 $signup_id = $this->add_model->addadmin($post_values);
                 if ($signup_id == 1) {
                     $mail              = "";
-                    $replace_variables = array(
+                    $replace_variables = [
                         REPLACE_LOGO => EMAILTEMPLATELOGO,
                         REPLACE_SITENAME => COMPANY_SITENAME,
                         REPLACE_USERNAME => $_POST['firstname'],
@@ -2095,7 +2095,7 @@ class Controller_Add extends Controller_Siteadmin
                         REPLACE_SITEURL => URL_BASE,
                         REPLACE_COPYRIGHTS => SITE_COPYRIGHT,
                         REPLACE_COPYRIGHTYEAR => COPYRIGHT_YEAR
-                    );
+                    ];
                     //$message           = $this->emailtemplate->emailtemplate(DOCROOT . TEMPLATEPATH . 'moderator_registertemp.html', $replace_variables);
 					if ($this->lang != 'en') {
 						if (file_exists(DOCROOT . TEMPLATEPATH . $this->lang . '/moderator_registertemp-' . $this->lang . '.html')) {
@@ -2144,18 +2144,18 @@ class Controller_Add extends Controller_Siteadmin
         }
         $cid           = $this->company_id;
         $add           = Model::factory('add');
-        $errors        = array();
+        $errors        = [];
         $banner_submit = arr::get($_REQUEST, 'submit_banner');
-        $errors        = array();
-        $post_values   = array();
+        $errors        = [];
+        $post_values   = [];
         if ($banner_submit && Validation::factory($_POST, $_FILES)) {
             $post_values = $_POST;
             $post        = Arr::map('trim', $this->request->post());
-            $validator   = $add->validate_addbanner(arr::extract($post, array(
+            $validator   = $add->validate_addbanner(arr::extract($post, [
                 'banner_image',
                 'tags',
                 'image_tag'
-            )), $_FILES);
+            ]), $_FILES);
             if ($validator->check()) {
                 $image_updated_status = '';
                 $image_id             = $cid;
@@ -2255,15 +2255,15 @@ class Controller_Add extends Controller_Siteadmin
         
         /**To get the form submit button name**/
         $signup_submit = arr::get($_REQUEST, 'submit_menu');
-        $errors        = array();
-        $post_values   = array();
+        $errors        = [];
+        $post_values   = [];
         if ($signup_submit && Validation::factory($_POST)) {
             $post_values = $_POST;
             $post        = Arr::map('trim', $this->request->post());
-            $validator   = $this->add_model->validate_addaccounttype(arr::extract($post, array(
+            $validator   = $this->add_model->validate_addaccounttype(arr::extract($post, [
                 'account_type',
 				'account_type_arabic'
-            )));
+            ]));
             if ($validator->check()) {
                 $status = $this->add_model->addaccounttype($post);
                 if ($status == 1) {
@@ -2293,12 +2293,12 @@ class Controller_Add extends Controller_Siteadmin
         
         /**To get the form submit button name**/
         $signup_submit = arr::get($_REQUEST, 'submit_addcoupon_package');
-        $errors        = array();
-        $post_values   = array();
+        $errors        = [];
+        $post_values   = [];
         if ($signup_submit && Validation::factory($_POST)) {
             $post_values = $_POST;
             $post        = Arr::map('trim', $this->request->post());
-            $form_values = Arr::extract($post, array(
+            $form_values = Arr::extract($post, [
                 'coupon_package_name',
                 'coupon_package_description',
                 'coupon_package_name_ar',
@@ -2306,7 +2306,7 @@ class Controller_Add extends Controller_Siteadmin
                 'corporate_commission',
                 'passenger_commission'
              
-            ));
+            ]);
             $validator   = $this->add_model->validate_addcoupon_package($form_values);
             if ($validator->check()) {
                 $signup_id = $this->add_model->add_coupon_package($post);
@@ -2344,12 +2344,12 @@ class Controller_Add extends Controller_Siteadmin
         /**To get the form submit button name**/
         $signup_submit       = arr::get($_REQUEST, 'submit_corporate');
         
-        $errors              = array();
-        $post_values         = array();
+        $errors              = [];
+        $post_values         = [];
         if ($signup_submit && Validation::factory($_POST)) {
             $post_values = $_POST;
             $post        = Arr::map('trim', $this->request->post());            
-            $form_values = Arr::extract($post, array(
+            $form_values = Arr::extract($post, [
                 'firstname',
                 'lastname',
                 'email',
@@ -2358,10 +2358,10 @@ class Controller_Add extends Controller_Siteadmin
 				'phone',
                 'address'
             
-            ));
-            $file_values = Arr::extract($_FILES, array(
+            ]);
+            $file_values = Arr::extract($_FILES, [
                 'photo'
-            ));
+            ]);
             $values      = Arr::merge($form_values, $file_values);
             $validator   = $this->add_model->validate_addcorporate($values);
             if ($validator->check()) {
@@ -2388,7 +2388,7 @@ class Controller_Add extends Controller_Siteadmin
                 //$signup_id=$this->add_model->add_corporate($_POST);
                 if ($signup_id == 1) {
                     $mail              = "";
-                    $replace_variables = array(
+                    $replace_variables = [
                         REPLACE_LOGO => EMAILTEMPLATELOGO,
                         REPLACE_SITENAME => COMPANY_SITENAME,
                         REPLACE_USERNAME => $post['firstname'],
@@ -2401,7 +2401,7 @@ class Controller_Add extends Controller_Siteadmin
                         REPLACE_IOS_PASSENGER_APP => IOS_PASSENGER_APP,
                         REPLACE_COPYRIGHTS => SITE_COPYRIGHT,
                         REPLACE_COPYRIGHTYEAR => COPYRIGHT_YEAR
-                    );
+                    ];
                     //$message           = $this->emailtemplate->emailtemplate(DOCROOT . TEMPLATEPATH . 'corporate-register.html', $replace_variables);
 					if ($this->lang != 'en') {
 						if (file_exists(DOCROOT . TEMPLATEPATH . $this->lang . '/driver-register-' . $this->lang . '.html')) {
@@ -2473,15 +2473,15 @@ class Controller_Add extends Controller_Siteadmin
         $usertype       = $this->usertype;
 
         $signup_submit       = arr::get($_REQUEST, 'submit_addratings');
-        $errors              = array();
-        $post_values         = array();
+        $errors              = [];
+        $post_values         = [];
         if ($signup_submit && Validation::factory($_POST, $_FILES)) {
             $post  = Arr::map('trim', $this->request->post());
-             $post_values = Arr::extract($post, array(
+             $post_values = Arr::extract($post, [
                 'ratings_title',
                 'ratings_tags',
                 
-            ));
+            ]);
             $post_values['ratings_no'] = (int)$post['ratings_no'];
             
             $validator   = $this->add_model->validate_addratings($post_values);
@@ -2520,15 +2520,15 @@ class Controller_Add extends Controller_Siteadmin
         
         /**To get the form submit button name**/
         $signup_submit = arr::get($_REQUEST, 'submit_addmotor');
-        $errors        = array();
-        $post_values   = array();
+        $errors        = [];
+        $post_values   = [];
         if ($_POST) {
             $post_values = $_POST;
             $post        = Arr::map('trim', $this->request->post());
 
-            $form_values = arr::extract($post, array('name','skype','description','description_arabic'));
+            $form_values = arr::extract($post, ['name','skype','description','description_arabic']);
 
-            $file_values = Arr::extract($_FILES, array('image'));
+            $file_values = Arr::extract($_FILES, ['image']);
             $values      = Arr::merge($form_values, $file_values);
 
             $validator   = $this->add_model->validate_testimonial($values);
@@ -2570,18 +2570,18 @@ class Controller_Add extends Controller_Siteadmin
 
         /**To get the form submit button name**/
         $signup_submit       = arr::get($_REQUEST, 'submit_zone');
-        $errors              = array();
-        $post_values         = array();
+        $errors              = [];
+        $post_values         = [];
 
         if ($signup_submit && Validation::factory($_POST)) {
 
             $post_values = Arr::map('trim', $this->request->post());
-            $file_values = Arr::extract($_FILES, array('zone_icon'));
+            $file_values = Arr::extract($_FILES, ['zone_icon']);
             $values      = Arr::merge($post_values, $file_values);
-            $source_coordinates = array();
+            $source_coordinates = [];
            //echo '<pre>'; print_r($values); exit();
 
-            $form_values = Arr::extract($values, array(
+            $form_values = Arr::extract($values, [
                 'zone_name',
                 'source_location',
                 'source_lat',
@@ -2590,14 +2590,14 @@ class Controller_Add extends Controller_Siteadmin
                 'source_polygon_drawn',
                 'is_drop',
                 'is_pickup'
-            ));
+            ]);
             $validator   = $add_model->validate_add_zone($form_values);
 
             if ($validator->check()) {
 
                 if(!empty($values['source_polygon_drawn']))
                 {
-					$polygon_index = array();
+					$polygon_index = [];
                     $source_polygon = explode(',',$values['source_polygon_drawn']);
                     $j = $k =0;
                     for ($i=0; $i <= count($source_polygon)-1 && $k <= count($source_polygon)-1; $i++) {
@@ -2662,17 +2662,17 @@ class Controller_Add extends Controller_Siteadmin
 
         /**To get the form submit button name**/
         $signup_submit       = arr::get($_REQUEST, 'passenger_coupon_code');
-        $errors              = array();
-        $post_values         = array();
+        $errors              = [];
+        $post_values         = [];
 
         if ($signup_submit && Validation::factory($_POST)) {
 
             $post_values = Arr::map('trim', $this->request->post());
 
-            $form_values = Arr::extract($post_values, array(
+            $form_values = Arr::extract($post_values, [
                 'phone',
                 'coupon_code'
-            ));
+            ]);
             
             if(!isset($post_values['phone']) || empty($post_values['phone'])) {
                 $errors['phone'] = "Phone number is required";   
@@ -2746,8 +2746,8 @@ class Controller_Add extends Controller_Siteadmin
             "message" => "Failed to add coupon. Please try again."
         ];
         $add_model      = Model::factory('add');
-        $errors              = array();
-        $post_values         = array();
+        $errors              = [];
+        $post_values         = [];
 
         if (Validation::factory($_POST)) {
 
@@ -2755,12 +2755,12 @@ class Controller_Add extends Controller_Siteadmin
             // exit;
 
             $post_values = Arr::map('trim', $this->request->post());
-            $form_values = Arr::extract($post_values, array(
+            $form_values = Arr::extract($post_values, [
                 'phone',
                 'coupon_code',
                 'driver_id',
                 'trip_id',
-            ));
+            ]);
 
             if(!isset($post_values['coupon_code']) || empty($post_values['coupon_code'])) {
                 $response['message'] = "Coupon code is required";   

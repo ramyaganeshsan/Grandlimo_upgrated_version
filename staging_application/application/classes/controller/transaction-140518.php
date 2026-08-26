@@ -108,15 +108,15 @@ class Controller_Transaction extends Controller_Siteadmin
         if ($page_no == 0 || $page_no == 'index')
             $page_no = PAGE_NO;
         $offset                     = REC_PER_PAGE * ($page_no - 1);
-        $pag_data                   = Pagination::factory(array(
-            'current_page' => array(
+        $pag_data                   = Pagination::factory([
+            'current_page' => [
                 'source' => 'query_string',
                 'key' => 'page'
-            ),
+            ],
             'items_per_page' => REC_PER_PAGE,
             'total_items' => $count_transaction_list,
             'view' => 'pagination/punbb'
-        ));
+        ]);
         
         /* NEW UUPDATE */
         if($count_transaction_list > 0 ){
@@ -218,14 +218,14 @@ class Controller_Transaction extends Controller_Siteadmin
             foreach($all_list as $result)
             {
                 //START
-                $xls_output[$i] = array();
+                $xls_output[$i] = [];
                 
                 $fare = isset($result['fare'][0])?$result['fare'][0]:0;
                 $payment_type = isset($result['payment_type'][0])?$result['payment_type'][0]:'';
 //seg
                 $cancel_reason = isset($result['cancel_reason'])?$result['cancel_reason']:'-';
                 $edited_fare = isset($result['total_fare_detail'])?$result['total_fare_detail']:0;
-                $faredetail = isset($result['fare_detail'])?$result['fare_detail']:array();
+                $faredetail = isset($result['fare_detail'])?$result['fare_detail']:[];
                 $advance_payment = isset($result['advance_payment'][0])?$result['advance_payment'][0]:0;
                 $cash_fare = '-';$card_fare = '-'; $online_knet = '-';$additional_fare = '-';$fare_note = '-';$wallet_amt='-';$pending_amt = '-';
                 
@@ -523,16 +523,16 @@ class Controller_Transaction extends Controller_Siteadmin
 
             $export_table_header = '';
             if($list != 'rejected') {
-                $export_table_header =  array(/*__('cctransaction_id'),*/__('payment_type'),__('trip_id'));
-                $export_table_field_select = array(/*'transaction_id',*/'payment_type','passengers_log_id');
+                $export_table_header =  [/*__('cctransaction_id'),*/__('payment_type'),__('trip_id')];
+                $export_table_field_select = [/*'transaction_id',*/'payment_type','passengers_log_id'];
             }
             if(is_array($export_table_header)){
                 array_push($export_table_header,__('passenger_name'),__('passenger_phone'),__('driver_name'),__('dispatch_time'),__('journey_date'),__('Current_Location'), __('Drop_Location'));     
                 array_push($export_table_field_select,'passenger_name','passenger_phone','driver_name','dispatch_time','journey_date','current_location','drop_location');            
             }
             else{
-                $export_table_header= array(__('passenger_name'),__('passenger_phone'),__('driver_name'),__('dispatch_time'),__('journey_date'),__('Current_Location'), __('Drop_Location'));             
-                $export_table_field_select= array('passenger_name','passenger_phone','driver_name','dispatch_time','journey_date','current_location','drop_location');                
+                $export_table_header= [__('passenger_name'),__('passenger_phone'),__('driver_name'),__('dispatch_time'),__('journey_date'),__('Current_Location'), __('Drop_Location')];             
+                $export_table_field_select= ['passenger_name','passenger_phone','driver_name','dispatch_time','journey_date','current_location','drop_location'];                
             }      
             if($list != 'rejected'){
                 if($list != 'cancelled'){
@@ -621,15 +621,15 @@ class Controller_Transaction extends Controller_Siteadmin
         if ($page_no == 0 || $page_no == 'index')
             $page_no = PAGE_NO;
         $offset                     = REC_PER_PAGE * ($page_no - 1);
-        $pag_data                   = Pagination::factory(array(
-            'current_page' => array(
+        $pag_data                   = Pagination::factory([
+            'current_page' => [
                 'source' => 'query_string',
                 'key' => 'page'
-            ),
+            ],
             'items_per_page' => REC_PER_PAGE,
             'total_items' => $count_transaction_list,
             'view' => 'pagination/punbb'
-        ));
+        ]);
          /* NEW UUPDATE */
         if($count_transaction_list > 0 ){
     
@@ -722,15 +722,15 @@ class Controller_Transaction extends Controller_Siteadmin
         if ($page_no == 0 || $page_no == 'index')
             $page_no = PAGE_NO;
         $offset                     = REC_PER_PAGE * ($page_no - 1);
-        $pag_data                   = Pagination::factory(array(
-            'current_page' => array(
+        $pag_data                   = Pagination::factory([
+            'current_page' => [
                 'source' => 'query_string',
                 'key' => 'page'
-            ),
+            ],
             'items_per_page' => REC_PER_PAGE,
             'total_items' => $count_transaction_list,
             'view' => 'pagination/punbb'
-        ));
+        ]);
         $all_transaction_list       = $this->transaction_model->transaction_details($list, $company_id, 'All', 'All', 'All', 'All', $startdate, $enddate, '', '', $offset, REC_PER_PAGE);
         //****pagination ends here***//
         //send data to view file 
@@ -795,15 +795,15 @@ class Controller_Transaction extends Controller_Siteadmin
         if ($page_no == 0 || $page_no == 'index')
             $page_no = PAGE_NO;
         $offset                     = REC_PER_PAGE * ($page_no - 1);
-        $pag_data                   = Pagination::factory(array(
-            'current_page' => array(
+        $pag_data                   = Pagination::factory([
+            'current_page' => [
                 'source' => 'query_string',
                 'key' => 'page'
-            ),
+            ],
             'items_per_page' => REC_PER_PAGE,
             'total_items' => $count_transaction_list,
             'view' => 'pagination/punbb'
-        ));
+        ]);
         $all_transaction_list       = $this->transaction_model->transaction_details($list, $company_id, $manager_id, $taxiid, $driver_id, $passengerid, $startdate, $enddate, $transaction_id, $payment_type, $offset, REC_PER_PAGE);
         //****pagination ends here***//
         //send data to view file 
@@ -859,15 +859,15 @@ class Controller_Transaction extends Controller_Siteadmin
         if ($page_no == 0 || $page_no == 'index')
             $page_no = PAGE_NO;
         $offset                     = REC_PER_PAGE * ($page_no - 1);
-        $pag_data                   = Pagination::factory(array(
-            'current_page' => array(
+        $pag_data                   = Pagination::factory([
+            'current_page' => [
                 'source' => 'query_string',
                 'key' => 'page'
-            ),
+            ],
             'items_per_page' => REC_PER_PAGE,
             'total_items' => $count_transaction_list,
             'view' => 'pagination/punbb'
-        ));
+        ]);
         //echo $user_createdby;exit;
         $all_transaction_list       = $this->transaction_model->transaction_details($list, $company_id, $user_createdby, 'All', 'All', 'All', $startdate, $enddate, '', '',$offset, REC_PER_PAGE);
         //($list, $company_id, 'All', 'All', 'All', 'All', $startdate, $enddate, '', '')
@@ -936,15 +936,15 @@ class Controller_Transaction extends Controller_Siteadmin
         if ($page_no == 0 || $page_no == 'index')
             $page_no = PAGE_NO;
         $offset                     = REC_PER_PAGE * ($page_no - 1);
-        $pag_data                   = Pagination::factory(array(
-            'current_page' => array(
+        $pag_data                   = Pagination::factory([
+            'current_page' => [
                 'source' => 'query_string',
                 'key' => 'page'
-            ),
+            ],
             'items_per_page' => REC_PER_PAGE,
             'total_items' => $count_transaction_list,
             'view' => 'pagination/punbb'
-        ));
+        ]);
         $all_transaction_list       = $this->transaction_model->transaction_details($list, $company_id, $user_createdby, $taxiid, $driver_id, $passengerid, $startdate, $enddate, $transaction_id, $payment_type,$offset, REC_PER_PAGE);
         //****pagination ends here***//
         //send data to view file 
@@ -980,15 +980,15 @@ class Controller_Transaction extends Controller_Siteadmin
         if ($page_no == 0 || $page_no == 'index')
             $page_no = PAGE_NO;
         $offset                     = REC_PER_PAGE * ($page_no - 1);
-        $pag_data                   = Pagination::factory(array(
-            'current_page' => array(
+        $pag_data                   = Pagination::factory([
+            'current_page' => [
                 'source' => 'query_string',
                 'key' => 'page'
-            ),
+            ],
             'items_per_page' => REC_PER_PAGE,
             'total_items' => $count_transaction_list,
             'view' => 'pagination/punbb'
-        ));
+        ]);
         $all_transaction_list       = $this->transaction_model->rejcancel_details('All', 'All', 'All', 'All', 'All', '', '', $offset, REC_PER_PAGE);
         //****pagination ends here***//
         //send data to view file 
@@ -1027,15 +1027,15 @@ class Controller_Transaction extends Controller_Siteadmin
         if ($page_no == 0 || $page_no == 'index')
             $page_no = PAGE_NO;
         $offset                     = REC_PER_PAGE * ($page_no - 1);
-        $pag_data                   = Pagination::factory(array(
-            'current_page' => array(
+        $pag_data                   = Pagination::factory([
+            'current_page' => [
                 'source' => 'query_string',
                 'key' => 'page'
-            ),
+            ],
             'items_per_page' => REC_PER_PAGE,
             'total_items' => $count_transaction_list,
             'view' => 'pagination/punbb'
-        ));
+        ]);
         $all_transaction_list       = $this->transaction_model->rejcancel_details($company, $manager_id, $taxiid, $driver_id, $passengerid, $startdate, $enddate, $offset, REC_PER_PAGE);
         //****pagination ends here***//
         //send data to view file 
@@ -1341,11 +1341,11 @@ class Controller_Transaction extends Controller_Siteadmin
             if ($count == '' || $count == 'NULL') {
                 $count = "0";
             }
-            $data['users'][] = array(
+            $data['users'][] = [
                 'count' => $count
-            );
+            ];
         }
-        $json            = array();
+        $json            = [];
         $json['success'] = $data;
         echo json_encode($json);
     }
@@ -1401,16 +1401,16 @@ class Controller_Transaction extends Controller_Siteadmin
         if ($page_no == 0 || $page_no == 'index')
             $page_no = PAGE_NO;
         $offset              = REC_PER_PAGE * ($page_no - 1);
-        $pag_data            = Pagination::factory(array(
-            'current_page' => array(
+        $pag_data            = Pagination::factory([
+            'current_page' => [
                 'source' => 'query_string',
                 'key' => 'page'
-            ),
+            ],
             'items_per_page' => REC_PER_PAGE,
             'total_items' => $count_transaction_list,
             'view' => 'pagination/punbb'
-        ));
-        $transactionid_array = array();
+        ]);
+        $transactionid_array = [];
         $transaction_details = $this->transaction_model->braintree_transaction_details($keyword, $start_date, $end_date, $company_id, $filter_company, REC_PER_PAGE, $offset);
         foreach ($transaction_details as $key => $val) {
             if ($val['payment_status'] != 'settled') {
@@ -1474,8 +1474,8 @@ class Controller_Transaction extends Controller_Siteadmin
                         ), 'passengers_log_id', $trip_id);*/
                         
                         //MongoDB update
-                        $update_arr =  array('payment_status' => str_replace('_', ' ', $result->status));
-                        $match_condition = array('passengers_log_id'=>(int)$trip_id);
+                        $update_arr =  ['payment_status' => str_replace('_', ' ', $result->status)];
+                        $match_condition = ['passengers_log_id'=>(int)$trip_id];
                         $update = $this->common_model->mongo_update(MDB_TRANSACTION,$update_arr,$match_condition);
                         if ($result->status == 'Settled') {
                             Message::success(__('Settlement Success for Selected Request'));
@@ -1492,8 +1492,8 @@ class Controller_Transaction extends Controller_Siteadmin
                         ), 'passengers_log_id', $trip_id);*/
                         
                         //MongoDB update
-                        $update_arr =  array('payment_status' => str_replace('_', ' ', $result->status));
-                        $match_condition = array('passengers_log_id'=>(int)$trip_id);
+                        $update_arr =  ['payment_status' => str_replace('_', ' ', $result->status)];
+                        $match_condition = ['passengers_log_id'=>(int)$trip_id];
                         $update = $this->common_model->mongo_update(MDB_TRANSACTION,$update_arr,$match_condition);
                         Message::error($braintree_message);
                         $this->request->redirect("/transaction/settlement_list");
@@ -1537,15 +1537,15 @@ class Controller_Transaction extends Controller_Siteadmin
         if ($page_no == 0 || $page_no == 'index')
             $page_no = PAGE_NO;
         $offset                     = REC_PER_PAGE * ($page_no - 1);
-        $pag_data                   = Pagination::factory(array(
-            'current_page' => array(
+        $pag_data                   = Pagination::factory([
+            'current_page' => [
                 'source' => 'query_string',
                 'key' => 'page'
-            ),
+            ],
             'items_per_page' => REC_PER_PAGE,
             'total_items' => $inv_list_c,
             'view' => 'pagination/punbb'
-        ));
+        ]);
         $invoice_list   = $this->transaction_model->getAllInvoice($passenger,$pay_status,$offset, REC_PER_PAGE);
         $view = View::factory('admin/report/schedule_invoice')
                 ->bind('invoice_list', $invoice_list)
@@ -1605,15 +1605,15 @@ class Controller_Transaction extends Controller_Siteadmin
             if ($page_no == 0 || $page_no == 'index')
                 $page_no = PAGE_NO;
             $offset      = REC_PER_PAGE * ($page_no - 1);
-            $pag_data    = Pagination::factory(array(
-                'current_page' => array(
+            $pag_data    = Pagination::factory([
+                'current_page' => [
                     'source' => 'query_string',
                     'key' => 'page'
-                ),
+                ],
                 'items_per_page' => REC_PER_PAGE,
                 'total_items' => $count_company_list,
                 'view' => 'pagination/punbb'
-            ));
+            ]);
         if (isset($_REQUEST['keyword']))
         {
             $all_company_list = $this->transaction_model->driver_sales_report(trim(Html::chars($_REQUEST['keyword'])), trim(Html::chars($_REQUEST['status'])),$start_date,$end_date,$year,$month,$company, $offset, REC_PER_PAGE);
@@ -1640,8 +1640,8 @@ class Controller_Transaction extends Controller_Siteadmin
                         $xls_output['grand_total_count'] += $val['total_count'];
                     }
                 }
-                $export_table_header = array(__('driver_name'),__('total_amount'),__('total_pending_amt'),__('total_trips'));
-                $export_table_field_select = array('driver_name','total_amount','total_pending_amt','total_count');
+                $export_table_header = [__('driver_name'),__('total_amount'),__('total_pending_amt'),__('total_trips')];
+                $export_table_field_select = ['driver_name','total_amount','total_pending_amt','total_count'];
 
                 $heading = __('driver_sales_report');
 
@@ -1708,15 +1708,15 @@ class Controller_Transaction extends Controller_Siteadmin
             if ($page_no == 0 || $page_no == 'index')
                 $page_no = PAGE_NO;
             $offset      = REC_PER_PAGE * ($page_no - 1);
-            $pag_data    = Pagination::factory(array(
-                'current_page' => array(
+            $pag_data    = Pagination::factory([
+                'current_page' => [
                     'source' => 'query_string',
                     'key' => 'page'
-                ),
+                ],
                 'items_per_page' => REC_PER_PAGE,
                 'total_items' => $count_company_list,
                 'view' => 'pagination/punbb'
-            ));
+            ]);
         if (isset($_REQUEST['keyword']))
         {
             $all_company_list = $this->transaction_model->limo_sales_report(trim(Html::chars($_REQUEST['keyword'])), trim(Html::chars($_REQUEST['status'])),$start_date,$end_date,$year,$month, $company, $offset, REC_PER_PAGE);
@@ -1743,8 +1743,8 @@ class Controller_Transaction extends Controller_Siteadmin
                         $xls_output['grand_total_count'] += $val['total_count'];
                     }
                 }
-                $export_table_header = array(__('create_date'),__('total_amount'),__('total_pending_amt'),__('total_trips'));
-                $export_table_field_select = array('create_day','total_amount','total_pending_amt','total_count');
+                $export_table_header = [__('create_date'),__('total_amount'),__('total_pending_amt'),__('total_trips')];
+                $export_table_field_select = ['create_day','total_amount','total_pending_amt','total_count'];
 
                 $heading = __('grand_limo_sales_report');
 
@@ -1809,15 +1809,15 @@ class Controller_Transaction extends Controller_Siteadmin
             if ($page_no == 0 || $page_no == 'index')
                 $page_no = PAGE_NO;
             $offset      = REC_PER_PAGE * ($page_no - 1);
-            $pag_data    = Pagination::factory(array(
-                'current_page' => array(
+            $pag_data    = Pagination::factory([
+                'current_page' => [
                     'source' => 'query_string',
                     'key' => 'page'
-                ),
+                ],
                 'items_per_page' => 10000,
                 'total_items' => $count_company_list,
                 'view' => 'pagination/punbb'
-            ));
+            ]);
         if (isset($_REQUEST['keyword']))
         {
             $all_company_list = $this->transaction_model->daily_sales_report(trim(Html::chars($_REQUEST['keyword'])), trim(Html::chars($_REQUEST['status'])),$start_date,$end_date, $company, $offset, REC_PER_PAGE);
@@ -1830,8 +1830,8 @@ class Controller_Transaction extends Controller_Siteadmin
         if(isset($_SESSION['download_set']))
         {
             $xls_output = $all_company_list;
-            $export_table_header = array(__('trip_id'),__('passenger_name'),__('mobile'),__('pickupplace'),__('payment_type'),__('fare'),__('pending_amt'),__('fare_notes'));
-            $export_table_field_select = array('trip_id','pass_name','phone','pickup','payment_type','fare','pending_amt','fare_notes');
+            $export_table_header = [__('trip_id'),__('passenger_name'),__('mobile'),__('pickupplace'),__('payment_type'),__('fare'),__('pending_amt'),__('fare_notes')];
+            $export_table_field_select = ['trip_id','pass_name','phone','pickup','payment_type','fare','pending_amt','fare_notes'];
 
             $heading = __('daily_sales_report');
 
@@ -1893,15 +1893,15 @@ class Controller_Transaction extends Controller_Siteadmin
             if ($page_no == 0 || $page_no == 'index')
                 $page_no = PAGE_NO;
             $offset      = REC_PER_PAGE * ($page_no - 1);
-            $pag_data    = Pagination::factory(array(
-                'current_page' => array(
+            $pag_data    = Pagination::factory([
+                'current_page' => [
                     'source' => 'query_string',
                     'key' => 'page'
-                ),
+                ],
                 'items_per_page' => 10000,
                 'total_items' => $count_company_list,
                 'view' => 'pagination/punbb'
-            ));
+            ]);
         if (isset($_REQUEST['keyword']))
         {
             $all_company_list = $this->transaction_model->consolidated_sales_report(trim(Html::chars($_REQUEST['keyword'])), trim(Html::chars($_REQUEST['status'])),$start_date,$end_date, $company, $offset, REC_PER_PAGE);
@@ -1918,8 +1918,8 @@ class Controller_Transaction extends Controller_Siteadmin
         if(isset($_SESSION['download_set']))
         {
             $xls_output = $all_company_list;
-            $export_table_header = array(__('trip_id'),__('passenger_name'),__('mobile'),__('pickupplace'),__('payment_type'),__('fare'),__('pending_amt'),__('fare_notes'));
-            $export_table_field_select = array('trip_id','pass_name','phone','pickup','payment_type','fare','pending_amt','fare_notes');
+            $export_table_header = [__('trip_id'),__('passenger_name'),__('mobile'),__('pickupplace'),__('payment_type'),__('fare'),__('pending_amt'),__('fare_notes')];
+            $export_table_field_select = ['trip_id','pass_name','phone','pickup','payment_type','fare','pending_amt','fare_notes'];
 
             $heading = __('daily_sales_report');
 

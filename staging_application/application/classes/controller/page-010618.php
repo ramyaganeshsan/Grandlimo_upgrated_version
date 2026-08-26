@@ -421,7 +421,7 @@ Class Controller_Page extends Controller_Website
 
 		//print_r($_POST);print_r($_FILES);exit;
 
-		$errors = array();
+		$errors = [];
 		$post_values = $_POST;
 		/*$validator   = $this->cms->validate_resume_data($post_values, $_FILES);
 		//print_r($validator->check());exit;
@@ -467,7 +467,7 @@ Class Controller_Page extends Controller_Website
 
             	$status = $this->cms->add_resumes($post_values,$image_name);
 
-            	$replace_variables =  array('##USER##'=> $name,REPLACE_SITEURL => URL_BASE,  REPLACE_COPYRIGHTS => SITE_COPYRIGHT, REPLACE_COPYRIGHTYEAR => COPYRIGHT_YEAR,REPLACE_SITENAME => $this->app_name);
+            	$replace_variables =  ['##USER##'=> $name,REPLACE_SITEURL => URL_BASE,  REPLACE_COPYRIGHTS => SITE_COPYRIGHT, REPLACE_COPYRIGHTYEAR => COPYRIGHT_YEAR,REPLACE_SITENAME => $this->app_name];
 
             	$message = $this->emailtemplate->emailtemplate(DOCROOT . TEMPLATEPATH . 'careers_request.html', $replace_variables);
 

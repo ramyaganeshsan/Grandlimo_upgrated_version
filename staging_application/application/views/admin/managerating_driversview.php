@@ -28,7 +28,7 @@ if($total_drivers >0)
 					$title = isset($res['ratings_title']) ? $res['ratings_title'] : '-';
 					$tripid = isset($res['id']) ? $res['id'] : '';
 
-					$driver_tags = isset($res['driver_tags']) ? $res['driver_tags'] : array();
+					$driver_tags = isset($res['driver_tags']) ? $res['driver_tags'] : [];
 					$tags = implode(" , ",$driver_tags);
 					$passengers_log_id = $res['id'];
 				   //echo "<pre>";print_r($res);echo "</pre>";

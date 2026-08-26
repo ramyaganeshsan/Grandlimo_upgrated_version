@@ -387,7 +387,7 @@ if($total_transaction>0)
 		$promocode = isset($listings['promocode'])?$listings['promocode']:'-';
 		$fare = isset($listings['fare'][0])?$listings['fare'][0]:0;
 		$editedfare = isset($listings['total_fare_detail'])?$listings['total_fare_detail']:0;
-		$faredetail = isset($listings['fare_detail'])?$listings['fare_detail']:array();
+		$faredetail = isset($listings['fare_detail'])?$listings['fare_detail']:[];
 		$cancel_reason = isset($listings['cancel_reason'])?$listings['cancel_reason']:'-';
 		/* Sasidharan july 19 2023 */
 		$canceled_at = isset($listings['cancelation_time_string'])?$listings['cancelation_time_string']:'-';

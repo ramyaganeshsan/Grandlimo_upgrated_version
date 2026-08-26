@@ -2957,7 +2957,7 @@ class TCPDF {
 		if (empty($orientation)) {
 			$orientation = $default_orientation;
 		} else {
-			$orientation = strtoupper($orientation{0});
+			$orientation = strtoupper($orientation[0]);
 		}
 		if (in_array($orientation, $valid_orientations) AND ($orientation != $default_orientation)) {
 			$this->CurOrientation = $orientation;
@@ -7586,7 +7586,7 @@ class TCPDF {
 				$cached_file = false;
 			}
 		} else { // image file
-			if ($file{0} === '*') {
+			if ($file[0] === '*') {
 				// image as external stream
 				$file = substr($file, 1);
 				$exurl = $file;
@@ -7677,7 +7677,7 @@ class TCPDF {
 				// height difference
 				$hdiff = ($oldh - $h);
 				// vertical alignment
-				switch (strtoupper($fitbox{1})) {
+				switch (strtoupper($fitbox[1])) {
 					case 'T': {
 						break;
 					}
@@ -7698,7 +7698,7 @@ class TCPDF {
 				// width difference
 				$wdiff = ($oldw - $w);
 				// horizontal alignment
-				switch (strtoupper($fitbox{0})) {
+				switch (strtoupper($fitbox[0])) {
 					case 'L': {
 						if ($this->rtl) {
 							$x -= $wdiff;
@@ -7984,7 +7984,7 @@ class TCPDF {
 	public function set_mqr($mqr) {
 		if (!defined('PHP_VERSION_ID')) {
 			$version = PHP_VERSION;
-			define('PHP_VERSION_ID', (($version{0} * 10000) + ($version{2} * 100) + $version{4}));
+			define('PHP_VERSION_ID', (($version[0] * 10000) + ($version[2] * 100) + $version[4]));
 		}
 		if (PHP_VERSION_ID < 50300) {
 			@set_magic_quotes_runtime($mqr);
@@ -7999,7 +7999,7 @@ class TCPDF {
 	public function get_mqr() {
 		if (!defined('PHP_VERSION_ID')) {
 			$version = PHP_VERSION;
-			define('PHP_VERSION_ID', (($version{0} * 10000) + ($version{2} * 100) + $version{4}));
+			define('PHP_VERSION_ID', (($version[0] * 10000) + ($version[2] * 100) + $version[4]));
 		}
 		if (PHP_VERSION_ID < 50300) {
 			return @get_magic_quotes_runtime();
@@ -8134,7 +8134,7 @@ class TCPDF {
 		if (count($icc) > 0) {
 			ksort($icc);
 			$icc = implode('', $icc);
-			if ((ord($icc{36}) != 0x61) OR (ord($icc{37}) != 0x63) OR (ord($icc{38}) != 0x73) OR (ord($icc{39}) != 0x70)) {
+			if ((ord($icc[36]) != 0x61) OR (ord($icc[37]) != 0x63) OR (ord($icc[38]) != 0x73) OR (ord($icc[39]) != 0x70)) {
 				// invalid ICC profile
 				$icc = false;
 			}
@@ -8218,9 +8218,9 @@ class TCPDF {
 				// read transparency info
 				$t = $this->rfread($f, $n);
 				if ($ct == 0) {
-					$trns = array(ord($t{1}));
+					$trns = array(ord($t[1]));
 				} elseif ($ct == 2) {
-					$trns = array(ord($t{1}), ord($t{3}), ord($t{5}));
+					$trns = array(ord($t[1]), ord($t[3]), ord($t[5]));
 				} else {
 					$pos = strpos($t, chr(0));
 					if ($pos !== false) {
@@ -8566,7 +8566,7 @@ class TCPDF {
 			$dest = $dest ? 'D' : 'F';
 		}
 		$dest = strtoupper($dest);
-		if ($dest{0} != 'F') {
+		if ($dest[0] != 'F') {
 			$name = preg_replace('/[\s]+/', '_', $name);
 			$name = preg_replace('/[^a-zA-Z0-9_\.-]/', '', $name);
 		}
@@ -11344,7 +11344,7 @@ class TCPDF {
 				$font = file_get_contents($fontfile);
 				$compressed = (substr($file, -2) == '.z');
 				if ((!$compressed) AND (isset($info['length2']))) {
-					$header = (ord($font{0}) == 128);
+					$header = (ord($font[0]) == 128);
 					if ($header) {
 						// strip first binary header
 						$font = substr($font, 6);
@@ -13565,7 +13565,7 @@ class TCPDF {
 	 * @public
 	 */
 	public function addHtmlLink($url, $name, $fill=false, $firstline=false, $color='', $style=-1, $firstblock=false) {
-		if (!$this->empty_string($url) AND ($url{0} == '#')) {
+		if (!$this->empty_string($url) AND ($url[0] == '#')) {
 			// convert url to internal link
 			$lnkdata = explode(',', $url);
 			if (isset($lnkdata[0])) {
@@ -13690,7 +13690,7 @@ class TCPDF {
 			}
 			return $returncolor;
 		}
-		if ($color{0} != '#') {
+		if ($color[0] != '#') {
 			// COLOR NAME
 			if (isset($this->webcolor[$color])) {
 				// web color
@@ -16668,7 +16668,7 @@ class TCPDF {
 		$k = $this->k;
 		$this->javascript .= sprintf("f".$name."=this.addField('%s','%s',%u,[%F,%F,%F,%F]);", $name, $type, $this->PageNo()-1, $x*$k, ($this->h-$y)*$k+1, ($x+$w)*$k, ($this->h-$y-$h)*$k+1)."\n";
 		$this->javascript .= 'f'.$name.'.textSize='.$this->FontSizePt.";\n";
-		while (list($key, $val) = each($prop)) {
+		foreach ($prop as $key => $val) {
 			if (strcmp(substr($key, -5), 'Color') == 0) {
 				$val = $this->_JScolor($val);
 			} else {
@@ -19142,7 +19142,7 @@ class TCPDF {
 		// check page for no-write regions and adapt page margins if necessary
 		list($x, $y) = $this->checkPageRegions($h, $x, $y);
 		$k = $this->k;
-		if ($file{0} === '@') { // image from string
+		if ($file[0] === '@') { // image from string
 			$data = substr($file, 1);
 		} else { // EPS/AI file
 			$data = file_get_contents($file);
@@ -19255,7 +19255,7 @@ class TCPDF {
 		$cnt = count($lines);
 		for ($i=0; $i < $cnt; ++$i) {
 			$line = $lines[$i];
-			if (($line == '') OR ($line{0} == '%')) {
+			if (($line == '') OR ($line[0] == '%')) {
 				continue;
 			}
 			$len = strlen($line);
@@ -20351,7 +20351,7 @@ class TCPDF {
 				$attrib = strtolower(trim($attrib[0]));
 				if (!empty($attrib)) {
 					// check if matches class, id, attribute, pseudo-class or pseudo-element
-					switch ($attrib{0}) {
+					switch ($attrib[0]) {
 						case '.': { // class
 							if (in_array(substr($attrib, 1), $class)) {
 								$valid = true;
@@ -20418,7 +20418,7 @@ class TCPDF {
 							break;
 						}
 						case ':': { // pseudo-class or pseudo-element
-							if ($attrib{1} == ':') { // pseudo-element
+							if ($attrib[1] == ':') { // pseudo-element
 								// pseudo-elements are not supported!
 								// (::first-line, ::first-letter, ::before, ::after)
 							} else { // pseudo-class
@@ -21097,7 +21097,7 @@ class TCPDF {
 				$tagname = strtolower($tag[1]);
 				// check if we are inside a table header
 				if ($tagname == 'thead') {
-					if ($element{0} == '/') {
+					if ($element[0] == '/') {
 						$thead = false;
 					} else {
 						$thead = true;
@@ -21112,7 +21112,7 @@ class TCPDF {
 				} else {
 					$dom[$key]['block'] = false;
 				}
-				if ($element{0} == '/') {
+				if ($element[0] == '/') {
 					// *** closing html tag
 					$dom[$key]['opening'] = false;
 					$dom[$key]['parent'] = end($level);
@@ -21208,7 +21208,7 @@ class TCPDF {
 					// get attributes
 					preg_match_all('/([^=\s]*)[\s]*=[\s]*"([^"]*)"/', $element, $attr_array, PREG_PATTERN_ORDER);
 					$dom[$key]['attribute'] = array(); // reset attribute array
-					while (list($id, $name) = each($attr_array[1])) {
+					foreach ($attr_array[1] as $id => $name) {
 						$dom[$key]['attribute'][strtolower($name)] = $attr_array[2][$id];
 					}
 					if (!empty($css)) {
@@ -21221,7 +21221,7 @@ class TCPDF {
 						// get style attributes
 						preg_match_all('/([^;:\s]*):([^;]*)/', $dom[$key]['attribute']['style'], $style_array, PREG_PATTERN_ORDER);
 						$dom[$key]['style'] = array(); // reset style attribute array
-						while (list($id, $name) = each($style_array[1])) {
+						foreach ($style_array[1] as $id => $name) {
 							// in case of duplicate attribute the last replace the previous
 							$dom[$key]['style'][strtolower($name)] = trim($style_array[2][$id]);
 						}
@@ -21353,13 +21353,13 @@ class TCPDF {
 							foreach ($decors as $dec) {
 								$dec = trim($dec);
 								if (!$this->empty_string($dec)) {
-									if ($dec{0} == 'u') {
+									if ($dec[0] == 'u') {
 										// underline
 										$dom[$key]['fontstyle'] .= 'U';
-									} elseif ($dec{0} == 'l') {
+									} elseif ($dec[0] == 'l') {
 										// line-trough
 										$dom[$key]['fontstyle'] .= 'D';
-									} elseif ($dec{0} == 'o') {
+									} elseif ($dec[0] == 'o') {
 										// overline
 										$dom[$key]['fontstyle'] .= 'O';
 									}
@@ -22394,16 +22394,18 @@ Putting 1 is equivalent to putting 0 and calling Ln() just after. Default value:
 											}
 											// justify block
 											$pmid = preg_replace_callback('/([0-9\.\+\-]*)[\s]('.$strpiece[1][0].')[\s]('.$strpiece[2][0].')([\s]*)/x',
-												create_function('$matches', 'global $spacew;
+												function ($matches) {
+												global $spacew;
 												$newx = sprintf("%F",(floatval($matches[1]) + $spacew));
-												return "".$newx." ".$matches[2]." x*#!#*x".$matches[3].$matches[4];'), $pmid, 1);
+												return "".$newx." ".$matches[2]." x*#!#*x".$matches[3].$matches[4];
+												}, $pmid, 1);
 											break;
 										}
 										case 're': {
 											// justify block
 											if (!$this->empty_string($this->lispacer)) {
 												$this->lispacer = '';
-												continue;
+												continue 2;
 											}
 											preg_match('/([0-9\.\+\-]*)[\s]([0-9\.\+\-]*)[\s]([0-9\.\+\-]*)[\s]('.$strpiece[1][0].')[\s](re)([\s]*)/x', $pmid, $xmatches);
 											$currentxpos = $xmatches[1];
@@ -22436,10 +22438,12 @@ Putting 1 is equivalent to putting 0 and calling Ln() just after. Default value:
 												}
 											}
 											$pmid = preg_replace_callback('/('.$xmatches[1].')[\s]('.$xmatches[2].')[\s]('.$xmatches[3].')[\s]('.$strpiece[1][0].')[\s](re)([\s]*)/x',
-												create_function('$matches', 'global $x_diff, $w_diff;
+												function ($matches) {
+												global $x_diff, $w_diff;
 												$newx = sprintf("%F",(floatval($matches[1]) + $x_diff));
 												$neww = sprintf("%F",(floatval($matches[3]) + $w_diff));
-												return "".$newx." ".$matches[2]." ".$neww." ".$matches[4]." x*#!#*x".$matches[5].$matches[6];'), $pmid, 1);
+												return "".$newx." ".$matches[2]." ".$neww." ".$matches[4]." x*#!#*x".$matches[5].$matches[6];
+												}, $pmid, 1);
 											break;
 										}
 										case 'c': {
@@ -22448,11 +22452,13 @@ Putting 1 is equivalent to putting 0 and calling Ln() just after. Default value:
 											$currentxpos = $xmatches[1];
 											// justify block
 											$pmid = preg_replace_callback('/('.$xmatches[1].')[\s]('.$xmatches[2].')[\s]('.$xmatches[3].')[\s]('.$xmatches[4].')[\s]('.$xmatches[5].')[\s]('.$strpiece[1][0].')[\s](c)([\s]*)/x',
-												create_function('$matches', 'global $spacew;
+												function ($matches) {
+												global $spacew;
 												$newx1 = sprintf("%F",(floatval($matches[1]) + $spacew));
 												$newx2 = sprintf("%F",(floatval($matches[3]) + $spacew));
 												$newx3 = sprintf("%F",(floatval($matches[5]) + $spacew));
-												return "".$newx1." ".$matches[2]." ".$newx2." ".$matches[4]." ".$newx3." ".$matches[6]." x*#!#*x".$matches[7].$matches[8];'), $pmid, 1);
+												return "".$newx1." ".$matches[2]." ".$newx2." ".$matches[4]." ".$newx3." ".$matches[6]." x*#!#*x".$matches[7].$matches[8];
+												}, $pmid, 1);
 											break;
 										}
 									}
@@ -22500,10 +22506,12 @@ Putting 1 is equivalent to putting 0 and calling Ln() just after. Default value:
 									$pmidtemp = preg_replace('/[\\\][\(]/x', '\\#!#OP#!#', $pmidtemp);
 									$pmidtemp = preg_replace('/[\\\][\)]/x', '\\#!#CP#!#', $pmidtemp);
 									$pmid = preg_replace_callback("/\[\(([^\)]*)\)\]/x",
-												create_function('$matches', 'global $spacew;
+												function ($matches) {
+												global $spacew;
 												$matches[1] = str_replace("#!#OP#!#", "(", $matches[1]);
 												$matches[1] = str_replace("#!#CP#!#", ")", $matches[1]);
-												return "[(".str_replace(chr(0).chr(32), ") ".sprintf("%F", $spacew)." (", $matches[1]).")]";'), $pmidtemp);
+												return "[(".str_replace(chr(0).chr(32), ") ".sprintf("%F", $spacew)." (", $matches[1]).")]";
+												}, $pmidtemp);
 									if ($this->inxobj) {
 										// we are inside an XObject template
 										$this->xobjects[$this->xobjid]['outdata'] = $pstart."\n".$pmid."\n".$pend;
@@ -23441,7 +23449,7 @@ Putting 1 is equivalent to putting 0 and calling Ln() just after. Default value:
 					$imglink = '';
 					if (isset($this->HREF['url']) AND !$this->empty_string($this->HREF['url'])) {
 						$imglink = $this->HREF['url'];
-						if ($imglink{0} == '#') {
+						if ($imglink[0] == '#') {
 							// convert url to internal link
 							$lnkdata = explode(',', $imglink);
 							if (isset($lnkdata[0])) {
@@ -25696,7 +25704,8 @@ Putting 1 is equivalent to putting 0 and calling Ln() just after. Default value:
 		$jfrompage = $frompage;
 		$jtopage = $topage;
 		$this->javascript = preg_replace_callback('/this\.addField\(\'([^\']*)\',\'([^\']*)\',([0-9]+)/',
-			create_function('$matches', 'global $jfrompage, $jtopage;
+			function ($matches) {
+			global $jfrompage, $jtopage;
 			$pagenum = intval($matches[3]) + 1;
 			if (($pagenum >= $jtopage) AND ($pagenum < $jfrompage)) {
 				$newpage = ($pagenum + 1);
@@ -25706,7 +25715,8 @@ Putting 1 is equivalent to putting 0 and calling Ln() just after. Default value:
 				$newpage = $pagenum;
 			}
 			--$newpage;
-			return "this.addField(\'".$matches[1]."\',\'".$matches[2]."\',".$newpage."";'), $tmpjavascript);
+			return "this.addField('".$matches[1]."','".$matches[2]."',".$newpage."";
+			}, $tmpjavascript);
 		// return to last page
 		$this->lastPage(true);
 		return true;
@@ -25876,7 +25886,8 @@ Putting 1 is equivalent to putting 0 and calling Ln() just after. Default value:
 		global $jpage;
 		$jpage = $page;
 		$this->javascript = preg_replace_callback('/this\.addField\(\'([^\']*)\',\'([^\']*)\',([0-9]+)/',
-			create_function('$matches', 'global $jpage;
+			function ($matches) {
+			global $jpage;
 			$pagenum = intval($matches[3]) + 1;
 			if ($pagenum >= $jpage) {
 				$newpage = ($pagenum - 1);
@@ -25886,7 +25897,8 @@ Putting 1 is equivalent to putting 0 and calling Ln() just after. Default value:
 				$newpage = $pagenum;
 			}
 			--$newpage;
-			return "this.addField(\'".$matches[1]."\',\'".$matches[2]."\',".$newpage."";'), $tmpjavascript);
+			return "this.addField('".$matches[1]."','".$matches[2]."',".$newpage."";
+			}, $tmpjavascript);
 		// return to last page
 		$this->lastPage(true);
 		return true;
@@ -27471,7 +27483,7 @@ Putting 1 is equivalent to putting 0 and calling Ln() just after. Default value:
 			// convert SVG to raster image using GD or ImageMagick libraries
 			return $this->Image($file, $x, $y, $w, $h, 'SVG', $link, $align, true, 300, $palign, false, false, $border, false, false, false);
 		}
-		if ($file{0} === '@') { // image from string
+		if ($file[0] === '@') { // image from string
 			$this->svgdir = '';
 			$svgdata = substr($file, 1);
 		} else { // SVG file
@@ -28974,7 +28986,7 @@ Putting 1 is equivalent to putting 0 and calling Ln() just after. Default value:
 						$img = '@'.base64_decode(substr($img, strlen($m[0])));
 					} else {
 						// fix image path
-						if (!$this->empty_string($this->svgdir) AND (($img{0} == '.') OR (basename($img) == $img))) {
+						if (!$this->empty_string($this->svgdir) AND (($img[0] == '.') OR (basename($img) == $img))) {
 							// replace relative path with full server path
 							$img = $this->svgdir.'/'.$img;
 						}

@@ -50,38 +50,38 @@ Class Model_Manage extends Model
 		
 		//MongoDB
 		if($find_count) {
-			$ops = array(
-				array('$match' => array('user_type'=>'C','status'=>array('$ne'=>'T'))),
-				array(
-						'$lookup' => array(
+			$ops = [
+				['$match' => ['user_type'=>'C','status'=>['$ne'=>'T']]],
+				[
+						'$lookup' => [
 						'from'=>MDB_COMPANY,
 						'localField'=> "company_id",
 						'foreignField' => "_id",
 						'as'=> "cdetails"
-						)
-					),
-				array(
-					'$project' => array(
+						]
+					],
+				[
+					'$project' => [
 					'id' => '$_id',
-					)
-				)
-			);
+					]
+				]
+			];
 			$result = $this->mongo_db->aggregate(MDB_PEOPLE,$ops);
 			//echo '<pre>';print_r($result);//exit;
 			return (!empty($result['result']))?count($result['result']):0;
 		} else {
-			$ops = array(
-				array('$match' => array('user_type'=>'C','status'=>array('$ne'=>'T'))),
-				array(
-						'$lookup' => array(
+			$ops = [
+				['$match' => ['user_type'=>'C','status'=>['$ne'=>'T']]],
+				[
+						'$lookup' => [
 						'from'=>MDB_COMPANY,
 						'localField'=> "company_id",
 						'foreignField' => "_id",
 						'as'=> "cdetails"
-						)
-					),
-				array(
-					'$project' => array(
+						]
+					],
+				[
+					'$project' => [
 					'company_status' => '$cdetails.companydetails.company_status',
 					'company_name' => '$cdetails.companydetails.company_name',
 					'company_address' => '$cdetails.companydetails.company_address',
@@ -90,23 +90,23 @@ Class Model_Manage extends Model
 					'email' => '$email',
 					'user_type' => '$user_type',
 					'id' => '$_id',
-					)
-				),
-				array(
-					'$sort' => array(
+					]
+				],
+				[
+					'$sort' => [
 						'company_id' => -1
-					),
-				),
-				array(
+					],
+				],
+				[
 					'$skip' => (int)$offset
-				),
-				array(
+				],
+				[
 				  '$limit' => (int)$val
-				)
-			);
+				]
+			];
 			//echo '<pre>';print_r($result);//exit;
 			$result = $this->mongo_db->aggregate(MDB_PEOPLE,$ops);
-			$details = array();
+			$details = [];
 			if(!empty($result['result'])){
 				foreach ($result['result'] as $key => $res) {
 					$details[$key]['no_of_taxi']      = $this->taxicount($res['company_id']);
@@ -160,46 +160,46 @@ Class Model_Manage extends Model
 		
 		//MongoDB with aggregate process only
 		if((!empty($keyword)) && (!empty($status))) {
-			$srch_query = array( "\$and" => array(array('user_type' => 'C' ),array('status' => $status ),array("\$or"=>array(array( 'name' => new MongoRegex("/$keyword/i")) , array( 'lastname' => new MongoRegex("/$keyword/i") ),array( 'email' => new MongoRegex("/$keyword/i") ),array( 'cdetails.companydetails.company_name' => new MongoRegex("/$keyword/i") ) ) ) ) );
+			$srch_query = [ "\$and" => [['user_type' => 'C' ],['status' => $status ],["\$or"=>[[ 'name' => new \MongoDB\BSON\Regex($keyword, 'i')] , [ 'lastname' => new \MongoDB\BSON\Regex($keyword, 'i') ],[ 'email' => new \MongoDB\BSON\Regex($keyword, 'i') ],[ 'cdetails.companydetails.company_name' => new \MongoDB\BSON\Regex($keyword, 'i') ] ] ] ] ];
 		} else if (!empty($keyword)) {
-			$srch_query = array( "\$and" => array(array('user_type' => 'C' ),array("\$or"=>array(array( 'name' => new MongoRegex("/$keyword/i")) , array( 'lastname' => new MongoRegex("/$keyword/i") ),array( 'email' => new MongoRegex("/$keyword/i") ),array( 'cdetails.companydetails.company_name' => new MongoRegex("/$keyword/i") ) ) ) ) );
+			$srch_query = [ "\$and" => [['user_type' => 'C' ],["\$or"=>[[ 'name' => new \MongoDB\BSON\Regex($keyword, 'i')] , [ 'lastname' => new \MongoDB\BSON\Regex($keyword, 'i') ],[ 'email' => new \MongoDB\BSON\Regex($keyword, 'i') ],[ 'cdetails.companydetails.company_name' => new \MongoDB\BSON\Regex($keyword, 'i') ] ] ] ] ];
 		} else if (!empty($status)) {
-			$srch_query = array( "\$and" => array(array('user_type' => 'C' ),array('status' => $status )));
+			$srch_query = [ "\$and" => [['user_type' => 'C' ],['status' => $status ]]];
 		}
 		//echo '<pre>';print_r($srch_query);//exit;
 		if($find_count) {
-			$ops = array(
-				array('$match' => $srch_query),
-				array(
-						'$lookup' => array(
+			$ops = [
+				['$match' => $srch_query],
+				[
+						'$lookup' => [
 						'from'=>MDB_COMPANY,
 						'localField'=> "company_id",
 						'foreignField' => "_id",
 						'as'=> "cdetails"
-						)
-					),
-				array(
-					'$project' => array(
+						]
+					],
+				[
+					'$project' => [
 					'id' => '$_id',
-					)
-				),
-			);
+					]
+				],
+			];
 			$result = $this->mongo_db->aggregate(MDB_PEOPLE,$ops);
 			//echo '<pre>';print_r($result);//exit;
 			return (!empty($result['result']))?count($result['result']):0;
 		} else {
-			$ops = array(
-				array('$match' => $srch_query),
-				array(
-						'$lookup' => array(
+			$ops = [
+				['$match' => $srch_query],
+				[
+						'$lookup' => [
 						'from'=>MDB_COMPANY,
 						'localField'=> "company_id",
 						'foreignField' => "_id",
 						'as'=> "cdetails"
-						)
-					),
-				array(
-					'$project' => array(
+						]
+					],
+				[
+					'$project' => [
 					'company_status' => '$cdetails.companydetails.company_status',
 					'company_name' => '$cdetails.companydetails.company_name',
 					'company_address' => '$cdetails.companydetails.company_address',
@@ -208,23 +208,23 @@ Class Model_Manage extends Model
 					'email' => '$email',
 					'user_type' => '$user_type',
 					'id' => '$_id',
-					)
-				),
-				array(
-					'$sort' => array(
+					]
+				],
+				[
+					'$sort' => [
 						'company_id' => -1
-					),
-				),
-				array(
+					],
+				],
+				[
 					'$skip' => (int)$offset
-				),
-				array(
+				],
+				[
 				  '$limit' => (int)$val
-				)
-			);
+				]
+			];
 			$result = $this->mongo_db->aggregate(MDB_PEOPLE,$ops);
 			//echo '<pre>else';print_r($result);exit;
-			$details = array();
+			$details = [];
 			if(!empty($result['result'])){
 				foreach ($result['result'] as $key => $res) {
 					$details[$key]['no_of_taxi']      = $this->taxicount($res['company_id']);
@@ -247,30 +247,30 @@ Class Model_Manage extends Model
 	public function get_allcompany( $status="")
     {
 		if ($status != "") {
-			$arguments = array(
-				array(
-					'$match' => array('companydetails.company_status'=>$status)
-				),
-				array(
-					'$project' => array(
+			$arguments = [
+				[
+					'$match' => ['companydetails.company_status'=>$status]
+				],
+				[
+					'$project' => [
 						'cid' => '$_id',
 						'company_name' => '$companydetails.company_name'
-					)
-				)
-			);
+					]
+				]
+			];
 		}else{
-			$arguments = array(
-				array(
-					'$project' => array(
+			$arguments = [
+				[
+					'$project' => [
 						'cid' => '$_id',
 						'company_name' => '$companydetails.company_name'
-					)
-				)
-			);
+					]
+				]
+			];
 		}
 		$result    = $this->mongo_db->aggregate(MDB_COMPANY, $arguments);
 		//echo "<pre>"; print_r($result['result']); exit;
-		return (!empty($result['result'])) ? $result['result'] : array();
+		return (!empty($result['result'])) ? $result['result'] : [];
     }
 	
 	/*public static function get_allcompany($status = "")
@@ -287,7 +287,7 @@ Class Model_Manage extends Model
         return count($result);*/
 		
 		//MongoDB
-		$result = $this->mongo_db->count(MDB_PACKAGE_REPORT,array('upgrade_companyid'=>(int)$cid));
+		$result = $this->mongo_db->count(MDB_PACKAGE_REPORT,['upgrade_companyid'=>(int)$cid]);
 		return (!empty($result))?$result:0;
     }
     public function get_front_company_request($activeids)
@@ -310,8 +310,8 @@ Class Model_Manage extends Model
 		//MongoDB
 		//Here changing array values with string to integers values
 		$active_ids = Commonfunction::mongo_format_array($activeids);
-		$result = $this->mongo_db->update(MDB_PEOPLE,array('_id'=>array('$in'=>$active_ids),'user_type'=>'C'),array('$set'=>array('status' => 'A')),array('multiple'=>true));
-		$result1 = $this->mongo_db->update(MDB_COMPANY,array('companydetails.userid'=>array('$in'=>$active_ids)),array('$set'=>array('companydetails.company_status' => 'A')),array('multiple'=>true));
+		$result = $this->mongo_db->update(MDB_PEOPLE,['_id'=>['$in'=>$active_ids],'user_type'=>'C'],['$set'=>['status' => 'A']],['multiple'=>true]);
+		$result1 = $this->mongo_db->update(MDB_COMPANY,['companydetails.userid'=>['$in'=>$active_ids]],['$set'=>['companydetails.company_status' => 'A']],['multiple'=>true]);
 		return (empty($result['err']) && empty($result1['err']))?1:$result['errmsg'];
     }
     public function block_company_request($activeids)
@@ -330,8 +330,8 @@ Class Model_Manage extends Model
 		//Here changing array values with string to integers values
 		$active_ids = Commonfunction::mongo_format_array($activeids);
 		//var_dump($active_ids);exit;
-		$result = $this->mongo_db->update(MDB_PEOPLE,array('_id'=>array('$in'=>$active_ids),'user_type'=>'C'),array('$set'=>array('status' => 'D')),array('multiple'=>true));
-		$result1 = $this->mongo_db->update(MDB_COMPANY,array('companydetails.userid'=>array('$in'=>$active_ids)),array('$set'=>array('companydetails.company_status' => 'D')),array('multiple'=>true));
+		$result = $this->mongo_db->update(MDB_PEOPLE,['_id'=>['$in'=>$active_ids],'user_type'=>'C'],['$set'=>['status' => 'D']],['multiple'=>true]);
+		$result1 = $this->mongo_db->update(MDB_COMPANY,['companydetails.userid'=>['$in'=>$active_ids]],['$set'=>['companydetails.company_status' => 'D']],['multiple'=>true]);
 		//echo '<pre>';print_r($result);print_r($result1);exit;
 		return (empty($result['err']) && empty($result1['err']))?1:$result['errmsg'];
     }
@@ -348,8 +348,8 @@ Class Model_Manage extends Model
 		//MongoDB
 		//Here changing array values with string to integers values
 		$active_ids = Commonfunction::mongo_format_array($activeids);
-		$result = $this->mongo_db->update(MDB_PEOPLE,array('_id'=>array('$in'=>$active_ids),'user_type'=>'C'),array('$set'=>array('status' => 'T')),array('multiple'=>true));
-		$result1 = $this->mongo_db->update(MDB_COMPANY,array('companydetails.userid'=>array('$in'=>$active_ids)),array('$set'=>array('companydetails.company_status' => 'T')),array('multiple'=>true));
+		$result = $this->mongo_db->update(MDB_PEOPLE,['_id'=>['$in'=>$active_ids],'user_type'=>'C'],['$set'=>['status' => 'T']],['multiple'=>true]);
+		$result1 = $this->mongo_db->update(MDB_COMPANY,['companydetails.userid'=>['$in'=>$active_ids]],['$set'=>['companydetails.company_status' => 'T']],['multiple'=>true]);
 		return (empty($result['err']) && empty($result1['err']))?1:$result['errmsg'];
     }
     public function driver_list()
@@ -380,9 +380,9 @@ Class Model_Manage extends Model
 		$country_id                      = $this->country_id;
 		$state_id                        = $this->state_id;
 		$city_id                         = $this->city_id;
-		$match_query                     = array();
+		$match_query                     = [];
 		$match_query['people.user_type'] = 'D';
-		$match_query['people.status']    = array('$ne' => 'T');
+		$match_query['people.status']    = ['$ne' => 'T'];
 		
 		if ($usertype == 'M' ||$usertype == 'A' ) {
 			$match_query['people.company_id']    = (int) $company_id;
@@ -398,81 +398,81 @@ Class Model_Manage extends Model
 			$match_query['people.company_id'] = (int) $company_id;
 		}
 		//echo "<pre>"; print_r($match_query); exit;
-		$common_arguments = array(
-			array(
+		$common_arguments = [
+			[
 				'$unwind' => '$stateinfo'
-			),
-			array(
+			],
+			[
 				'$unwind' => '$stateinfo.cityinfo'
-			),
-			array(
-				'$lookup' => array(
+			],
+			[
+				'$lookup' => [
 					'from' => MDB_PEOPLE,
 					'localField' => 'stateinfo.cityinfo.city_id',
 					'foreignField' => 'login_country',
 					'foreignField' => 'login_city',
 					'as' => 'people'
-				)
-			),
-			array(
+				]
+			],
+			[
 				'$unwind' => '$people'
-			),
-			array(
-				'$lookup' => array(
+			],
+			[
+				'$lookup' => [
 					'from' => MDB_COMPANY,
 					'localField' => 'people.company_id',
 					'foreignField' => '_id',
 					'as' => 'company'
-				)
-			),
-			array(
+				]
+			],
+			[
 				'$unwind' => '$company'
-			),
-			array(
-				'$lookup' => array(
+			],
+			[
+				'$lookup' => [
 					'from' => MDB_DRIVER_INFO,
 					'localField' => 'people._id',
 					'foreignField' => '_id',
 					'as' => 'driver'
-				)
-			),
-			array(
+				]
+			],
+			[
 				'$unwind' => '$driver'
-			),
-			array(
+			],
+			[
 				'$match' => $match_query
-			),
-		);
+			],
+		];
 		
 		if ($find_count == TRUE) {
-			$count_arguments = array(
-				array(
-					'$project' => array(
+			$count_arguments = [
+				[
+					'$project' => [
 						'result' => '$people._id'
-					)
-				),
-				array(
-					'$group' => array(
+					]
+				],
+				[
+					'$group' => [
 						'_id' => NULL,
-						'count' => array(
+						'count' => [
 							'$sum' => 1
-						)
-					)
-				)
-			);
+						]
+					]
+				]
+			];
 			$merge_arguments = array_merge($common_arguments, $count_arguments);
 			$result          = $this->mongo_db->aggregate(MDB_CSC, $merge_arguments);
 			//echo "<pre>";print_r($result['result']);exit;
 			return (!empty($result['result']) && isset($result['result'][0]['count'])) ? $result['result'][0]['count'] : 0;
 		} else {
-			$field_arguments = array(
-				array(
-					'$sort' => array( 
+			$field_arguments = [
+				[
+					'$sort' => [ 
 						'people.created_date' => -1
-					),
-				),
-				array(
-					'$project' => array(
+					],
+				],
+				[
+					'$project' => [
 						'id' => '$people._id',
 						'created_by' => '$people.user_createdby',
 						'name' => '$people.name',
@@ -494,16 +494,16 @@ Class Model_Manage extends Model
 						'cid' => '$company.companydetails.userid',
 						'photo' => '$people.profile_picture',
 						'driver_status' => '$people.status',
-					)
-				),
-				array('$skip'	=> (int)$offset ),
-				array('$limit'	=> (int)$val )
-			);
+					]
+				],
+				['$skip'	=> (int)$offset ],
+				['$limit'	=> (int)$val ]
+			];
 			$merge_arguments = array_merge($common_arguments, $field_arguments);
 			$result    = $this->mongo_db->aggregate(MDB_CSC, $merge_arguments);
 			//echo "<pre>";print_r($merge_arguments); exit;
 			//echo "<pre>";print_r($result['result']); exit;
-			return (!empty($result['result'])) ? $result['result'] : array();
+			return (!empty($result['result'])) ? $result['result'] : [];
 		}
     }
    
@@ -520,7 +520,7 @@ Class Model_Manage extends Model
 		//MongoDB
 		//Here changing array values with string to integers values
 		$active_ids = Commonfunction::mongo_format_array($activeids);
-		$res = $this->mongo_db->update(MDB_PEOPLE,array('_id'=>array('$in'=>$active_ids)),array('$set'=>array('status' => 'A')),array('multiple'=>true));
+		$res = $this->mongo_db->update(MDB_PEOPLE,['_id'=>['$in'=>$active_ids]],['$set'=>['status' => 'A']],['multiple'=>true]);
 		return (empty($res['err']))?1:$res['errmsg'];
     }
     public function block_driver_request($activeids)
@@ -536,7 +536,7 @@ Class Model_Manage extends Model
 		//MongoDB
 		//Here changing array values with string to integers values
 		$active_ids = Commonfunction::mongo_format_array($activeids);
-		$res = $this->mongo_db->update(MDB_PEOPLE,array('_id'=>array('$in'=>$active_ids)),array('$set'=>array('status' => 'D')),array('multiple'=>true));
+		$res = $this->mongo_db->update(MDB_PEOPLE,['_id'=>['$in'=>$active_ids]],['$set'=>['status' => 'D']],['multiple'=>true]);
 		return (empty($res['err']))?1:$res['errmsg'];
     }
     public function motor_list()
@@ -559,9 +559,9 @@ Class Model_Manage extends Model
         //check whether id is exist in checkbox or single active request
         //==================================================================
         //$arr_chk = " motor_id in ('" . implode("','",$activeids) . "') ";	
-        $result = DB::update(MOTORCOMPANY)->set(array(
+        $result = DB::update(MOTORCOMPANY)->set([
             'motor_status' => 'A'
-        ))->where('motor_id', 'IN', $activeids)->execute();
+        ])->where('motor_id', 'IN', $activeids)->execute();
         return count($result);
     }
     public function block_motor_request($activeids)
@@ -569,9 +569,9 @@ Class Model_Manage extends Model
         //check whether id is exist in checkbox or single active request
         //==================================================================
         // $arr_chk = " motor_id in ('" . implode("','",$activeids) . "') ";	
-        $result = DB::update(MOTORCOMPANY)->set(array(
+        $result = DB::update(MOTORCOMPANY)->set([
             'motor_status' => 'D'
-        ))->where('motor_id', 'IN', $activeids)->execute();
+        ])->where('motor_id', 'IN', $activeids)->execute();
         return count($result);
     }
     public function model_list()
@@ -586,12 +586,12 @@ Class Model_Manage extends Model
 		
 		//MongoDB
 		if($find_count){
-			$result = $this->mongo_db->count(MDB_MOTOR_MODEL,array('model_status'=>array('$ne'=>'T')),array('_id','model_name','model_status','priority'));
+			$result = $this->mongo_db->count(MDB_MOTOR_MODEL,['model_status'=>['$ne'=>'T']],['_id','model_name','model_status','priority']);
 			return $result;
 		} else {
-			$result = $this->mongo_db->find(MDB_MOTOR_MODEL,array('model_status'=>array('$ne'=>'T')),array('_id','model_name','model_status','priority'))->sort(array('_id'=>1))->skip($offset)->limit($val);
+			$result = $this->mongo_db->find(MDB_MOTOR_MODEL,['model_status'=>['$ne'=>'T']],['_id','model_name','model_status','priority'])->sort(['_id'=>1])->skip($offset)->limit($val);
 			//echo '<pre>';print_r(iterator_to_array($result));exit;
-			return (!empty($result))?iterator_to_array($result):array();
+			return (!empty($result))?iterator_to_array($result):[];
 		}
     }
 	public function get_all_model_searchlist($keyword = "", $status = "", $offset = "", $val = "",$find_count=false)
@@ -612,19 +612,19 @@ Class Model_Manage extends Model
 		
 		//MongoDB
 		if((!empty($keyword)) && (!empty($status))) {
-			$srch_query = array( "\$and" => array(array( "model_name" => new MongoRegex("/$keyword/i")) , array("model_status" => $status ) ) );
+			$srch_query = [ "\$and" => [[ "model_name" => new \MongoDB\BSON\Regex($keyword, 'i')] , ["model_status" => $status ] ] ];
 		} else if (!empty($keyword)) {
-			$srch_query = array( "model_name" => new MongoRegex("/$keyword/i"));
+			$srch_query = [ "model_name" => new \MongoDB\BSON\Regex($keyword, 'i')];
 		} else if (!empty($status)) {
-			$srch_query = array("model_status" => $status );
+			$srch_query = ["model_status" => $status ];
 		}
 		//print_r($srch_query);exit;
 		if($find_count) {
 			$res = $this->mongo_db->count(MDB_MOTOR_MODEL,$srch_query);
 			return $res;
 		} else {
-			$res = $this->mongo_db->find(MDB_MOTOR_MODEL,$srch_query,array('_id','model_name','model_status','priority'))->sort(array('model_name'=>-1))->skip($offset)->limit($val);
-			return (!empty($res))?iterator_to_array($res):array();
+			$res = $this->mongo_db->find(MDB_MOTOR_MODEL,$srch_query,['_id','model_name','model_status','priority'])->sort(['model_name'=>-1])->skip($offset)->limit($val);
+			return (!empty($res))?iterator_to_array($res):[];
 		}
     }
 	public function block_model_request($activeids)
@@ -640,7 +640,7 @@ Class Model_Manage extends Model
 		//MongoDB
 		//Here changing array values with string to integers values
 		$active_ids = Commonfunction::mongo_format_array($activeids);
-		$res = $this->mongo_db->update(MDB_MOTOR_MODEL,array('_id'=>array('$in'=>$active_ids)),array('$set'=>array('model_status' => 'D')),array('multiple'=>true));
+		$res = $this->mongo_db->update(MDB_MOTOR_MODEL,['_id'=>['$in'=>$active_ids]],['$set'=>['model_status' => 'D']],['multiple'=>true]);
 		return (empty($res['err']))?1:$res['errmsg'];
     }
 	public function active_model_request($activeids)
@@ -656,7 +656,7 @@ Class Model_Manage extends Model
 		//MongoDB
 		//Here changing array values with string to integers values
 		$active_ids = Commonfunction::mongo_format_array($activeids);
-		$res = $this->mongo_db->update(MDB_MOTOR_MODEL,array('_id'=>array('$in'=>$active_ids)),array('$set'=>array('model_status' => 'A')),array('multiple'=>true));
+		$res = $this->mongo_db->update(MDB_MOTOR_MODEL,['_id'=>['$in'=>$active_ids]],['$set'=>['model_status' => 'A']],['multiple'=>true]);
 		return (empty($res['err']))?1:$res['errmsg'];
     }
 	public function trash_model_request($activeids)
@@ -669,7 +669,7 @@ Class Model_Manage extends Model
 		//MongoDB
 		//Here changing array values with string to integers values
 		$active_ids = Commonfunction::mongo_format_array($activeids);
-		$res = $this->mongo_db->update(MDB_MOTOR_MODEL,array('_id'=>array('$in'=>$active_ids)),array('$set'=>array('model_status' => 'T')),array('multiple'=>true));
+		$res = $this->mongo_db->update(MDB_MOTOR_MODEL,['_id'=>['$in'=>$active_ids]],['$set'=>['model_status' => 'T']],['multiple'=>true]);
 		return (empty($res['err']))?1:$res['errmsg'];
     }
 	public function model_motordetails($uid)
@@ -677,9 +677,9 @@ Class Model_Manage extends Model
         /*$result = DB::select()->from(MOTORMODEL)->join(MOTORCOMPANY, 'LEFT')->on(MOTORMODEL . '.motor_mid', '=', MOTORCOMPANY . '.motor_id')->where(MOTORMODEL . '.model_id', '=', $uid)->execute()->as_array();
         return $result;*/
 	
-		$result = $this->mongo_db->find_one(MDB_MOTOR_MODEL,array("_id"=>(int)$uid));
+		$result = $this->mongo_db->find_one(MDB_MOTOR_MODEL,["_id"=>(int)$uid]);
 //echo '<pre>';print_r($result);exit;
-		return (!empty($result))?$result:array();
+		return (!empty($result))?$result:[];
     }
     public function all_fare_list($company_id, $offset, $val,$find_count = FALSE)
 	{
@@ -689,34 +689,34 @@ Class Model_Manage extends Model
 			return $result;*/
 		
 		if($find_count == TRUE){
-			$result = $this->mongo_db->find(MDB_COMPANY,array('_id' => (int)$company_id),array('model_fare.model_id'));
+			$result = $this->mongo_db->find(MDB_COMPANY,['_id' => (int)$company_id],['model_fare.model_id']);
 			$res = iterator_to_array($result);
-			return (!empty($res) && isset($res[$company_id]['model_fare']))?count($res[$company_id]['model_fare']):array();
+			return (!empty($res) && isset($res[$company_id]['model_fare']))?count($res[$company_id]['model_fare']):[];
 		}else{
 			//MongoDB with aggregate process only
-			$ops = array(
-				array('$unwind' => '$model_fare'),
-				array('$match' => array('_id' => (int)$company_id, 'model_fare.fare_status'=>array('$nin'=>array('T')))),
-				array('$project' => array('_id' => 0,
+			$ops = [
+				['$unwind' => '$model_fare'],
+				['$match' => ['_id' => (int)$company_id, 'model_fare.fare_status'=>['$nin'=>['T']]]],
+				['$project' => ['_id' => 0,
 					'model_id' => '$model_fare.model_id',
 					'model_name' => '$model_fare.model_name',
 					'fare_status' => '$model_fare.fare_status',
-					)
-				),
-				array(
-					'$sort' => array( 
+					]
+				],
+				[
+					'$sort' => [ 
 						'model_fare.model_name' => 1
-					),
-				),
-				array(
+					],
+				],
+				[
 					'$skip' => (int)$offset
-				),
-				array(
+				],
+				[
 				  '$limit' => (int)$val
-				)
-			);
+				]
+			];
 			$result = $this->mongo_db->aggregate(MDB_COMPANY,$ops);
-			return (!empty($result['result']))?$result['result']:array();
+			return (!empty($result['result']))?$result['result']:[];
 		}
     }
     public function count_banner_list($company_id)
@@ -772,16 +772,16 @@ Class Model_Manage extends Model
     }
     public function block_banner_request($activeids)
     {
-        $result = DB::update(COMPANY_CMS)->set(array(
+        $result = DB::update(COMPANY_CMS)->set([
             'status' => '0'
-        ))->where('id', 'IN', $activeids)->execute();
+        ])->where('id', 'IN', $activeids)->execute();
         return count($result);
     }
     public function active_banner_request($activeids)
     {
-        $result = DB::update(COMPANY_CMS)->set(array(
+        $result = DB::update(COMPANY_CMS)->set([
             'status' => '1'
-        ))->where('id', 'IN', $activeids)->execute();
+        ])->where('id', 'IN', $activeids)->execute();
         return count($result);
     }
     public function count_company_searchmodel_list($keyword = "", $status = "", $offset = "", $val = "",$find_count=false)
@@ -810,44 +810,44 @@ Class Model_Manage extends Model
         return $results;*/
 		
 		//MongoDB
-		$ops = array(
-			array('$match' => array('companydetails.company_status'=>'A')),
-			array(
-					'$lookup' => array(
+		$ops = [
+			['$match' => ['companydetails.company_status'=>'A']],
+			[
+					'$lookup' => [
 					'from'=>MDB_PACKAGE_REPORT,
 					'localField'=> "_id",
 					'foreignField' => "upgrade_companyid",
 					'as'=> "company"
-					)
-				),
-			array(
-				'$project' => array('_id' => 0,
+					]
+				],
+			[
+				'$project' => ['_id' => 0,
 				'cid' => '$_id',
 				'company_name' => '$companydetails.company_name',
-				)
-			),
-			array(
-				'$sort' => array(
+				]
+			],
+			[
+				'$sort' => [
 					'_id' => -1
-				),
-			),
-		);
+				],
+			],
+		];
 		$result = $this->mongo_db->aggregate(MDB_COMPANY,$ops);
 		//echo '<pre>';print_r($result);exit;
-		return (!empty($result))?$result['result']:array();
+		return (!empty($result))?$result['result']:[];
     }
     public function get_rating_company()
     {
         /*$query   = "select cid,company_name from " . COMPANY . " where company_status = 'A' ORDER BY company_name ASC ";
         //echo $query; exit;
         $results = Db::query(Database::SELECT, $query)->execute()->as_array();*/
-        $ops = array(
-					array('$project' => array('cid' => '$_id','company_name' => '$companydetails.company_name')),
-					array('$sort' => array('_id' => -1)),
-				);
+        $ops = [
+					['$project' => ['cid' => '$_id','company_name' => '$companydetails.company_name']],
+					['$sort' => ['_id' => -1]],
+				];
         $results = $this->mongo_db->aggregate(MDB_COMPANY,$ops);
         //print_r($results);exit;
-        return (!empty($results))?$results['result']:array();
+        return (!empty($results))?$results['result']:[];
     }
     public function get_company_all_model_searchlist($keyword = "", $status = "", $offset = "", $val = "",$find_count=false)
     {
@@ -870,56 +870,56 @@ Class Model_Manage extends Model
 	  
 		//MongoDB with aggregate process only
 		if($status!=""){
-			$match_query = array('_id' => (int)$company_id, 'model_fare.fare_status' => $status );	
+			$match_query = ['_id' => (int)$company_id, 'model_fare.fare_status' => $status ];	
 		}else{
-			$match_query = array('_id' => (int)$company_id);
+			$match_query = ['_id' => (int)$company_id];
 		}
 		
 		if(!empty($keyword)) {
-			$srch_query = array( "\$and" => array($match_query,array("\$or"=>array(array( 'model_fare.model_name' => new MongoRegex("/$keyword/i") ) ) ) ) );
+			$srch_query = [ "\$and" => [$match_query,["\$or"=>[[ 'model_fare.model_name' => new \MongoDB\BSON\Regex($keyword, 'i') ] ] ] ] ];
 		} else {
 			$srch_query = $match_query;
 		}
 		
 		//echo '<pre>';print_r($srch_query); exit;
 		if($find_count == TRUE) {
-			$ops = array(
-				array('$match' => $srch_query),
-				array(
-						'$group'=>array("_id"=>NULL,'count'=>array(
-							'$sum' =>array('$size'=> '$model_fare')
-						)
-					)
-				)
-			);
+			$ops = [
+				['$match' => $srch_query],
+				[
+						'$group'=>["_id"=>NULL,'count'=>[
+							'$sum' =>['$size'=> '$model_fare']
+						]
+					]
+				]
+			];
 			$result = $this->mongo_db->aggregate(MDB_COMPANY,$ops);
 			//echo '<pre>';print_r($result);exit;
 			return (!empty($result['result']) && isset($result['result'][0]['count']))?$result['result'][0]['count']:0;
 		} else {
-			$ops = array(
-					array('$unwind' => '$model_fare'),
-					array('$match' => $srch_query),
-					array('$project' => array('_id' => 0,
+			$ops = [
+					['$unwind' => '$model_fare'],
+					['$match' => $srch_query],
+					['$project' => ['_id' => 0,
 					'model_id' => '$model_fare.model_id',
 					'model_name' => '$model_fare.model_name',
 					'fare_status' => '$model_fare.fare_status',
-					)
-				),
-				array(
-					'$sort' => array( 
+					]
+				],
+				[
+					'$sort' => [ 
 						'model_fare.model_name' => 1
-					),
-				),
-				array(
+					],
+				],
+				[
 					'$skip' => (int)$offset
-				),
-				array(
+				],
+				[
 				  '$limit' => (int)$val
-				)
-			);
+				]
+			];
 			$result = $this->mongo_db->aggregate(MDB_COMPANY,$ops);
 			//echo '<pre>';print_r($result);exit;
-			return (!empty($result['result']))?$result['result']:array();
+			return (!empty($result['result']))?$result['result']:[];
 		}
     }
     
@@ -931,8 +931,8 @@ Class Model_Manage extends Model
         return count($result);*/
 		$company_id     = (int)$this->company_id;
 		$active_ids = Commonfunction::mongo_format_array($activeids);
-		$model_fare = array('model_fare.$.fare_status' => 'A');
-		$res = $this->mongo_db->update(MDB_COMPANY,array('_id'=>$company_id, 'model_fare.model_id'=>array('$in'=>$active_ids)),array('$set'=>$model_fare),array('multiple'=>true));
+		$model_fare = ['model_fare.$.fare_status' => 'A'];
+		$res = $this->mongo_db->update(MDB_COMPANY,['_id'=>$company_id, 'model_fare.model_id'=>['$in'=>$active_ids]],['$set'=>$model_fare],['multiple'=>true]);
 		return (empty($res['err']))?1:$res['errmsg'];
     }
     
@@ -945,8 +945,8 @@ Class Model_Manage extends Model
 		$company_id     = (int)$this->company_id;
 		$active_ids = Commonfunction::mongo_format_array($activeids);
 		//var_dump($company_id); exit;
-		$model_fare = array('model_fare.$.fare_status' => 'D');
-		$res = $this->mongo_db->update(MDB_COMPANY,array('_id'=>$company_id, 'model_fare.model_id'=>array('$in'=>$active_ids)),array('$set'=>$model_fare),array('multiple'=>true));
+		$model_fare = ['model_fare.$.fare_status' => 'D'];
+		$res = $this->mongo_db->update(MDB_COMPANY,['_id'=>$company_id, 'model_fare.model_id'=>['$in'=>$active_ids]],['$set'=>$model_fare],['multiple'=>true]);
 		return (empty($res['err']))?1:$res['errmsg'];
     }
     public function field_list()
@@ -1011,9 +1011,9 @@ Class Model_Manage extends Model
         //check whether id is exist in checkbox or single active request
         //==================================================================
         //$arr_chk = " motor_id in ('" . implode("','",$activeids) . "') ";	
-        $result = DB::update(MANAGEFIELD)->set(array(
+        $result = DB::update(MANAGEFIELD)->set([
             'field_status' => 'A'
-        ))->where('field_id', 'IN', $activeids)->execute();
+        ])->where('field_id', 'IN', $activeids)->execute();
         return count($result);
     }
     public function block_field_request($activeids)
@@ -1021,9 +1021,9 @@ Class Model_Manage extends Model
         //check whether id is exist in checkbox or single active request
         //==================================================================
         // $arr_chk = " motor_id in ('" . implode("','",$activeids) . "') ";	
-        $result = DB::update(MANAGEFIELD)->set(array(
+        $result = DB::update(MANAGEFIELD)->set([
             'field_status' => 'D'
-        ))->where('field_id', 'IN', $activeids)->execute();
+        ])->where('field_id', 'IN', $activeids)->execute();
         return count($result);
     }
     public function change_order_request($activeids)
@@ -1041,29 +1041,29 @@ Class Model_Manage extends Model
                 $set_order++;
                 /* echo '<br/>'.$set_order.'=>'.$i;
                 echo '<br/>'."update manage_field set field_order = ".$i." field_order = ".$set_order; */
-                $result = DB::update(MANAGEFIELD)->set(array(
+                $result = DB::update(MANAGEFIELD)->set([
                     'field_order' => $i
-                ))->where('field_order', '=', $set_order)->execute();
+                ])->where('field_order', '=', $set_order)->execute();
             }
             /* echo '<br/>'."update manage_field set field_order = ".$order_id." field_id = ".$field_id; */
-            $result = DB::update(MANAGEFIELD)->set(array(
+            $result = DB::update(MANAGEFIELD)->set([
                 'field_order' => $order_id
-            ))->where('field_id', '=', $field_id)->execute();
+            ])->where('field_id', '=', $field_id)->execute();
         } else {
             $set_value = $set_order = $field_order;
             for ($i = $order_id; $i < $field_order; $i++) {
                 $set_value--;
                 /* echo '<br/>'.$set_order.'=>'.$i;
                 echo '<br/>'."update manage_field set field_order = ".$set_order." field_order = ".$set_value; */
-                $result = DB::update(MANAGEFIELD)->set(array(
+                $result = DB::update(MANAGEFIELD)->set([
                     'field_order' => $set_order
-                ))->where('field_order', '=', $set_value)->execute();
+                ])->where('field_order', '=', $set_value)->execute();
                 $set_order--;
             }
             /* echo '<br/>'."update manage_field set field_order = ".$order_id." field_id = ".$field_id; */
-            $result = DB::update(MANAGEFIELD)->set(array(
+            $result = DB::update(MANAGEFIELD)->set([
                 'field_order' => $order_id
-            ))->where('field_id', '=', $field_id)->execute();
+            ])->where('field_id', '=', $field_id)->execute();
         }
         //exit;
         return count($result);
@@ -1109,14 +1109,14 @@ Class Model_Manage extends Model
         return $taxi_add; */
 		
 		//MongoDB
-        $arguments = array(
-			array('$match'=> array('upgrade_companyid' => (int)$cid, 'upgrade_expirydate' =>array('$gte' => $current_time ))),
-			array('$project' => array('no_taxi'=> '$upgrade_no_taxi','check_package_type' => '$check_package_type')),
-			array('$sort' => array('upgrade_id' => -1)),
-			array('$limit' => 1),
-		);
+        $arguments = [
+			['$match'=> ['upgrade_companyid' => (int)$cid, 'upgrade_expirydate' =>['$gte' => $current_time ]]],
+			['$project' => ['no_taxi'=> '$upgrade_no_taxi','check_package_type' => '$check_package_type']],
+			['$sort' => ['upgrade_id' => -1]],
+			['$limit' => 1],
+		];
 		$result = $this->mongo_db->aggregate(MDB_PACKAGE_REPORT,$arguments);
-		$taxi_count = $this->mongo_db->count(MDB_TAXI,array('taxi_company' => (int)$cid, 'taxi_availability' => 'A'));
+		$taxi_count = $this->mongo_db->count(MDB_TAXI,['taxi_company' => (int)$cid, 'taxi_availability' => 'A']);
 		if (isset($result['result']) && count($result['result']) > 0) {
 			if ($result['result'][0]['check_package_type'] != 'T') {
 				$taxi_add = 1;
@@ -1136,12 +1136,12 @@ Class Model_Manage extends Model
         return (count($total_result) > 0)?1:0;*/
 		
 		//MongoDB
-        $arguments = array(
-			array('$match'=> array('upgrade_companyid' => (int)$cid, 'upgrade_expirydate' =>array('$gte' => $current_time ))),
-			array('$project' => array('no_taxi'=> '$upgrade_no_taxi','check_package_type' => '$check_package_type')),
-			array('$sort' => array('upgrade_id' => -1)),
-			array('$limit' => 1),
-		);
+        $arguments = [
+			['$match'=> ['upgrade_companyid' => (int)$cid, 'upgrade_expirydate' =>['$gte' => $current_time ]]],
+			['$project' => ['no_taxi'=> '$upgrade_no_taxi','check_package_type' => '$check_package_type']],
+			['$sort' => ['upgrade_id' => -1]],
+			['$limit' => 1],
+		];
 		$result = $this->mongo_db->aggregate(MDB_PACKAGE_REPORT,$arguments);
 		return (isset($result['result']) && count($result['result']) > 0)?1:0;
     }
@@ -1186,90 +1186,90 @@ Class Model_Manage extends Model
 		*/
 		//MongoDB
 		if ($usertype == 'M' || $usertype == 'A') {
-			$match_query = array('taxi.taxi_country'=>(int)$country_id,'taxi.taxi_state'=>(int)$state_id,'taxi.taxi_city'=>(int)$city_id,'taxi.taxi_company'=>(int)$company_id,'taxi.taxi_status'=>array('$ne'=>'T'));
+			$match_query = ['taxi.taxi_country'=>(int)$country_id,'taxi.taxi_state'=>(int)$state_id,'taxi.taxi_city'=>(int)$city_id,'taxi.taxi_company'=>(int)$company_id,'taxi.taxi_status'=>['$ne'=>'T']];
 		} else if ($usertype == 'C' ) {
-			$match_query = array('taxi.taxi_company'=>(int)$company_id,'taxi.taxi_status'=>array('$ne'=>'T'));
+			$match_query = ['taxi.taxi_company'=>(int)$company_id,'taxi.taxi_status'=>['$ne'=>'T']];
 		} else {
-			$match_query = array('taxi.taxi_status'=>array('$ne'=>'T'));
+			$match_query = ['taxi.taxi_status'=>['$ne'=>'T']];
 		}
 		if($find_count){
-			$arguments = array(
-				array('$unwind' => '$stateinfo'),
-				array('$unwind' => '$stateinfo.cityinfo'),
-				array('$lookup' => array(
+			$arguments = [
+				['$unwind' => '$stateinfo'],
+				['$unwind' => '$stateinfo.cityinfo'],
+				['$lookup' => [
 						'from' => MDB_TAXI,
 						'localField'=> 'stateinfo.cityinfo.city_id',
 						'foreignField'=> "taxi_country",
 						'foreignField'=> "taxi_city",
 						'as'=> "taxi"
-					)
-				),
-				array('$unwind' => '$taxi'),
-				array('$lookup' => array(
+					]
+				],
+				['$unwind' => '$taxi'],
+				['$lookup' => [
 						'from' => MDB_COMPANY,
 						'localField' => 'taxi.taxi_company',
 						'foreignField' => "_id",
 						'as' => "company"
-					)
-				),
-				array('$unwind' => '$company'),
-				array('$lookup' => array(
+					]
+				],
+				['$unwind' => '$company'],
+				['$lookup' => [
 						'from' => MDB_MOTOR_MODEL,
 						'localField' => 'taxi.taxi_model',
 						'foreignField' => "_id",
 						'as' => "motormodel"
-					)
-				),
-				array('$unwind' => '$motormodel'),
-				array('$match'  => $match_query),
-				array('$sort' =>array('taxi.created_date' => -1) ),
-				array('$project' => array('_id'=>0,
+					]
+				],
+				['$unwind' => '$motormodel'],
+				['$match'  => $match_query],
+				['$sort' =>['taxi.created_date' => -1] ],
+				['$project' => ['_id'=>0,
 						'taxi_id' => '$taxi._id',
-					)
-				),array(
-					'$group' => array(
+					]
+				],[
+					'$group' => [
 						'_id' => NULL,
-						'count' => array(
+						'count' => [
 							'$sum' => 1
-						)
-					)
-				)
-			);
+						]
+					]
+				]
+			];
 			$result = $this->mongo_db->aggregate(MDB_CSC,$arguments);
 			//echo "<pre>"; print_r($result); exit;
 			return (!empty($result['result']) && isset($result['result']))?$result['result'][0]['count']:0;
 		} else {
-			$arguments = array(
-				array('$unwind' => '$stateinfo'),
-				array('$unwind' => '$stateinfo.cityinfo'),
-				array('$lookup' => array(
+			$arguments = [
+				['$unwind' => '$stateinfo'],
+				['$unwind' => '$stateinfo.cityinfo'],
+				['$lookup' => [
 						'from' => MDB_TAXI,
 						'localField'=> 'stateinfo.cityinfo.city_id',
 						'foreignField'=> "taxi_country",
 						'foreignField'=> "taxi_city",
 						'as'=> "taxi"
-					)
-				),
-				array('$unwind' => '$taxi'),
-				array('$lookup' => array(
+					]
+				],
+				['$unwind' => '$taxi'],
+				['$lookup' => [
 						'from' => MDB_COMPANY,
 						'localField' => 'taxi.taxi_company',
 						'foreignField' => "_id",
 						'as' => "company"
-					)
-				),
-				array('$unwind' => '$company'),
-				array('$lookup' => array(
+					]
+				],
+				['$unwind' => '$company'],
+				['$lookup' => [
 						'from' => MDB_MOTOR_MODEL,
 						'localField' => 'taxi.taxi_model',
 						'foreignField' => "_id",
 						'as' => "motormodel"
-					)
-				),
-				array('$unwind' => '$motormodel'),
-				array('$match'  => $match_query),
-				array('$sort' =>array('taxi.created_date' => -1) ),
-				array('$project' => array('_id'=>0,
+					]
+				],
+				['$unwind' => '$motormodel'],
+				['$match'  => $match_query],
+				['$sort' =>['taxi.created_date' => -1] ],
+				['$project' => ['_id'=>0,
 						'created_by' => '$taxi.taxi_createdby',
 						'taxi_id' => '$taxi._id',
 						'taxi_availability' => '$taxi.taxi_availability',
@@ -1282,15 +1282,15 @@ Class Model_Manage extends Model
 						'company_id' => '$taxi.taxi_company',
 						'taxi_owner_name' => '$taxi.taxi_owner_name',
 						'company_userid' => '$company.companydetails.userid',
-					)
-				),				
-				array('$skip' => (int)$offset),
-				array('$limit' => (int)$val)
-			);
+					]
+				],				
+				['$skip' => (int)$offset],
+				['$limit' => (int)$val]
+			];
 			//echo $offset.'='.$val;
 			$result = $this->mongo_db->aggregate(MDB_CSC,$arguments);
 			//echo "<pre>"; print_r($result); exit;
-			return (!empty($result['result']) && isset($result['result']))?$result['result']:array();
+			return (!empty($result['result']) && isset($result['result']))?$result['result']:[];
 		}
     }
     public function get_all_taxi_searchlist($keyword = "", $status = "", $company = "", $offset = "", $val = "",$find_count=false)
@@ -1346,105 +1346,105 @@ Class Model_Manage extends Model
 		
 		//MongoDB with aggregate process only
 		if((!empty($keyword)) && (!empty($status)) && (!empty($company))) {
-			$srch_query = array( "\$and" => array(array('taxi.taxi_company' => (int)$company ),array('taxi.taxi_status' => $status ),array("\$or"=>array(array( 'taxi.taxi_no' => new MongoRegex("/$keyword/i")) , array( 'taxi.taxi_type' => new MongoRegex("/$keyword/i") ),array( 'company.companydetails.company_name' => new MongoRegex("/$keyword/i") ) ) ) ) );
+			$srch_query = [ "\$and" => [['taxi.taxi_company' => (int)$company ],['taxi.taxi_status' => $status ],["\$or"=>[[ 'taxi.taxi_no' => new \MongoDB\BSON\Regex($keyword, 'i')] , [ 'taxi.taxi_type' => new \MongoDB\BSON\Regex($keyword, 'i') ],[ 'company.companydetails.company_name' => new \MongoDB\BSON\Regex($keyword, 'i') ] ] ] ] ];
 		} else if ((!empty($keyword)) && (!empty($status))){
 			if($usertype=='A'){
-				$srch_query = array( "\$and" => array(array('taxi.taxi_status' => $status ),array("\$or"=>array(array( 'taxi.taxi_no' => new MongoRegex("/$keyword/i")) , array( 'taxi.taxi_type' => new MongoRegex("/$keyword/i") ),array( 'company.companydetails.company_name' => new MongoRegex("/$keyword/i") ) ) ) ) );
+				$srch_query = [ "\$and" => [['taxi.taxi_status' => $status ],["\$or"=>[[ 'taxi.taxi_no' => new \MongoDB\BSON\Regex($keyword, 'i')] , [ 'taxi.taxi_type' => new \MongoDB\BSON\Regex($keyword, 'i') ],[ 'company.companydetails.company_name' => new \MongoDB\BSON\Regex($keyword, 'i') ] ] ] ] ];
 			} else {
-				$srch_query = array( "\$and" => array(array('taxi.taxi_company' => (int)$company ),array('taxi.taxi_status' => $status ),array("\$or"=>array(array( 'taxi.taxi_no' => new MongoRegex("/$keyword/i")) , array( 'taxi.taxi_type' => new MongoRegex("/$keyword/i") ),array( 'company.companydetails.company_name' => new MongoRegex("/$keyword/i") ) ) ) ) );
+				$srch_query = [ "\$and" => [['taxi.taxi_company' => (int)$company ],['taxi.taxi_status' => $status ],["\$or"=>[[ 'taxi.taxi_no' => new \MongoDB\BSON\Regex($keyword, 'i')] , [ 'taxi.taxi_type' => new \MongoDB\BSON\Regex($keyword, 'i') ],[ 'company.companydetails.company_name' => new \MongoDB\BSON\Regex($keyword, 'i') ] ] ] ] ];
 			}
 		} else if ((!empty($keyword)) && (!empty($company))){
-			$srch_query = array( "\$and" => array(array('taxi.taxi_company' => (int)$company ),array("\$or"=>array(array( 'taxi.taxi_no' => new MongoRegex("/$keyword/i")) , array( 'taxi.taxi_type' => new MongoRegex("/$keyword/i") ),array( 'company.companydetails.company_name' => new MongoRegex("/$keyword/i") ) ) ) ) );
+			$srch_query = [ "\$and" => [['taxi.taxi_company' => (int)$company ],["\$or"=>[[ 'taxi.taxi_no' => new \MongoDB\BSON\Regex($keyword, 'i')] , [ 'taxi.taxi_type' => new \MongoDB\BSON\Regex($keyword, 'i') ],[ 'company.companydetails.company_name' => new \MongoDB\BSON\Regex($keyword, 'i') ] ] ] ] ];
 		} else if ((!empty($status)) && (!empty($company))){
-			$srch_query = array( "\$and" => array(array('taxi.taxi_company' => (int)$company ),array('taxi.taxi_status' => $status ) ) );
+			$srch_query = [ "\$and" => [['taxi.taxi_company' => (int)$company ],['taxi.taxi_status' => $status ] ] ];
 		} else if (!empty($keyword)) {
 			if($usertype=='A'){
-				$srch_query = array( "\$and" => array(array("\$or"=>array(array( 'taxi.taxi_no' => new MongoRegex("/$keyword/i")) , array( 'taxi.taxi_type' => new MongoRegex("/$keyword/i") ),array( 'company.companydetails.company_name' => new MongoRegex("/$keyword/i") ) ) ) ) );
+				$srch_query = [ "\$and" => [["\$or"=>[[ 'taxi.taxi_no' => new \MongoDB\BSON\Regex($keyword, 'i')] , [ 'taxi.taxi_type' => new \MongoDB\BSON\Regex($keyword, 'i') ],[ 'company.companydetails.company_name' => new \MongoDB\BSON\Regex($keyword, 'i') ] ] ] ] ];
 			} else {
-				$srch_query = array( "\$and" => array(array('taxi.taxi_company' => (int)$company ),array("\$or"=>array(array( 'taxi.taxi_no' => new MongoRegex("/$keyword/i")) , array( 'taxi.taxi_type' => new MongoRegex("/$keyword/i") ),array( 'company.companydetails.company_name' => new MongoRegex("/$keyword/i") ) ) ) ) );
+				$srch_query = [ "\$and" => [['taxi.taxi_company' => (int)$company ],["\$or"=>[[ 'taxi.taxi_no' => new \MongoDB\BSON\Regex($keyword, 'i')] , [ 'taxi.taxi_type' => new \MongoDB\BSON\Regex($keyword, 'i') ],[ 'company.companydetails.company_name' => new \MongoDB\BSON\Regex($keyword, 'i') ] ] ] ] ];
 			}
 		} else if (!empty($company)) {
-				$srch_query = array( "\$and" => array(array('taxi.taxi_company' => (int)$company )));
+				$srch_query = [ "\$and" => [['taxi.taxi_company' => (int)$company ]]];
 		} else if (!empty($status)) {
 			if($usertype=='A'){
-				$srch_query = array( "\$and" => array(array('taxi.taxi_status' => $status )));
+				$srch_query = [ "\$and" => [['taxi.taxi_status' => $status ]]];
 			} else {
-				$srch_query = array( "\$and" => array(array('taxi.taxi_company' => (int)$company ),array('taxi.taxi_status' => $status )));
+				$srch_query = [ "\$and" => [['taxi.taxi_company' => (int)$company ],['taxi.taxi_status' => $status ]]];
 			}
 		}
 		//echo '<pre>';print_r($srch_query);//exit;
 		if($find_count){
-			$arguments = array(
-					array('$unwind' => '$stateinfo'),
-					array('$unwind' => '$stateinfo.cityinfo'),
-					array('$lookup' => array(
+			$arguments = [
+					['$unwind' => '$stateinfo'],
+					['$unwind' => '$stateinfo.cityinfo'],
+					['$lookup' => [
 							'from' => MDB_TAXI,
 							'localField'=> 'stateinfo.cityinfo.city_id',
 							'foreignField'=> "taxi_country",
 							'foreignField'=> "taxi_state",
                             'foreignField'=> "taxi_city",
 							'as'=> "taxi"
-						)
-					),
-					array('$unwind' => '$taxi'),
-					array('$lookup' => array(
+						]
+					],
+					['$unwind' => '$taxi'],
+					['$lookup' => [
 							'from' => MDB_COMPANY,
 							'localField' => 'taxi.taxi_company',
 							'foreignField' => "_id",
 							'as' => "company"
-						)
-					),
-					array('$unwind' => '$company'),
-					array('$lookup' => array(
+						]
+					],
+					['$unwind' => '$company'],
+					['$lookup' => [
 							'from' => MDB_MOTOR_MODEL,
 							'localField' => 'taxi.taxi_model',
 							'foreignField' => "_id",
 							'as' => "motormodel"
-						)
-					),
-					array('$unwind' => '$motormodel'),
-					array('$match'  => $srch_query),
-					array('$project' => array('_id'=>0,
+						]
+					],
+					['$unwind' => '$motormodel'],
+					['$match'  => $srch_query],
+					['$project' => ['_id'=>0,
 							'taxi_id' => '$taxi._id',
-						)
-					),
-				array('$sort' =>array('taxi.created_date' => -1) ),
-			);
+						]
+					],
+				['$sort' =>['taxi.created_date' => -1] ],
+			];
 			$result = $this->mongo_db->aggregate(MDB_CSC,$arguments);
 			//echo "<pre>"; print_r($result); exit;
 			return (!empty($result['result']) && isset($result['result']))?count($result['result']):0;
 		} else {
-			$arguments = array(
-					array('$unwind' => '$stateinfo'),
-					array('$unwind' => '$stateinfo.cityinfo'),
-					array('$lookup' => array(
+			$arguments = [
+					['$unwind' => '$stateinfo'],
+					['$unwind' => '$stateinfo.cityinfo'],
+					['$lookup' => [
 							'from' => MDB_TAXI,
 							'localField'=> 'stateinfo.cityinfo.city_id',
 							'foreignField'=> "taxi_country",
 							'foreignField'=> "taxi_state",
                             'foreignField'=> "taxi_city",
 							'as'=> "taxi"
-						)
-					),
-					array('$unwind' => '$taxi'),
-					array('$lookup' => array(
+						]
+					],
+					['$unwind' => '$taxi'],
+					['$lookup' => [
 							'from' => MDB_COMPANY,
 							'localField' => 'taxi.taxi_company',
 							'foreignField' => "_id",
 							'as' => "company"
-						)
-					),
-					array('$unwind' => '$company'),
-					array('$lookup' => array(
+						]
+					],
+					['$unwind' => '$company'],
+					['$lookup' => [
 							'from' => MDB_MOTOR_MODEL,
 							'localField' => 'taxi.taxi_model',
 							'foreignField' => "_id",
 							'as' => "motormodel"
-						)
-					),
-					array('$unwind' => '$motormodel'),
-					array('$match'  => $srch_query),
-					array('$project' => array('_id'=>0,
+						]
+					],
+					['$unwind' => '$motormodel'],
+					['$match'  => $srch_query],
+					['$project' => ['_id'=>0,
 							'created_by' => '$taxi.taxi_createdby',
 							'taxi_id' => '$taxi._id',
 							'taxi_availability' => '$taxi.taxi_availability',
@@ -1456,15 +1456,15 @@ Class Model_Manage extends Model
 							'taxi_fare_km' => '$taxi.taxi_fare_km',
 							'company_id' => '$taxi.taxi_company',
 							'taxi_owner_name' => '$taxi.taxi_owner_name',
-						)
-					),
-				array('$sort' =>array('taxi.created_date' => -1) ),
-				array('$skip' => (int)$offset ),
-				array('$limit' => (int)$val )
-			);
+						]
+					],
+				['$sort' =>['taxi.created_date' => -1] ],
+				['$skip' => (int)$offset ],
+				['$limit' => (int)$val ]
+			];
 			$result = $this->mongo_db->aggregate(MDB_CSC,$arguments);
 			//echo "<pre>"; print_r($result); exit;
-			return (!empty($result['result']) && isset($result['result']))?$result['result']:array();
+			return (!empty($result['result']) && isset($result['result']))?$result['result']:[];
 		}
     }
     public function active_taxi_request($activeids)
@@ -1480,7 +1480,7 @@ Class Model_Manage extends Model
 		//MongoDB
 		//Here changing array values with string to integers values
 		$active_ids = Commonfunction::mongo_format_array($activeids);
-		$result = $this->mongo_db->update(MDB_TAXI,array('_id'=>array('$in'=>$active_ids)),array('$set'=>array('taxi_status' => 'A')),array('multiple'=>true));
+		$result = $this->mongo_db->update(MDB_TAXI,['_id'=>['$in'=>$active_ids]],['$set'=>['taxi_status' => 'A']],['multiple'=>true]);
 		//echo '<pre>';print_r($result);exit;
 		return (empty($result['err']))?1:$result['errmsg'];
     }
@@ -1497,7 +1497,7 @@ Class Model_Manage extends Model
 		//MongoDB
 		//Here changing array values with string to integers values
 		$active_ids = Commonfunction::mongo_format_array($activeids);
-		$result = $this->mongo_db->update(MDB_TAXI,array('_id'=>array('$in'=>$active_ids)),array('$set'=>array('taxi_status' => 'D')),array('multiple'=>true));
+		$result = $this->mongo_db->update(MDB_TAXI,['_id'=>['$in'=>$active_ids]],['$set'=>['taxi_status' => 'D']],['multiple'=>true]);
 		//echo '<pre>';print_r($result);exit;
 		return (empty($result['err']))?1:$result['errmsg'];
     }
@@ -1511,7 +1511,7 @@ Class Model_Manage extends Model
 		//MongoDB
 		//Here changing array values with string to integers values
 		$active_ids = Commonfunction::mongo_format_array($activeids);
-		$result = $this->mongo_db->update(MDB_TAXI,array('_id'=>array('$in'=>$active_ids)),array('$set'=>array('taxi_status' => 'T')),array('multiple'=>true));
+		$result = $this->mongo_db->update(MDB_TAXI,['_id'=>['$in'=>$active_ids]],['$set'=>['taxi_status' => 'T']],['multiple'=>true]);
 		//echo '<pre>';print_r($result);exit;
 		return (empty($result['err']))?1:$result['errmsg'];
     }
@@ -1583,9 +1583,9 @@ Class Model_Manage extends Model
 			return $res;
 		}else{
 			//MongoDB
-			$res = $this->mongo_db->find(MDB_PACKAGE,array('package_status'=>array('$ne'=>'T')),array('_id','package_name','package_description','no_of_taxi','no_of_driver','package_price','days_expire','driver_tracking','package_status'))->sort(array('package_name'=>1))->skip($offset)->limit($val);
+			$res = $this->mongo_db->find(MDB_PACKAGE,['package_status'=>['$ne'=>'T']],['_id','package_name','package_description','no_of_taxi','no_of_driver','package_price','days_expire','driver_tracking','package_status'])->sort(['package_name'=>1])->skip($offset)->limit($val);
 			//echo '<pre>'; print_r(iterator_to_array($res));exit;
-			return (!empty($res))?iterator_to_array($res):array();	
+			return (!empty($res))?iterator_to_array($res):[];	
 		}
 		
 	
@@ -1602,11 +1602,11 @@ Class Model_Manage extends Model
 	
 		//MongoDB
 		//Here changing array values with string to integers values
-		$active_ids = array();
+		$active_ids = [];
 		foreach($activeids as $each_id):
 			$active_ids[] = (int)$each_id;
 		endforeach;
-		$res = $this->mongo_db->update(MDB_PACKAGE,array('_id'=>array('$in'=>$active_ids)),array('$set'=>array('package_status' => 'A')),array('multiple'=>true));
+		$res = $this->mongo_db->update(MDB_PACKAGE,['_id'=>['$in'=>$active_ids]],['$set'=>['package_status' => 'A']],['multiple'=>true]);
 		return (empty($res['err']))?1:$res['errmsg'];
 	
     }
@@ -1622,11 +1622,11 @@ Class Model_Manage extends Model
 	
 		//MongoDB
 		//Here changing array values with string to integers values
-		$active_ids = array();
+		$active_ids = [];
 		foreach($activeids as $each_id):
 			$active_ids[] = (int)$each_id;
 		endforeach;
-		$res = $this->mongo_db->update(MDB_PACKAGE,array('_id'=>array('$in'=>$active_ids)),array('$set'=>array('package_status' => 'D')),array('multiple'=>true));
+		$res = $this->mongo_db->update(MDB_PACKAGE,['_id'=>['$in'=>$active_ids]],['$set'=>['package_status' => 'D']],['multiple'=>true]);
 		return (empty($res['err']))?1:$res['errmsg'];
 		
     }
@@ -1671,22 +1671,22 @@ Class Model_Manage extends Model
         return $results;*/
 	   
 	   //MongoDB
-	   $srch_query = array();
+	   $srch_query = [];
 		if((!empty($keyword)) && (!empty($status))) {
-			$srch_query = array( "\$and" => array(array( "package_name" => new MongoRegex("/$keyword/i")) , array("package_status" => $status ) ) );
+			$srch_query = [ "\$and" => [[ "package_name" => new \MongoDB\BSON\Regex($keyword, 'i')] , ["package_status" => $status ] ] ];
 		} else if (!empty($keyword)) {
-			$srch_query = array( "package_name" => new MongoRegex("/$keyword/i"));
+			$srch_query = [ "package_name" => new \MongoDB\BSON\Regex($keyword, 'i')];
 		} else if (!empty($status)) {
-			$srch_query = array("package_status" => $status );
+			$srch_query = ["package_status" => $status ];
 			
 		}
 		
 		if($find_count) {
-			$res = $this->mongo_db->count(MDB_PACKAGE,$srch_query,array('_id'));
+			$res = $this->mongo_db->count(MDB_PACKAGE,$srch_query,['_id']);
 			return $res;
 		} else {
-			$res = $this->mongo_db->find(MDB_PACKAGE,$srch_query,array('_id','package_name','package_description','no_of_taxi','no_of_driver','package_price','days_expire','driver_tracking','package_status'))->sort(array('country_name'=>1))->skip($offset)->limit($val);
-			return (!empty($res))?iterator_to_array($res):array();
+			$res = $this->mongo_db->find(MDB_PACKAGE,$srch_query,['_id','package_name','package_description','no_of_taxi','no_of_driver','package_price','days_expire','driver_tracking','package_status'])->sort(['country_name'=>1])->skip($offset)->limit($val);
+			return (!empty($res))?iterator_to_array($res):[];
 		}
     }
     public function country_list()
@@ -1701,12 +1701,12 @@ Class Model_Manage extends Model
 		
 		//MongoDB
 		if($find_count){
-			$res = $this->mongo_db->count(MDB_CSC,array('country_status'=>array('$ne'=>'T')));
+			$res = $this->mongo_db->count(MDB_CSC,['country_status'=>['$ne'=>'T']]);
 			return $res;
 		} else {
-			$res = $this->mongo_db->find(MDB_CSC,array('country_status'=>array('$ne'=>'T')),array('_id','country_name','iso_country_code','telephone_code','currency_code','currency_symbol','country_status','default'))->sort(array('country_name'=>1))->skip($offset)->limit($val);
+			$res = $this->mongo_db->find(MDB_CSC,['country_status'=>['$ne'=>'T']],['_id','country_name','iso_country_code','telephone_code','currency_code','currency_symbol','country_status','default'])->sort(['country_name'=>1])->skip($offset)->limit($val);
 			//echo '<pre>';print_r(iterator_to_array($res));exit;
-			return (!empty($res))?iterator_to_array($res):array();
+			return (!empty($res))?iterator_to_array($res):[];
 		}
 	
     }
@@ -1736,15 +1736,15 @@ Class Model_Manage extends Model
 		
 		//MongoDB
 		$pid = (int)$id;
-		$country = $this->mongo_db->find_one(MDB_CSC,array('_id'=>$pid),array('country_status'));
+		$country = $this->mongo_db->find_one(MDB_CSC,['_id'=>$pid],['country_status']);
 		if(!empty($country['country_status']) && $country['country_status']=='A'){
 			//update with site info collection
-			$rs = $this->mongo_db->update(MDB_SITEINFO,array('_id'=>1),array('$set'=>array('site_country' => $pid)),array('upsert'=>true));
+			$rs = $this->mongo_db->update(MDB_SITEINFO,['_id'=>1],['$set'=>['site_country' => $pid]],['upsert'=>true]);
 			//update default status with 1
-			$res = $this->mongo_db->update(MDB_CSC,array('_id'=>$pid),array('$set'=>array('default' => 1)),array('upsert'=>true));
+			$res = $this->mongo_db->update(MDB_CSC,['_id'=>$pid],['$set'=>['default' => 1]],['upsert'=>true]);
 			//update default status with 0
 			if(empty($res['err'])){
-				$result = $this->mongo_db->update(MDB_CSC,array('_id'=>array('$ne'=>$pid),'default'=>1),array('$set'=>array('default' => 0)),array('multiple'=>true));
+				$result = $this->mongo_db->update(MDB_CSC,['_id'=>['$ne'=>$pid],'default'=>1],['$set'=>['default' => 0]],['multiple'=>true]);
 			}
 			return (empty($res['err']))?1:$res['errmsg'];
 		} else {
@@ -1784,17 +1784,17 @@ Class Model_Manage extends Model
             return 0;
         }*/
 		//MongoDB
-		$state = $this->mongo_db->find_one(MDB_CSC,array('_id'=>$country_id,'stateinfo.state_id'=>$state_id),array('stateinfo.$'=>1));
+		$state = $this->mongo_db->find_one(MDB_CSC,['_id'=>$country_id,'stateinfo.state_id'=>$state_id],['stateinfo.$'=>1]);
 		//echo '<pre>';print_r($state);exit;
 		if ($country_id == DEFAULT_COUNTRY) {
 			if(!empty($state['stateinfo'][0]['state_status']) && $state['stateinfo'][0]['state_status']=='A'){
 				//update with site info collection
-				$rs = $this->mongo_db->update(MDB_SITEINFO,array('_id'=>1),array('$set'=>array('site_state' => $state_id)),array('upsert'=>true));
+				$rs = $this->mongo_db->update(MDB_SITEINFO,['_id'=>1],['$set'=>['site_state' => $state_id]],['upsert'=>true]);
 				//update default status with 1
-				$res = $this->mongo_db->update(MDB_CSC,array('_id'=>$country_id,'stateinfo.state_id'=>$state_id),array('$set'=>array('stateinfo.$.default' => 1)),array('upsert'=>false));
+				$res = $this->mongo_db->update(MDB_CSC,['_id'=>$country_id,'stateinfo.state_id'=>$state_id],['$set'=>['stateinfo.$.default' => 1]],['upsert'=>false]);
 				//update default status with 0
 				if(empty($res['err'])){
-					$result = $this->mongo_db->update(MDB_CSC,array('_id'=>$country_id,'stateinfo.state_id'=>array('$ne'=>$state_id),'stateinfo.default'=>1),array('$set'=>array('stateinfo.$.default' => 0)),array('multiple'=>true));
+					$result = $this->mongo_db->update(MDB_CSC,['_id'=>$country_id,'stateinfo.state_id'=>['$ne'=>$state_id],'stateinfo.default'=>1],['$set'=>['stateinfo.$.default' => 0]],['multiple'=>true]);
 				}
 				return (empty($res['err']))?1:$res['errmsg'];
 			} else {
@@ -1839,7 +1839,7 @@ Class Model_Manage extends Model
             return 0;
         }*/
 		//MongoDB
-		$city = $this->mongo_db->find_one(MDB_CSC,array('_id'=>$country_id,'stateinfo.state_id'=>$state_id,'stateinfo.cityinfo.city_id'=>$city_id),array('stateinfo.cityinfo.city_status.$'=>1));
+		$city = $this->mongo_db->find_one(MDB_CSC,['_id'=>$country_id,'stateinfo.state_id'=>$state_id,'stateinfo.cityinfo.city_id'=>$city_id],['stateinfo.cityinfo.city_status.$'=>1]);
 		//echo '<pre>';print_r($city);//exit;
 		//Use recursive function search & get value for specific city details with array
 		$resultset = $this->recursive_array_search($city,'city_id',$city_id);
@@ -1847,13 +1847,13 @@ Class Model_Manage extends Model
 		if ($country_id == DEFAULT_COUNTRY && $state_id == DEFAULT_STATE) {
 			if(!empty($resultset[0]['city_status']) && $resultset[0]['city_status']=='A'){
 				//update with site info collection
-				$rs = $this->mongo_db->update(MDB_SITEINFO,array('_id'=>1),array('$set'=>array('site_city' => $city_id)),array('upsert'=>true));
+				$rs = $this->mongo_db->update(MDB_SITEINFO,['_id'=>1],['$set'=>['site_city' => $city_id]],['upsert'=>true]);
 				//update default status with 1
-				$res = $this->mongo_db->update(MDB_CSC,array('_id'=>$country_id,'stateinfo.state_id'=>$state_id,'stateinfo.cityinfo.city_id'=>$city_id,'stateinfo.cityinfo.default'=>array('$ne'=>1)),array('$set'=>array('stateinfo.cityinfo.$.default' => 1)),array('multiple'=>true));
+				$res = $this->mongo_db->update(MDB_CSC,['_id'=>$country_id,'stateinfo.state_id'=>$state_id,'stateinfo.cityinfo.city_id'=>$city_id,'stateinfo.cityinfo.default'=>['$ne'=>1]],['$set'=>['stateinfo.cityinfo.$.default' => 1]],['multiple'=>true]);
 				//echo '<pre>';print_r($res);//exit;
 				//update default status with 0
 				if(empty($res['err'])){
-					$result = $this->mongo_db->update(MDB_CSC,array('_id'=>$country_id,'stateinfo.state_id'=>$state_id,'stateinfo.cityinfo.city_id'=>array('$ne'=>$city_id),'stateinfo.cityinfo.default'=>array('$ne'=>1)),array('$set'=>array('stateinfo.cityinfo.$.default' => 0)),array('multiple'=>true));
+					$result = $this->mongo_db->update(MDB_CSC,['_id'=>$country_id,'stateinfo.state_id'=>$state_id,'stateinfo.cityinfo.city_id'=>['$ne'=>$city_id],'stateinfo.cityinfo.default'=>['$ne'=>1]],['$set'=>['stateinfo.cityinfo.$.default' => 0]],['multiple'=>true]);
 				}
 				//echo '<pre>';print_r($result);exit;
 				return (empty($res['err']))?1:$res['errmsg'];
@@ -1867,7 +1867,7 @@ Class Model_Manage extends Model
 	//MongoDB Embedded document search value with assosciative array
     function recursive_array_search($array, $key, $value)
 	{
-		$results = array();
+		$results = [];
 		if (is_array($array)) {
 			$arrval = (isset($array[$key])) ? trim(strtolower($array[$key])) : '';
 			if($value) $searchval = trim(strtolower($value));
@@ -1893,7 +1893,7 @@ Class Model_Manage extends Model
 		//MongoDB
 		//Here changing array values with string to integers values
 		$active_ids = Commonfunction::mongo_format_array($activeids);
-		$res = $this->mongo_db->update(MDB_CSC,array('_id'=>array('$in'=>$active_ids)),array('$set'=>array('country_status' => 'A')),array('multiple'=>true));
+		$res = $this->mongo_db->update(MDB_CSC,['_id'=>['$in'=>$active_ids]],['$set'=>['country_status' => 'A']],['multiple'=>true]);
 		return (empty($res['err']))?1:$res['errmsg'];
     }
     public function block_country_request($activeids)
@@ -1916,10 +1916,10 @@ Class Model_Manage extends Model
 		$active_ids = Commonfunction::mongo_format_array($activeids);
 		//var_dump($active_ids);
 		//Checking people & taxi table whether data's are existing with country
-		$people_count = $this->mongo_db->count(MDB_PEOPLE,array('login_country'=>array('$in'=>$active_ids)),	array('login_country'));
-		$taxi_count = $this->mongo_db->count(MDB_TAXI,array('taxi_country'=>array('$in'=>$active_ids)),array('taxi_country'));
+		$people_count = $this->mongo_db->count(MDB_PEOPLE,['login_country'=>['$in'=>$active_ids]],	['login_country']);
+		$taxi_count = $this->mongo_db->count(MDB_TAXI,['taxi_country'=>['$in'=>$active_ids]],['taxi_country']);
 		if($people_count==0 && $taxi_count==0){
-			$res = $this->mongo_db->update(MDB_CSC,array('_id'=>array('$in'=>$active_ids)),array('$set'=>array('country_status' => 'D')),array('multiple'=>true));
+			$res = $this->mongo_db->update(MDB_CSC,['_id'=>['$in'=>$active_ids]],['$set'=>['country_status' => 'D']],['multiple'=>true]);
 			return (empty($res['err']))?1:$res['errmsg'];
 		} else {
 			return 0;
@@ -1941,16 +1941,16 @@ Class Model_Manage extends Model
             return 0;
         }*/
 		//Here changing array values with string to integers values
-		$active_ids = array();
+		$active_ids = [];
 		foreach($activeids as $each_id):
 			$active_ids[] = (int)$each_id;
 		endforeach;
 		//var_dump($active_ids);
 		//Checking people & taxi table whether data's are existing with country
-		$people_count = $this->mongo_db->count(MDB_PEOPLE,array('login_country'=>array('$in'=>$active_ids)),	array('login_country'));
-		$taxi_count = $this->mongo_db->count(MDB_TAXI,array('taxi_country'=>array('$in'=>$active_ids)),array('taxi_country'));
+		$people_count = $this->mongo_db->count(MDB_PEOPLE,['login_country'=>['$in'=>$active_ids]],	['login_country']);
+		$taxi_count = $this->mongo_db->count(MDB_TAXI,['taxi_country'=>['$in'=>$active_ids]],['taxi_country']);
 		if($people_count==0 && $taxi_count==0){
-			$res = $this->mongo_db->update(MDB_CSC,array('_id'=>array('$in'=>$active_ids)),array('$set'=>array('country_status' => 'T')),array('multiple'=>true));
+			$res = $this->mongo_db->update(MDB_CSC,['_id'=>['$in'=>$active_ids]],['$set'=>['country_status' => 'T']],['multiple'=>true]);
 			return (empty($res['err']))?1:$res['errmsg'];
 		} else {
 			return 0;
@@ -1973,7 +1973,7 @@ Class Model_Manage extends Model
 		$active_ids = Commonfunction::mongo_format_array($activeids);
 		//var_dump($active_ids);
 		if(!empty($active_ids)){
-			$res = $this->mongo_db->update(MDB_PAYMENT_GATEWAYS,array('_id'=>array('$in'=>$active_ids),'company_id'=>(int)$company_id),array('$set'=>array('payment_status' => 'D')),array('multiple'=>true));
+			$res = $this->mongo_db->update(MDB_PAYMENT_GATEWAYS,['_id'=>['$in'=>$active_ids],'company_id'=>(int)$company_id],['$set'=>['payment_status' => 'D']],['multiple'=>true]);
 			return (empty($res['err']))?1:$res['errmsg'];
 		} else {
 			return 0;
@@ -1996,7 +1996,7 @@ Class Model_Manage extends Model
 		$active_ids = Commonfunction::mongo_format_array($activeids);
 		//var_dump($active_ids);
 		if(!empty($active_ids)){
-			$res = $this->mongo_db->update(MDB_PAYMENT_GATEWAYS,array('_id'=>array('$in'=>$active_ids),'company_id'=>(int)$company_id),array('$set'=>array('payment_status' => 'T')),array('multiple'=>true));
+			$res = $this->mongo_db->update(MDB_PAYMENT_GATEWAYS,['_id'=>['$in'=>$active_ids],'company_id'=>(int)$company_id],['$set'=>['payment_status' => 'T']],['multiple'=>true]);
 			return (empty($res['err']))?1:$res['errmsg'];
 		} else {
 			return 0;
@@ -2019,7 +2019,7 @@ Class Model_Manage extends Model
 		$active_ids = Commonfunction::mongo_format_array($activeids);
 		//var_dump($active_ids);
 		if(!empty($active_ids)){
-			$res = $this->mongo_db->update(MDB_PAYMENT_GATEWAYS,array('_id'=>array('$in'=>$active_ids),'company_id'=>(int)$company_id),array('$set'=>array('payment_status' => 'A')),array('multiple'=>true));
+			$res = $this->mongo_db->update(MDB_PAYMENT_GATEWAYS,['_id'=>['$in'=>$active_ids],'company_id'=>(int)$company_id],['$set'=>['payment_status' => 'A']],['multiple'=>true]);
 			return (empty($res['err']))?1:$res['errmsg'];
 		} else {
 			return 0;
@@ -2044,19 +2044,19 @@ Class Model_Manage extends Model
 		
 		//MongoDB
 		if((!empty($keyword)) && (!empty($status))) {
-			$srch_query = array( "\$and" => array(array( "country_name" => new MongoRegex("/$keyword/i")) , array("country_status" => $status ) ) );
+			$srch_query = [ "\$and" => [[ "country_name" => new \MongoDB\BSON\Regex($keyword, 'i')] , ["country_status" => $status ] ] ];
 		} else if (!empty($keyword)) {
-			$srch_query = array( "country_name" => new MongoRegex("/$keyword/i"));
+			$srch_query = [ "country_name" => new \MongoDB\BSON\Regex($keyword, 'i')];
 		} else if (!empty($status)) {
-			$srch_query = array("country_status" => $status );
+			$srch_query = ["country_status" => $status ];
 		}
 		//print_r($srch_query);exit;
 		if($find_count) {
 			$res = $this->mongo_db->count(MDB_CSC,$srch_query);
 			return $res;
 		} else {
-			$res = $this->mongo_db->find(MDB_CSC,$srch_query,array('_id','country_name','iso_country_code','telephone_code','currency_code','currency_symbol','country_status','default'))->sort(array('country_name'=>1))->skip($offset)->limit($val);
-			return (!empty($res))?iterator_to_array($res):array();
+			$res = $this->mongo_db->find(MDB_CSC,$srch_query,['_id','country_name','iso_country_code','telephone_code','currency_code','currency_symbol','country_status','default'])->sort(['country_name'=>1])->skip($offset)->limit($val);
+			return (!empty($res))?iterator_to_array($res):[];
 		}
     }
     
@@ -2070,25 +2070,25 @@ Class Model_Manage extends Model
 		
 		if($find_count){
 			//MongoDB with aggregate process only
-			$ops = array(
-				array('$unwind' => '$stateinfo'),
-				array('$match' => array('stateinfo.cityinfo.city_status'=>array('$nin'=>array('T')))),
-				array('$group'=>array('_id' => null,'count'=>array(
-						'$sum' =>array('$size'=> '$stateinfo.cityinfo')
-						)
-					)
-				)
-			);
+			$ops = [
+				['$unwind' => '$stateinfo'],
+				['$match' => ['stateinfo.cityinfo.city_status'=>['$nin'=>['T']]]],
+				['$group'=>['_id' => null,'count'=>[
+						'$sum' =>['$size'=> '$stateinfo.cityinfo']
+						]
+					]
+				]
+			];
 			$result = $this->mongo_db->aggregate(MDB_CSC,$ops);
 			//echo '<pre>';print_r($result);exit;
 			return (!empty($result['result']))?$result['result'][0]['count']:0;
 		} else {
 			//MongoDB with aggregate process only
-			$ops = array(
-				array('$unwind' => '$stateinfo'),
-				array('$unwind' => '$stateinfo.cityinfo'),
-				array('$match' => array('stateinfo.cityinfo.city_status'=>array('$ne'=>'T'))),
-				array('$project' => array('_id' => 0,
+			$ops = [
+				['$unwind' => '$stateinfo'],
+				['$unwind' => '$stateinfo.cityinfo'],
+				['$match' => ['stateinfo.cityinfo.city_status'=>['$ne'=>'T']]],
+				['$project' => ['_id' => 0,
 					'city_id' => '$stateinfo.cityinfo.city_id', 
 					'city_name' => '$stateinfo.cityinfo.city_name',
 					'city_stateid' => '$stateinfo.cityinfo.city_stateid',
@@ -2098,23 +2098,23 @@ Class Model_Manage extends Model
 					'city_default' => '$stateinfo.cityinfo.default',
 					'state_name' => '$stateinfo.state_name',
 					'country_name' => '$country_name'
-					)
-				),
-				array(
-					'$sort' => array(
+					]
+				],
+				[
+					'$sort' => [
 						'country_name' => 1
-					),
-				),
-				array(
+					],
+				],
+				[
 					'$skip' => (int)$offset
-				),
-				array(
+				],
+				[
 				  '$limit' => (int)$val
-				)
-			);
+				]
+			];
 			$result = $this->mongo_db->aggregate(MDB_CSC,$ops);
 			//echo '<pre>';print_r($result);exit;
-			return (!empty($result['result']))?$result['result']:array();
+			return (!empty($result['result']))?$result['result']:[];
 		}
     }
     public function active_city_request($activeids)
@@ -2143,7 +2143,7 @@ Class Model_Manage extends Model
 			$city_index = $cityindex['city_index'];
 			$index_key = "stateinfo.".$state_index.".cityinfo.".$city_index;
 			//echo $index_key;exit;
-			$data_set = array('city_id'=>(int)$city_id,
+			$data_set = ['city_id'=>(int)$city_id,
 					'city_stateid' => (int)$state_id,
 					'city_countryid' => (int)$country_id,
 					'default' => $cityindex['city_default'],
@@ -2151,9 +2151,9 @@ Class Model_Manage extends Model
 					'zipcode' => $cityindex['zipcode'],
 				//	'city_model_fare' => $cityindex['city_model_fare'],
 					'city_status'=>'A'
-				);
-			$data = array($index_key=>$data_set);
-			$res = $this->mongo_db->update(MDB_CSC,array('_id'=>(int)$country_id,'stateinfo.state_id'=>(int)$state_id,'stateinfo.cityinfo.city_id'=>(int)$city_id),array('$set'=>$data),array('upsert'=>true));
+				];
+			$data = [$index_key=>$data_set];
+			$res = $this->mongo_db->update(MDB_CSC,['_id'=>(int)$country_id,'stateinfo.state_id'=>(int)$state_id,'stateinfo.cityinfo.city_id'=>(int)$city_id],['$set'=>$data],['upsert'=>true]);
 			//echo '<pre>-'.$city_id.'==';print_r($res);exit;
 			$cnt+=(empty($res['err']))?1:0;
 		}
@@ -2186,7 +2186,7 @@ Class Model_Manage extends Model
 			$city_id = $data[2];
 			//echo $country_id.'=='.$state_id.'=='.$city_id;//exit;
 			//Checking site info collection whether data's are existing with country.state
-			$city_count = $this->mongo_db->count(MDB_SITEINFO,array('site_city'=>(int)$city_id),array('site_city'));
+			$city_count = $this->mongo_db->count(MDB_SITEINFO,['site_city'=>(int)$city_id],['site_city']);
 			//Here we getting nested dcouemnts index keys while updating data with city embedded documents
 			$state_index = commonfunction::get_collection_index($country_id,$state_id,$city_id,'state');
 			$cityindex = commonfunction::get_collection_index($country_id,$state_id,$city_id,'city',true);
@@ -2195,7 +2195,7 @@ Class Model_Manage extends Model
 			
 			$index_key = "stateinfo.".$state_index.".cityinfo.".$city_index;
 			//echo $index_key;exit;
-			$data_set = array('city_id'=>(int)$city_id,
+			$data_set = ['city_id'=>(int)$city_id,
 					'city_stateid' => (int)$state_id,
 					'city_countryid' => (int)$country_id,
 					'default' => $cityindex['city_default'],
@@ -2203,10 +2203,10 @@ Class Model_Manage extends Model
 					'zipcode' => $cityindex['zipcode'],
 //					'city_model_fare' => $cityindex['city_model_fare'],
 					'city_status'=>'D'
-				);
-			$data = array($index_key=>$data_set);
+				];
+			$data = [$index_key=>$data_set];
 			if($city_count==0){
-				$res = $this->mongo_db->update(MDB_CSC,array('_id'=>(int)$country_id,'stateinfo.state_id'=>(int)$state_id,'stateinfo.cityinfo.city_id'=>(int)$city_id),array('$set'=>$data),array('upsert'=>true));
+				$res = $this->mongo_db->update(MDB_CSC,['_id'=>(int)$country_id,'stateinfo.state_id'=>(int)$state_id,'stateinfo.cityinfo.city_id'=>(int)$city_id],['$set'=>$data],['upsert'=>true]);
 				//echo '<pre>-'.$city_id.'==';print_r($res);exit;
 				$cnt+=(empty($res['err']))?1:0;
 			}
@@ -2239,7 +2239,7 @@ Class Model_Manage extends Model
 			$city_id = $data[2];
 			//echo $country_id.'=='.$state_id.'=='.$city_id;//exit;
 			//Checking site info collection whether data's are existing with country.state
-			$city_count = $this->mongo_db->count(MDB_SITEINFO,array('site_city'=>(int)$city_id),array('site_city'));
+			$city_count = $this->mongo_db->count(MDB_SITEINFO,['site_city'=>(int)$city_id],['site_city']);
 			//Here we getting nested dcouemnts index keys while updating data with city embedded documents
 			$state_index = commonfunction::get_collection_index($country_id,$state_id,$city_id,'state');
 			$cityindex = commonfunction::get_collection_index($country_id,$state_id,$city_id,'city',true);
@@ -2248,7 +2248,7 @@ Class Model_Manage extends Model
 			
 			$index_key = "stateinfo.".$state_index.".cityinfo.".$city_index;
 			//echo $index_key;exit;
-			$data_set = array('city_id'=>(int)$city_id,
+			$data_set = ['city_id'=>(int)$city_id,
 					'city_stateid' => (int)$state_id,
 					'city_countryid' => (int)$country_id,
 					'default' => $cityindex['city_default'],
@@ -2256,10 +2256,10 @@ Class Model_Manage extends Model
 					'zipcode' => $cityindex['zipcode'],
 					//'city_model_fare' => $cityindex['city_model_fare'],
 					'city_status'=>'T'
-				);
-			$data = array($index_key=>$data_set);
+				];
+			$data = [$index_key=>$data_set];
 			if($city_count==0){
-				$res = $this->mongo_db->update(MDB_CSC,array('_id'=>(int)$country_id,'stateinfo.state_id'=>(int)$state_id,'stateinfo.cityinfo.city_id'=>(int)$city_id),array('$set'=>$data),array('upsert'=>true));
+				$res = $this->mongo_db->update(MDB_CSC,['_id'=>(int)$country_id,'stateinfo.state_id'=>(int)$state_id,'stateinfo.cityinfo.city_id'=>(int)$city_id],['$set'=>$data],['upsert'=>true]);
 				//echo '<pre>-'.$city_id.'==';print_r($res);exit;
 				$cnt+=(empty($res['err']))?1:0;
 			}
@@ -2277,46 +2277,46 @@ Class Model_Manage extends Model
 		
 		if($find_count){
 			//MongoDB with aggregate process only
-			$ops = array(
-				array('$match' => array('stateinfo.state_status'=>array('$nin'=>array('T')))),
-				array(
-					'$group'=>array('_id' => null,'count'=>array(
-							'$sum' =>array('$size'=> '$stateinfo')
-						)
-					)
-				)
-			);
+			$ops = [
+				['$match' => ['stateinfo.state_status'=>['$nin'=>['T']]]],
+				[
+					'$group'=>['_id' => null,'count'=>[
+							'$sum' =>['$size'=> '$stateinfo']
+						]
+					]
+				]
+			];
 			$result = $this->mongo_db->aggregate(MDB_CSC,$ops);
 			return (!empty($result['result']))?$result['result'][0]['count']:0;
 		} else {
 			//MongoDB with aggregate process only
-			$ops = array(
-				array('$unwind' => '$stateinfo'),
-				array('$match' => array('stateinfo.state_status'=>array('$ne'=>'T'))),
-				array('$project' => array('_id' => 0,
+			$ops = [
+				['$unwind' => '$stateinfo'],
+				['$match' => ['stateinfo.state_status'=>['$ne'=>'T']]],
+				['$project' => ['_id' => 0,
 					'state_id' => '$stateinfo.state_id', 
 					'state_name' => '$stateinfo.state_name',
 					'state_countryid' => '$stateinfo.state_countryid',
 					'state_status' => '$stateinfo.state_status',
 					'state_default' => '$stateinfo.default',
 					'country_name' => '$country_name'
-					)
-				),
-				array(
-					'$sort' => array(
+					]
+				],
+				[
+					'$sort' => [
 						'country_name' => 1
-					),
-				),
-				array(
+					],
+				],
+				[
 					'$skip' => (int)$offset
-				),
-				array(
+				],
+				[
 				  '$limit' => (int)$val
-				)
-			);
+				]
+			];
 			$result = $this->mongo_db->aggregate(MDB_CSC,$ops);
 			//echo '<pre>';print_r($result);exit;
-			return (!empty($result['result']))?$result['result']:array();
+			return (!empty($result['result']))?$result['result']:[];
 		}
     }
     public function active_state_request($activeids)
@@ -2337,7 +2337,7 @@ Class Model_Manage extends Model
 			$data = explode('_',$val);
 			$country_id = $data[0];
 			$state_id = $data[1];
-			$res = $this->mongo_db->update(MDB_CSC,array('_id'=>(int)$country_id,'stateinfo.state_countryid'=>(int)$country_id,'stateinfo.state_id'=>(int)$state_id),array('$set'=>array('stateinfo.$.state_status' => 'A')),array('upsert'=>true));
+			$res = $this->mongo_db->update(MDB_CSC,['_id'=>(int)$country_id,'stateinfo.state_countryid'=>(int)$country_id,'stateinfo.state_id'=>(int)$state_id],['$set'=>['stateinfo.$.state_status' => 'A']],['upsert'=>true]);
 			//echo '<pre>-'.$state_id.'==';print_r($res);exit;
 			$cnt+=(empty($res['err']))?1:0;
 		}
@@ -2369,9 +2369,9 @@ Class Model_Manage extends Model
 			$country_id = $data[0];
 			$state_id = $data[1];
 			//Checking site info collection whether data's are existing with country.state
-			$state_count = $this->mongo_db->count(MDB_SITEINFO,array('site_state'=>(int)$state_id),	array('site_state'));
+			$state_count = $this->mongo_db->count(MDB_SITEINFO,['site_state'=>(int)$state_id],	['site_state']);
 			if($state_count==0){
-				$res = $this->mongo_db->update(MDB_CSC,array('_id'=>(int)$country_id,'stateinfo.state_countryid'=>(int)$country_id,'stateinfo.state_id'=>(int)$state_id),array('$set'=>array('stateinfo.$.state_status' => 'D')),array('upsert'=>true));
+				$res = $this->mongo_db->update(MDB_CSC,['_id'=>(int)$country_id,'stateinfo.state_countryid'=>(int)$country_id,'stateinfo.state_id'=>(int)$state_id],['$set'=>['stateinfo.$.state_status' => 'D']],['upsert'=>true]);
 				//echo '<pre>-'.$state_id.'==';print_r($res);exit;
 				$cnt+=(empty($res['err']))?1:0;
 			}
@@ -2403,9 +2403,9 @@ Class Model_Manage extends Model
 			$country_id = $data[0];
 			$state_id = $data[1];
 			//Checking site info collection whether data's are existing with country.state
-			$state_count = $this->mongo_db->count(MDB_SITEINFO,array('site_state'=>(int)$state_id),	array('site_state'));
+			$state_count = $this->mongo_db->count(MDB_SITEINFO,['site_state'=>(int)$state_id],	['site_state']);
 			if($state_count==0){
-				$res = $this->mongo_db->update(MDB_CSC,array('_id'=>(int)$country_id,'stateinfo.state_countryid'=>(int)$country_id,'stateinfo.state_id'=>(int)$state_id),array('$set'=>array('stateinfo.$.state_status' => 'T')),array('upsert'=>true));
+				$res = $this->mongo_db->update(MDB_CSC,['_id'=>(int)$country_id,'stateinfo.state_countryid'=>(int)$country_id,'stateinfo.state_id'=>(int)$state_id],['$set'=>['stateinfo.$.state_status' => 'T']],['upsert'=>true]);
 				//echo '<pre>-'.$state_id.'==';print_r($res);exit;
 				$cnt+=(empty($res['err']))?1:0;
 			}
@@ -2430,56 +2430,56 @@ Class Model_Manage extends Model
 		
 		//MongoDB with aggregate process only
 		if((!empty($keyword)) && (!empty($status))) {
-			$srch_query = array( "\$and" => array(array('stateinfo.state_status' => $status ),array("\$or"=>array(array( 'country_name' => new MongoRegex("/$keyword/i")) , array( 'stateinfo.state_name' => new MongoRegex("/$keyword/i") ) ) ) ) );
+			$srch_query = [ "\$and" => [['stateinfo.state_status' => $status ],["\$or"=>[[ 'country_name' => new \MongoDB\BSON\Regex($keyword, 'i')] , [ 'stateinfo.state_name' => new \MongoDB\BSON\Regex($keyword, 'i') ] ] ] ] ];
 		} else if (!empty($keyword)) {
-			$srch_query = array( "\$or" => array(array( 'country_name' => new MongoRegex("/$keyword/i")) , array( 'stateinfo.state_name' => new MongoRegex("/$keyword/i") ) ) );
+			$srch_query = [ "\$or" => [[ 'country_name' => new \MongoDB\BSON\Regex($keyword, 'i')] , [ 'stateinfo.state_name' => new \MongoDB\BSON\Regex($keyword, 'i') ] ] ];
 		} else if (!empty($status)) {
-			$srch_query = array("stateinfo.state_status" => $status );
+			$srch_query = ["stateinfo.state_status" => $status ];
 		}
 		//echo '<pre>';print_r($srch_query);//exit;
 		if($find_count) {
-			$ops = array(
-				array(
+			$ops = [
+				[
 					  '$match' => $srch_query,
-				),
-				array(
-						'$group'=>array('_id' => null,'count'=>array(
-							'$sum' =>array('$size'=> '$stateinfo')
-						)
-					)
-				)
-			);
+				],
+				[
+						'$group'=>['_id' => null,'count'=>[
+							'$sum' =>['$size'=> '$stateinfo']
+						]
+					]
+				]
+			];
 			$result = $this->mongo_db->aggregate(MDB_CSC,$ops);
 			//echo '<pre>if';print_r($result);exit;
 			return (!empty($result['result']))?$result['result'][0]['count']:0;
 		} else {
-			$ops = array(
-					array('$unwind' => '$stateinfo'),
-					array('$match' => $srch_query),
-					array('$project' => array('_id' => 0,
+			$ops = [
+					['$unwind' => '$stateinfo'],
+					['$match' => $srch_query],
+					['$project' => ['_id' => 0,
 						'state_id' => '$stateinfo.state_id', 
 						'state_name' => '$stateinfo.state_name',
 						'state_countryid' => '$stateinfo.state_countryid',
 						'state_status' => '$stateinfo.state_status',
 						'state_default' => '$stateinfo.default',
 						'country_name' => '$country_name'
-					)
-				),
-				array(
-					'$sort' => array(
+					]
+				],
+				[
+					'$sort' => [
 						'country_name' => 1
-					),
-				),
-				array(
+					],
+				],
+				[
 					'$skip' => (int)$offset
-				),
-				array(
+				],
+				[
 				  '$limit' => (int)$val
-				)
-			);
+				]
+			];
 			$result = $this->mongo_db->aggregate(MDB_CSC,$ops);
 			//echo '<pre>else';print_r($result);//exit;
-			return (!empty($result['result']))?$result['result']:array();
+			return (!empty($result['result']))?$result['result']:[];
 		}
     }
     
@@ -2502,35 +2502,35 @@ Class Model_Manage extends Model
 		
 		//MongoDB with aggregate process only
 		if((!empty($keyword)) && (!empty($status))) {
-			$srch_query = array( "\$and" => array(array('stateinfo.cityinfo.city_status' => $status ),array("\$or"=>array(array( 'country_name' => new MongoRegex("/$keyword/i")) , array( 'stateinfo.state_name' => new MongoRegex("/$keyword/i") ) , array( 'stateinfo.cityinfo.city_name' => new MongoRegex("/$keyword/i") ) ) ) ) );
+			$srch_query = [ "\$and" => [['stateinfo.cityinfo.city_status' => $status ],["\$or"=>[[ 'country_name' => new \MongoDB\BSON\Regex($keyword, 'i')] , [ 'stateinfo.state_name' => new \MongoDB\BSON\Regex($keyword, 'i') ] , [ 'stateinfo.cityinfo.city_name' => new \MongoDB\BSON\Regex($keyword, 'i') ] ] ] ] ];
 		} else if (!empty($keyword)) {
-			$srch_query = array( "\$or" => array(array( 'country_name' => new MongoRegex("/$keyword/i")) , array( 'stateinfo.state_name' => new MongoRegex("/$keyword/i") ),array( 'stateinfo.cityinfo.city_name' => new MongoRegex("/$keyword/i") ) ) );
+			$srch_query = [ "\$or" => [[ 'country_name' => new \MongoDB\BSON\Regex($keyword, 'i')] , [ 'stateinfo.state_name' => new \MongoDB\BSON\Regex($keyword, 'i') ],[ 'stateinfo.cityinfo.city_name' => new \MongoDB\BSON\Regex($keyword, 'i') ] ] ];
 		} else if (!empty($status)) {
-			$srch_query = array("stateinfo.cityinfo.city_status" => $status );
+			$srch_query = ["stateinfo.cityinfo.city_status" => $status ];
 		}
 		//echo '<pre>';print_r($srch_query);//exit;
 		if($find_count) {
-			$ops = array(
-				array('$unwind' => '$stateinfo'),
-				array(
+			$ops = [
+				['$unwind' => '$stateinfo'],
+				[
 					  '$match' => $srch_query,
-				),
-				array(
-						'$group'=>array('_id' => null,'count'=>array(
-							'$sum' =>array('$size'=> '$stateinfo.cityinfo')
-						)
-					)
-				)
-			);
+				],
+				[
+						'$group'=>['_id' => null,'count'=>[
+							'$sum' =>['$size'=> '$stateinfo.cityinfo']
+						]
+					]
+				]
+			];
 			$result = $this->mongo_db->aggregate(MDB_CSC,$ops);
 			//echo '<pre>if';print_r($result);exit;
 			return (!empty($result['result']))?count($result['result']):0;
 		} else {
-			$ops = array(
-				array('$unwind' => '$stateinfo'),
-				array('$unwind' => '$stateinfo.cityinfo'),
-				array('$match' => $srch_query),
-				array('$project' => array('_id' => 0,
+			$ops = [
+				['$unwind' => '$stateinfo'],
+				['$unwind' => '$stateinfo.cityinfo'],
+				['$match' => $srch_query],
+				['$project' => ['_id' => 0,
 					'city_id' => '$stateinfo.cityinfo.city_id', 
 					'city_name' => '$stateinfo.cityinfo.city_name',
 					'city_stateid' => '$stateinfo.cityinfo.city_stateid',
@@ -2540,23 +2540,23 @@ Class Model_Manage extends Model
 					'city_default' => '$stateinfo.cityinfo.default',
 					'state_name' => '$stateinfo.state_name',
 					'country_name' => '$country_name'
-					)
-				),
-				array(
-					'$sort' => array(
+					]
+				],
+				[
+					'$sort' => [
 						'country_name' => 1
-					),
-				),
-				array(
+					],
+				],
+				[
 					'$skip' => (int)$offset
-				),
-				array(
+				],
+				[
 				  '$limit' => (int)$val
-				)
-			);
+				]
+			];
 			$result = $this->mongo_db->aggregate(MDB_CSC,$ops);
 			//echo '<pre>else';print_r($result);exit;
-			return (!empty($result['result']))?$result['result']:array();
+			return (!empty($result['result']))?$result['result']:[];
 		}
     }
     public function searchmanager_list($keyword = "", $status = "", $company = "")
@@ -2624,84 +2624,84 @@ Class Model_Manage extends Model
         
         $keyword       = str_replace("%", "!%", $keyword);
         $keyword       = str_replace("_", "!_", $keyword);
-		$status = ($status!="")?$status:array('$ne' => 'T');
+		$status = ($status!="")?$status:['$ne' => 'T'];
 		
 		$company_id = ($company_id!="" || $company_id!=0)?$company_id:"";
 		$c_id = ($company!="")?$company:$company_id;
 		//echo $c_id.",".$company_id;
 		if ($usertype == 'M' && $c_id!="") {
-			$match_query = array('people.user_createdby' => (int)$user_createdby, 'people.company_id' => (int)$c_id, 'people.user_type' => 'M', 'people.status' => $status );
+			$match_query = ['people.user_createdby' => (int)$user_createdby, 'people.company_id' => (int)$c_id, 'people.user_type' => 'M', 'people.status' => $status ];
 		} else if ($usertype == 'C' && $c_id!="") {
-			$match_query = array('people.company_id' => (int)$c_id, 'people.user_type' => 'M', 'people.status' => $status );
+			$match_query = ['people.company_id' => (int)$c_id, 'people.user_type' => 'M', 'people.status' => $status ];
 		}else if ($c_id!="") {
-			$match_query = array("people.company_id" => (int)$c_id,'people.status' => $status, 'people.user_type' => 'M');
+			$match_query = ["people.company_id" => (int)$c_id,'people.status' => $status, 'people.user_type' => 'M'];
 		}else {
-			$match_query = array('people.status' => $status,'people.user_type' => 'M' );
+			$match_query = ['people.status' => $status,'people.user_type' => 'M' ];
 		}
 		
 		if(!empty($keyword)) {
-			$srch_query = array( "\$and" => array($match_query,array("\$or"=>array(array( 'people.name' => new MongoRegex("/$keyword/i")) , array( 'people.lastname' => new MongoRegex("/$keyword/i") ), array( 'people.email' => new MongoRegex("/$keyword/i") ), array( 'company.companydetails.company_name' => new MongoRegex("/$keyword/i") ) ) ) ) );
+			$srch_query = [ "\$and" => [$match_query,["\$or"=>[[ 'people.name' => new \MongoDB\BSON\Regex($keyword, 'i')] , [ 'people.lastname' => new \MongoDB\BSON\Regex($keyword, 'i') ], [ 'people.email' => new \MongoDB\BSON\Regex($keyword, 'i') ], [ 'company.companydetails.company_name' => new \MongoDB\BSON\Regex($keyword, 'i') ] ] ] ] ];
 		}else{
 			$srch_query = $match_query;
 		}
 		//echo '<pre>';print_r($srch_query);//exit;
         if($find_count==TRUE){	
-			$arguments = array(
-						array('$unwind' => '$stateinfo'),
-						array('$unwind' => '$stateinfo.cityinfo'),
-						array('$lookup' 		=> array(
+			$arguments = [
+						['$unwind' => '$stateinfo'],
+						['$unwind' => '$stateinfo.cityinfo'],
+						['$lookup' 		=> [
 								'from'			=>	MDB_PEOPLE,
 								'localField'	=> 'stateinfo.cityinfo.city_id',
 								'foreignField'	=> "login_country",
 								'foreignField'	=> "login_state",
 								'foreignField'	=> "login_city",
 								'as'			=> "people"
-							)
-						),
-						array('$unwind' => '$people'),
-						array('$lookup' 		=> array(
+							]
+						],
+						['$unwind' => '$people'],
+						['$lookup' 		=> [
 								'from'			=>	MDB_COMPANY,
 								'localField'	=> 'people.company_id',
 								'foreignField'	=> "_id",
 								'as'			=> "company"
-							)
-						),
-						array('$unwind' => '$company'),
-						array('$match'	=> $srch_query),
-						array(
-							'$project' => array(
+							]
+						],
+						['$unwind' => '$company'],
+						['$match'	=> $srch_query],
+						[
+							'$project' => [
 								'result' => '$people._id',
-							)
-						),
-					);
+							]
+						],
+					];
             $result = $this->mongo_db->aggregate(MDB_CSC,$arguments);
 			//echo "<pre>"; print_r(count($result['result'])); exit;
             return (!empty($result['result']) && isset($result['result']))?count($result['result']):0;
 		}else{
-			$arguments = array(
-						array('$unwind' => '$stateinfo'),
-						array('$unwind' => '$stateinfo.cityinfo'),
-						array('$lookup' 		=> array(
+			$arguments = [
+						['$unwind' => '$stateinfo'],
+						['$unwind' => '$stateinfo.cityinfo'],
+						['$lookup' 		=> [
 								'from'			=>	MDB_PEOPLE,
 								'localField'	=> 'stateinfo.cityinfo.city_id',
 								'foreignField'	=> "login_country",
 								'foreignField'	=> "login_state",
 								'foreignField'	=> "login_city",
 								'as'			=> "people"
-							)
-						),
-						array('$unwind' => '$people'),
-						array('$lookup' 		=> array(
+							]
+						],
+						['$unwind' => '$people'],
+						['$lookup' 		=> [
 								'from'			=>	MDB_COMPANY,
 								'localField'	=> 'people.company_id',
 								'foreignField'	=> "_id",
 								'as'			=> "company"
-							)
-						),
-						array('$unwind' => '$company'),
-						array('$match'	=> $srch_query),
-						array(
-							'$project' => array(
+							]
+						],
+						['$unwind' => '$company'],
+						['$match'	=> $srch_query],
+						[
+							'$project' => [
 								'pid' => '$people._id',
 								'status' => '$people.status',
 								'name'=>'$people.name',
@@ -2713,23 +2713,23 @@ Class Model_Manage extends Model
 								'company_name' => '$company.companydetails.company_name',
 								'userid' => '$company.companydetails.userid',
 								'company_id' => '$company._id',
-							)
-						),
-						array(
-							'$sort' => array(
+							]
+						],
+						[
+							'$sort' => [
 								'people.created_date' => 1
-							),
-						),
-						array(
+							],
+						],
+						[
 							'$skip' => (int)$offset
-						),
-						array(
+						],
+						[
 						  '$limit' => (int)$val
-						)
-					);
+						]
+					];
             $result = $this->mongo_db->aggregate(MDB_CSC,$arguments);
 			//echo "<pre>"; print_r($result); exit;
-			return (!empty($result['result']))?$result['result']:array();
+			return (!empty($result['result']))?$result['result']:[];
 		}
     }
 	
@@ -2751,51 +2751,51 @@ Class Model_Manage extends Model
 		
 		//MongoDB with aggregate process only
 		if((!empty($keyword)) && (!empty($status))) {
-			$srch_query = array( "\$and" => array(array('user_type' => 'S' ),array('status' => $status ),array("\$or"=>array(array( 'name' => new MongoRegex("/$keyword/i")) , array( 'lastname' => new MongoRegex("/$keyword/i") ),array( 'email' => new MongoRegex("/$keyword/i") ) ) ) ) );
+			$srch_query = [ "\$and" => [['user_type' => 'S' ],['status' => $status ],["\$or"=>[[ 'name' => new \MongoDB\BSON\Regex($keyword, 'i')] , [ 'lastname' => new \MongoDB\BSON\Regex($keyword, 'i') ],[ 'email' => new \MongoDB\BSON\Regex($keyword, 'i') ] ] ] ] ];
 		} else if (!empty($keyword)) {
-			$srch_query = array( "\$and" => array(array('user_type' => 'S' ),array("\$or"=>array(array( 'name' => new MongoRegex("/$keyword/i")) , array( 'lastname' => new MongoRegex("/$keyword/i") ),array( 'email' => new MongoRegex("/$keyword/i") ) ) ) ) );
+			$srch_query = [ "\$and" => [['user_type' => 'S' ],["\$or"=>[[ 'name' => new \MongoDB\BSON\Regex($keyword, 'i')] , [ 'lastname' => new \MongoDB\BSON\Regex($keyword, 'i') ],[ 'email' => new \MongoDB\BSON\Regex($keyword, 'i') ] ] ] ] ];
 		} else if (!empty($status)) {
-			$srch_query = array( "\$and" => array(array('user_type' => 'S' ),array("status" => $status )));
+			$srch_query = [ "\$and" => [['user_type' => 'S' ],["status" => $status ]]];
 		}
 		//echo '<pre>';print_r($srch_query);//exit;
 		if($find_count) {
-			$ops = array(
-				array(
+			$ops = [
+				[
 					  '$match' => $srch_query,
-				),
-				array(
-					'$lookup' => array(
+				],
+				[
+					'$lookup' => [
 					'from'=>MDB_CSC,
 					'localField'=> "login_country",
 					'foreignField' => "_id",
 					'as'=> "countrydetails"
-					)
-				),
-				array('$unwind'=>'$countrydetails'),
-				array(
-						'$group'=>array('_id' => null,'count'=>array(
+					]
+				],
+				['$unwind'=>'$countrydetails'],
+				[
+						'$group'=>['_id' => null,'count'=>[
 							'$sum' =>1
-						)
-					)
-				)
-			);
+						]
+					]
+				]
+			];
 			$result = $this->mongo_db->aggregate(MDB_PEOPLE,$ops);
 			//echo '<pre>if';print_r($result);exit;
 			return (!empty($result['result']))?count($result['result']):0;
 		} else {
-			$ops = array(
-				array('$match' => $srch_query),
-				array(
-						'$lookup' => array(
+			$ops = [
+				['$match' => $srch_query],
+				[
+						'$lookup' => [
 						'from'=>MDB_CSC,
 						'localField'=> "login_country",
 						'foreignField' => "_id",
 						'as'=> "countrydetails"
-						)
-					),
-				array('$unwind'=>'$countrydetails'),
-				array(
-					'$project' => array(
+						]
+					],
+				['$unwind'=>'$countrydetails'],
+				[
+					'$project' => [
 					'country_name' => '$countrydetails.country_name',
 					'name' => '$name',
 					'email' => '$email',
@@ -2804,23 +2804,23 @@ Class Model_Manage extends Model
 					'lastname' => '$lastname',
 					'login_country' => '$login_country',
 					'phone' => '$phone'
-					)
-				),
-				array(
-					'$sort' => array(
+					]
+				],
+				[
+					'$sort' => [
 						'_id' => 1
-					),
-				),
-				array(
+					],
+				],
+				[
 					'$skip' => (int)$offset
-				),
-				array(
+				],
+				[
 				  '$limit' => (int)$val
-				)
-			);
+				]
+			];
 			$result = $this->mongo_db->aggregate(MDB_PEOPLE,$ops);
 			//echo '<pre>else';print_r($result);exit;
-			return (!empty($result['result']))?$result['result']:array();
+			return (!empty($result['result']))?$result['result']:[];
 		}
     }
     
@@ -2866,98 +2866,98 @@ Class Model_Manage extends Model
 		$city_id                         = $this->city_id;
 		$keyword       = str_replace("%", "!%", $keyword);
         $keyword       = str_replace("_", "!_", $keyword);
-		$status = ($status!="")?$status:array('$ne' => 'T');
+		$status = ($status!="")?$status:['$ne' => 'T'];
 		$c_id = ($company!="")?$company:$company_id;
 		if ($usertype == 'M') {
-			$match_query = array('people.user_type'=>'D', 'people.login_country'=>(int) $country_id,'people.login_state' =>(int) $state_id,'people.login_city'=>(int) $city_id,'people.company_id' => (int)$c_id,'people.status' => $status);
+			$match_query = ['people.user_type'=>'D', 'people.login_country'=>(int) $country_id,'people.login_state' =>(int) $state_id,'people.login_city'=>(int) $city_id,'people.company_id' => (int)$c_id,'people.status' => $status];
 		} else if ($usertype == 'C') {
-			$match_query = array('people.user_type'=>'D', 'people.company_id' => (int)$c_id,'people.status' => $status );
+			$match_query = ['people.user_type'=>'D', 'people.company_id' => (int)$c_id,'people.status' => $status ];
 		}elseif((int)$c_id!="" || (int)$c_id!=0) {
-			$match_query = array('people.user_type'=>'D', 'people.company_id' => (int)$c_id,'people.status' => $status );
+			$match_query = ['people.user_type'=>'D', 'people.company_id' => (int)$c_id,'people.status' => $status ];
 		}else{
-			$match_query = array('people.user_type'=>'D', 'people.status' => $status );
+			$match_query = ['people.user_type'=>'D', 'people.status' => $status ];
 		}
 		if(!empty($keyword)) {
-			$srch_query = array( "\$and" => array($match_query,array("\$or"=>array(array( 'people.name' => new MongoRegex("/$keyword/i")) , array( 'people.lastname' => new MongoRegex("/$keyword/i") ), array( 'people.email' => new MongoRegex("/$keyword/i") ), array( 'people.phone' => new MongoRegex("/$keyword/i") ), array( 'company.companydetails.company_name' => new MongoRegex("/$keyword/i") ) ) ) ) );
+			$srch_query = [ "\$and" => [$match_query,["\$or"=>[[ 'people.name' => new \MongoDB\BSON\Regex($keyword, 'i')] , [ 'people.lastname' => new \MongoDB\BSON\Regex($keyword, 'i') ], [ 'people.email' => new \MongoDB\BSON\Regex($keyword, 'i') ], [ 'people.phone' => new \MongoDB\BSON\Regex($keyword, 'i') ], [ 'company.companydetails.company_name' => new \MongoDB\BSON\Regex($keyword, 'i') ] ] ] ] ];
 		}else{
 			$srch_query = $match_query;
 		}
 		//echo "<pre>"; print_r($srch_query); exit;
-		$common_arguments = array(
-			array(
+		$common_arguments = [
+			[
 				'$unwind' => '$stateinfo'
-			),
-			array(
+			],
+			[
 				'$unwind' => '$stateinfo.cityinfo'
-			),
-			array(
-				'$lookup' => array(
+			],
+			[
+				'$lookup' => [
 					'from' => MDB_PEOPLE,
 					'localField' => 'stateinfo.cityinfo.city_id',
 					'foreignField' => 'login_country',
 					'foreignField' => 'login_city',
 					'as' => 'people'
-				)
-			),
-			array(
+				]
+			],
+			[
 				'$unwind' => '$people'
-			),
-			array(
-				'$lookup' => array(
+			],
+			[
+				'$lookup' => [
 					'from' => MDB_COMPANY,
 					'localField' => 'people.company_id',
 					'foreignField' => '_id',
 					'as' => 'company'
-				)
-			),
-			array(
+				]
+			],
+			[
 				'$unwind' => '$company'
-			),
-			array(
-				'$lookup' => array(
+			],
+			[
+				'$lookup' => [
 					'from' => MDB_DRIVER_INFO,
 					'localField' => 'people._id',
 					'foreignField' => '_id',
 					'as' => 'driver'
-				)
-			),
-			array(
+				]
+			],
+			[
 				'$unwind' => '$driver'
-			),
-			array(
+			],
+			[
 				'$match' => $srch_query
-			),
-		);
+			],
+		];
 		
 		if ($find_count == TRUE) {
-			$count_arguments = array(
-				array(
-					'$project' => array(
+			$count_arguments = [
+				[
+					'$project' => [
 						'result' => '$people._id'
-					)
-				),
-				array(
-					'$group' => array(
+					]
+				],
+				[
+					'$group' => [
 						'_id' => NULL,
-						'count' => array(
+						'count' => [
 							'$sum' => 1
-						)
-					)
-				)
-			);
+						]
+					]
+				]
+			];
 			$merge_arguments = array_merge($common_arguments, $count_arguments);
 			$result          = $this->mongo_db->aggregate(MDB_CSC, $merge_arguments);
 		//echo "<pre>";print_r($result['result']);exit;
 			return (!empty($result['result']) && isset($result['result'][0]['count'])) ? $result['result'][0]['count'] : 0;
 		} else {
-			$field_arguments = array(
-				array(
-					'$sort' => array( 
+			$field_arguments = [
+				[
+					'$sort' => [ 
 						'people.created_date' => -1
-					),
-				),
-				array(
-					'$project' => array(
+					],
+				],
+				[
+					'$project' => [
 						'id' => '$people._id',
 						'created_by' => '$people.user_createdby',
 						'name' => '$people.name',
@@ -2977,15 +2977,15 @@ Class Model_Manage extends Model
 						'cid' => '$company.companydetails.userid',
 						'photo' => '$people.profile_picture',
 						'driver_status' => '$people.status',
-					)
-				),
-				array('$skip'	=> (int)$offset ),
-				array('$limit'	=> (int)$val )
-			);
+					]
+				],
+				['$skip'	=> (int)$offset ],
+				['$limit'	=> (int)$val ]
+			];
 			$merge_arguments = array_merge($common_arguments, $field_arguments);
 			$result    = $this->mongo_db->aggregate(MDB_CSC, $merge_arguments);
 			//echo "<pre>";print_r($result['result']); exit;
-			return (!empty($result['result'])) ? $result['result'] : array();
+			return (!empty($result['result'])) ? $result['result'] : [];
 		}
     }
     
@@ -2999,97 +2999,97 @@ Class Model_Manage extends Model
 		$city_id                         = $this->city_id;
 		$keyword       = str_replace("%", "!%", $keyword);
         $keyword       = str_replace("_", "!_", $keyword);
-		$status = ($status!="")?$status:array('$ne' => 'T');
+		$status = ($status!="")?$status:['$ne' => 'T'];
 		$c_id = ($company!="")?$company:$company_id;
 		if ($usertype == 'M') {
-			$match_query = array('people.user_type'=>'D', 'people.login_country'=>(int) $country_id,'people.login_state' =>(int) $state_id,'people.login_city'=>(int) $city_id,'people.company_id' => (int)$c_id,'people.availability_status' => $status);
+			$match_query = ['people.user_type'=>'D', 'people.login_country'=>(int) $country_id,'people.login_state' =>(int) $state_id,'people.login_city'=>(int) $city_id,'people.company_id' => (int)$c_id,'people.availability_status' => $status];
 		} else if ($usertype == 'C') {
-			$match_query = array('people.user_type'=>'D', 'people.company_id' => (int)$c_id,'people.availability_status' => $status );
+			$match_query = ['people.user_type'=>'D', 'people.company_id' => (int)$c_id,'people.availability_status' => $status ];
 		}elseif((int)$c_id!="" || (int)$c_id!=0) {
-			$match_query = array('people.user_type'=>'D', 'people.company_id' => (int)$c_id,'people.availability_status' => $status );
+			$match_query = ['people.user_type'=>'D', 'people.company_id' => (int)$c_id,'people.availability_status' => $status ];
 		}else{
-			$match_query = array('people.user_type'=>'D', 'people.availability_status' => $status );
+			$match_query = ['people.user_type'=>'D', 'people.availability_status' => $status ];
 		}
 		if(!empty($keyword)) {
-			$srch_query = array( "\$and" => array($match_query,array("\$or"=>array(array( 'people.name' => new MongoRegex("/$keyword/i")) , array( 'people.lastname' => new MongoRegex("/$keyword/i") ), array( 'people.email' => new MongoRegex("/$keyword/i") ), array( 'company.companydetails.company_name' => new MongoRegex("/$keyword/i") ) ) ) ) );
+			$srch_query = [ "\$and" => [$match_query,["\$or"=>[[ 'people.name' => new \MongoDB\BSON\Regex($keyword, 'i')] , [ 'people.lastname' => new \MongoDB\BSON\Regex($keyword, 'i') ], [ 'people.email' => new \MongoDB\BSON\Regex($keyword, 'i') ], [ 'company.companydetails.company_name' => new \MongoDB\BSON\Regex($keyword, 'i') ] ] ] ] ];
 		}else{
 			$srch_query = $match_query;
 		}
-		$common_arguments = array(
-			array(
+		$common_arguments = [
+			[
 				'$unwind' => '$stateinfo'
-			),
-			array(
+			],
+			[
 				'$unwind' => '$stateinfo.cityinfo'
-			),
-			array(
-				'$lookup' => array(
+			],
+			[
+				'$lookup' => [
 					'from' => MDB_PEOPLE,
 					'localField' => 'stateinfo.cityinfo.city_id',
 					'foreignField' => 'login_country',
 					'foreignField' => 'login_city',
 					'as' => 'people'
-				)
-			),
-			array(
+				]
+			],
+			[
 				'$unwind' => '$people'
-			),
-			array(
-				'$lookup' => array(
+			],
+			[
+				'$lookup' => [
 					'from' => MDB_COMPANY,
 					'localField' => 'people.company_id',
 					'foreignField' => '_id',
 					'as' => 'company'
-				)
-			),
-			array(
+				]
+			],
+			[
 				'$unwind' => '$company'
-			),
-			array(
-				'$lookup' => array(
+			],
+			[
+				'$lookup' => [
 					'from' => MDB_DRIVER_INFO,
 					'localField' => 'people._id',
 					'foreignField' => '_id',
 					'as' => 'driver'
-				)
-			),
-			array(
+				]
+			],
+			[
 				'$unwind' => '$driver'
-			),
-			array(
+			],
+			[
 				'$match' => $srch_query
-			),
-		);
+			],
+		];
 		
 		if ($find_count == TRUE) {
-			$count_arguments = array(
-				array(
-					'$project' => array(
+			$count_arguments = [
+				[
+					'$project' => [
 						'result' => '$people._id'
-					)
-				),
-				array(
-					'$group' => array(
+					]
+				],
+				[
+					'$group' => [
 						'_id' => NULL,
-						'count' => array(
+						'count' => [
 							'$sum' => 1
-						)
-					)
-				)
-			);
+						]
+					]
+				]
+			];
 			$merge_arguments = array_merge($common_arguments, $count_arguments);
 			$result          = $this->mongo_db->aggregate(MDB_CSC, $merge_arguments);
 			//echo "<pre>";print_r($result['result']);exit;
 			return (!empty($result['result']) && isset($result['result'][0]['count'])) ? $result['result'][0]['count'] : 0;
 		} else {
-			$field_arguments = array(
-				array(
-					'$sort' => array( 
+			$field_arguments = [
+				[
+					'$sort' => [ 
 						'people.created_date' => -1
-					),
-				),
-				array(
-					'$project' => array(
+					],
+				],
+				[
+					'$project' => [
 						'id' => '$people._id',
 						'created_by' => '$people.user_createdby',
 						'name' => '$people.name',
@@ -3108,15 +3108,15 @@ Class Model_Manage extends Model
 						'cid' => '$company.companydetails.userid',
 						'photo' => '$people.profile_picture',
 						'driver_status' => '$people.status',
-					)
-				),
-				array('$skip'	=> (int)$offset ),
+					]
+				],
+				['$skip'	=> (int)$offset ],
 				//array('$limit'	=> (int)$val )
-			);
+			];
 			
 			$merge_arguments = array_merge($common_arguments, $field_arguments);
 			$result    = $this->mongo_db->aggregate(MDB_CSC, $merge_arguments);
-			return (!empty($result['result'])) ? $result['result'] : array();
+			return (!empty($result['result'])) ? $result['result'] : [];
 		}
 		/*$user_createdby = $this->user_createdby;
         $usertype       = $this->usertype;
@@ -3220,105 +3220,105 @@ Class Model_Manage extends Model
 		
 		//MongoDB with aggregate process only
 		if((!empty($keyword)) && (!empty($status)) && (!empty($company))) {
-			$srch_query = array( "\$and" => array(array('taxi.taxi_company' => (int)$company ),array('taxi.taxi_status' => $status ),array("\$or"=>array(array( 'taxi.taxi_no' => new MongoRegex("/$keyword/i")) , array( 'taxi.taxi_type' => new MongoRegex("/$keyword/i") ),array( 'company.companydetails.company_name' => new MongoRegex("/$keyword/i") ) ) ) ) );
+			$srch_query = [ "\$and" => [['taxi.taxi_company' => (int)$company ],['taxi.taxi_status' => $status ],["\$or"=>[[ 'taxi.taxi_no' => new \MongoDB\BSON\Regex($keyword, 'i')] , [ 'taxi.taxi_type' => new \MongoDB\BSON\Regex($keyword, 'i') ],[ 'company.companydetails.company_name' => new \MongoDB\BSON\Regex($keyword, 'i') ] ] ] ] ];
 		} else if ((!empty($keyword)) && (!empty($status))){
 			if($usertype=='A'){
-				$srch_query = array( "\$and" => array(array('taxi.taxi_status' => $status ),array("\$or"=>array(array( 'taxi.taxi_no' => new MongoRegex("/$keyword/i")) , array( 'taxi.taxi_type' => new MongoRegex("/$keyword/i") ),array( 'company.companydetails.company_name' => new MongoRegex("/$keyword/i") ) ) ) ) );
+				$srch_query = [ "\$and" => [['taxi.taxi_status' => $status ],["\$or"=>[[ 'taxi.taxi_no' => new \MongoDB\BSON\Regex($keyword, 'i')] , [ 'taxi.taxi_type' => new \MongoDB\BSON\Regex($keyword, 'i') ],[ 'company.companydetails.company_name' => new \MongoDB\BSON\Regex($keyword, 'i') ] ] ] ] ];
 			} else {
-				$srch_query = array( "\$and" => array(array('taxi.taxi_company' => (int)$company ),array('taxi.taxi_status' => $status ),array("\$or"=>array(array( 'taxi.taxi_no' => new MongoRegex("/$keyword/i")) , array( 'taxi.taxi_type' => new MongoRegex("/$keyword/i") ),array( 'company.companydetails.company_name' => new MongoRegex("/$keyword/i") ) ) ) ) );
+				$srch_query = [ "\$and" => [['taxi.taxi_company' => (int)$company ],['taxi.taxi_status' => $status ],["\$or"=>[[ 'taxi.taxi_no' => new \MongoDB\BSON\Regex($keyword, 'i')] , [ 'taxi.taxi_type' => new \MongoDB\BSON\Regex($keyword, 'i') ],[ 'company.companydetails.company_name' => new \MongoDB\BSON\Regex($keyword, 'i') ] ] ] ] ];
 			}
 		} else if ((!empty($keyword)) && (!empty($company))){
-			$srch_query = array( "\$and" => array(array('taxi.taxi_company' => (int)$company ),array("\$or"=>array(array( 'taxi.taxi_no' => new MongoRegex("/$keyword/i")) , array( 'taxi.taxi_type' => new MongoRegex("/$keyword/i") ),array( 'company.companydetails.company_name' => new MongoRegex("/$keyword/i") ) ) ) ) );
+			$srch_query = [ "\$and" => [['taxi.taxi_company' => (int)$company ],["\$or"=>[[ 'taxi.taxi_no' => new \MongoDB\BSON\Regex($keyword, 'i')] , [ 'taxi.taxi_type' => new \MongoDB\BSON\Regex($keyword, 'i') ],[ 'company.companydetails.company_name' => new \MongoDB\BSON\Regex($keyword, 'i') ] ] ] ] ];
 		} else if ((!empty($status)) && (!empty($company))){
-			$srch_query = array( "\$and" => array(array('taxi.taxi_company' => (int)$company ),array('taxi.taxi_status' => $status ) ) );
+			$srch_query = [ "\$and" => [['taxi.taxi_company' => (int)$company ],['taxi.taxi_status' => $status ] ] ];
 		} else if (!empty($keyword)) {
 			if($usertype=='A'){
-				$srch_query = array( "\$and" => array(array("\$or"=>array(array( 'taxi.taxi_no' => new MongoRegex("/$keyword/i")) , array( 'taxi.taxi_type' => new MongoRegex("/$keyword/i") ),array( 'company.companydetails.company_name' => new MongoRegex("/$keyword/i") ) ) ) ) );
+				$srch_query = [ "\$and" => [["\$or"=>[[ 'taxi.taxi_no' => new \MongoDB\BSON\Regex($keyword, 'i')] , [ 'taxi.taxi_type' => new \MongoDB\BSON\Regex($keyword, 'i') ],[ 'company.companydetails.company_name' => new \MongoDB\BSON\Regex($keyword, 'i') ] ] ] ] ];
 			} else {
-				$srch_query = array( "\$and" => array(array('taxi.taxi_company' => (int)$company ),array("\$or"=>array(array( 'taxi.taxi_no' => new MongoRegex("/$keyword/i")) , array( 'taxi.taxi_type' => new MongoRegex("/$keyword/i") ),array( 'company.companydetails.company_name' => new MongoRegex("/$keyword/i") ) ) ) ) );
+				$srch_query = [ "\$and" => [['taxi.taxi_company' => (int)$company ],["\$or"=>[[ 'taxi.taxi_no' => new \MongoDB\BSON\Regex($keyword, 'i')] , [ 'taxi.taxi_type' => new \MongoDB\BSON\Regex($keyword, 'i') ],[ 'company.companydetails.company_name' => new \MongoDB\BSON\Regex($keyword, 'i') ] ] ] ] ];
 			}
 		} else if (!empty($company)) {
-				$srch_query = array( "\$and" => array(array('taxi.taxi_company' => (int)$company )));
+				$srch_query = [ "\$and" => [['taxi.taxi_company' => (int)$company ]]];
 		} else if (!empty($status)) {
 			if($usertype=='A'){
-				$srch_query = array( "\$and" => array(array('taxi.taxi_status' => $status )));
+				$srch_query = [ "\$and" => [['taxi.taxi_status' => $status ]]];
 			} else {
-				$srch_query = array( "\$and" => array(array('taxi.taxi_company' => (int)$company ),array('taxi.taxi_status' => $status )));
+				$srch_query = [ "\$and" => [['taxi.taxi_company' => (int)$company ],['taxi.taxi_status' => $status ]]];
 			}
 		}
 		//echo '<pre>';print_r($srch_query);//exit;
 		if($find_count){
-			$arguments = array(
-					array('$unwind' => '$stateinfo'),
-					array('$unwind' => '$stateinfo.cityinfo'),
-					array('$lookup' => array(
+			$arguments = [
+					['$unwind' => '$stateinfo'],
+					['$unwind' => '$stateinfo.cityinfo'],
+					['$lookup' => [
 							'from' => MDB_TAXI,
 							'localField'=> 'stateinfo.cityinfo.city_id',
 							'foreignField'=> "taxi_country",
 							'foreignField'=> "taxi_state",
                             'foreignField'=> "taxi_city",
 							'as'=> "taxi"
-						)
-					),
-					array('$unwind' => '$taxi'),
-					array('$lookup' => array(
+						]
+					],
+					['$unwind' => '$taxi'],
+					['$lookup' => [
 							'from' => MDB_COMPANY,
 							'localField' => 'taxi.taxi_company',
 							'foreignField' => "_id",
 							'as' => "company"
-						)
-					),
-					array('$unwind' => '$company'),
-					array('$lookup' => array(
+						]
+					],
+					['$unwind' => '$company'],
+					['$lookup' => [
 							'from' => MDB_MOTOR_MODEL,
 							'localField' => 'taxi.taxi_model',
 							'foreignField' => "_id",
 							'as' => "motormodel"
-						)
-					),
-					array('$unwind' => '$motormodel'),
-					array('$match'  => $srch_query),
-					array('$project' => array('_id'=>0,
+						]
+					],
+					['$unwind' => '$motormodel'],
+					['$match'  => $srch_query],
+					['$project' => ['_id'=>0,
 							'taxi_id' => '$taxi._id',
-						)
-					),
-				array('$sort' =>array('taxi.created_date' => -1) ),
-			);
+						]
+					],
+				['$sort' =>['taxi.created_date' => -1] ],
+			];
 			$result = $this->mongo_db->aggregate(MDB_CSC,$arguments);
 			//echo "<pre>"; print_r($result); exit;
 			return (!empty($result['result']) && isset($result['result']))?count($result['result']):0;
 		} else {
-			$arguments = array(
-					array('$unwind' => '$stateinfo'),
-					array('$unwind' => '$stateinfo.cityinfo'),
-					array('$lookup' => array(
+			$arguments = [
+					['$unwind' => '$stateinfo'],
+					['$unwind' => '$stateinfo.cityinfo'],
+					['$lookup' => [
 							'from' => MDB_TAXI,
 							'localField'=> 'stateinfo.cityinfo.city_id',
 							'foreignField'=> "taxi_country",
 							'foreignField'=> "taxi_state",
                             'foreignField'=> "taxi_city",
 							'as'=> "taxi"
-						)
-					),
-					array('$unwind' => '$taxi'),
-					array('$lookup' => array(
+						]
+					],
+					['$unwind' => '$taxi'],
+					['$lookup' => [
 							'from' => MDB_COMPANY,
 							'localField' => 'taxi.taxi_company',
 							'foreignField' => "_id",
 							'as' => "company"
-						)
-					),
-					array('$unwind' => '$company'),
-					array('$lookup' => array(
+						]
+					],
+					['$unwind' => '$company'],
+					['$lookup' => [
 							'from' => MDB_MOTOR_MODEL,
 							'localField' => 'taxi.taxi_model',
 							'foreignField' => "_id",
 							'as' => "motormodel"
-						)
-					),
-					array('$unwind' => '$motormodel'),
-					array('$match'  => $srch_query),
-					array('$project' => array('_id'=>0,
+						]
+					],
+					['$unwind' => '$motormodel'],
+					['$match'  => $srch_query],
+					['$project' => ['_id'=>0,
 							'created_by' => '$taxi.taxi_createdby',
 							'taxi_id' => '$taxi._id',
 							'taxi_availability' => '$taxi.taxi_availability',
@@ -3330,15 +3330,15 @@ Class Model_Manage extends Model
 							'taxi_fare_km' => '$taxi.taxi_fare_km',
 							'company_id' => '$taxi.taxi_company',
 							'taxi_owner_name' => '$taxi.taxi_owner_name',
-						)
-					),
-				array('$sort' =>array('taxi.created_date' => -1) ),
-				array('$skip' => (int)$offset ),
-				array('$limit' => (int)$val )
-			);
+						]
+					],
+				['$sort' =>['taxi.created_date' => -1] ],
+				['$skip' => (int)$offset ],
+				['$limit' => (int)$val ]
+			];
 			$result = $this->mongo_db->aggregate(MDB_CSC,$arguments);
 			//echo "<pre>"; print_r($result); exit;
-			return (!empty($result['result']) && isset($result['result']))?$result['result']:array();
+			return (!empty($result['result']) && isset($result['result']))?$result['result']:[];
 		}
     }
     
@@ -3377,67 +3377,67 @@ Class Model_Manage extends Model
 			}
 			*/
 		if ($usertype == 'M') {
-			$match_query = array('people.company_id' => (int)$company_id,'people.user_createdby' => (int)$this->user_createdby, 'people.user_type' => 'M', 'people.status' => array('$ne' => 'T') );
+			$match_query = ['people.company_id' => (int)$company_id,'people.user_createdby' => (int)$this->user_createdby, 'people.user_type' => 'M', 'people.status' => ['$ne' => 'T'] ];
 		} else if ($usertype == 'C') {
-			$match_query = array('people.company_id' => (int)$company_id, 'people.user_type' => 'M', 'people.status' => array('$ne' => 'T') );
+			$match_query = ['people.company_id' => (int)$company_id, 'people.user_type' => 'M', 'people.status' => ['$ne' => 'T'] ];
 		} else {
-			$match_query = array( 'people.user_type' => 'M', 'people.status' => array('$ne' => 'T'));
+			$match_query = [ 'people.user_type' => 'M', 'people.status' => ['$ne' => 'T']];
 		}
 		
         if($find_count==TRUE){	
-			$arguments = array(
-						array('$unwind' => '$stateinfo'),
-						array('$unwind' => '$stateinfo.cityinfo'),
-						array('$lookup' 		=> array(
+			$arguments = [
+						['$unwind' => '$stateinfo'],
+						['$unwind' => '$stateinfo.cityinfo'],
+						['$lookup' 		=> [
 								'from'			=>	MDB_PEOPLE,
 								'localField'	=> 'stateinfo.cityinfo.city_id',
 								'foreignField'	=> "login_country",
 								'foreignField'	=> "login_city",
 								'as'			=> "people"
-							)
-						),
-						array('$unwind' => '$people'),
-						array('$lookup' 		=> array(
+							]
+						],
+						['$unwind' => '$people'],
+						['$lookup' 		=> [
 								'from'			=>	MDB_COMPANY,
 								'localField'	=> 'people.company_id',
 								'foreignField'	=> "_id",
 								'as'			=> "company"
-							)
-						),
-						array('$unwind' => '$company'),
-						array('$match'	=> $match_query),
-						array(
-							'$project' => array(
+							]
+						],
+						['$unwind' => '$company'],
+						['$match'	=> $match_query],
+						[
+							'$project' => [
 								'result' => '$people._id',
-							)
-						),
-					);
+							]
+						],
+					];
             $result = $this->mongo_db->aggregate(MDB_CSC,$arguments);
 			//echo "<pre>"; print_r(count($result['result'])); exit;
             return (!empty($result['result']) && isset($result['result']))?count($result['result']):0;
         }else{
-            $arguments = array(
-						array('$unwind' => '$stateinfo'),
-						array('$unwind' => '$stateinfo.cityinfo'),
-						array('$lookup' 		=> array(
+            $arguments = [
+						['$unwind' => '$stateinfo'],
+						['$unwind' => '$stateinfo.cityinfo'],
+						['$lookup' 		=> [
 								'from'			=>	MDB_PEOPLE,
 								'localField'	=> 'stateinfo.cityinfo.city_id',
 								'foreignField'	=> "login_country",
 								'foreignField'	=> "login_city",
 								'as'			=> "people"
-							)
-						),
-						array('$unwind' => '$people'),
-						array('$lookup' 		=> array(
+							]
+						],
+						['$unwind' => '$people'],
+						['$lookup' 		=> [
 								'from'			=>	MDB_COMPANY,
 								'localField'	=> 'people.company_id',
 								'foreignField'	=> "_id",
 								'as'			=> "company"
-							)
-						),
-						array('$unwind' => '$company'),
-						array('$match'	=> $match_query),
-						array('$project' 		=> array(
+							]
+						],
+						['$unwind' => '$company'],
+						['$match'	=> $match_query],
+						['$project' 		=> [
 								'country_name' => '$country_name',
 								'state_name' => '$stateinfo.state_name',
 								'city_name' => '$stateinfo.cityinfo.city_name',
@@ -3450,37 +3450,37 @@ Class Model_Manage extends Model
 								'name' => '$people.name',
 								'email' => '$people.email',
 								'address'=>'$people.address'
-							)
-						),
-						array('$sort'	=>array('people.created_date' => -1) ),
-						array('$skip'	=> (int)$offset ),
-						array('$limit'	=> (int)$val )
-					);
+							]
+						],
+						['$sort'	=>['people.created_date' => -1] ],
+						['$skip'	=> (int)$offset ],
+						['$limit'	=> (int)$val ]
+					];
 			$result = $this->mongo_db->aggregate(MDB_CSC,$arguments);
 			//echo "<pre>"; print_r($result); exit;
-            return (!empty($result['result']) && isset($result['result']))?$result['result']:array();
+            return (!empty($result['result']) && isset($result['result']))?$result['result']:[];
         }
     }
     public function all_admin_list($offset, $val,$find_count=false)
     {
 		//MongoDB
 		if($find_count){
-			$result = $this->mongo_db->count(MDB_PEOPLE,array('user_type'=>'S','status'=>array('$ne'=>'T')),array('_id'));
+			$result = $this->mongo_db->count(MDB_PEOPLE,['user_type'=>'S','status'=>['$ne'=>'T']],['_id']);
 			return $result;
 		} else {
-			$ops = array(
-				array('$match'=>array('user_type'=>'S','status'=>array('$ne'=>'T'))),
-				array(
-					'$lookup' => array(
+			$ops = [
+				['$match'=>['user_type'=>'S','status'=>['$ne'=>'T']]],
+				[
+					'$lookup' => [
 					'from'=>MDB_CSC,
 					'localField'=> "login_country",
 					'foreignField' => "_id",
 					'as'=> "countrydetails"
-					)
-				),
-				array('$unwind'=>'$countrydetails'),
-				array(
-					'$project' => array(
+					]
+				],
+				['$unwind'=>'$countrydetails'],
+				[
+					'$project' => [
 					'country_name' => '$countrydetails.country_name',
 					'name' => '$name',
 					'lastname' => '$lastname',
@@ -3488,11 +3488,11 @@ Class Model_Manage extends Model
 					'address' => '$address',
 					'status' => '$status',
 					'login_country' => '$login_country'
-					)
-				)
-			);
+					]
+				]
+			];
 			$results = $this->mongo_db->aggregate(MDB_PEOPLE,$ops);
-			return (!empty($results['result']))?$results['result']:array();
+			return (!empty($results['result']))?$results['result']:[];
 		}
     }
 	
@@ -3507,8 +3507,8 @@ Class Model_Manage extends Model
         return count($result);*/
 		
 		$ids = Commonfunction::mongo_format_array($activeids);
-		$set_array = array('status' => 'A');
-		$result = $this->mongo_db->update(MDB_PEOPLE,array('_id'=>array('$in'=>$ids),'user_type'=>'M'),array('$set'=>$set_array), array('multiple'=>true));
+		$set_array = ['status' => 'A'];
+		$result = $this->mongo_db->update(MDB_PEOPLE,['_id'=>['$in'=>$ids],'user_type'=>'M'],['$set'=>$set_array], ['multiple'=>true]);
 		//print_r($result); exit;
 		return (empty($result['err']))?1:$result['errmsg'];
     }
@@ -3526,7 +3526,7 @@ Class Model_Manage extends Model
 		//MongoDB
 		$ids = Commonfunction::mongo_format_array($activeids);
 	
-		$result = $this->mongo_db->update(MDB_PEOPLE,array('_id'=>array('$in'=>$ids),'user_type'=>'M'),array('$set'=>array('status' => 'D')), array('multiple'=>true));
+		$result = $this->mongo_db->update(MDB_PEOPLE,['_id'=>['$in'=>$ids],'user_type'=>'M'],['$set'=>['status' => 'D']], ['multiple'=>true]);
 		
 		return (empty($result['err']))?1:$result['errmsg'];
     }
@@ -3539,8 +3539,8 @@ Class Model_Manage extends Model
 		
 		//MongoDB
 		$ids = Commonfunction::mongo_format_array($activeids);
-		$set_array = array('status' => 'T');
-		$result = $this->mongo_db->update(MDB_PEOPLE,array('_id'=>array('$in'=>$ids),'user_type'=>'M'),array('$set'=>$set_array), array('multiple'=>true));
+		$set_array = ['status' => 'T'];
+		$result = $this->mongo_db->update(MDB_PEOPLE,['_id'=>['$in'=>$ids],'user_type'=>'M'],['$set'=>$set_array], ['multiple'=>true]);
 		//print_r($result); exit;
 		return (empty($result['err']))?1:$result['errmsg'];
     }
@@ -3554,7 +3554,7 @@ Class Model_Manage extends Model
 		//Here changing array values with string to integers values
 		$active_ids = Commonfunction::mongo_format_array($activeids);
 		//var_dump($active_ids);
-		$res = $this->mongo_db->update(MDB_PEOPLE,array('_id'=>array('$in'=>$active_ids),'user_type'=>'S'),array('$set'=>array('status' => 'A')),array('multiple'=>true));
+		$res = $this->mongo_db->update(MDB_PEOPLE,['_id'=>['$in'=>$active_ids],'user_type'=>'S'],['$set'=>['status' => 'A']],['multiple'=>true]);
 		return (empty($res['err']))?1:$res['errmsg'];
     }
     public function block_admin_request($activeids)
@@ -3568,7 +3568,7 @@ Class Model_Manage extends Model
 		//Here changing array values with string to integers values
 		$active_ids = Commonfunction::mongo_format_array($activeids);
 		//var_dump($active_ids);
-		$res = $this->mongo_db->update(MDB_PEOPLE,array('_id'=>array('$in'=>$active_ids),'user_type'=>'S'),array('$set'=>array('status' => 'D')),array('multiple'=>true));
+		$res = $this->mongo_db->update(MDB_PEOPLE,['_id'=>['$in'=>$active_ids],'user_type'=>'S'],['$set'=>['status' => 'D']],['multiple'=>true]);
 		return (empty($res['err']))?1:$res['errmsg'];
     }
 	public function trash_admin_request($activeids)
@@ -3581,7 +3581,7 @@ Class Model_Manage extends Model
 		//Here changing array values with string to integers values
 		$active_ids = Commonfunction::mongo_format_array($activeids);
 		//var_dump($active_ids);
-		$res = $this->mongo_db->update(MDB_PEOPLE,array('_id'=>array('$in'=>$active_ids),'user_type'=>'S'),array('$set'=>array('status' => 'T')),array('multiple'=>true));
+		$res = $this->mongo_db->update(MDB_PEOPLE,['_id'=>['$in'=>$active_ids],'user_type'=>'S'],['$set'=>['status' => 'T']],['multiple'=>true]);
 		return (empty($res['err']))?1:$res['errmsg'];
     }
     public function assigntaxi_list()
@@ -3606,9 +3606,9 @@ Class Model_Manage extends Model
 		$user_createdby = $this->user_createdby;
         $usertype       = $this->usertype;
         $company_id     = $this->company_id;
-		$match_query = array();
+		$match_query = [];
 		//$match_query['mapping.mapping_status'] = array('$ne' => 'T');
-		$match_query['map.mapping_status'] = array('$eq' => 'A');
+		$match_query['map.mapping_status'] = ['$eq' => 'A'];
 		if (($usertype == 'M' || $usertype == 'C')  && $company_id!=0) {
 			$match_query['company._id'] = (int)$company_id;
         }
@@ -3721,104 +3721,104 @@ Class Model_Manage extends Model
 			);
 			$merge_arguments = array_merge($common_arguments, $field_arguments);
 			$result    = $this->mongo_db->aggregate(MDB_CSC, $merge_arguments); */
-			$common_arguments = array(
-			array(
+			$common_arguments = [
+			[
 				'$unwind' => '$stateinfo'
-			),
-			array(
+			],
+			[
 				'$unwind' => '$stateinfo.cityinfo'
-			),
-			array(
-				'$lookup' => array(
+			],
+			[
+				'$lookup' => [
 					'from' => MDB_PEOPLE,
 					'localField' => 'stateinfo.cityinfo.city_id',
 					'foreignField' => 'login_country',
 					'foreignField' => 'login_city',
 					'as' => 'people'
-				)
-			),
-			array(
+				]
+			],
+			[
 				'$unwind' => '$people'
-			),
-			array(
-				'$lookup' => array(
+			],
+			[
+				'$lookup' => [
 					'from' => MDB_COMPANY,
 					'localField' => 'people.company_id',
 					'foreignField' => '_id',
 					'as' => 'company'
-				)
-			),
-			array(
+				]
+			],
+			[
 				'$unwind' => '$company'
-			),
-			array(
-				'$lookup' => array(
+			],
+			[
+				'$lookup' => [
 					'from' => MDB_TAXI_DRIVER_MAPPING,
 					'localField' => 'people._id',
 					'foreignField' => 'mapping_driverid',
 					'as' => 'map'
-				)
-			),
-			array(
+				]
+			],
+			[
 				'$unwind' => '$map'
-			),
-			array(
-				'$lookup' => array(
+			],
+			[
+				'$lookup' => [
 					'from' => MDB_TAXI,
 					'localField' => 'map.mapping_taxiid',
 					'foreignField' => '_id',
 					'as' => 'taxi'
-				)
-			),
-			array(
+				]
+			],
+			[
 				'$unwind' => '$taxi'
-			),
-			array(
-				'$lookup' => array(
+			],
+			[
+				'$lookup' => [
 					'from' => MDB_DRIVER_INFO,
 					'localField' => 'people._id',
 					'foreignField' => '_id',
 					'as' => 'driver'
-				)
-			),
-			array(
+				]
+			],
+			[
 				'$unwind' => '$driver'
-			),
+			],
 			
-			array(
+			[
 				'$match' => $match_query
-			),
-		);
+			],
+		];
 		
 		if ($find_count == TRUE) {
-			$count_arguments = array(
-				array(
-					'$project' => array(
+			$count_arguments = [
+				[
+					'$project' => [
 						'result' => '$people._id'
-					)
-				),
-				array(
-					'$group' => array(
+					]
+				],
+				[
+					'$group' => [
 						'_id' => NULL,
-						'count' => array(
+						'count' => [
 							'$sum' => 1
-						)
-					)
-				)
-			);
+						]
+					]
+				]
+			];
 			$merge_arguments = array_merge($common_arguments, $count_arguments);
 			$result          = $this->mongo_db->aggregate(MDB_CSC, $merge_arguments);
 			//echo "<pre>";print_r($result['result']);exit;
 			return (!empty($result['result']) && isset($result['result'][0]['count'])) ? $result['result'][0]['count'] : 0;
 		} else {
-			$field_arguments = array(
-				array(
-					'$sort' => array( 
+			$field_arguments = [
+				[
+					'$sort' => [ 
 						'people.created_date' => -1
-					),
-				),
-				array(
-					'$project' => array(
+					],
+				],
+				[
+					'$project' => [
 						'id' => '$people._id',
 						'created_by' => '$people.user_createdby',
 						'name' => '$people.name',
@@ -3840,13 +3840,13 @@ Class Model_Manage extends Model
 						'cid' => '$company.companydetails.userid',
 						'photo' => '$people.profile_picture',
 						'driver_status' => '$people.status',
-						'updatetime_difference' => array('$subtract'=>
-								array(new \MongoDB\BSON\UTCDateTime(strtotime($this->currentdate) * 1000),'$driver.update_date'))
-					)
-				),
-				array('$skip'	=> (int)$offset ),
-				array('$limit'	=> (int)$val )
-			);
+						'updatetime_difference' => ['$subtract'=>
+								[new \MongoDB\BSON\UTCDateTime(strtotime($this->currentdate) * 1000),'$driver.update_date']]
+					]
+				],
+				['$skip'	=> (int)$offset ],
+				['$limit'	=> (int)$val ]
+			];
 			$merge_arguments = array_merge($common_arguments, $field_arguments);
 			//echo json_encode($merge_arguments);exit;
 			$result    = $this->mongo_db->aggregate(MDB_CSC, $merge_arguments);
@@ -3854,7 +3854,7 @@ Class Model_Manage extends Model
 				$result['result'][$i]['created_by'] = isset($result['result'][$i]['created_by'])?$this->userNamebyId($result['result'][$i]['created_by']):"";
 			}
 			
-			return (!empty($result['result'])) ? $result['result'] : array();
+			return (!empty($result['result'])) ? $result['result'] : [];
 		}
     }
    
@@ -3939,8 +3939,8 @@ Class Model_Manage extends Model
         $company_id     = $this->company_id;
 		$keyword       = str_replace("%", "!%", $keyword);
         $keyword       = str_replace("_", "!_", $keyword);
-		$match_query = array();
-		$match_query['_id'] = array('$gte' => 0);
+		$match_query = [];
+		$match_query['_id'] = ['$gte' => 0];
 		if (($usertype == 'M' || $usertype == 'C')  && $company_id!=0) {
 			$match_query['mapping.mapping_companyid'] = (int)$company_id;
         }
@@ -3952,95 +3952,95 @@ Class Model_Manage extends Model
         }
 		$matchquery = $match_query;
 		if ($keyword!="") {
-			$srch_query = array("\$or"=>array(array('people.name'=>new MongoRegex("/$keyword/i")),array('people.lastname'=>new MongoRegex("/$keyword/i")),array('people.email'=>new MongoRegex("/$keyword/i")),array('people.username'=>new MongoRegex("/$keyword/i"))));
+			$srch_query = ["\$or"=>[['people.name'=>new \MongoDB\BSON\Regex($keyword, 'i')],['people.lastname'=>new \MongoDB\BSON\Regex($keyword, 'i')],['people.email'=>new \MongoDB\BSON\Regex($keyword, 'i')],['people.username'=>new \MongoDB\BSON\Regex($keyword, 'i')]]];
 			$matchquery = array_merge($match_query,$srch_query);
 		}
 		//echo "<pre>"; print_r($matchquery); exit;
-		$common_arguments = array(
-			array(
+		$common_arguments = [
+			[
 				'$unwind' => '$stateinfo'
-			),
-			array(
+			],
+			[
 				'$unwind' => '$stateinfo.cityinfo'
-			),
-			array(
-				'$lookup' => array(
+			],
+			[
+				'$lookup' => [
 					'from' => MDB_TAXI_DRIVER_MAPPING,
 					'localField' => 'stateinfo.cityinfo.city_id',
 					'foreignField' => 'mapping_countryid',
 					'foreignField' => 'mapping_cityid',
 					'as' => 'mapping'
-				)
-			),
-			array(
+				]
+			],
+			[
 				'$unwind' => '$mapping'
-			),
-			array(
-				'$lookup' => array(
+			],
+			[
+				'$lookup' => [
 					'from' => MDB_TAXI,
 					'localField' => 'mapping.mapping_taxiid',
 					'foreignField' => '_id',
 					'as' => 'taxi'
-				)
-			),
-			array(
+				]
+			],
+			[
 				'$unwind' => '$taxi'
-			),
-			array(
-				'$lookup' => array(
+			],
+			[
+				'$lookup' => [
 					'from' => MDB_COMPANY,
 					'localField' => 'mapping.mapping_companyid',
 					'foreignField' => '_id',
 					'as' => 'company'
-				)
-			),
-			array(
+				]
+			],
+			[
 				'$unwind' => '$company'
-			),
-			array(
-				'$lookup' => array(
+			],
+			[
+				'$lookup' => [
 					'from' => MDB_PEOPLE,
 					'localField' => 'mapping.mapping_driverid',
 					'foreignField' => '_id',
 					'as' => 'people'
-				)
-			),
-			array(
+				]
+			],
+			[
 				'$unwind' => '$people'
-			),
-			array(
+			],
+			[
 				'$match' => $matchquery
-			),
-		);
+			],
+		];
 		if($find_count==TRUE){
-			$count_arguments = array(
-				array(
-					'$project' => array(
+			$count_arguments = [
+				[
+					'$project' => [
 						'result' => '$mapping._id'
-					)
-				),
-				array(
-					'$group' => array(
+					]
+				],
+				[
+					'$group' => [
 						'_id' => NULL,
-						'count' => array(
+						'count' => [
 							'$sum' => 1
-						)
-					)
-				)
-			);
+						]
+					]
+				]
+			];
 			$merge_arguments = array_merge($common_arguments, $count_arguments);
 			$result          = $this->mongo_db->aggregate(MDB_CSC, $merge_arguments);
 			//echo "<pre>";print_r($result['result']); exit;
 			return (!empty($result['result']) && isset($result['result'][0]['count'])) ? $result['result'][0]['count'] : 0;
 		}else{
-			$field_arguments = array(
-				array(
-					'$sort' => array( 
+			$field_arguments = [
+				[
+					'$sort' => [ 
 						'mapping.mapping_createdate' => -1
-					),
-				),
-				array(
-					'$project' => array(
+					],
+				],
+				[
+					'$project' => [
 						'mapping_id' => '$mapping._id',
 						'id' => '$people._id',
 						'name' => '$people.name',
@@ -4055,19 +4055,19 @@ Class Model_Manage extends Model
 						'created_by' => '$mapping.mapping_createdby',
 						'mapping_startdate' => '$mapping.mapping_startdate',
 						'mapping_enddate' => '$mapping.mapping_enddate',
-					)
-				),
+					]
+				],
 				//$details[$key]['created_by']        = $this->userNamebyId($res['mapping_createdby']);
-				array('$skip'	=> (int)$offset ),
-				array('$limit'	=> (int)$val )
-			);
+				['$skip'	=> (int)$offset ],
+				['$limit'	=> (int)$val ]
+			];
 			$merge_arguments = array_merge($common_arguments, $field_arguments);
 			$result    = $this->mongo_db->aggregate(MDB_CSC, $merge_arguments);
 			for($i=0;$i<count($result['result']);$i++){
 				$result['result'][$i]['created_by'] = (isset($result['result'][$i]['created_by']))?$this->userNamebyId($result['result'][$i]['created_by']):"";
 			}
 			//echo "<pre>";print_r($result['result']); exit;
-			return (!empty($result['result'])) ? $result['result'] : array();
+			return (!empty($result['result'])) ? $result['result'] : [];
 		}
     }
 	
@@ -4076,7 +4076,7 @@ Class Model_Manage extends Model
         //check whether id is exist in checkbox or single active request
         //==================================================================
 		$active_ids = Commonfunction::mongo_format_array($activeids);
-		$res = $this->mongo_db->update(MDB_TAXI_DRIVER_MAPPING,array('_id'=>array('$in'=>$active_ids)),array('$set'=>array('mapping_status' => 'A')),array('multiple'=>true));
+		$res = $this->mongo_db->update(MDB_TAXI_DRIVER_MAPPING,['_id'=>['$in'=>$active_ids]],['$set'=>['mapping_status' => 'A']],['multiple'=>true]);
 		return (empty($res['err']))?1:$res['errmsg'];
     }
     public function block_assigntaxi_request($activeids)
@@ -4089,7 +4089,7 @@ Class Model_Manage extends Model
         return count($result);*/
 	
 		$active_ids = Commonfunction::mongo_format_array($activeids);
-		$res = $this->mongo_db->update(MDB_TAXI_DRIVER_MAPPING,array('_id'=>array('$in'=>$active_ids)),array('$set'=>array('mapping_status' => 'D')),array('multiple'=>true));
+		$res = $this->mongo_db->update(MDB_TAXI_DRIVER_MAPPING,['_id'=>['$in'=>$active_ids]],['$set'=>['mapping_status' => 'D']],['multiple'=>true]);
 		return (empty($res['err']))?1:$res['errmsg'];
     }
     public function trash_assigntaxi_request($activeids)
@@ -4097,7 +4097,7 @@ Class Model_Manage extends Model
         //check whether id is exist in checkbox or single active request
         //==================================================================	
 		$active_ids = Commonfunction::mongo_format_array($activeids);
-		$res = $this->mongo_db->update(MDB_TAXI_DRIVER_MAPPING,array('_id'=>array('$in'=>$active_ids)),array('$set'=>array('mapping_status' => 'T')),array('multiple'=>true));
+		$res = $this->mongo_db->update(MDB_TAXI_DRIVER_MAPPING,['_id'=>['$in'=>$active_ids]],['$set'=>['mapping_status' => 'T']],['multiple'=>true]);
 		return (empty($res['err']))?1:$res['errmsg'];
     }
     public function rating_drivers_list()
@@ -4113,18 +4113,18 @@ Class Model_Manage extends Model
     }
     public function rating_companies_list()
     {
-        $rs = DB::select('*', array(
+        $rs = DB::select('*', [
             'SUM("rating_points")',
             'total_posts'
-        ))->from(RATING)->join(COMPANY, 'INNER')->on(RATING . '.rating_companyid', '=', COMPANY . '.cid')->join(PEOPLE, 'INNER')->on(RATING . '.rating_userid', '=', PEOPLE . '.id')->group_by(RATING . '.rating_companyid')->execute()->as_array();
+        ])->from(RATING)->join(COMPANY, 'INNER')->on(RATING . '.rating_companyid', '=', COMPANY . '.cid')->join(PEOPLE, 'INNER')->on(RATING . '.rating_userid', '=', PEOPLE . '.id')->group_by(RATING . '.rating_companyid')->execute()->as_array();
         return $rs;
     }
     public function count_rating_companies_list()
     {
-        $rs = DB::select('*', array(
+        $rs = DB::select('*', [
             'SUM("rating_points")',
             'total_posts'
-        ))->from(RATING)->join(COMPANY, 'INNER')->on(RATING . '.rating_companyid', '=', COMPANY . '.cid')->join(PEOPLE, 'INNER')->on(RATING . '.rating_userid', '=', PEOPLE . '.id')->group_by(RATING . '.rating_companyid')->execute()->as_array();
+        ])->from(RATING)->join(COMPANY, 'INNER')->on(RATING . '.rating_companyid', '=', COMPANY . '.cid')->join(PEOPLE, 'INNER')->on(RATING . '.rating_userid', '=', PEOPLE . '.id')->group_by(RATING . '.rating_companyid')->execute()->as_array();
         return count($rs);
     }
     public function count_rating_drivers_list($keyword = "", $comp_id = "")
@@ -4162,10 +4162,10 @@ Class Model_Manage extends Model
             $results = Db::query(Database::SELECT, $query)->execute()->as_array();
             return count($results);
         } else if ($usertype == 'D') {
-            $result = DB::select('*', array(
+            $result = DB::select('*', [
                 'SUM("rating_points")',
                 'total_posts'
-            ))->from(RATING)->join(PEOPLE, 'INNER')->on(RATING . '.rating_driverid', '=', PEOPLE . '.id')->where(PEOPLE . '.id', '=', $driver_createdby)->group_by(RATING . '.rating_driverid')->execute()->as_array();
+            ])->from(RATING)->join(PEOPLE, 'INNER')->on(RATING . '.rating_driverid', '=', PEOPLE . '.id')->where(PEOPLE . '.id', '=', $driver_createdby)->group_by(RATING . '.rating_driverid')->execute()->as_array();
             return count($result);
         } else {
             $name_where = "";
@@ -4191,16 +4191,16 @@ Class Model_Manage extends Model
         $state_id      = $this->state_id;
         $city_id       = $this->city_id;
         if ($usertype == 'C') {
-            $result = DB::select('*', array(
+            $result = DB::select('*', [
                 'SUM("rating_points")',
                 'total_posts'
-            ))->from(RATING)->join(COMPANY, 'INNER')->on(RATING . '.rating_companyid', '=', COMPANY . '.cid')->join(PEOPLE, 'INNER')->on(RATING . '.rating_userid', '=', PEOPLE . '.id')->where(RATING . '.rating_companyid', '=', $company_id)->where(COMPANY . '.cid', '=', $company_id)->where(COMPANY . '.userid', '=', $com_createdby)->group_by(RATING . '.rating_companyid')->execute()->as_array();
+            ])->from(RATING)->join(COMPANY, 'INNER')->on(RATING . '.rating_companyid', '=', COMPANY . '.cid')->join(PEOPLE, 'INNER')->on(RATING . '.rating_userid', '=', PEOPLE . '.id')->where(RATING . '.rating_companyid', '=', $company_id)->where(COMPANY . '.cid', '=', $company_id)->where(COMPANY . '.userid', '=', $com_createdby)->group_by(RATING . '.rating_companyid')->execute()->as_array();
             return $result;
         } else {
-            $result = DB::select('*', array(
+            $result = DB::select('*', [
                 'SUM("rating_points")',
                 'total_posts'
-            ))->from(RATING)->join(COMPANY, 'INNER')->on(RATING . '.rating_companyid', '=', COMPANY . '.cid')->join(PEOPLE, 'INNER')->on(RATING . '.rating_userid', '=', PEOPLE . '.id')->group_by(RATING . '.rating_companyid')->execute()->as_array();
+            ])->from(RATING)->join(COMPANY, 'INNER')->on(RATING . '.rating_companyid', '=', COMPANY . '.cid')->join(PEOPLE, 'INNER')->on(RATING . '.rating_userid', '=', PEOPLE . '.id')->group_by(RATING . '.rating_companyid')->execute()->as_array();
             return $result;
         }
     }
@@ -4220,95 +4220,95 @@ Class Model_Manage extends Model
         $city_id          = $this->city_id;
        
 		//MongoDB
-		$lookup_arguments = array(
-			array(
-				'$lookup' => array(
+		$lookup_arguments = [
+			[
+				'$lookup' => [
 					'from' => MDB_PEOPLE,
 					'localField' => 'driver_id',
 					'foreignField' => '_id',
 					'as' => 'people'
-				)
-			),
-			array(
+				]
+			],
+			[
 				'$unwind' => '$people'
-			),
-		);
+			],
+		];
 		if($usertype == 'C'){
-			$srch_query = array('travel_status'=>1,'rating'=>array('$ne'=>0));
-                        $common_arguments = array(array('$match' => $srch_query),);
-			$srch_q = array('people.company_id' => (int)$company_id,'people.user_type'=>'D');
-                        $common_a = array(array('$match' => $srch_q),);
+			$srch_query = ['travel_status'=>1,'rating'=>['$ne'=>0]];
+                        $common_arguments = [['$match' => $srch_query],];
+			$srch_q = ['people.company_id' => (int)$company_id,'people.user_type'=>'D'];
+                        $common_a = [['$match' => $srch_q],];
         } else if($usertype=='M'){
 			
-			$lookup_argument = array(
-				array(
-					'$lookup' => array(
+			$lookup_argument = [
+				[
+					'$lookup' => [
 						'from' => MDB_CSC,
 						'localField'=> 'stateinfo.cityinfo.city_id',
 						'foreignField'=> "people.login_city",
 						'as' => 'csc'
-					)
-				),
-				array(
+					]
+				],
+				[
 					'$unwind' => '$csc'
-				),
-			);
-			$srch_query = array('travel_status'=>1,'rating'=>array('$ne'=>0));
-			$common_arguments = array(array('$match' => $srch_query),);
-			$srch_q = array('people.company_id' => (int)$company_id,'people.user_type'=>'D','people.login_country'=>(int)$country_id,'people.login_state'=>(int)$state_id,'people.login_city'=>(int)$city_id);
-			$common_a = array(array('$match' => $srch_q),);
+				],
+			];
+			$srch_query = ['travel_status'=>1,'rating'=>['$ne'=>0]];
+			$common_arguments = [['$match' => $srch_query],];
+			$srch_q = ['people.company_id' => (int)$company_id,'people.user_type'=>'D','people.login_country'=>(int)$country_id,'people.login_state'=>(int)$state_id,'people.login_city'=>(int)$city_id];
+			$common_a = [['$match' => $srch_q],];
 			$lookup_arguments = array_merge($lookup_arguments,$lookup_argument);
 		} else {
-			$srch_query = array('travel_status'=>1,'rating'=>array('$ne'=>0));
-			$common_arguments = array(array('$match' => $srch_query),);
-			$srch_q = array('people.user_type'=>'D');
-			$common_a = array(array('$match' => $srch_q),);
+			$srch_query = ['travel_status'=>1,'rating'=>['$ne'=>0]];
+			$common_arguments = [['$match' => $srch_query],];
+			$srch_q = ['people.user_type'=>'D'];
+			$common_a = [['$match' => $srch_q],];
 		}
 		if($find_count){
 			$common_argument = array_merge($common_arguments,$lookup_arguments,$common_a);
-			$count_arguments = array(
-				array(
-					'$group' => array(
-						'_id' => array('driver_id'=>'$driver_id'),
-						'count' => array(
+			$count_arguments = [
+				[
+					'$group' => [
+						'_id' => ['driver_id'=>'$driver_id'],
+						'count' => [
 							'$sum' => 1
-						)
-					)
-				)
-			);
+						]
+					]
+				]
+			];
 			$merge_arguments = array_merge($common_argument, $count_arguments);
 			$result          = $this->mongo_db->aggregate(MDB_PASSENGERSLOGS_COMPLETED, $merge_arguments);
 			//echo "<pre>";print_r($merge_arguments);exit;
 			return (!empty($result['result']) && isset($result['result'])) ? count($result['result']) : 0;
 		} else {
 			$common_argument = array_merge($common_arguments,$lookup_arguments,$common_a);
-			$field_arguments = array(
-				array(
-					'$sort' => array( 
+			$field_arguments = [
+				[
+					'$sort' => [ 
 						'createdate' => -1
-					),
-				),
-				array('$skip'	=> (int)$offset ),
-				array('$limit'	=> (int)$val ),
-				array('$group' => array("_id" => array('driver_id'=>'$driver_id','name'=>'$people.name'),
-						"total_ratings" => array( '$sum' => '$rating' ),
-						"count" => array( '$sum' => 1 ),
-					)
-				),
-				array( '$project' =>array('_id' => 0,
+					],
+				],
+				['$skip'	=> (int)$offset ],
+				['$limit'	=> (int)$val ],
+				['$group' => ["_id" => ['driver_id'=>'$driver_id','name'=>'$people.name'],
+						"total_ratings" => [ '$sum' => '$rating' ],
+						"count" => [ '$sum' => 1 ],
+					]
+				],
+				[ '$project' =>['_id' => 0,
 						'driver_id' => '$_id.driver_id',
 						'name' => '$_id.name',
 						'total_posts' => '$total_ratings',
 						'co_nt' => '$count',
-					)
-				),	
-			);
+					]
+				],	
+			];
 			$merge_arguments = array_merge($common_argument, $field_arguments);
 			//print_r($merge_arguments);exit;
 			$result    = $this->mongo_db->aggregate(MDB_PASSENGERSLOGS_COMPLETED, $merge_arguments)
 ;
 			//echo "<pre>else";print_r($result); exit;
-			return (!empty($result['result'])) ? $result['result'] : array();
+			return (!empty($result['result'])) ? $result['result'] : [];
 		}
     }
     public function delete_ratingdrivers($id)
@@ -4327,109 +4327,109 @@ Class Model_Manage extends Model
         $state_id         = $this->state_id;
         $city_id          = $this->city_id;
         
-	$lookup_arguments = array(
-		array(
-			'$lookup' => array(
+	$lookup_arguments = [
+		[
+			'$lookup' => [
 				'from' => MDB_PEOPLE,
 				'localField' => 'driver_id',
 				'foreignField' => '_id',
 				'as' => 'people'
-			)
-		),
-		array(
+			]
+		],
+		[
 			'$unwind' => '$people'
-		),
-	);
+		],
+	];
 	if($usertype == 'C'){
-		$srch_query = array('people.company_id' => (int)$company_id,'people.user_type'=>'D');
+		$srch_query = ['people.company_id' => (int)$company_id,'people.user_type'=>'D'];
             if (!empty($keyword)) {				
-                $srch_query = array("people.name" => new MongoRegex("/$keyword/i"),'people.company_id' => (int)$company_id,'people.user_type'=>'D');
+                $srch_query = ["people.name" => new \MongoDB\BSON\Regex($keyword, 'i'),'people.company_id' => (int)$company_id,'people.user_type'=>'D'];
             }
-            $common_arguments = array(array('$match' => $srch_query),);
-            $srch_q = array('travel_status'=>1,'rating'=>array('$ne'=>0));
-            $common_a = array(array('$match' => $srch_q),);
+            $common_arguments = [['$match' => $srch_query],];
+            $srch_q = ['travel_status'=>1,'rating'=>['$ne'=>0]];
+            $common_a = [['$match' => $srch_q],];
 	} else if($usertype=='M'){
-			$srch_query = array('people.company_id' => (int)$company_id,'people.user_type'=>'D','people.login_country'=>(int)$country_id,'people.login_state'=>(int)$state_id,'people.login_city'=>(int)$city_id);
+			$srch_query = ['people.company_id' => (int)$company_id,'people.user_type'=>'D','people.login_country'=>(int)$country_id,'people.login_state'=>(int)$state_id,'people.login_city'=>(int)$city_id];
             if (!empty($keyword)) {
-                    $srch_query = array("people.name" => new MongoRegex("/$keyword/i"),'people.company_id' => (int)$company_id,'people.user_type'=>'D','people.login_country'=>(int)$country_id,'people.login_state'=>(int)$state_id,'people.login_city'=>(int)$city_id);
+                    $srch_query = ["people.name" => new \MongoDB\BSON\Regex($keyword, 'i'),'people.company_id' => (int)$company_id,'people.user_type'=>'D','people.login_country'=>(int)$country_id,'people.login_state'=>(int)$state_id,'people.login_city'=>(int)$city_id];
             }
-			$lookup_argument = array(
-				array(
-					'$lookup' => array(
+			$lookup_argument = [
+				[
+					'$lookup' => [
 						'from' => MDB_CSC,
 						'localField'=> 'stateinfo.cityinfo.city_id',
 						'foreignField'=> "people.login_city",
 						'as' => 'csc'
-					)
-				),
-				array(
+					]
+				],
+				[
 					'$unwind' => '$csc'
-				),
-			);
-		    $common_arguments = array(array('$match' => $srch_query),);
-		    $srch_q = array('travel_status'=>1,'rating'=>array('$ne'=>0));
-		    $common_a = array(array('$match' => $srch_q),);
+				],
+			];
+		    $common_arguments = [['$match' => $srch_query],];
+		    $srch_q = ['travel_status'=>1,'rating'=>['$ne'=>0]];
+		    $common_a = [['$match' => $srch_q],];
 	            $lookup_arguments = array_merge($lookup_arguments,$lookup_argument);
 		} else {
 			if (!empty($keyword) && !empty($comp_id)) {
-                        $srch_query = array("people.name" => new MongoRegex("/$keyword/i"),'people.company_id' => (int)$comp_id,'people.user_type'=>'D');
+                        $srch_query = ["people.name" => new \MongoDB\BSON\Regex($keyword, 'i'),'people.company_id' => (int)$comp_id,'people.user_type'=>'D'];
                 } else if (!empty($keyword)) {
-                        $srch_query = array("people.name" => new MongoRegex("/$keyword/i"),'people.user_type'=>'D');
+                        $srch_query = ["people.name" => new \MongoDB\BSON\Regex($keyword, 'i'),'people.user_type'=>'D'];
                 } else if (!empty($comp_id)) {
-                        $srch_query = array('people.company_id' => (int)$comp_id,'people.user_type'=>'D');
+                        $srch_query = ['people.company_id' => (int)$comp_id,'people.user_type'=>'D'];
                 }
-                $common_arguments = array(array('$match' => $srch_query),);
-                $srch_q = array('travel_status'=>1,'rating'=>array('$ne'=>0));
-                $common_a = array(array('$match' => $srch_q),);
+                $common_arguments = [['$match' => $srch_query],];
+                $srch_q = ['travel_status'=>1,'rating'=>['$ne'=>0]];
+                $common_a = [['$match' => $srch_q],];
 		}
 		if($find_count){
 			$common_argument = array_merge($common_a,$lookup_arguments,$common_arguments);
-                    	$count_arguments = array(
-				array(
-					'$project' => array(
+                    	$count_arguments = [
+				[
+					'$project' => [
 						'result' => '$_id'
-					)
-				),
-				array(
-					'$group' => array(
-						'_id' => array('driver_id'=>'$driver_id'),
-						'count' => array(
+					]
+				],
+				[
+					'$group' => [
+						'_id' => ['driver_id'=>'$driver_id'],
+						'count' => [
 							'$sum' => 1
-						)
-					)
-				)
-			);
+						]
+					]
+				]
+			];
 			$merge_arguments = array_merge($common_argument, $count_arguments);
 			$result          = $this->mongo_db->aggregate(MDB_PASSENGERSLOGS_COMPLETED, $merge_arguments);
 			//echo "<pre>if";print_r(count($result['result']));//exit;
 			return (!empty($result['result']) && isset($result['result'])) ? count($result['result']) : 0;
 		} else {
 			$common_argument = array_merge($common_a,$lookup_arguments,$common_arguments);
-                    	$field_arguments = array(
-				array(
-					'$sort' => array( 
+                    	$field_arguments = [
+				[
+					'$sort' => [ 
 						'createdate' => -1
-					),
-				),
-				array('$group' => array("_id" => array('driver_id'=>'$driver_id','name'=>'$people.name'),
-						"total_ratings" => array( '$sum' => '$rating' ),
-						"count" => array( '$sum' => 1 ),
-					)
-				),
-				array( '$project' =>array('_id' => 0,
+					],
+				],
+				['$group' => ["_id" => ['driver_id'=>'$driver_id','name'=>'$people.name'],
+						"total_ratings" => [ '$sum' => '$rating' ],
+						"count" => [ '$sum' => 1 ],
+					]
+				],
+				[ '$project' =>['_id' => 0,
 						'driver_id' => '$_id.driver_id',
 						'name' => '$_id.name',
 						'total_posts' => '$total_ratings',
 						'co_nt' => '$count',
-					)
-				),
-				array('$skip'	=> (int)$offset ),
-				array('$limit'	=> (int)$val )
-			);
+					]
+				],
+				['$skip'	=> (int)$offset ],
+				['$limit'	=> (int)$val ]
+			];
 			$merge_arguments = array_merge($common_argument, $field_arguments);
 			$result    = $this->mongo_db->aggregate(MDB_PASSENGERSLOGS_COMPLETED, $merge_arguments);
 			//echo "<pre>else";print_r($result['result']); exit;
-			return (!empty($result['result'])) ? $result['result'] : array();
+			return (!empty($result['result'])) ? $result['result'] : [];
 		}
     }
     public function get_all_ratingcompanies_searchlist($keyword = "")
@@ -4452,7 +4452,7 @@ Class Model_Manage extends Model
         } else {
             return '';
         }*/
-		$result = $this->mongo_db->find_one(MDB_PEOPLE,array('_id' => $id),array('name'));
+		$result = $this->mongo_db->find_one(MDB_PEOPLE,['_id' => $id],['name']);
 		if (count($result) > 0) {
             return $result['name'];
         } else {
@@ -4527,51 +4527,51 @@ Class Model_Manage extends Model
         }*/
 		
 		//MongoDB
-		$condition = array();
+		$condition = [];
 		if($this->usertype=='C'){
-			$condition = array('upgrade_companyid' => (int)$company_id);
+			$condition = ['upgrade_companyid' => (int)$company_id];
 		} else {
-			$condition = (!empty($comp_id) && $comp_id != "All")?array('upgrade_companyid' => (int)$comp_id):array();
+			$condition = (!empty($comp_id) && $comp_id != "All")?['upgrade_companyid' => (int)$comp_id]:[];
 		}
-		$common_arguments = array();
+		$common_arguments = [];
 		//MongoDB
 		if(!empty($condition)){
-			$common_arguments = array(
-				array('$match' => $condition)
-			);
+			$common_arguments = [
+				['$match' => $condition]
+			];
 		} else {
-			$common_arguments = array();
+			$common_arguments = [];
 		}
 		//print_r($common_arguments);
 		if($find_count){
-			$count_arguments = array(
-				array(
-					'$project' => array(
+			$count_arguments = [
+				[
+					'$project' => [
 						'result' => '$_id'
-					)
-				),
-				array(
-					'$group' => array(
+					]
+				],
+				[
+					'$group' => [
 						'_id' => NULL,
-						'count' => array(
+						'count' => [
 							'$sum' => 1
-						)
-					)
-				)
-			);
+						]
+					]
+				]
+			];
 			$merge_arguments = array_merge($common_arguments, $count_arguments);
 			$result          = $this->mongo_db->aggregate(MDB_PACKAGE_REPORT, $merge_arguments);
 			//echo "<pre>if";print_r($result['result']);exit;
 			return (!empty($result['result']) && isset($result['result'][0]['count'])) ? $result['result'][0]['count'] : 0;
 		} else {
-			$field_arguments = array(
-				array(
-					'$sort' => array(
+			$field_arguments = [
+				[
+					'$sort' => [
 						'_id' => -1
-					),
-				),
-				array(
-					'$project' => array('_id' => 0,
+					],
+				],
+				[
+					'$project' => ['_id' => 0,
 						'cid' => '$_id',
 						'package_name' => '$upgrade_packagename',
 						'package_type' => '$check_package_type',
@@ -4581,15 +4581,15 @@ Class Model_Manage extends Model
 						'credit_date' => '$upgrade_date',
 						'expiry_date' => '$upgrade_expirydate',
 						'companyid' => '$upgrade_companyid',
-					)
-				),
-				array('$skip'	=> (int)$offset ),
-				array('$limit'	=> (int)$val )
-			);
+					]
+				],
+				['$skip'	=> (int)$offset ],
+				['$limit'	=> (int)$val ]
+			];
 			$merge_arguments = array_merge($common_arguments, $field_arguments);
 			$res = $this->mongo_db->aggregate(MDB_PACKAGE_REPORT,$merge_arguments);
 			//echo '<pre>';print_r($res);//exit;
-			$result = array();
+			$result = [];
 			foreach ($res['result'] as $key => $rs) {
 				$details = $this->userCompanyDetails($rs['companyid']);
 				$name = isset($details['name'])?$details['name']:"-";
@@ -4617,8 +4617,8 @@ Class Model_Manage extends Model
         }*/
 		
 		//MongoDB
-		$result = $this->mongo_db->find_one(MDB_PEOPLE,array('company_id'=>(int)$id,'user_type'=>'C'),array('name','email'));
-		return (!empty($result))?$result:array();
+		$result = $this->mongo_db->find_one(MDB_PEOPLE,['company_id'=>(int)$id,'user_type'=>'C'],['name','email']);
+		return (!empty($result))?$result:[];
     }
     public function get_all_packagereport_searchlist($keyword = "", $status = "")
     {
@@ -4648,7 +4648,7 @@ Class Model_Manage extends Model
         }
         $query   = " select * from " . TAXIMAPPING . " left join " . COMPANY . " on " . TAXIMAPPING . ".mapping_companyid = " . COMPANY . ".cid left join " . TAXI . " on " . TAXIMAPPING . ".mapping_taxiid = " . TAXI . ".taxi_id  left join " . COUNTRY . " on " . TAXIMAPPING . ".mapping_countryid = " . COUNTRY . ".country_id  left join " . STATE . " on " . TAXIMAPPING . ".mapping_stateid = " . STATE . ".state_id  left join " . CITY . " on " . TAXIMAPPING . ".mapping_cityid = " . CITY . ".city_id  left join " . PEOPLE . " on " . TAXIMAPPING . ".mapping_driverid =" . PEOPLE . ".id where 1=1 $user_created_where $status_where $name_where order by mapping_startdate DESC ";
         $result  = Db::query(Database::SELECT, $query)->execute()->as_array();
-        $details = array();
+        $details = [];
         foreach ($result as $key => $res) {
             $details[$key]['created_by']        = $this->userNamebyId($res['mapping_createdby']);
             $details[$key]['mapping_id']        = $res['mapping_id'];
@@ -4669,31 +4669,31 @@ Class Model_Manage extends Model
         //check whether id is exist in checkbox or single active request
         //==================================================================
         //$arr_chk = " userid in ('" . implode("','",$activeids) . "') ";	
-        $result = DB::update(TAXIMAPPING)->set(array(
+        $result = DB::update(TAXIMAPPING)->set([
             'mapping_status' => 'A'
-        ))->where('mapping_id', 'IN', $activeids)->execute();
+        ])->where('mapping_id', 'IN', $activeids)->execute();
         return count($result);
     }
     public function block_packagereport_request($activeids)
     {
-        $result = DB::update(TAXIMAPPING)->set(array(
+        $result = DB::update(TAXIMAPPING)->set([
             'mapping_status' => 'D'
-        ))->where('mapping_id', 'IN', $activeids)->execute();
+        ])->where('mapping_id', 'IN', $activeids)->execute();
         return count($result);
     }
     public function trash_motor_request($activeids)
     {
-        $result = DB::update(MOTORCOMPANY)->set(array(
+        $result = DB::update(MOTORCOMPANY)->set([
             'motor_status' => 'T'
-        ))->where('motor_id', 'IN', $activeids)->execute();
+        ])->where('motor_id', 'IN', $activeids)->execute();
         return $result;
     }
     
     public function trash_field_request($activeids)
     {
-        $result = DB::update(MANAGEFIELD)->set(array(
+        $result = DB::update(MANAGEFIELD)->set([
             'field_status' => 'T'
-        ))->where('field_id', 'IN', $activeids)->execute();
+        ])->where('field_id', 'IN', $activeids)->execute();
         return $result;
     }
     public function trash_package_request($activeids)
@@ -4704,7 +4704,7 @@ Class Model_Manage extends Model
         return $result;*/
 		$active_ids = Commonfunction::mongo_format_array($activeids);
 		
-		$res = $this->mongo_db->update(MDB_PACKAGE,array('_id'=>array('$in'=>$active_ids)),array('$set'=>array('package_status' => 'T')),array('multiple'=>true));
+		$res = $this->mongo_db->update(MDB_PACKAGE,['_id'=>['$in'=>$active_ids]],['$set'=>['package_status' => 'T']],['multiple'=>true]);
 		return (empty($res['err']))?1:$res['errmsg'];
     }
            
@@ -4717,7 +4717,7 @@ Class Model_Manage extends Model
         return $result;*/
 	
 		$active_ids = Commonfunction::mongo_format_array($activeids);
-		$res = $this->mongo_db->update(MDB_PEOPLE,array('_id'=>array('$in'=>$active_ids)),array('$set'=>array('status' => 'T')),array('multiple'=>true));
+		$res = $this->mongo_db->update(MDB_PEOPLE,['_id'=>['$in'=>$active_ids]],['$set'=>['status' => 'T']],['multiple'=>true]);
 		return (empty($res['err']))?1:$res['errmsg'];
     }
     public function get_all_contacts_searchlist_count($keyword = "", $cid = '')
@@ -4737,10 +4737,10 @@ Class Model_Manage extends Model
 		
 		//MongoDB
 		if($keyword){
-			$srch_query = array( "\$or" => array(array( "feedback" => new MongoRegex("/$keyword/i"))  ) );
+			$srch_query = [ "\$or" => [[ "feedback" => new \MongoDB\BSON\Regex($keyword, 'i')]  ] ];
 		}
 		if(!empty($cid)){
-			$srch_query = array(array("\$and"=>array("contact_cid"=>$cid)),"\$or"=>array(array('feedback'=>new MongoRegex("/$keyword/i"))));
+			$srch_query = [["\$and"=>["contact_cid"=>$cid]],"\$or"=>[['feedback'=>new \MongoDB\BSON\Regex($keyword, 'i')]]];
 		}
 		//print_r($srch_query);exit;
 		$res = $this->mongo_db->count(MDB_DRIVER_FEEDBACK,$srch_query);
@@ -4763,13 +4763,13 @@ Class Model_Manage extends Model
 		
 		//MongoDB
 		if($keyword){
-			$srch_query = array( "\$or" => array(array( "feedback" => new MongoRegex("/$keyword/i"))  ) );
+			$srch_query = [ "\$or" => [[ "feedback" => new \MongoDB\BSON\Regex($keyword, 'i')]  ] ];
 		}
 		if(!empty($cid)){
-			$srch_query = array(array("\$and"=>array("contact_cid"=>$cid)),"\$or"=>array(array('feedback'=>new MongoRegex("/$keyword/i"))));
+			$srch_query = [["\$and"=>["contact_cid"=>$cid]],"\$or"=>[['feedback'=>new \MongoDB\BSON\Regex($keyword, 'i')]]];
 		}
 		//print_r($srch_query);exit;
-		$res = $this->mongo_db->find(MDB_DRIVER_FEEDBACK,$srch_query)->sort(array('_id'=>-1))->skip($offset)->limit($val);
+		$res = $this->mongo_db->find(MDB_DRIVER_FEEDBACK,$srch_query)->sort(['_id'=>-1])->skip($offset)->limit($val);
 		return $res;
     }
     public function get_all_free_quotes_searchlist_count($keyword = "")
@@ -4805,59 +4805,59 @@ Class Model_Manage extends Model
         return $user;*/
 		
 		//MongoDB
-		$result = $this->mongo_db->remove(MDB_CONTACTS,array('_id'=>(int)$id));
+		$result = $this->mongo_db->remove(MDB_CONTACTS,['_id'=>(int)$id]);
 		return (empty($result['err']))?1:$result['err'];
     }
     
     public function count_contacts_list($cid = '')
     {
 		
-		$arguments = array(
+		$arguments = [
 				
-				array('$lookup' => array(
+				['$lookup' => [
 						'from' => MDB_TAXI,
 						'localField' => 'taxi_id',
 						'foreignField' => '_id',
 						'as' => 'taxi'
-					)
-				),
-				array('$unwind' => '$taxi'),
-				 array(
-				'$lookup' => array(
+					]
+				],
+				['$unwind' => '$taxi'],
+				 [
+				'$lookup' => [
 					'from' => MDB_PEOPLE,
 					'localField' => 'driver_id',
 					'foreignField' => '_id',
 					'as' => 'driver'
-				)
-				),
-				array('$unwind' => '$driver'),
-					 array(
-				'$lookup' => array(
+				]
+				],
+				['$unwind' => '$driver'],
+					 [
+				'$lookup' => [
 					'from' => MDB_MOTOR_MODEL,
 					'localField' => 'taxi.taxi_model',
 					'foreignField' => '_id',
 					'as' => 'model'
-				)
-				),
-				array('$unwind' => '$model'),
-                array(
-                    '$project' => array(
+				]
+				],
+				['$unwind' => '$model'],
+                [
+                    '$project' => [
 						'_id' => '$_id',
 						'name' => '$driver.name',
 						'taxi_no' => '$taxi.taxi_no',
 						'model_type' => '$model.model_name',
 						'feedback' => '$feedback',
 						
-                    )
-                ),array(
-					'$group' => array(
+                    ]
+                ],[
+					'$group' => [
 						'_id' => NULL,
-						'count' => array(
+						'count' => [
 							'$sum' => 1
-						)
-					)
-				)
-			);
+						]
+					]
+				]
+			];
 			$result = $this->mongo_db->aggregate(MDB_DRIVER_FEEDBACK,$arguments);
 			//echo "<pre>"; print_r($result); exit;
 			return (!empty($result['result']) && isset($result['result']))?$result['result'][0]['count']:0;
@@ -4879,36 +4879,36 @@ Class Model_Manage extends Model
     public function all_contacts_list($offset, $val, $cid = '')
     {
 		
-		  $arguments =  array(
-              array(
-				'$lookup' => array(
+		  $arguments =  [
+              [
+				'$lookup' => [
 					'from' => MDB_TAXI,
 					'localField' => 'taxi_id',
 					'foreignField' => '_id',
 					'as' => 'taxi'
-				)
-				),
-				array('$unwind' => '$taxi'),
-				 array(
-				'$lookup' => array(
+				]
+				],
+				['$unwind' => '$taxi'],
+				 [
+				'$lookup' => [
 					'from' => MDB_PEOPLE,
 					'localField' => 'driver_id',
 					'foreignField' => '_id',
 					'as' => 'driver'
-				)
-				),
-				array('$unwind' => '$driver'),
-					 array(
-				'$lookup' => array(
+				]
+				],
+				['$unwind' => '$driver'],
+					 [
+				'$lookup' => [
 					'from' => MDB_MOTOR_MODEL,
 					'localField' => 'taxi.taxi_model',
 					'foreignField' => '_id',
 					'as' => 'model'
-				)
-				),
-				array('$unwind' => '$model'),
-                array(
-                    '$project' => array(
+				]
+				],
+				['$unwind' => '$model'],
+                [
+                    '$project' => [
 						'_id' => '$_id',
 						'name' => '$driver.name',
 						'taxi_no' => '$taxi.taxi_no',
@@ -4917,17 +4917,17 @@ Class Model_Manage extends Model
 						'model_type' => '$model.model_name',
 						'feedback' => '$feedback',
 						
-                    )
-                ),
-            array('$sort'=>array('_id' => -1)),
-				array('$skip' => (int)$offset),
-				array('$limit' => (int)$val)
+                    ]
+                ],
+            ['$sort'=>['_id' => -1]],
+				['$skip' => (int)$offset],
+				['$limit' => (int)$val]
                 
                 
-		);
+		];
 		
 			$result    = $this->mongo_db->aggregate(MDB_DRIVER_FEEDBACK, $arguments);
-		     return (isset($result['result']))?$result['result']:array();
+		     return (isset($result['result']))?$result['result']:[];
        /* if ($cid == '') {
             //$rs = DB::select()->from(CONTACTS)->order_by('sent_date', 'desc')->limit($val)->offset($offset)->execute()->as_array();
 			
@@ -4966,7 +4966,7 @@ Class Model_Manage extends Model
     {
         /*$rs = DB::select()->from(CMS)->join(MENU)->on(CMS . '.menu_id', '=', MENU . '.menu_id')->where(CMS . '.type', '=', '1')->where(CMS . '.status', '=', '1')->execute();
         return count($rs);*/
-        $result = $this->mongo_db->count(MDB_CMS,array('content_status'=>(int)1));
+        $result = $this->mongo_db->count(MDB_CMS,['content_status'=>(int)1]);
         return $result;
     }
     public function count_company_content_list($cid)
@@ -4978,18 +4978,18 @@ Class Model_Manage extends Model
     {
         /*$rs = DB::select()->from(CMS)->join(MENU)->on(CMS . '.menu_id', '=', MENU . '.menu_id')->where(CMS . '.type', '=', '1')->where(CMS . '.status', '=', '1')->order_by(CMS . '.menu', 'asc')->limit($val)->offset($offset)->execute()->as_array();
         return $rs;*/
-        $ops = array(array('$match'=>array('content_status'=>array('$eq'=>(int)1))),
-						array('$project'=>array(
+        $ops = [['$match'=>['content_status'=>['$eq'=>(int)1]]],
+						['$project'=>[
 							'id'=>'$_id',
 							'menu_name'=>'$menu_name',
 							'status_post'=>'$status_post',
-						)),
-						array('$sort'=>array('_id'=>-1)),
-						array('$skip'=>(int)$offset),
-						array('$limit'=>(int)$val),												
-					);
+						]],
+						['$sort'=>['_id'=>-1]],
+						['$skip'=>(int)$offset],
+						['$limit'=>(int)$val],												
+					];
 		$result = $this->mongo_db->aggregate(MDB_CMS,$ops);
-		return (!empty($result['result']))?$result['result']:array();
+		return (!empty($result['result']))?$result['result']:[];
         
     }
     public function all_company_content_list($offset = '', $val = '', $cid = '')
@@ -4999,9 +4999,9 @@ Class Model_Manage extends Model
     }
     public function company_content_request_change($activeids, $status)
     {
-        $result = DB::update(COMPANY_CMS)->set(array(
+        $result = DB::update(COMPANY_CMS)->set([
             'status' => $status
-        ))->where('id', 'IN', $activeids)->execute();
+        ])->where('id', 'IN', $activeids)->execute();
         return count($result);
     }
     public function contacts_list_view($id)
@@ -5010,7 +5010,7 @@ Class Model_Manage extends Model
         return $user;*/
 		
 		//MongoDB
-		$result = $this->mongo_db->find_one(MDB_CONTACTS,array('_id'=>(int)$id));
+		$result = $this->mongo_db->find_one(MDB_CONTACTS,['_id'=>(int)$id]);
 		return $result;
     }
     public function free_quotes_list_view($id)
@@ -5025,7 +5025,7 @@ Class Model_Manage extends Model
         return $result[0]['taxi_count'];*/
 		
 		//MongoDB
-		$result = $this->mongo_db->count(MDB_TAXI,array('taxi_company'=>(int)$cid));
+		$result = $this->mongo_db->count(MDB_TAXI,['taxi_company'=>(int)$cid]);
 		return (!empty($result))?$result:0;
     }
     public function drivercount($cid)
@@ -5035,7 +5035,7 @@ Class Model_Manage extends Model
         return $result[0]['driver_count'];*/
 		
 		//MongoDB
-		$result = $this->mongo_db->count(MDB_PEOPLE,array('company_id'=>(int)$cid,'user_type'=>'D'));
+		$result = $this->mongo_db->count(MDB_PEOPLE,['company_id'=>(int)$cid,'user_type'=>'D']);
 		return (!empty($result))?$result:0;
     }
     public function managercount($cid)
@@ -5045,7 +5045,7 @@ Class Model_Manage extends Model
         return $result[0]['driver_count'];*/
 		
 		//MongoDB
-		$result = $this->mongo_db->count(MDB_PEOPLE,array('company_id'=>(int)$cid,'user_type'=>'M'));
+		$result = $this->mongo_db->count(MDB_PEOPLE,['company_id'=>(int)$cid,'user_type'=>'M']);
 		return (!empty($result))?$result:0;
     }
     public function details_taxiinfo($id)
@@ -5054,38 +5054,38 @@ Class Model_Manage extends Model
         return $result;*/
 		
 		//MongoDB
-		$match_query = array('taxi._id'=>(int)$id);
-		$arguments = array(
-			array('$unwind' => '$stateinfo'),
-			array('$unwind' => '$stateinfo.cityinfo'),
-			array('$lookup' => array(
+		$match_query = ['taxi._id'=>(int)$id];
+		$arguments = [
+			['$unwind' => '$stateinfo'],
+			['$unwind' => '$stateinfo.cityinfo'],
+			['$lookup' => [
 					'from' => MDB_TAXI,
 					'localField'=> 'stateinfo.cityinfo.city_id',
 					'foreignField'=> "taxi_country",
 					'foreignField'=> "taxi_state",
 					'foreignField'=> "taxi_city",
 					'as'=> "taxi"
-				)
-			),
-			array('$unwind' => '$taxi'),
-			array('$lookup' => array(
+				]
+			],
+			['$unwind' => '$taxi'],
+			['$lookup' => [
 					'from' => MDB_COMPANY,
 					'localField' => 'taxi.taxi_company',
 					'foreignField' => "_id",
 					'as' => "company"
-				)
-			),
-			array('$unwind' => '$company'),
-			array('$lookup' => array(
+				]
+			],
+			['$unwind' => '$company'],
+			['$lookup' => [
 					'from' => MDB_MOTOR_MODEL,
 					'localField' => 'taxi.taxi_model',
 					'foreignField' => "_id",
 					'as' => "motormodel"
-				)
-			),
-			array('$unwind' => '$motormodel'),
-			array('$match'  => $match_query),
-			array('$project' => array('_id'=>0,
+				]
+			],
+			['$unwind' => '$motormodel'],
+			['$match'  => $match_query],
+			['$project' => ['_id'=>0,
 					'created_by' => '$taxi.taxi_createdby',
 					'taxi_id' => '$taxi._id',
 					'taxi_availability' => '$taxi.taxi_availability',
@@ -5111,13 +5111,13 @@ Class Model_Manage extends Model
 					'taxi_insurance_number' => '$taxi.taxi_insurance_number',
 					'taxi_insurance_expire_date_time' => '$taxi.taxi_insurance_expire_date_time',
 					'qr_image_path' => '$taxi.qr_image_path'
-				)
-			),
-			array('$sort' =>array('taxi.created_date' => -1) ),
-		);
+				]
+			],
+			['$sort' =>['taxi.created_date' => -1] ],
+		];
 		$result = $this->mongo_db->aggregate(MDB_CSC,$arguments);
 		//echo "<pre>"; print_r($result); exit;
-		return (!empty($result['result']) && isset($result['result']))?$result['result']:array();
+		return (!empty($result['result']) && isset($result['result']))?$result['result']:[];
     }
     public static function taxi_additionalfields()
     {
@@ -5128,26 +5128,26 @@ Class Model_Manage extends Model
     public function details_userinfo($id, $driver = 0)
     {
 		if ($driver == 1) {
-			$match_query        = array();
+			$match_query        = [];
 			$match_query['_id'] = (int)$id;
 			$match_query['user_type'] = 'D';
-			$arguments = array(
-				array(
+			$arguments = [
+				[
 					'$match' => $match_query
-				),
-				array(
-					'$lookup' => array(
+				],
+				[
+					'$lookup' => [
 						'from' => MDB_DRIVER_INFO,
 						'localField' => '_id',
 						'foreignField' => '_id',
 						'as' => 'driver'
-					)
-				),
-				array(
+					]
+				],
+				[
 					'$unwind' => '$driver'
-				),
-				array(
-					'$project' => array(
+				],
+				[
+					'$project' => [
 						'id' => '$_id',
 						'created_by' => '$user_createdby',
 						'name' => '$name',
@@ -5182,19 +5182,19 @@ Class Model_Manage extends Model
 						'driver_national_insurance_number' => '$driver.driverinfo.driver_national_insurance_number',
 						'driver_national_insurance_expire_date' => '$driver.driverinfo.driver_national_insurance_expire_date',
 						'driver_app_version' => '$driver.app_version'
-					)
-				)
-			);
+					]
+				]
+			];
 			$result	= $this->mongo_db->aggregate(MDB_PEOPLE, $arguments);
 			//echo "<pre>"; print_r($result); exit;
-			$res	=  (isset($result['result']) && !empty($result['result']))?$result['result']:array();
+			$res	=  (isset($result['result']) && !empty($result['result']))?$result['result']:[];
 		}else {
-			$result = $this->mongo_db->find(MDB_PEOPLE,array('_id'=>(int)$id));
+			$result = $this->mongo_db->find(MDB_PEOPLE,['_id'=>(int)$id]);
 			$result = iterator_to_array($result);
-			$res = (!empty($result))?$result:array();
+			$res = (!empty($result))?$result:[];
 		}
 		//echo '<pre>';print_r($res);//exit;
-        $details = array();
+        $details = [];
 		if(!empty($res) && count($res) > 0){
 			foreach($res as $result){
 				if (($result['user_type'] != 'N') && ($result['user_type'] != 'S') && (isset($result['company_id']) && ($result['company_id'] != ''))) {
@@ -5250,21 +5250,21 @@ Class Model_Manage extends Model
     public function details_passengerinfo($id)
     {
 		//$result  = DB::select()->from(PASSENGERS)->where('id', '=', $id)->execute()->as_array();
-		  $arguments = array(
+		  $arguments = [
               /*  array(
                     '$unwind' => '$passengerdetails'
                 ),*/
-                array(
-				'$lookup' => array(
+                [
+				'$lookup' => [
 					'from' => MDB_CHILD_ACCOUNT_TYPE,
 					'localField' => 'account_type',
 					'foreignField' => '_id',
 					'as' => 'account'
-				)
-				),
+				]
+				],
 				
-                array(
-                    '$project' => array(
+                [
+                    '$project' => [
 						'_id' => '$_id',
 						'name' => '$name',
 						'email' => '$email',
@@ -5286,16 +5286,16 @@ Class Model_Manage extends Model
 						'lateral_end_date' => '$lateral_end_date',
 						'account_type_name' => '$account.account_type',
 
-                    )
-                ),
-                array(
-				'$match' => array('_id' => (int)$id))
-		);
+                    ]
+                ],
+                [
+				'$match' => ['_id' => (int)$id]]
+		];
 		$result    = $this->mongo_db->aggregate(MDB_PASSENGERS, $arguments);
         //$result  = $this->mongo_db->find(MDB_PASSENGERS,array('_id' => (int)$id),array('_id','name', 'email', 'phone', 'address', 'user_status', 'discount', 'referral_code', 'referral_code_amount', 'wallet_amount','account_type','parent_id'));
 	
 
-		$details = array();
+		$details = [];
 		$key = 0;
         foreach ($result['result'] as $main_doc) {
 		if(!empty($main_doc['account_type_name'])){	
@@ -5337,23 +5337,23 @@ Class Model_Manage extends Model
 	
 	public function get_reference_details($id)
 	{
-		$arguments = array(
-			array('$unwind' => '$_id'),
-			array(
-				'$lookup' => array(
+		$arguments = [
+			['$unwind' => '$_id'],
+			[
+				'$lookup' => [
 							'from'=>MDB_PASSENGER_REFERRAL,
 							'localField'=> '_id',
 							'foreignField' => "passenger_id",
 							'as'=> "referral"
-						)
-			),
-			array('$match'=> array('referral.passenger_id' => (int)$id)),
-			array(
-				'$project' => array(
+						]
+			],
+			['$match'=> ['referral.passenger_id' => (int)$id]],
+			[
+				'$project' => [
 					'name' => '$name',
-				)
-			),
-		);
+				]
+			],
+		];
 		$referred_by = $this->mongo_db->aggregate(MDB_PASSENGERS,$arguments);
 		return (!empty($referred_by) && isset($referred_by['name']))?$referred_by['name']:"-";
 	}
@@ -5365,9 +5365,9 @@ Class Model_Manage extends Model
         return (count($result) > 0)?$result:'';*/
 		
 		//MongoDB
-		$result = $this->mongo_db->find_one(MDB_COMPANY,array('_id'=>(int)$id),array('companydetails.company_name','companydetails.company_address'));
+		$result = $this->mongo_db->find_one(MDB_COMPANY,['_id'=>(int)$id],['companydetails.company_name','companydetails.company_address']);
 		//echo '<pre>';print_r($result);exit;
-		return (!empty($result) && count($result)>0)?$result:array();
+		return (!empty($result) && count($result)>0)?$result:[];
     }
     public function countrydetails($id)
     {
@@ -5375,7 +5375,7 @@ Class Model_Manage extends Model
 		return (count($result) > 0)?$result[0]['country_name']:'';*/
 		
 		//MongoDB
-		$result = $this->mongo_db->find_one(MDB_CSC,array('_id'=>(int)$id),array('country_name'));
+		$result = $this->mongo_db->find_one(MDB_CSC,['_id'=>(int)$id],['country_name']);
 		//echo '<pre>';print_r($result);exit;
 		return (!empty($result) && count($result)>0)?$result['country_name']:'-';
     }
@@ -5387,11 +5387,11 @@ Class Model_Manage extends Model
 		//MongoDB
 		$country_id = (int)$cid;
 		$state_id = (int)$id;
-		$rs = $this->mongo_db->find(MDB_CSC,array('stateinfo.state_id'=>$state_id,'_id'=>$country_id),array('stateinfo.$'=>1))->sort(array('stateinfo.state_id'=>-1));
+		$rs = $this->mongo_db->find(MDB_CSC,['stateinfo.state_id'=>$state_id,'_id'=>$country_id],['stateinfo.$'=>1])->sort(['stateinfo.state_id'=>-1]);
 		//echo '<pre>';print_r(iterator_to_array($rs));exit;
-		$result = (!empty($rs))?iterator_to_array($rs):array();
+		$result = (!empty($rs))?iterator_to_array($rs):[];
 		if (!empty($result)){
-			$result = (count($result[$country_id]['stateinfo']) > 0) ? array_reverse($result[$country_id]['stateinfo']) : array();
+			$result = (count($result[$country_id]['stateinfo']) > 0) ? array_reverse($result[$country_id]['stateinfo']) : [];
 			$state_name = $result[0]['state_name'];
 		} else {
 			$state_name = '';
@@ -5406,9 +5406,9 @@ Class Model_Manage extends Model
 		$country_id = (int)$cid;
 		$state_id = (int)$sid;
 		$city_id = (int)$id;
-		$rs = $this->mongo_db->find(MDB_CSC,array('_id'=>$country_id,'stateinfo.state_id'=>$state_id,'stateinfo.cityinfo.city_id'=>$city_id),array('stateinfo.cityinfo.$'=>1))->sort(array('stateinfo.cityinfo.city_id'=>-1));
+		$rs = $this->mongo_db->find(MDB_CSC,['_id'=>$country_id,'stateinfo.state_id'=>$state_id,'stateinfo.cityinfo.city_id'=>$city_id],['stateinfo.cityinfo.$'=>1])->sort(['stateinfo.cityinfo.city_id'=>-1]);
 		//echo '<pre>';//print_r(iterator_to_array($rs));exit;
-		$result = (!empty($rs))?iterator_to_array($rs):array();
+		$result = (!empty($rs))?iterator_to_array($rs):[];
 		if (!empty($result)){
 			//print_r($result);
 			$city_detail = $result[$country_id]['stateinfo'][0]['cityinfo'];
@@ -5495,8 +5495,8 @@ Class Model_Manage extends Model
         /*$query   = " select * from " . CMS . " LEFT join " . MENU . " on " . MENU . ".menu_id = " . CMS . ".menu_id where id='$id' and status='1' and type='1'";
         $results = Db::query(Database::SELECT, $query)->execute()->as_array();
         return $results;*/
-        $ops = array(array('$match'=>array('_id'=>array('$eq'=>(int)$id))),
-						array('$project'=>array(
+        $ops = [['$match'=>['_id'=>['$eq'=>(int)$id]]],
+						['$project'=>[
 							'menu_id'=>'$_id',
 							'menu_name'=>'$menu_name',
 							'menu_link'=>'$menu_link',
@@ -5507,11 +5507,11 @@ Class Model_Manage extends Model
 							'meta_description'=>'$meta_description',
 							'content'=>'$content',
 							'arabic_content'=>'$arabic_content',
-						)),											
-				);
+						]],											
+				];
         $result = $this->mongo_db->aggregate(MDB_CMS,$ops);
         //print_r($result);
-        return !empty($result['result'])?$result['result']:array();
+        return !empty($result['result'])?$result['result']:[];
         
     }
     //for manage content view 
@@ -5526,7 +5526,7 @@ Class Model_Manage extends Model
     {
         /*$user = DB::delete(CMS)->where('id', '=', $id)->execute();
         return $user;*/
-        $result = $this->mongo_db->remove(MDB_CMS,array('_id'=>(int)$id));
+        $result = $this->mongo_db->remove(MDB_CMS,['_id'=>(int)$id]);
 		return (empty($result['err']))?1:$result['err'];
     }
     /** Validating for edit view content **/
@@ -5537,22 +5537,22 @@ Class Model_Manage extends Model
     /** Validating for edit view content **/
     public function validate_companyeditview($arr, $cid, $id)
     {
-        return Validation::factory($arr)->rule('page_title', 'not_empty')->rule('page_title', 'max_length', array(
+        return Validation::factory($arr)->rule('page_title', 'not_empty')->rule('page_title', 'max_length', [
             ':value',
             '50'
-        ))->rule('menu_name', 'not_empty')->rule('menu_name', 'max_length', array(
+        ])->rule('menu_name', 'not_empty')->rule('menu_name', 'max_length', [
             ':value',
             '20'
-        ))->rule('page_url', 'not_empty')->rule('page_url', 'max_length', array(
+        ])->rule('page_url', 'not_empty')->rule('page_url', 'max_length', [
             ':value',
             '20'
-        ))
+        ])
         //->rule('page_url', 'alpha_numeric', array(':value','/^[0-9]{1,}/'))
-            ->rule('page_url', 'Model_Manage::checkpageurl', array(
+            ->rule('page_url', 'Model_Manage::checkpageurl', [
             ':value',
             $cid,
             $id
-        ));
+        ]);
     }
     public static function checkpageurl($pageurl, $cid, $id)
     {
@@ -5582,24 +5582,24 @@ Class Model_Manage extends Model
             'content' => $post['content']
         ))->where('id', '=', $id)->execute();
         return $result;*/
-        $ops = array(array('$match'=>array('_id'=>array('$eq'=>(int)$post['menu_name']))),
-					array('$project'=>array('menu_name'=>'$menu_name')));
+        $ops = [['$match'=>['_id'=>['$eq'=>(int)$post['menu_name']]]],
+					['$project'=>['menu_name'=>'$menu_name']]];
         $result = $this->mongo_db->aggregate(MDB_CMS,$ops);
         $menu_name = (!empty($result['result']))?$result['result'][0]['menu_name']:"";        
-        $data_set = array('menu'=>$menu_name,
+        $data_set = ['menu'=>$menu_name,
 				'meta_title'=>$post['meta_title'],
 				'meta_keyword'=>$post['meta_keyword'],
 				'meta_description'=>$post['meta_description'],
 				'content'=>$post['content'],
 				'arabic_content'=>$post['arabic_content']
-				);        
-        $update = $this->mongo_db->update(MDB_CMS,array('_id'=>(int)$post['menu_name']),array('$set'=>$data_set),array('upsert'=>false));
+				];        
+        $update = $this->mongo_db->update(MDB_CMS,['_id'=>(int)$post['menu_name']],['$set'=>$data_set],['upsert'=>false]);
         return (count($update))?1:0;
     }
     /** Updating content view while editing **/
     public function update_edit_company_content($post, $id)
     {
-        $result = DB::update(COMPANY_CMS)->set(array(
+        $result = DB::update(COMPANY_CMS)->set([
             'menu_name' => $post['menu_name'],
             'title' => $post['page_title'],
             'page_url' => $post['page_url'],
@@ -5607,7 +5607,7 @@ Class Model_Manage extends Model
             'meta_keyword' => $post['meta_keyword'],
             'meta_description' => $post['meta_description'],
             'content' => $post['content']
-        ))->where('id', '=', $id)->execute();
+        ])->where('id', '=', $id)->execute();
         return $result;
     }
     //Check the menu already exists
@@ -5619,8 +5619,8 @@ Class Model_Manage extends Model
         }*/        
         $result=0;
         if($post['menu_name'] != $id){
-			$ops = array(array('$match'=>array('_id'=>array('$eq'=>(int)$post['menu_name']))),
-			array('$project'=>array('menu'=>'$menu')));
+			$ops = [['$match'=>['_id'=>['$eq'=>(int)$post['menu_name']]]],
+			['$project'=>['menu'=>'$menu']]];
 			$result = $this->mongo_db->aggregate(MDB_CMS,$ops);
 			$result = (isset($result['result'][0]['menu']))?1:0;		
 		}        
@@ -5637,61 +5637,61 @@ Class Model_Manage extends Model
         }*/
             
 		//MongoDB
-		$match_query = array('company._id'=>(int)$id,'people.user_type'=>'M');
+		$match_query = ['company._id'=>(int)$id,'people.user_type'=>'M'];
 		if($find_count){
-			$arguments = array(
-					array('$unwind' => '$stateinfo'),
-					array('$unwind' => '$stateinfo.cityinfo'),
-					array('$lookup' => array(
+			$arguments = [
+					['$unwind' => '$stateinfo'],
+					['$unwind' => '$stateinfo.cityinfo'],
+					['$lookup' => [
 							'from' =>        MDB_PEOPLE,
 							'localField'=> 'stateinfo.cityinfo.city_id',
 							'foreignField'=> "login_country",
 							'foreignField'=> "login_city",
 							'as'=> "people"
-						)
-					),
-					array('$unwind' => '$people'),
-					array('$lookup' => array(
+						]
+					],
+					['$unwind' => '$people'],
+					['$lookup' => [
 							'from'   => MDB_COMPANY,
 							'localField' => 'people.company_id',
 							'foreignField' => "_id",
 							'as' => "company"
-						)
-					),
-					array('$unwind' => '$company'),
-					array('$match'  => $match_query),
-					array('$project' => array(
+						]
+					],
+					['$unwind' => '$company'],
+					['$match'  => $match_query],
+					['$project' => [
 							'company_id' => '$company._id',
-						)
-					),
-				array('$sort' =>array('people.created_date' => -1) ),
-			);
+						]
+					],
+				['$sort' =>['people.created_date' => -1] ],
+			];
 			$result = $this->mongo_db->aggregate(MDB_CSC,$arguments);
 			//echo "<pre>"; print_r($result); exit;
 			return (!empty($result['result']) && isset($result['result']))?count($result['result']):0;
 		} else {
-			$arguments = array(
-					array('$unwind' => '$stateinfo'),
-					array('$unwind' => '$stateinfo.cityinfo'),
-					array('$lookup' => array(
+			$arguments = [
+					['$unwind' => '$stateinfo'],
+					['$unwind' => '$stateinfo.cityinfo'],
+					['$lookup' => [
 							'from' => MDB_PEOPLE,
 							'localField'=> 'stateinfo.cityinfo.city_id',
 							'foreignField'=> "login_country",
 							'foreignField'=> "login_city",
 							'as'=> "people"
-						)
-					),
-					array('$unwind' => '$people'),
-					array('$lookup' => array(
+						]
+					],
+					['$unwind' => '$people'],
+					['$lookup' => [
 							'from' => MDB_COMPANY,
 							'localField' => 'people.company_id',
 							'foreignField' => "_id",
 							'as' => "company"
-						)
-					),
-					array('$unwind' => '$company'),
-					array('$match'  => $match_query),
-					array('$project' => array('_id'=>0,
+						]
+					],
+					['$unwind' => '$company'],
+					['$match'  => $match_query],
+					['$project' => ['_id'=>0,
 							'country_name' => '$country_name',
 							'state_name' => '$stateinfo.state_name',
 							'city_name' => '$stateinfo.cityinfo.city_name',
@@ -5703,15 +5703,15 @@ Class Model_Manage extends Model
 							'email' => '$people.email',
 							'address'=>'$people.address',
 							'id' => '$_id',
-						)
-					),
-				array('$sort' =>array('people.created_date' => -1) ),
-				array('$skip' => (int)$offset ),
-				array('$limit' => (int)$val )
-			);
+						]
+					],
+				['$sort' =>['people.created_date' => -1] ],
+				['$skip' => (int)$offset ],
+				['$limit' => (int)$val ]
+			];
 			$result = $this->mongo_db->aggregate(MDB_CSC,$arguments);
 			//echo "<pre>"; print_r($result); exit;
-			return (!empty($result['result']) && isset($result['result']))?$result['result']:array();
+			return (!empty($result['result']) && isset($result['result']))?$result['result']:[];
 		}
     }
     //selected manus 
@@ -5719,20 +5719,20 @@ Class Model_Manage extends Model
     {
         /*$result = DB::select()->from(MENU)->order_by('order_status', 'ASC')->execute()->as_array();
         return $result;*/
-        $ops = array(
-					array(
-						'$project' => array(
+        $ops = [
+					[
+						'$project' => [
 						'menu_id' => '$_id',
 						'menu_name' => '$menu_name',
 						'status_post' => '$status_post',
-						)
-					),
-					array(
-						'$sort' => array("_id"=>-1)
-					),
-			);
+						]
+					],
+					[
+						'$sort' => ["_id"=>-1]
+					],
+			];
 		$result = $this->mongo_db->aggregate(MDB_CMS,$ops);
-		return  (!empty($result['result']))?$result['result']:array();       
+		return  (!empty($result['result']))?$result['result']:[];       
     }
     public function get_companydriverlist($id, $offset = '', $val = '',$find_count=false)
     {
@@ -5744,61 +5744,61 @@ Class Model_Manage extends Model
             return $result;
         }*/
 		//MongoDB
-		$match_query = array('company._id'=>(int)$id,'people.user_type'=>'D');
+		$match_query = ['company._id'=>(int)$id,'people.user_type'=>'D'];
 		if($find_count){
-			$arguments = array(
-					array('$unwind' => '$stateinfo'),
-					array('$unwind' => '$stateinfo.cityinfo'),
-					array('$lookup' => array(
+			$arguments = [
+					['$unwind' => '$stateinfo'],
+					['$unwind' => '$stateinfo.cityinfo'],
+					['$lookup' => [
 							'from' => MDB_PEOPLE,
 							'localField'=> 'stateinfo.cityinfo.city_id',
 							'foreignField'=> "login_country",
 							'foreignField'=> "login_city",
 							'as'=> "people"
-						)
-					),
-					array('$unwind' => '$people'),
-					array('$lookup' => array(
+						]
+					],
+					['$unwind' => '$people'],
+					['$lookup' => [
 							'from' => MDB_COMPANY,
 							'localField' => 'people.company_id',
 							'foreignField' => "_id",
 							'as' => "company"
-						)
-					),
-					array('$unwind' => '$company'),
-					array('$match'  => $match_query),
-					array('$project' => array(
+						]
+					],
+					['$unwind' => '$company'],
+					['$match'  => $match_query],
+					['$project' => [
 							'company_id' => '$company._id',
-						)
-					),
-				array('$sort' =>array('people.created_date' => -1) ),
-			);
+						]
+					],
+				['$sort' =>['people.created_date' => -1] ],
+			];
 			$result = $this->mongo_db->aggregate(MDB_CSC,$arguments);
 			//echo "<pre>"; print_r($result); exit;
 			return (!empty($result['result']) && isset($result['result']))?count($result['result']):0;
 		} else {
-			$arguments = array(
-					array('$unwind' => '$stateinfo'),
-					array('$unwind' => '$stateinfo.cityinfo'),
-					array('$lookup' => array(
+			$arguments = [
+					['$unwind' => '$stateinfo'],
+					['$unwind' => '$stateinfo.cityinfo'],
+					['$lookup' => [
 							'from' => MDB_PEOPLE,
 							'localField'=> 'stateinfo.cityinfo.city_id',
 							'foreignField'=> "login_country",
 							'foreignField'=> "login_city",
 							'as'=> "people"
-						)
-					),
-					array('$unwind' => '$people'),
-					array('$lookup' => array(
+						]
+					],
+					['$unwind' => '$people'],
+					['$lookup' => [
 							'from' => MDB_COMPANY,
 							'localField' => 'people.company_id',
 							'foreignField' => "_id",
 							'as' => "company"
-						)
-					),
-					array('$unwind' => '$company'),
-					array('$match'  => $match_query),
-					array('$project' => array('_id'=>0,
+						]
+					],
+					['$unwind' => '$company'],
+					['$match'  => $match_query],
+					['$project' => ['_id'=>0,
 							'country_name' => '$country_name',
 							'state_name' => '$stateinfo.state_name',
 							'city_name' => '$stateinfo.cityinfo.city_name',
@@ -5810,15 +5810,15 @@ Class Model_Manage extends Model
 							'email' => '$people.email',
 							'address'=>'$people.address',
 							'id' => '$_id',
-						)
-					),
-				array('$sort' =>array('people.created_date' => -1) ),
-				array('$skip' => (int)$offset ),
-				array('$limit' => (int)$val )
-			);
+						]
+					],
+				['$sort' =>['people.created_date' => -1] ],
+				['$skip' => (int)$offset ],
+				['$limit' => (int)$val ]
+			];
 			$result = $this->mongo_db->aggregate(MDB_CSC,$arguments);
 			//echo "<pre>"; print_r($result); exit;
-			return (!empty($result['result']) && isset($result['result']))?$result['result']:array();
+			return (!empty($result['result']) && isset($result['result']))?$result['result']:[];
 		}
     }
     public function get_companytaxilist($id, $offset = '', $val = '',$find_count=false)
@@ -5832,63 +5832,63 @@ Class Model_Manage extends Model
         }*/
         
         //MongoDB
-		$match_query = array('taxi.taxi_company'=>(int)$id);
+		$match_query = ['taxi.taxi_company'=>(int)$id];
 		if($find_count){
-			$arguments = array(
-					array('$unwind' => '$stateinfo'),
-					array('$unwind' => '$stateinfo.cityinfo'),
-					array('$lookup' => array(
+			$arguments = [
+					['$unwind' => '$stateinfo'],
+					['$unwind' => '$stateinfo.cityinfo'],
+					['$lookup' => [
 							'from' => MDB_TAXI,
 							'localField'=> 'stateinfo.cityinfo.city_id',
 							'foreignField'=> "taxi_country",
 							'foreignField'=> "taxi_state",
                             'foreignField'=> "taxi_city",
 							'as'=> "taxi"
-						)
-					),
-					array('$unwind' => '$taxi'),
-					array('$lookup' => array(
+						]
+					],
+					['$unwind' => '$taxi'],
+					['$lookup' => [
 							'from' => MDB_COMPANY,
 							'localField' => 'taxi.taxi_company',
 							'foreignField' => "_id",
 							'as' => "company"
-						)
-					),
-					array('$unwind' => '$company'),
-					array('$match'  => $match_query),
-					array('$project' => array(
+						]
+					],
+					['$unwind' => '$company'],
+					['$match'  => $match_query],
+					['$project' => [
 							'taxi_id' => '$taxi._id',
-						)
-					),
-				array('$sort' =>array('taxi.created_date' => -1) ),
-			);
+						]
+					],
+				['$sort' =>['taxi.created_date' => -1] ],
+			];
 			$result = $this->mongo_db->aggregate(MDB_CSC,$arguments);
 			//echo "<pre>"; print_r($result); exit;
 			return (!empty($result['result']) && isset($result['result']))?count($result['result']):0;
 		} else {
-			$arguments = array(
-					array('$unwind' => '$stateinfo'),
-					array('$unwind' => '$stateinfo.cityinfo'),
-					array('$lookup' => array(
+			$arguments = [
+					['$unwind' => '$stateinfo'],
+					['$unwind' => '$stateinfo.cityinfo'],
+					['$lookup' => [
 							'from' => MDB_TAXI,
 							'localField'=> 'stateinfo.cityinfo.city_id',
 							'foreignField'=> "taxi_country",
 							'foreignField'=> "taxi_state",
                             'foreignField'=> "taxi_city",
 							'as'=> "taxi"
-						)
-					),
-					array('$unwind' => '$taxi'),
-					array('$lookup' => array(
+						]
+					],
+					['$unwind' => '$taxi'],
+					['$lookup' => [
 							'from' => MDB_COMPANY,
 							'localField' => 'taxi.taxi_company',
 							'foreignField' => "_id",
 							'as' => "company"
-						)
-					),
-					array('$unwind' => '$company'),
-					array('$match'  => $match_query),
-					array('$project' => array(
+						]
+					],
+					['$unwind' => '$company'],
+					['$match'  => $match_query],
+					['$project' => [
 							'country_name' => '$country_name',
 							'state_name' => '$stateinfo.state_name',
 							'city_name' => '$stateinfo.cityinfo.city_name',
@@ -5897,15 +5897,15 @@ Class Model_Manage extends Model
 							'created_date' => '$taxi.created_date',
 							'taxi_status' => '$taxi.taxi_status',
 							'taxi_no' => '$taxi.taxi_no',
-						)
-					),
-				array('$sort' =>array('taxi.created_date' => -1) ),
-				array('$skip' => (int)$offset ),
-				array('$limit' => (int)$val )
-			);
+						]
+					],
+				['$sort' =>['taxi.created_date' => -1] ],
+				['$skip' => (int)$offset ],
+				['$limit' => (int)$val ]
+			];
 			$result = $this->mongo_db->aggregate(MDB_CSC,$arguments);
 			//echo "<pre>"; print_r($result); exit;
-			return (!empty($result['result']) && isset($result['result']))?$result['result']:array();
+			return (!empty($result['result']) && isset($result['result']))?$result['result']:[];
 		}
     }
     /** getting driver rating given by users**/
@@ -5950,91 +5950,91 @@ Class Model_Manage extends Model
 		
 		//MongoDB
 		//Checking the manager id with people and company details here
-		$check_query =  array('_id'=>(int)$id,'user_type'=>'M');
-		$check_args = array(
-			array('$match'  => $check_query),
-			array('$lookup' => array(
+		$check_query =  ['_id'=>(int)$id,'user_type'=>'M'];
+		$check_args = [
+			['$match'  => $check_query],
+			['$lookup' => [
 					'from' => MDB_COMPANY,
 					'localField' => 'company._id',
 					'foreignField' => "company_id",
 					'as' => "company"
-				)
-			),
-			array('$project' => array('_id'=>0,
+				]
+			],
+			['$project' => ['_id'=>0,
 					'id'=>'$_id',
 					'company_id' => '$company_id',
 					'login_city' => '$login_city',
 					'login_state' => '$login_state',
 					'login_country' => '$login_country',
-				)
-			),
-		);
+				]
+			],
+		];
 		$res = $this->mongo_db->aggregate(MDB_PEOPLE,$check_args);
 		//echo "<pre>"; print_r($res); exit;
 		if(count($res['result'])==0){
-			return ($find_count)?0:array();
+			return ($find_count)?0:[];
 		}
 		$company_id    = $res['result'][0]['company_id'];
 		$login_city    = $res['result'][0]['login_city'];
 		$login_country = $res['result'][0]['login_country'];
 		$login_state   = $res['result'][0]['login_state'];
 		
-		$match_query = array('company._id'=>(int)$company_id,'people.user_type'=>'D','people.login_country'=>(int)$login_country,'people.login_state'=>(int)$login_state,'people.login_city'=>(int)$login_city);
+		$match_query = ['company._id'=>(int)$company_id,'people.user_type'=>'D','people.login_country'=>(int)$login_country,'people.login_state'=>(int)$login_state,'people.login_city'=>(int)$login_city];
 		if($find_count){
-			$arguments = array(
-					array('$unwind' => '$stateinfo'),
-					array('$unwind' => '$stateinfo.cityinfo'),
-					array('$lookup' => array(
+			$arguments = [
+					['$unwind' => '$stateinfo'],
+					['$unwind' => '$stateinfo.cityinfo'],
+					['$lookup' => [
 							'from' => MDB_PEOPLE,
 							'localField'=> 'stateinfo.cityinfo.city_id',
 							'foreignField'=> "login_country",
 							'foreignField'=> "login_state",
 							'foreignField'=> "login_city",
 							'as'=> "people"
-						)
-					),
-					array('$unwind' => '$people'),
-					array('$lookup' => array(
+						]
+					],
+					['$unwind' => '$people'],
+					['$lookup' => [
 							'from' => MDB_COMPANY,
 							'localField' => 'people.company_id',
 							'foreignField' => "_id",
 							'as' => "company"
-						)
-					),
-					array('$unwind' => '$company'),
-					array('$match'  => $match_query),
-					array('$project' => array(
+						]
+					],
+					['$unwind' => '$company'],
+					['$match'  => $match_query],
+					['$project' => [
 							'company_id' => '$company._id',
-						)
-					),
-				array('$sort' =>array('people.created_date' => -1) ),
-			);
+						]
+					],
+				['$sort' =>['people.created_date' => -1] ],
+			];
 			$result = $this->mongo_db->aggregate(MDB_CSC,$arguments);
 			//echo "<pre>if"; print_r($result); exit;
 			return (!empty($result['result']) && isset($result['result']))?count($result['result']):0;
 		} else {
-			$arguments = array(
-					array('$unwind' => '$stateinfo'),
-					array('$unwind' => '$stateinfo.cityinfo'),
-					array('$lookup' => array(
+			$arguments = [
+					['$unwind' => '$stateinfo'],
+					['$unwind' => '$stateinfo.cityinfo'],
+					['$lookup' => [
 							'from' => MDB_PEOPLE,
 							'localField'=> 'stateinfo.cityinfo.city_id',
 							'foreignField'=> "login_country",
 							'foreignField'=> "login_city",
 							'as'=> "people"
-						)
-					),
-					array('$unwind' => '$people'),
-					array('$lookup' => array(
+						]
+					],
+					['$unwind' => '$people'],
+					['$lookup' => [
 							'from' => MDB_COMPANY,
 							'localField' => 'people.company_id',
 							'foreignField' => "_id",
 							'as' => "company"
-						)
-					),
-					array('$unwind' => '$company'),
-					array('$match'  => $match_query),
-					array('$project' => array(
+						]
+					],
+					['$unwind' => '$company'],
+					['$match'  => $match_query],
+					['$project' => [
 							'country_name' => '$country_name',
 							'state_name' => '$stateinfo.state_name',
 							'city_name' => '$stateinfo.cityinfo.city_name',
@@ -6045,15 +6045,15 @@ Class Model_Manage extends Model
 							'name' => '$people.name',
 							'email' => '$people.email',
 							'address'=>'$people.address'
-						)
-					),
-				array('$sort' =>array('people.created_date' => -1) ),
-				array('$skip' => (int)$offset ),
-				array('$limit' => (int)$val )
-			);
+						]
+					],
+				['$sort' =>['people.created_date' => -1] ],
+				['$skip' => (int)$offset ],
+				['$limit' => (int)$val ]
+			];
 			$result = $this->mongo_db->aggregate(MDB_CSC,$arguments);
 			//echo "<pre>else"; print_r($result); exit;
-			return (!empty($result['result']) && isset($result['result']))?$result['result']:array();
+			return (!empty($result['result']) && isset($result['result']))?$result['result']:[];
 		}
     }
     
@@ -6075,92 +6075,92 @@ Class Model_Manage extends Model
 		
 		//MongoDB
 		//Checking the manager id with people and company details here
-		$check_query =  array('_id'=>(int)$id,'user_type'=>'M');
-		$check_args = array(
-			array('$match'  => $check_query),
-			array('$lookup' => array(
+		$check_query =  ['_id'=>(int)$id,'user_type'=>'M'];
+		$check_args = [
+			['$match'  => $check_query],
+			['$lookup' => [
 					'from' => MDB_COMPANY,
 					'localField' => 'company._id',
 					'foreignField' => "company_id",
 					'as' => "company"
-				)
-			),
-			array('$project' => array('_id'=>0,
+				]
+			],
+			['$project' => ['_id'=>0,
 					'id'=>'$_id',
 					'company_id' => '$company_id',
 					'login_city' => '$login_city',
 					'login_state' => '$login_state',
 					'login_country' => '$login_country',
-				)
-			),
-		);
+				]
+			],
+		];
 		$res = $this->mongo_db->aggregate(MDB_PEOPLE,$check_args);
 		//echo "<pre>"; print_r($res); exit;
 		if( count($res['result'])==0){
-			return ($find_count)?0:array();
+			return ($find_count)?0:[];
 		}
 		$company_id    = $res['result'][0]['company_id'];
         $login_city    = $res['result'][0]['login_city'];
         $login_country = $res['result'][0]['login_country'];
         $login_state   = $res['result'][0]['login_state'];
 		
-		$match_query = array('taxi.taxi_company'=>(int)$id);
+		$match_query = ['taxi.taxi_company'=>(int)$id];
 		if($find_count){
-			$arguments = array(
-					array('$unwind' => '$stateinfo'),
-					array('$unwind' => '$stateinfo.cityinfo'),
-					array('$lookup' => array(
+			$arguments = [
+					['$unwind' => '$stateinfo'],
+					['$unwind' => '$stateinfo.cityinfo'],
+					['$lookup' => [
 							'from' => MDB_TAXI,
 							'localField'=> 'stateinfo.cityinfo.city_id',
 							'foreignField'=> "taxi_country",
 							'foreignField'=> "taxi_state",
                             'foreignField'=> "taxi_city",
 							'as'=> "taxi"
-						)
-					),
-					array('$unwind' => '$taxi'),
-					array('$lookup' => array(
+						]
+					],
+					['$unwind' => '$taxi'],
+					['$lookup' => [
 							'from' => MDB_COMPANY,
 							'localField' => 'taxi.taxi_company',
 							'foreignField' => "_id",
 							'as' => "company"
-						)
-					),
-					array('$unwind' => '$company'),
-					array('$match'  => $match_query),
-					array('$project' => array(
+						]
+					],
+					['$unwind' => '$company'],
+					['$match'  => $match_query],
+					['$project' => [
 							'taxi_id' => '$taxi._id',
-						)
-					),
-				array('$sort' =>array('taxi.created_date' => -1) ),
-			);
+						]
+					],
+				['$sort' =>['taxi.created_date' => -1] ],
+			];
 			$result = $this->mongo_db->aggregate(MDB_CSC,$arguments);
 			//echo "<pre>"; print_r($result); exit;
 			return (!empty($result['result']) && isset($result['result']))?count($result['result']):0;
 		} else {
-			$arguments = array(
-					array('$unwind' => '$stateinfo'),
-					array('$unwind' => '$stateinfo.cityinfo'),
-					array('$lookup' => array(
+			$arguments = [
+					['$unwind' => '$stateinfo'],
+					['$unwind' => '$stateinfo.cityinfo'],
+					['$lookup' => [
 							'from' => MDB_TAXI,
 							'localField'=> 'stateinfo.cityinfo.city_id',
 							'foreignField'=> "taxi_country",
 							'foreignField'=> "taxi_state",
                             'foreignField'=> "taxi_city",
 							'as'=> "taxi"
-						)
-					),
-					array('$unwind' => '$taxi'),
-					array('$lookup' => array(
+						]
+					],
+					['$unwind' => '$taxi'],
+					['$lookup' => [
 							'from' => MDB_COMPANY,
 							'localField' => 'taxi.taxi_company',
 							'foreignField' => "_id",
 							'as' => "company"
-						)
-					),
-					array('$unwind' => '$company'),
-					array('$match'  => $match_query),
-					array('$project' => array(
+						]
+					],
+					['$unwind' => '$company'],
+					['$match'  => $match_query],
+					['$project' => [
 							'country_name' => '$country_name',
 							'state_name' => '$stateinfo.state_name',
 							'city_name' => '$stateinfo.cityinfo.city_name',
@@ -6170,15 +6170,15 @@ Class Model_Manage extends Model
 							'taxi_status' => '$taxi.taxi_status',
 							'taxi_no' => '$taxi.taxi_no',
 							'company_id' => '$taxi.taxi_company',
-						)
-					),
-				array('$sort' =>array('taxi.created_date' => -1) ),
-				array('$skip' => (int)$offset ),
-				array('$limit' => (int)$val )
-			);
+						]
+					],
+				['$sort' =>['taxi.created_date' => -1] ],
+				['$skip' => (int)$offset ],
+				['$limit' => (int)$val ]
+			];
 			$result = $this->mongo_db->aggregate(MDB_CSC,$arguments);
 			//echo "<pre>"; print_r($result); exit;
-			return (!empty($result['result']) && isset($result['result']))?$result['result']:array();
+			return (!empty($result['result']) && isset($result['result']))?$result['result']:[];
 		}
     }
    
@@ -6211,13 +6211,13 @@ Class Model_Manage extends Model
     }
     public function validate_unavailabledriver($arr)
     {
-        return Validation::factory($arr)->rule('reason', 'not_empty')->rule('startdate', 'not_empty')->rule('enddate', 'not_empty')->rule('enddate', 'Model_Manage::date_diff', array(
+        return Validation::factory($arr)->rule('reason', 'not_empty')->rule('startdate', 'not_empty')->rule('enddate', 'not_empty')->rule('enddate', 'Model_Manage::date_diff', [
             'value',
             $arr['startdate']
-        ))->rule('enddate', 'Model_Manage::checkunavailable', array(
+        ])->rule('enddate', 'Model_Manage::checkunavailable', [
             ':value',
             $arr
-        ));
+        ]);
     }
     public static function date_diff($enddate, $startdate)
     {
@@ -6261,7 +6261,7 @@ Class Model_Manage extends Model
         $createdby  = $this->user_createdby;
         $driver_id  = $post['driver_id'];
         $company_id = $this->get_companyid($driver_id);
-        $result     = DB::insert(UNAVAILABILITY, array(
+        $result     = DB::insert(UNAVAILABILITY, [
             'u_driverid',
             'u_companyid',
             'u_reason',
@@ -6269,7 +6269,7 @@ Class Model_Manage extends Model
             'u_enddate',
             'u_createdby',
             'u_status'
-        ))->values(array(
+        ])->values([
             $post['driver_id'],
             $company_id,
             $post['reason'],
@@ -6277,7 +6277,7 @@ Class Model_Manage extends Model
             $post['enddate'],
             $createdby,
             ACTIVE
-        ))->execute();
+        ])->execute();
         return $result;
     }
     public function get_companyid($id)
@@ -6293,15 +6293,15 @@ Class Model_Manage extends Model
         } else {
             return 0;
         }*/
-		$result = $this->mongo_db->find_one(MDB_PEOPLE,array('_id'=>(int)$id));
-		return (!empty($result))?$result:array();
+		$result = $this->mongo_db->find_one(MDB_PEOPLE,['_id'=>(int)$id]);
+		return (!empty($result))?$result:[];
 	}
     public function check_taxicompanyid($id)
     {
         /*$result = DB::select()->from(TAXI)->where('taxi_id', '=', $id)->execute()->as_array();
         return (count($result) > 0)?$result:0;*/
 		//MongoDB
-		$result = $this->mongo_db->find_one(MDB_TAXI,array('_id'=>(int)$id),array('taxi_company','taxi_country','taxi_state','taxi_city'));
+		$result = $this->mongo_db->find_one(MDB_TAXI,['_id'=>(int)$id],['taxi_company','taxi_country','taxi_state','taxi_city']);
 		return (!empty($result) && count($result)>0)?$result:0;
     }
     public function check_companyid($id)
@@ -6310,7 +6310,7 @@ Class Model_Manage extends Model
         return (count($result) > 0)?$result:0;*/
 		
 		//MongoDB
-		$result = $this->mongo_db->find_one(MDB_COMPANY,array('companydetails.userid'=>(int)$id),array('_id'));
+		$result = $this->mongo_db->find_one(MDB_COMPANY,['companydetails.userid'=>(int)$id],['_id']);
 		return (!empty($result) && count($result)>0)?$result:0;
     }
     public function getunavailabledriverlist($driver_id = '')
@@ -6410,7 +6410,7 @@ Class Model_Manage extends Model
 		//MongoDB
 		//Here changing array values with string to integers values
 		$active_ids = Commonfunction::mongo_format_array($activeids);
-		$result = $this->mongo_db->update(MDB_TAXI,array('_id'=>array('$in'=>$active_ids)),array('$set'=>array('taxi_availability' => 'A')),array('multiple'=>true));
+		$result = $this->mongo_db->update(MDB_TAXI,['_id'=>['$in'=>$active_ids]],['$set'=>['taxi_availability' => 'A']],['multiple'=>true]);
 		//echo '<pre>';print_r($result);exit;
 		return (empty($result['err']))?1:$result['errmsg'];
     }
@@ -6426,7 +6426,7 @@ Class Model_Manage extends Model
 		//MongoDB
 		//Here changing array values with string to integers values
 		$active_ids = Commonfunction::mongo_format_array($activeids);
-		$result = $this->mongo_db->update(MDB_TAXI,array('_id'=>array('$in'=>$active_ids)),array('$set'=>array('taxi_availability' => 'D')),array('multiple'=>true));
+		$result = $this->mongo_db->update(MDB_TAXI,['_id'=>['$in'=>$active_ids]],['$set'=>['taxi_availability' => 'D']],['multiple'=>true]);
 		//echo '<pre>';print_r($result);exit;
 		return (empty($result['err']))?1:$result['errmsg'];
     }
@@ -6440,7 +6440,7 @@ Class Model_Manage extends Model
         ))->where('id', 'IN', $activeids)->execute();*/
         
         $active_ids = Commonfunction::mongo_format_array($activeids);
-        $result = $this->mongo_db->update(MDB_PEOPLE,array('_id'=>array('$in'=>$active_ids)),array('$set'=>array('availability_status' => 'A')),array('multiple'=>true));
+        $result = $this->mongo_db->update(MDB_PEOPLE,['_id'=>['$in'=>$active_ids]],['$set'=>['availability_status' => 'A']],['multiple'=>true]);
         
         return count($result);
         
@@ -6453,7 +6453,7 @@ Class Model_Manage extends Model
             'availability_status' => 'D'
         ))->where('id', 'IN', $activeids)->execute();*/
         $active_ids = Commonfunction::mongo_format_array($activeids);
-		$result = $this->mongo_db->update(MDB_PEOPLE,array('_id'=>array('$in'=>$active_ids)),array('$set'=>array('availability_status' => 'D')),array('multiple'=>true));
+		$result = $this->mongo_db->update(MDB_PEOPLE,['_id'=>['$in'=>$active_ids]],['$set'=>['availability_status' => 'D']],['multiple'=>true]);
         return count($result);
     }
     // get menu list	
@@ -6461,7 +6461,7 @@ Class Model_Manage extends Model
     {
         /*$rs = DB::select()->from(MENU)->execute();
         return count($rs);*/
-        $result = $this->mongo_db->count(MDB_CMS,array());
+        $result = $this->mongo_db->count(MDB_CMS,[]);
         return $result;
     }
 	
@@ -6474,27 +6474,27 @@ Class Model_Manage extends Model
     {
         /*$rs = DB::select()->from(MENU)->limit($val)->offset($offset)->execute()->as_array();
         return $rs;*/
-		$ops = array(
-					array(
-						'$project' => array(
+		$ops = [
+					[
+						'$project' => [
 						'menu_id' => '$_id',
 						'menu_name' => '$menu_name',
 						'status_post' => '$status_post',
-						)
-					),
-					array(
-						'$sort' => array("_id"=>-1)
-					),
-					array(
+						]
+					],
+					[
+						'$sort' => ["_id"=>-1]
+					],
+					[
 						'$skip' => (int)$offset
-					),
-					array(
+					],
+					[
 						'$limit' => (int)$val
-					)
-			);
+					]
+			];
 		$result = $this->mongo_db->aggregate(MDB_CMS,$ops);
 		//echo '<pre>';print_r($result);exit;
-		return (!empty($result['result']))?$result['result']:array();
+		return (!empty($result['result']))?$result['result']:[];
     } 
     //For deleting menu
     public function delete_menu($id)
@@ -6502,7 +6502,7 @@ Class Model_Manage extends Model
         /*$result  = DB::delete(MENU)->where('menu_id', '=', $id)->execute();
         $result1 = DB::delete(CMS)->where('menu_id', '=', $id)->execute();
         return $result;*/
-        $result = $this->mongo_db->remove(MDB_CMS,array('_id'=>(int)$id));
+        $result = $this->mongo_db->remove(MDB_CMS,['_id'=>(int)$id]);
 		return (empty($result['err']))?1:$result['err'];
     }
     public function details_taxi_driver($id)
@@ -6514,9 +6514,9 @@ Class Model_Manage extends Model
         return $rs;*/
 		
 		 //MongoDB
-		 $result = $this->mongo_db->find_one(MDB_TAXI_DRIVER_MAPPING,array('mapping_taxiid'=>(int)$id),array('mapping_driverid'));
+		 $result = $this->mongo_db->find_one(MDB_TAXI_DRIVER_MAPPING,['mapping_taxiid'=>(int)$id],['mapping_driverid']);
 		//echo '<pre>';print_r($result);exit;
-		return (!empty($result))?$result:array();
+		return (!empty($result))?$result:[];
     }
     // get mile list	
     public function count_mile_list()
@@ -6532,23 +6532,23 @@ Class Model_Manage extends Model
     //Change the miles status  
     public function active_mile_request($activeids)
     {
-        $result = DB::update(MILES)->set(array(
+        $result = DB::update(MILES)->set([
             'mile_status' => 'A'
-        ))->where('id', 'IN', $activeids)->execute();
+        ])->where('id', 'IN', $activeids)->execute();
         return count($result);
     }
     public function block_mile_request($blockids)
     {
-        $result = DB::update(MILES)->set(array(
+        $result = DB::update(MILES)->set([
             'mile_status' => 'D'
-        ))->where('id', 'IN', $blockids)->execute();
+        ])->where('id', 'IN', $blockids)->execute();
         return count($result);
     }
     public function trash_mile_request($trashids)
     {
-        $result = DB::update(MILES)->set(array(
+        $result = DB::update(MILES)->set([
             'mile_status' => 'T'
-        ))->where('id', 'IN', $trashids)->execute();
+        ])->where('id', 'IN', $trashids)->execute();
         return $result;
     } // End 
     //For deleting mile
@@ -6565,8 +6565,8 @@ Class Model_Manage extends Model
         return $result;
         
         */
-        $update_log_array = array('comments' => '');
-		$pass_log_update          = $this->mongo_db->update(MDB_PASSENGERS_LOGS,array('_id'=>(int)$passengers_log_id),array('$set'=> $update_log_array),array('upsert'=>false));
+        $update_log_array = ['comments' => ''];
+		$pass_log_update          = $this->mongo_db->update(MDB_PASSENGERS_LOGS,['_id'=>(int)$passengers_log_id],['$set'=> $update_log_array],['upsert'=>false]);
 		return $pass_log_update;
     }
     public function count_unassign_searchtaxi_list($keyword = "")
@@ -6646,7 +6646,7 @@ Class Model_Manage extends Model
         }
         $sql     = "select * from " . TAXI . " JOIN " . COMPANY . " ON " . TAXI . ".taxi_company = company.cid where " . TAXI . ".taxi_status='A' and  " . TAXI . ".taxi_availability='A'  and " . TAXI . ".taxi_id NOT IN ($taxi_list) $name_where $createdby_where order by " . TAXI . ".taxi_id asc limit $offset,$val";
         $result  = Db::query(Database::SELECT, $sql)->execute()->as_array();
-        $details = array();
+        $details = [];
         foreach ($result as $key => $res) {
             $details[$key]['created_by']        = $this->userNamebyId($res['taxi_createdby']);
             $details[$key]['taxi_id']           = $res['taxi_id'];
@@ -6665,7 +6665,7 @@ Class Model_Manage extends Model
 		$company_id  = $this->session->get('company_id');
 		$cuurentdate = date('Y-m-d H:i:s');
         $enddate     = date('Y-m-d') . ' 23:59:59';
-		$match_query = array();
+		$match_query = [];
 		$match_query['people.status'] = 'A';
 		$match_query['mapping.mapping_status'] = 'A';
 		if ($company_id!="" && $company_id!=0) {
@@ -6676,61 +6676,61 @@ Class Model_Manage extends Model
 			$match_query['mapping.mapping_enddate'] = array('$lt' => $enddate);
 		}*/
 		//echo "<pre>"; print_r($match_query); exit;
-		$arguments = array(
-			array(
-				'$lookup' => array(
+		$arguments = [
+			[
+				'$lookup' => [
 					'from' => MDB_TAXI_DRIVER_MAPPING,
 					'localField' => '_id',
 					'foreignField' => 'mapping_taxiid',
 					'as' => 'mapping'
-				)
-			),
-			array(
+				]
+			],
+			[
 				'$unwind' => '$mapping'
-			),
-			array(
-				'$lookup' => array(
+			],
+			[
+				'$lookup' => [
 					'from' => MDB_COMPANY,
 					'localField' => 'taxi_company',
 					'foreignField' => '_id',
 					'as' => 'company'
-				)
-			),
-			array(
+				]
+			],
+			[
 				'$unwind' => '$company'
-			),
-			array(
-				'$lookup' => array(
+			],
+			[
+				'$lookup' => [
 					'from' => MDB_PEOPLE,
 					'localField' => 'mapping.mapping_driverid',
 					'foreignField' => '_id',
 					'as' => 'people'
-				)
-			),
-			array(
+				]
+			],
+			[
 				'$unwind' => '$people'
-			),
-			array(
+			],
+			[
 				'$match' => $match_query
-			),
-			array(
-				'$project' => array(
+			],
+			[
+				'$project' => [
 					'id' => '$people._id',
 					'taxi_id' => '$_id'
-				)
-			)
+				]
+			]
 			
-		);
+		];
 		$result    = $this->mongo_db->aggregate(MDB_TAXI, $arguments);
 		//echo "<pre>"; print_r($result['result']); exit;
-		return (!empty($result['result']) && isset($result['result'])) ? $result['result'] : array();
+		return (!empty($result['result']) && isset($result['result'])) ? $result['result'] : [];
     }
 	
 	public function all_freetaxi_list($offset, $val, $cid = 0, $find_count = FALSE)
     {
 		$currentdate = date('Y-m-d H:i:s');
         $enddate     = date('Y-m-d') . ' 23:59:59';
-		$match_query                     = array();
+		$match_query                     = [];
 		$match_query['mapping.mapping_status'] = 'A';
 		$match_query['driver.status'] = 'A';
 		$match_query['company.companydetails.company_status'] = 'A';
@@ -6747,108 +6747,108 @@ Class Model_Manage extends Model
 			$match_query['taxi.taxi_company'] = (int)$cid;
 		}
 		if ($currentdate!="" && $enddate!="") {
-			$match_query['mapping.mapping_startdate'] = array('$gte' => $currentdate);
-			$match_query['mapping.mapping_enddate'] = array('$lte' => $enddate);
+			$match_query['mapping.mapping_startdate'] = ['$gte' => $currentdate];
+			$match_query['mapping.mapping_enddate'] = ['$lte' => $enddate];
 		}
 		//echo "<pre>"; print_r($match_query); exit;
-		$common_arguments = array(
-			array(
+		$common_arguments = [
+			[
 				'$unwind' => '$stateinfo'
-			),
-			array(
+			],
+			[
 				'$unwind' => '$stateinfo.cityinfo'
-			),
-			array(
-				'$lookup' => array(
+			],
+			[
+				'$lookup' => [
 					'from' => MDB_TAXI_DRIVER_MAPPING,
 					'localField' => 'stateinfo.cityinfo.city_id',
 					'foreignField' => 'mapping_countryid',
 					'foreignField' => 'mapping_cityid',
 					'as' => 'mapping'
-				)
-			),
-			array(
+				]
+			],
+			[
 				'$unwind' => '$mapping'
-			),
-			array(
-				'$lookup' => array(
+			],
+			[
+				'$lookup' => [
 					'from' => MDB_TAXI,
 					'localField' => 'mapping.mapping_taxiid',
 					'foreignField' => '_id',
 					'as' => 'taxi'
-				)
-			),
-			array(
+				]
+			],
+			[
 				'$unwind' => '$taxi'
-			),
-			array(
-				'$lookup' => array(
+			],
+			[
+				'$lookup' => [
 					'from' => MDB_COMPANY,
 					'localField' => 'mapping.mapping_companyid',
 					'foreignField' => '_id',
 					'as' => 'company'
-				)
-			),
-			array(
+				]
+			],
+			[
 				'$unwind' => '$company'
-			),
+			],
 			
-			array(
-				'$lookup' => array(
+			[
+				'$lookup' => [
 					'from' => MDB_PEOPLE,
 					'localField' => 'mapping.mapping_driverid',
 					'foreignField' => '_id',
 					'as' => 'people'
-				)
-			),
-			array(
+				]
+			],
+			[
 				'$unwind' => '$people'
-			),
-			array(
-				'$lookup' => array(
+			],
+			[
+				'$lookup' => [
 					'from' => MDB_DRIVER_INFO,
 					'localField' => 'mapping.mapping_driverid',
 					'foreignField' => '_id',
 					'as' => 'driver'
-				)
-			),
-			array(
+				]
+			],
+			[
 				'$unwind' => '$driver'
-			),
-			array(
+			],
+			[
 				'$match' => $match_query
-			),
-		);
+			],
+		];
 		
 		if ($find_count == TRUE) {
-			$count_arguments = array(
-				array(
-					'$project' => array(
+			$count_arguments = [
+				[
+					'$project' => [
 						'result' => '$people._id'
-					)
-				),
-				array(
-					'$group' => array(
+					]
+				],
+				[
+					'$group' => [
 						'_id' => NULL,
-						'count' => array(
+						'count' => [
 							'$sum' => 1
-						)
-					)
-				)
-			);
+						]
+					]
+				]
+			];
 			$merge_arguments = array_merge($common_arguments, $count_arguments);
 			$result          = $this->mongo_db->aggregate(MDB_CSC, $merge_arguments);
 			//echo "<pre>";print_r($result['result']);exit;
 			return (!empty($result['result']) && isset($result['result'][0]['count'])) ? $result['result'][0]['count'] : 0;
 		} else {
-			$field_arguments = array(
-				array(
-					'$sort' => array( 
+			$field_arguments = [
+				[
+					'$sort' => [ 
 						'people.created_date' => -1
-					),
-				),
-				array(
-					'$project' => array(
+					],
+				],
+				[
+					'$project' => [
 						'id' => '$people._id',
 						'name' => '$people.name',
 						'taxi_id' => '$taxi._id',
@@ -6856,15 +6856,15 @@ Class Model_Manage extends Model
 						'cid' => '$company._id',
 						'company_name' => '$company.companydetails.company_name',
 						'phone' => '$people.phone'
-					)
-				),
-				array('$skip'	=> (int)$offset ),
-				array('$limit'	=> (int)$val )
-			);
+					]
+				],
+				['$skip'	=> (int)$offset ],
+				['$limit'	=> (int)$val ]
+			];
 			$merge_arguments = array_merge($common_arguments, $field_arguments);
 			$result    = $this->mongo_db->aggregate(MDB_CSC, $merge_arguments);
 			//echo "<pre>";print_r($result['result']); exit;
-			return (!empty($result['result'])) ? $result['result'] : array();
+			return (!empty($result['result'])) ? $result['result'] : [];
 		}
     }
 	
@@ -6928,7 +6928,7 @@ Class Model_Manage extends Model
         $query_where = " AND ( ( '$currentdate' between mapping_startdate and  mapping_enddate ) or ( '$enddate' between mapping_startdate and  mapping_enddate) )";
         $query       = " select * from " . TAXIMAPPING . " left join " . TAXI . " on " . TAXIMAPPING . ".mapping_taxiid =" . TAXI . ".taxi_id left join " . COMPANY . " on " . TAXIMAPPING . ".mapping_companyid = " . COMPANY . ".cid left join " . COUNTRY . " on " . TAXIMAPPING . ".mapping_countryid = " . COUNTRY . ".country_id left join " . STATE . " on " . TAXIMAPPING . ".mapping_stateid = " . STATE . ".state_id left join " . CITY . " on " . TAXIMAPPING . ".mapping_cityid = " . CITY . ".city_id  left join " . PEOPLE . " on " . TAXIMAPPING . ".mapping_driverid =" . PEOPLE . ".id left join " . DRIVER . " on " . TAXIMAPPING . ".mapping_driverid =" . DRIVER . ".driver_id where " . TAXIMAPPING . ".mapping_status = 'A'  and " . DRIVER . ".status='F' and " . COMPANY . ".company_status='A' and " . COUNTRY . ".country_status='A' and " . STATE . ".state_status='A' and " . CITY . ".city_status='A' and " . TAXI . ".taxi_status='A' and " . TAXI . ".taxi_availability='A' and " . PEOPLE . ".status='A' and " . PEOPLE . ".availability_status='A' and people.user_type='D' $name_where $query_where $user_created_where order by mapping_startdate ASC limit $offset,$val ";
         $result      = Db::query(Database::SELECT, $query)->execute()->as_array();
-        $details     = array();
+        $details     = [];
         foreach ($result as $key => $res) {
             $details[$key]['created_by']        = $this->userNamebyId($res['mapping_createdby']);
             $details[$key]['mapping_id']        = $res['mapping_id'];
@@ -7022,7 +7022,7 @@ Class Model_Manage extends Model
         $country_id     = $this->country_id;
         $state_id       = $this->state_id;
         $city_id        = $this->city_id;
-		$match_query = $taxi_list = array();
+		$match_query = $taxi_list = [];
 		$match_query['user_type'] = 'D';
 		$match_query['status'] = 'A';
 		$match_query['availability_status'] = 'A';
@@ -7032,7 +7032,7 @@ Class Model_Manage extends Model
             foreach ($booked_driver as $key => $value) {
                 $taxi_list[] = (int)$value['id'];
             }
-			$match_query['_id'] = array('$nin' => $taxi_list);
+			$match_query['_id'] = ['$nin' => $taxi_list];
         }
         if (!empty($cid) && $cid!=0) {
 			$match_query['company_id'] = (int)$cid;
@@ -7043,46 +7043,46 @@ Class Model_Manage extends Model
 			$match_query['login_city'] = (int)$city_id;
         }
 		//echo "<pre>"; print_r($match_query); exit;
-		$common_arguments = array(
-			array(
-				'$lookup' => array(
+		$common_arguments = [
+			[
+				'$lookup' => [
 					'from' => MDB_COMPANY,
 					'localField' => 'company_id',
 					'foreignField' => '_id',
 					'as' => 'company'
-				)
-			),
-			array(
+				]
+			],
+			[
 				'$unwind' => '$company'
-			),
-			array(
+			],
+			[
 				'$match' => $match_query
-			),
-		);
+			],
+		];
 		if($find_count == TRUE){
-			$count_arguments = array(
-				array(
-					'$project' => array(
+			$count_arguments = [
+				[
+					'$project' => [
 						'result' => '$_id'
-					)
-				),
-				array(
-					'$group' => array(
+					]
+				],
+				[
+					'$group' => [
 						'_id' => NULL,
-						'count' => array(
+						'count' => [
 							'$sum' => 1
-						)
-					)
-				)
-			);
+						]
+					]
+				]
+			];
 			$arguments = array_merge($common_arguments,$count_arguments);
 			$result    = $this->mongo_db->aggregate(MDB_PEOPLE, $arguments);
 			//echo "<pre>"; print_r($result); exit;
 			return (!empty($result['result']) && isset($result['result'][0]['count'])) ? $result['result'][0]['count'] : 0;
 		}else{
-			$field_arguments = array(
-				array(
-					'$project' => array(
+			$field_arguments = [
+				[
+					'$project' => [
 						'id'=>'$_id',
 						'user_createdby' => '$user_createdby',
 						'name' => '$name',
@@ -7095,24 +7095,24 @@ Class Model_Manage extends Model
 						'driver_license_id'=>'$driver_license_id',
 						'phone'=>'$phone',
 						'cid'=>'$company.companydetails.userid',	
-					)
-				),
-				array(
-					'$sort' => array('_id' => 1)
-				),
-				array(
+					]
+				],
+				[
+					'$sort' => ['_id' => 1]
+				],
+				[
 					'$skip' => $offset
-				),
-				array(
+				],
+				[
 					'$limit' => (int)$val
-				),
-			);
+				],
+			];
 			$arguments = array_merge($common_arguments,$field_arguments);
 			$result    = $this->mongo_db->aggregate(MDB_PEOPLE, $arguments);
 			for($i=0;$i<count($result['result']);$i++){				
 				$result['result'][$i]['user_createdby'] = isset($result['result'][$i]['user_createdby'])?$this->userNamebyId($result['result'][$i]['user_createdby']):"";
 			}
-			return (!empty($result['result']) && isset($result['result'])) ? $result['result'] : array();
+			return (!empty($result['result']) && isset($result['result'])) ? $result['result'] : [];
 		}
 	}
 	
@@ -7217,7 +7217,7 @@ Class Model_Manage extends Model
         }
         $query   = "select * from " . PEOPLE . " JOIN " . COMPANY . " ON " . PEOPLE . ".company_id = company.cid where " . PEOPLE . ".user_type='D'  and " . PEOPLE . ".status='A' and " . PEOPLE . ".availability_status='A' and " . PEOPLE . ".id NOT IN ($driver_list) $name_where $user_created_where order by " . PEOPLE . ".id asc limit $val offset  $offset ";
         $result  = Db::query(Database::SELECT, $query)->execute()->as_array();
-        $details = array();
+        $details = [];
         foreach ($result as $key => $res) {
             $details[$key]['created_by']          = $this->userNamebyId($res['user_createdby']);
             $details[$key]['name']                = $res['name'];
@@ -7249,18 +7249,18 @@ Class Model_Manage extends Model
 		
 		//MongoDB
 		$current_time = convert_timezone('now', TIMEZONE);
-		$resultset = $this->mongo_db->count(MDB_PEOPLE,array('company_id' => (int)$cid, 'user_type' => 'C'));
+		$resultset = $this->mongo_db->count(MDB_PEOPLE,['company_id' => (int)$cid, 'user_type' => 'C']);
 		if ($resultset > 0) {
-			$arguments = array(
-				array('$match'=> array('upgrade_companyid' => (int)$cid, 'upgrade_expirydate' =>array('$gte' => $current_time ))),
-				array('$project' => array('total_driver'=> '$upgrade_no_driver','total_taxi'=> '$upgrade_no_taxi','package_type' => '$check_package_type','upgrade_expirydate'=>'$upgrade_expirydate','package_name'=>'$upgrade_packagename','upgrade_packageid'=>'$upgrade_packageid')),
-				array('$sort' => array('upgrade_id' => -1)),
-				array('$limit' => 1),
-			);
+			$arguments = [
+				['$match'=> ['upgrade_companyid' => (int)$cid, 'upgrade_expirydate' =>['$gte' => $current_time ]]],
+				['$project' => ['total_driver'=> '$upgrade_no_driver','total_taxi'=> '$upgrade_no_taxi','package_type' => '$check_package_type','upgrade_expirydate'=>'$upgrade_expirydate','package_name'=>'$upgrade_packagename','upgrade_packageid'=>'$upgrade_packageid']],
+				['$sort' => ['upgrade_id' => -1]],
+				['$limit' => 1],
+			];
 			$result = $this->mongo_db->aggregate(MDB_PACKAGE_REPORT,$arguments);
-			return (!empty($result['result']))?$result['result'][0]:array();
+			return (!empty($result['result']))?$result['result'][0]:[];
 		} else {
-			return array();
+			return [];
 		}
     }
     public function mute_driver_request($activeids)
@@ -7268,28 +7268,28 @@ Class Model_Manage extends Model
         //check whether id is exist in checkbox or single active request
         //==================================================================
         //$arr_chk = " userid in ('" . implode("','",$activeids) . "') ";	
-        $result = DB::update(PEOPLE)->set(array(
+        $result = DB::update(PEOPLE)->set([
             'status' => 'M'
-        ))->where('id', 'IN', $activeids)->execute();
+        ])->where('id', 'IN', $activeids)->execute();
         return count($result);
     }
     public function company_info($cid)
     {
         /*$rs = DB::select()->from(COMPANYINFO)->where('company_cid', '=', $cid)->execute()->as_array();
         return $rs;*/
-        $arguments = array(
-            array('$match'	=> array('_id' => $cid)),
-            array('$unwind'=>'$companyinfo'),
-            array(
-                '$project' => array(
+        $arguments = [
+            ['$match'	=> ['_id' => $cid]],
+            ['$unwind'=>'$companyinfo'],
+            [
+                '$project' => [
 					'company_domain'=>'$companyinfo.company_domain',
 					'company_currency'=>'$companyinfo.company_currency',
-                )
-            )
-        );
+                ]
+            ]
+        ];
         $result = $this->mongo_db->aggregate(MDB_COMPANY,$arguments);
 		//echo "<pre>"; print_r($result['result']); exit;
-        return (!empty($result['result']))?$result['result']:array();
+        return (!empty($result['result']))?$result['result']:[];
     }
     /*********************************************************************************************/
     //Function used to get all driver logs with transactions
@@ -7304,28 +7304,28 @@ Class Model_Manage extends Model
         }
 	
 		//MongoDB
-		 $match_query = array("\$and" => array(array("pickup_time"=>array('$gte' => $start_time,'$lte'=> $end_time)),array('driver_id' => (int)$id),array('travel_status' => (int)$travel_status),array('msg_status' => $msg_status),array('driver_reply' => $driver_reply) ));
+		 $match_query = ["\$and" => [["pickup_time"=>['$gte' => $start_time,'$lte'=> $end_time]],['driver_id' => (int)$id],['travel_status' => (int)$travel_status],['msg_status' => $msg_status],['driver_reply' => $driver_reply] ]];
 		//print_r($match_query);//exit;
-        $arguments = array(
-            array('$match'	=> $match_query),
-			array('$lookup' 		=> array(
+        $arguments = [
+            ['$match'	=> $match_query],
+			['$lookup' 		=> [
                     'from'			=>	MDB_PASSENGERS,
                     'localField'	=> 'passengers_id',
                     'foreignField'	=> "_id",
                     'as'			=> "passengers"
-                )
-            ),
-            array('$unwind'=>'$passengers'),
-            array('$lookup' 		=> array(
+                ]
+            ],
+            ['$unwind'=>'$passengers'],
+            ['$lookup' 		=> [
                     'from'			=>	MDB_TRANSACTION,
                     'localField'	=> '_id',
                     'foreignField'	=> "passengers_log_id",
                     'as'			=> "trans"
-                )
-            ),
-            array('$unwind'=>'$trans'),
-            array(
-                '$project' => array(
+                ]
+            ],
+            ['$unwind'=>'$trans'],
+            [
+                '$project' => [
 					'passengers_id'=>'$passengers_id',
 					'driver_id'=>'$driver_id',
 					'taxi_id'=>'$taxi_id',
@@ -7360,15 +7360,15 @@ Class Model_Manage extends Model
 					'payment_status'=>'$trans.payment_status',
 					'Taxamt'=>'$trans.company_tax',
 					'name'=>'$passengers.name',
-                )
-            ),
-            array(
+                ]
+            ],
+            [
                 '$skip' => 0
-            ),
-            array(
+            ],
+            [
               '$limit' => (int)$start
-            )
-        );
+            ]
+        ];
 
 		$table=MDB_PASSENGERS_LOGS;
 		if($travel_status=='1')
@@ -7382,7 +7382,7 @@ Class Model_Manage extends Model
 
         $result = $this->mongo_db->aggregate($table,$arguments);
         //echo "<pre>"; print_r($result); exit;
-        return (!empty($result['result']))?$result['result']:array();
+        return (!empty($result['result']))?$result['result']:[];
     }
     /*********************************************************************************************/
     //Function used to Passenegr completed logs with transactions
@@ -7390,31 +7390,31 @@ Class Model_Manage extends Model
     {
 		
         if($current_date != 1){
-			$match_query =  array('passengers_id' => (int)$id,'msg_status' => $msg_status,'driver_reply'=>$driver_reply,'travel_status' => (int)$travel_status,'$and' => array(array('pickup_time' =>  array('$gte'=>new \MongoDB\BSON\UTCDateTime(strtotime($fromdate) * 1000)) ),array('pickup_time' =>  array('$lte'=>new \MongoDB\BSON\UTCDateTime(strtotime($todate) * 1000)) ) ) );
+			$match_query =  ['passengers_id' => (int)$id,'msg_status' => $msg_status,'driver_reply'=>$driver_reply,'travel_status' => (int)$travel_status,'$and' => [['pickup_time' =>  ['$gte'=>new \MongoDB\BSON\UTCDateTime(strtotime($fromdate) * 1000)] ],['pickup_time' =>  ['$lte'=>new \MongoDB\BSON\UTCDateTime(strtotime($todate) * 1000)] ] ] ];
 		}else{
-			$match_query =  array('passengers_id' => (int)$id,'msg_status' => $msg_status,'driver_reply'=>$driver_reply,'travel_status' => (int)$travel_status);
+			$match_query =  ['passengers_id' => (int)$id,'msg_status' => $msg_status,'driver_reply'=>$driver_reply,'travel_status' => (int)$travel_status];
 		}
 		//print_r($match_query); exit;
-		$arguments = array(
-			array('$lookup' 		=> array(
+		$arguments = [
+			['$lookup' 		=> [
 					'from'			=>	MDB_PASSENGERS,
 					'localField'	=> 'passengers_id',
 					'foreignField'	=> '_id',
 					'as'			=> 'passenger'
-				)
-			),
-			array('$unwind' => '$passenger'),
-			array('$lookup' 		=> array(
+				]
+			],
+			['$unwind' => '$passenger'],
+			['$lookup' 		=> [
 					'from'			=>	MDB_TRANSACTION,
 					'localField'	=> '_id',
 					'foreignField'	=> 'passengers_log_id',
 					'as'			=> 'transaction'
-				)
-			),
-			array('$unwind' => '$transaction'),
-			array('$match'	=> $match_query),
-			array(
-				'$project' => array(
+				]
+			],
+			['$unwind' => '$transaction'],
+			['$match'	=> $match_query],
+			[
+				'$project' => [
 					'passengers_log_id' => '$_id',
 					'passenger_id' => '$passenger_id',
 					'driver_id' => '$driver_id',
@@ -7450,16 +7450,16 @@ Class Model_Manage extends Model
 					'payment_status'=>'$transaction.payment_status',
 					'Taxamt'=>'$transaction.company_tax',
 					'name' => '$passenger.name'
-				)
-			),
-			array(
-				'$sort' => array(
+				]
+			],
+			[
+				'$sort' => [
 					'_id' => 1
-				)
-			),
-			array('$skip' => (int)$offset),
-			array('$limit' => (int)$limit)
-		);
+				]
+			],
+			['$skip' => (int)$offset],
+			['$limit' => (int)$limit]
+		];
 
 		$table=MDB_PASSENGERS_LOGS;
 		if($travel_status=='1')
@@ -7473,7 +7473,7 @@ Class Model_Manage extends Model
 
 		$result = $this->mongo_db->aggregate($table,$arguments);
 		//echo "<pre>"; print_r($result); exit;			
-		return (!empty($result['result']))?$result['result']:array();
+		return (!empty($result['result']))?$result['result']:[];
     }
 	
 
@@ -7588,9 +7588,9 @@ Class Model_Manage extends Model
         $result     = Db::query(Database::SELECT, $query)->execute()->as_array();
         return $result;*/
 		
-		$result = $this->mongo_db->find(MDB_COMPANY,array('_id'=>(int)$company_id, 'model_fare.model_id'=>(int)$model_id),array('model_fare.$.id'));
+		$result = $this->mongo_db->find(MDB_COMPANY,['_id'=>(int)$company_id, 'model_fare.model_id'=>(int)$model_id],['model_fare.$.id']);
 		$res = iterator_to_array($result);
-		return (!empty($res) && isset($res[$company_id]['model_fare']))?$res[$company_id]['model_fare']:array();
+		return (!empty($res) && isset($res[$company_id]['model_fare']))?$res[$company_id]['model_fare']:[];
 			
     }
     public function count_faq_list()
@@ -7608,9 +7608,9 @@ Class Model_Manage extends Model
         //check whether id is exist in checkbox or single active request
         //==================================================================
         // $arr_chk = " motor_id in ('" . implode("','",$activeids) . "') ";	
-        $result = DB::update(PASSENGERS_FAQ)->set(array(
+        $result = DB::update(PASSENGERS_FAQ)->set([
             'status' => 'D'
-        ))->where('faq_id', 'IN', $activeids)->execute();
+        ])->where('faq_id', 'IN', $activeids)->execute();
         return count($result);
     }
     public function active_faq_request($activeids)
@@ -7618,16 +7618,16 @@ Class Model_Manage extends Model
         //check whether id is exist in checkbox or single active request
         //==================================================================
         //$arr_chk = " motor_id in ('" . implode("','",$activeids) . "') ";	
-        $result = DB::update(PASSENGERS_FAQ)->set(array(
+        $result = DB::update(PASSENGERS_FAQ)->set([
             'status' => 'A'
-        ))->where('faq_id', 'IN', $activeids)->execute();
+        ])->where('faq_id', 'IN', $activeids)->execute();
         return count($result);
     }
     public function trash_faq_request($activeids)
     {
-        $result = DB::update(PASSENGERS_FAQ)->set(array(
+        $result = DB::update(PASSENGERS_FAQ)->set([
             'status' => 'T'
-        ))->where('faq_id', 'IN', $activeids)->execute();
+        ])->where('faq_id', 'IN', $activeids)->execute();
         return $result;
     }
     public function count_searchfaq_list($keyword = "", $status = "")
@@ -7672,20 +7672,20 @@ Class Model_Manage extends Model
         $state_id       = $this->state_id;
         $city_id        = $this->city_id;
         if ($usertype == 'C') {
-            $result = DB::select("*", array(
+            $result = DB::select("*", [
                 DRIVER . '.status',
                 'driver_status'
-            ))->from(PEOPLE)->join(DRIVER)->on(DRIVER . '.driver_id', '=', PEOPLE . '.id')->where('user_type', '=', 'D')->where(PEOPLE . '.status', '=', 'A')
+            ])->from(PEOPLE)->join(DRIVER)->on(DRIVER . '.driver_id', '=', PEOPLE . '.id')->where('user_type', '=', 'D')->where(PEOPLE . '.status', '=', 'A')
             //->where(PEOPLE.'.login_status','=','S')
                 ->where('company_id', '=', $company_id)
             //->order_by('created_date','desc')->limit($val)->offset($offset)
                 ->execute()->as_array();
             return $result;
         } else if ($usertype == 'M') {
-            $result = DB::select("*", array(
+            $result = DB::select("*", [
                 DRIVER . '.status',
                 'driver_status'
-            ))->from(PEOPLE)->join(DRIVER)->on(DRIVER . '.driver_id', '=', PEOPLE . '.id')->where('user_type', '=', 'D')->where(PEOPLE . '.status', '=', 'A')
+            ])->from(PEOPLE)->join(DRIVER)->on(DRIVER . '.driver_id', '=', PEOPLE . '.id')->where('user_type', '=', 'D')->where(PEOPLE . '.status', '=', 'A')
             //->where(PEOPLE.'.login_status','=','S')
                 ->where('company_id', '=', $company_id)
             //->where(PEOPLE.'.user_createdby','=',$user_createdby)
@@ -7694,10 +7694,10 @@ Class Model_Manage extends Model
                 ->execute()->as_array();
             return $result;
         } else {
-            $result = DB::select("*", array(
+            $result = DB::select("*", [
                 DRIVER . '.status',
                 'driver_status'
-            ))->from(PEOPLE)->join(DRIVER)->on(DRIVER . '.driver_id', '=', PEOPLE . '.id')->where('user_type', '=', 'D')->where(PEOPLE . '.status', '=', 'A')
+            ])->from(PEOPLE)->join(DRIVER)->on(DRIVER . '.driver_id', '=', PEOPLE . '.id')->where('user_type', '=', 'D')->where(PEOPLE . '.status', '=', 'A')
             //->where(PEOPLE.'.login_status','=','S')
                 
             //->order_by('created_date','desc')->limit($val)->offset($offset)
@@ -7718,20 +7718,20 @@ Class Model_Manage extends Model
         $state_id       = $this->state_id;
         $city_id        = $this->city_id;
         if ($usertype == 'C') {
-            $result = DB::select("*", array(
+            $result = DB::select("*", [
                 DRIVER . '.status',
                 'driver_status'
-            ))->from(PEOPLE)->join(DRIVER)->on(DRIVER . '.driver_id', '=', PEOPLE . '.id')->where('user_type', '=', 'D')->where(PEOPLE . '.status', '=', 'A')
+            ])->from(PEOPLE)->join(DRIVER)->on(DRIVER . '.driver_id', '=', PEOPLE . '.id')->where('user_type', '=', 'D')->where(PEOPLE . '.status', '=', 'A')
             //->where(PEOPLE.'.login_status','=','S')
                 ->where('company_id', '=', $company_id)
             //->order_by('created_date','desc')->limit($val)->offset($offset)
                 ->execute()->as_array();
             return $result;
         } else if ($usertype == 'M') {
-            $result = DB::select("*", array(
+            $result = DB::select("*", [
                 DRIVER . '.status',
                 'driver_status'
-            ))->from(PEOPLE)->join(DRIVER)->on(DRIVER . '.driver_id', '=', PEOPLE . '.id')->where('user_type', '=', 'D')->where(PEOPLE . '.status', '=', 'A')
+            ])->from(PEOPLE)->join(DRIVER)->on(DRIVER . '.driver_id', '=', PEOPLE . '.id')->where('user_type', '=', 'D')->where(PEOPLE . '.status', '=', 'A')
             //->where(PEOPLE.'.login_status','=','S')
                 ->where('company_id', '=', $company_id)
             //->where(PEOPLE.'.user_createdby','=',$user_createdby)
@@ -7780,7 +7780,7 @@ Class Model_Manage extends Model
 	public function getpromocode()
     { 
 		$promo_code = Commonfunction::randomkey_generator(6);
-		$query = $this->mongo_db->find(MDB_PASSENGERS_PROMO,array('promocode' => $promo_code), array('_id'));
+		$query = $this->mongo_db->find(MDB_PASSENGERS_PROMO,['promocode' => $promo_code], ['_id']);
 		$promocode_result = iterator_to_array($query);
         if (count($promocode_result) > 0) {
 			$promo_code = Commonfunction::randomkey_generator(6);
@@ -7825,18 +7825,18 @@ Class Model_Manage extends Model
         
         if ($demo_company != "") {  $demo_cond = $demo_company;  }        
         if ($company_id != 0) {  $demo_cond = $company_id;     }
-		$ops = array(
-				array('$match' => array("status" => 'A', "user_type" => "O")),
-				array(
-					'$project' => array(
+		$ops = [
+				['$match' => ["status" => 'A', "user_type" => "O"]],
+				[
+					'$project' => [
 					'id' => '$_id',
 					'name' => '$name',
 					'lastname' => '$lastname',
 					'salutation' => '$salutation',
 					'email' => '$email'
-					)
-				)
-			);
+					]
+				]
+			];
 		//	print_r($ops);
 		$result = $this->mongo_db->aggregate(MDB_PEOPLE,$ops);
 		//echo "<pre>";print_r($result);echo count($result['result']);exit;
@@ -7859,18 +7859,18 @@ Class Model_Manage extends Model
     }
     public function getpassengerscount($company_id = 0)
     {		
-		$match_query = array();
+		$match_query = [];
 		$match_query['user_status'] = "A";
 		$match_query['activation_status'] = "1";
 		if($company_id != 0){
 			$match_query['passenger_cid'] = (int)$company_id;
 		}
 		//echo "<pre>"; print_r($match_query); exit;
-		$arguments = array(array('$match'=> $match_query),
+		$arguments = [['$match'=> $match_query],
 					/* array('$unwind' => '$passengerdetails'),*/
-					array('$project' => array('pid' => '$_id')),
-					array('$group' =>array('_id' => NULL,'count' => array('$sum' => 1))),
-		);
+					['$project' => ['pid' => '$_id']],
+					['$group' =>['_id' => NULL,'count' => ['$sum' => 1]]],
+		];
 		$result = $this->mongo_db->aggregate(MDB_PASSENGERS,$arguments);
 		//echo "<pre>"; print_r($result['result'][0]['count']); exit;
 		return (!empty($result['result']) && isset($result['result'][0]['count']))?$result['result'][0]['count']:0;
@@ -7890,16 +7890,16 @@ Class Model_Manage extends Model
             return 0;
         }*/
 		
-		$match_query = array();
+		$match_query = [];
 		$match_query['promocode'] = $promo_code;
 		if($company_id != 0){
 			$match_query['company_id'] = (int)$company_id;
 		}
-		$arguments = array(
-			array('$match'=> $match_query),
-			array('$project' => array('promocode' 	=> '$promocode', 'promo_discount' => '$promo_discount','promo_used' => '$promo_used')),
-			array('$group' =>array('_id' => NULL,'count' => array('$sum' => 1))),
-		);
+		$arguments = [
+			['$match'=> $match_query],
+			['$project' => ['promocode' 	=> '$promocode', 'promo_discount' => '$promo_discount','promo_used' => '$promo_used']],
+			['$group' =>['_id' => NULL,'count' => ['$sum' => 1]]],
+		];
 		//echo "<pre>"; print_r($arguments); exit;	
 		$result = $this->mongo_db->aggregate(MDB_PASSENGERS_PROMO,$arguments);
 		//echo "<pre>"; print_r($result['result']); exit;
@@ -7910,29 +7910,29 @@ Class Model_Manage extends Model
 	public function promocode_list($offset, $val, $search, $company_id = 0, $corporate_id = 0, $find_count = FALSE)
     {
 		
-		$match_query = array();
+		$match_query = [];
 		$match_query['company.companydetails.company_status'] = "A";
 		if(!empty($search))
 		{
 			$keyword       = str_replace("%", "!%", $search["keyword"]);
 			$keyword       = str_replace("_", "!_", $search["keyword"]);
 			if($search['keyword'] != "") {
-				$match_query['promocode'] = new MongoRegex("/$keyword/i");
+				$match_query['promocode'] = new \MongoDB\BSON\Regex($keyword, 'i');
 			}
 			if (!empty($search['startdate']) && !empty($search['enddate'])) {
-				$match_query['start_date'] = array('$gte' => new \MongoDB\BSON\UTCDateTime(strtotime($search["startdate"]) * 1000), '$lte' => new \MongoDB\BSON\UTCDateTime(strtotime($search["enddate"]) * 1000));
+				$match_query['start_date'] = ['$gte' => new \MongoDB\BSON\UTCDateTime(strtotime($search["startdate"]) * 1000), '$lte' => new \MongoDB\BSON\UTCDateTime(strtotime($search["enddate"]) * 1000)];
             }elseif(!empty($search['startdate'])) {
-				$match_query['start_date'] = array('$gte' => new \MongoDB\BSON\UTCDateTime(strtotime($search["startdate"]) * 1000));
+				$match_query['start_date'] = ['$gte' => new \MongoDB\BSON\UTCDateTime(strtotime($search["startdate"]) * 1000)];
             }elseif(!empty($search['enddate'])) {
-				$match_query['start_date'] = array('$lte' => new \MongoDB\BSON\UTCDateTime(strtotime($search["enddate"]) * 1000));
+				$match_query['start_date'] = ['$lte' => new \MongoDB\BSON\UTCDateTime(strtotime($search["enddate"]) * 1000)];
             }
 			
 			if (!empty($search['e_startdate']) && !empty($search['e_enddate'])) {
-				$match_query['expire_date'] = array('$gte' => new \MongoDB\BSON\UTCDateTime(strtotime($search["e_startdate"]) * 1000), '$lte' => new \MongoDB\BSON\UTCDateTime(strtotime($search["e_enddate"]) * 1000));
+				$match_query['expire_date'] = ['$gte' => new \MongoDB\BSON\UTCDateTime(strtotime($search["e_startdate"]) * 1000), '$lte' => new \MongoDB\BSON\UTCDateTime(strtotime($search["e_enddate"]) * 1000)];
             }elseif(!empty($search['e_startdate'])) {
-				$match_query['expire_date'] = array('$gte' => new \MongoDB\BSON\UTCDateTime(strtotime($search["e_startdate"]) * 1000));
+				$match_query['expire_date'] = ['$gte' => new \MongoDB\BSON\UTCDateTime(strtotime($search["e_startdate"]) * 1000)];
             }elseif(!empty($search['e_enddate'])) {
-				$match_query['expire_date'] = array('$lte' => new \MongoDB\BSON\UTCDateTime(strtotime($search["e_enddate"]) * 1000));
+				$match_query['expire_date'] = ['$lte' => new \MongoDB\BSON\UTCDateTime(strtotime($search["e_enddate"]) * 1000)];
             }
 			
             if (!empty($search['company'])) {
@@ -7952,62 +7952,62 @@ Class Model_Manage extends Model
 		}
 		//echo "<pre>"; print_r($match_query); exit;
 		if($find_count == TRUE){
-            $arguments = array(
-						array(
-							'$lookup' => array(
+            $arguments = [
+						[
+							'$lookup' => [
 										'from'=>MDB_COMPANY,
 										'localField'=> 'company_id',
 										'foreignField' => "_id",
 										'as'=> "company"
-									)
-						),
-						array(
-							'$lookup' => array(
+									]
+						],
+						[
+							'$lookup' => [
 										'from'=>MDB_COUPON_PACKAGE,
 										'localField'=> 'package',
 										'foreignField' => "_id",
 										'as'=> "package"
-									)
-						),
-						array('$unwind' => '$promocode'),
-						array('$unwind' => '$company'),
-						array('$unwind' => '$package'),
-						array('$match'=> $match_query),
-						array('$project' => array('promocode' => 1)),
-						array('$group' =>array('_id' => '$promocode','count' => array('$sum' => 1))),
-						array('$group' =>array('_id' => NULL,'count' => array('$sum' => 1 ))),
-                    );
+									]
+						],
+						['$unwind' => '$promocode'],
+						['$unwind' => '$company'],
+						['$unwind' => '$package'],
+						['$match'=> $match_query],
+						['$project' => ['promocode' => 1]],
+						['$group' =>['_id' => '$promocode','count' => ['$sum' => 1]]],
+						['$group' =>['_id' => NULL,'count' => ['$sum' => 1 ]]],
+                    ];
             $result = $this->mongo_db->aggregate(MDB_PASSENGERS_PROMO,$arguments);
 			//echo "<pre>"; print_r($result['result'][0]['count']); exit;
             return (!empty($result['result']) && isset($result['result'][0]['count']))?$result['result'][0]['count']:0;
 		}else{
-			$arguments = array(
-					array(
-						'$lookup' => array(
+			$arguments = [
+					[
+						'$lookup' => [
 							'from'=>MDB_COMPANY,
 							'localField'=> 'company_id',
 							'foreignField' => "_id",
 							'as'=> "company"
-						)
-					),array('$unwind' => '$company'),
-					array(
-						'$lookup' => array(
+						]
+					],['$unwind' => '$company'],
+					[
+						'$lookup' => [
 									'from'=>MDB_COUPON_PACKAGE,
 									'localField'=> 'package',
 									'foreignField' => "_id",
 									'as'=> "package"
-								)
-					),
+								]
+					],
 					
-					array('$unwind' => '$package'),
-					array('$match'=> $match_query),
-					array('$unwind' => '$_id'),
-					array('$project' => array('promocode' 	=> 1,'promo_discount'=> 1,'passenger_id'	=> 1,'start_date'	=> 1,'expire_date'	=> 1,'promo_limit'	=> 1,'fixed_fare_amt'=>1,'company_name'	=> '$company.companydetails.company_name','package_name'	=> '$package.coupon_package_name','fixed_fare_apply'	=> '$package.fixed_fare_apply')),
-					array('$group' =>array('_id' => array('passenger_promoid'=> '$_id','promocode'=> '$promocode','promo_discount'=>'$promo_discount','package' => '$package','passenger_id' => '$passenger_id','start_date'=>'$start_date','expire_date'=>'$expire_date','promo_limit'=>'$promo_limit','company_name'=>'$company_name','package_name' => '$package_name','fixed_fare_amt'=>'$fixed_fare_amt','fixed_fare_apply'=>'$fixed_fare_apply'),'passenger_count' => array('$sum' => 1))),
-					array( '$group' =>array('_id' => '$_id.promocode','promodetails' =>array( '$first' =>array('passenger_promoid'=> '$_id.passenger_promoid','package' => '$_id.package','promocode'=> '$_id.promocode','promo_discount'=>'$_id.promo_discount','start_date'=>'$_id.start_date','expire_date'=>'$_id.expire_date','promo_limit'=>'$_id.promo_limit','company_name'=>'$_id.company_name','package_name' => '$_id.package_name','fixed_fare_amt' => '$_id.fixed_fare_amt','fixed_fare_apply' => '$_id.fixed_fare_apply')),'count' => array('$sum' => '$passenger_count'))),
-					array('$skip' => (int)$offset),
-					array('$limit' => (int)$val),
-				);
+					['$unwind' => '$package'],
+					['$match'=> $match_query],
+					['$unwind' => '$_id'],
+					['$project' => ['promocode' 	=> 1,'promo_discount'=> 1,'passenger_id'	=> 1,'start_date'	=> 1,'expire_date'	=> 1,'promo_limit'	=> 1,'fixed_fare_amt'=>1,'company_name'	=> '$company.companydetails.company_name','package_name'	=> '$package.coupon_package_name','fixed_fare_apply'	=> '$package.fixed_fare_apply']],
+					['$group' =>['_id' => ['passenger_promoid'=> '$_id','promocode'=> '$promocode','promo_discount'=>'$promo_discount','package' => '$package','passenger_id' => '$passenger_id','start_date'=>'$start_date','expire_date'=>'$expire_date','promo_limit'=>'$promo_limit','company_name'=>'$company_name','package_name' => '$package_name','fixed_fare_amt'=>'$fixed_fare_amt','fixed_fare_apply'=>'$fixed_fare_apply'],'passenger_count' => ['$sum' => 1]]],
+					[ '$group' =>['_id' => '$_id.promocode','promodetails' =>[ '$first' =>['passenger_promoid'=> '$_id.passenger_promoid','package' => '$_id.package','promocode'=> '$_id.promocode','promo_discount'=>'$_id.promo_discount','start_date'=>'$_id.start_date','expire_date'=>'$_id.expire_date','promo_limit'=>'$_id.promo_limit','company_name'=>'$_id.company_name','package_name' => '$_id.package_name','fixed_fare_amt' => '$_id.fixed_fare_amt','fixed_fare_apply' => '$_id.fixed_fare_apply']],'count' => ['$sum' => '$passenger_count']]],
+					['$skip' => (int)$offset],
+					['$limit' => (int)$val],
+				];
 			//	echo REC_PER_PAGE;
 			//	echo "<pre>"; print_r($arguments); exit;
             $result = $this->mongo_db->aggregate(MDB_PASSENGERS_PROMO,$arguments);
@@ -8041,19 +8041,19 @@ Class Model_Manage extends Model
         }
         return $all_plist;*/
 	
-		$match_query = array();
+		$match_query = [];
 		$match_query['user_status'] = "A";
 		$match_query['activation_status'] = 1;
 		if($companyId != 0){
 			$match_query['passenger_cid'] = (int)$companyId;
 		}
-		$arguments = array(
-			array('$match'=> $match_query),
-			array('$project' => array('salutation' 	=> '$salutation','name'=> '$name','email'	=> '$email')),
-			array('$sort' => array('created_date' => -1)),
-		);
+		$arguments = [
+			['$match'=> $match_query],
+			['$project' => ['salutation' 	=> '$salutation','name'=> '$name','email'	=> '$email']],
+			['$sort' => ['created_date' => -1]],
+		];
 		$result = $this->mongo_db->aggregate(MDB_PASSENGERS,$arguments);
-		$all_plist = array();
+		$all_plist = [];
         foreach ($result['result'] as $value) {
             $id          = $value['_id'];
             $name        = (isset($value['name'][0]) && $value['name'][0]!="")?$value['name'][0]:"";
@@ -8074,7 +8074,7 @@ Class Model_Manage extends Model
         $result = Db::query(Database::SELECT, $query)->execute()->as_array();
         return $result[0];*/
 		
-		$query = $this->mongo_db->find(MDB_COMPANY,array('_id' => (int)$cid),array('companyinfo.company_domain'));
+		$query = $this->mongo_db->find(MDB_COMPANY,['_id' => (int)$cid],['companyinfo.company_domain']);
 		$result = iterator_to_array($query);
 		return (isset($result[$cid]['companyinfo']))?$result[$cid]['companyinfo']:"-";
     }
@@ -8095,7 +8095,7 @@ Class Model_Manage extends Model
                 $date         = date('Y-m-d %');
             }
         } else {
-            $query = $this->mongo_db->find(MDB_COMPANY,array('_id'=>(int)$company_id),array('companydetails.time_zone'));
+            $query = $this->mongo_db->find(MDB_COMPANY,['_id'=>(int)$company_id],['companydetails.time_zone']);
             $result = iterator_to_array($query);
             $result = current($result);
             if (!empty($result)) {
@@ -8110,11 +8110,11 @@ Class Model_Manage extends Model
                 $end_time     = date('Y-m-d') . ' 23:59:59';
             }
         }
-		$match = array();
+		$match = [];
 		$match['driver_id'] = (int)$driver_id;
 		$match['driver_reply'] = "A";
-		$match['pickup_time'] = array('$gte'=> new \MongoDB\BSON\UTCDateTime(strtotime($start_time) * 1000));
-		$match['travel_status'] = array('$in' => array(9,5,3,2));
+		$match['pickup_time'] = ['$gte'=> new \MongoDB\BSON\UTCDateTime(strtotime($start_time) * 1000)];
+		$match['travel_status'] = ['$in' => [9,5,3,2]];
 		if ($company_id != "" && $company_id != 0) {
 			$match['company_id'] = (int)$company_id;
 		}
@@ -8126,9 +8126,9 @@ Class Model_Manage extends Model
                         'travel_status'=>1
                     ]
                 ];
-                $res = $this->mongo_db->find(MDB_PASSENGERS_LOGS,$match,array('_id','travel_status'));      
+                $res = $this->mongo_db->find(MDB_PASSENGERS_LOGS,$match,['_id','travel_status']);      
                  
-		return (!empty($res))?iterator_to_array($res):array();		
+		return (!empty($res))?iterator_to_array($res):[];		
     }
     //** to check whether the taxi is assigned **//
     public function istaxiassigned($taxiIds)
@@ -8139,23 +8139,23 @@ Class Model_Manage extends Model
 		//MongoDB
 		//Here changing array values with string to integers values
 		$active_ids = Commonfunction::mongo_format_array($taxiIds);
-		$match_query = array('mapping.mapping_taxiid'=>array('$in'=>$active_ids),'mapping.mapping_status'=>'A');
-		$ops = array(
-			array(
-					'$lookup' => array(
+		$match_query = ['mapping.mapping_taxiid'=>['$in'=>$active_ids],'mapping.mapping_status'=>'A'];
+		$ops = [
+			[
+					'$lookup' => [
 					'from'=>MDB_TAXI_DRIVER_MAPPING,
 					'localField'=> "_id",
 					'foreignField' => "mapping_taxiid",
 					'as'=> "mapping"
-					)
-				),
-			array('$unwind'=>'$mapping'),
-			array('$match' => $match_query),
-			array(
-				'$project' => array('_id' => '$_id',
-				)
-			),
-		);
+					]
+				],
+			['$unwind'=>'$mapping'],
+			['$match' => $match_query],
+			[
+				'$project' => ['_id' => '$_id',
+				]
+			],
+		];
 		$result = $this->mongo_db->aggregate(MDB_TAXI,$ops);
 		//echo '<pre>';print_r($result);exit;
 		return (!empty($result['result']))?count($result['result']):0;
@@ -8166,20 +8166,20 @@ Class Model_Manage extends Model
 		//MongoDB
 		//Here changing array values with string to integers values
 		$driverIds = Commonfunction::mongo_format_array($driverIds);
-		$match_query = array('mapping_driverid'=>array('$in'=>$driverIds),'mapping_status'=>'A');
-		$ops = array(
-			array(
-					'$lookup' => array(
+		$match_query = ['mapping_driverid'=>['$in'=>$driverIds],'mapping_status'=>'A'];
+		$ops = [
+			[
+					'$lookup' => [
 					'from'=>MDB_PEOPLE,
 					'localField'=> "mapping_driverid",
 					'foreignField' => "_id",
 					'as'=> "people"
-					)
-				),
-			array('$unwind'=>'$people'),
-			array('$match' => $match_query),
-			array('$project' => array('_id' => '$_id')),
-		);
+					]
+				],
+			['$unwind'=>'$people'],
+			['$match' => $match_query],
+			['$project' => ['_id' => '$_id']],
+		];
 		$result = $this->mongo_db->aggregate(MDB_TAXI_DRIVER_MAPPING,$ops);
 		//echo '<pre>'; print_r($result);exit;
 		return (!empty($result['result']))?count($result['result']):0;
@@ -8191,11 +8191,11 @@ Class Model_Manage extends Model
         return $result;
 	*/
 		//MongoDB
-		$match_query = array('_id'=>(int)$assignId);
-		$ops = array(
-			array('$match' => $match_query),
-			array('$project' => array('mapping_driverid' => '$mapping_driverid','mapping_taxiid' => '$mapping_taxiid','mapping_startdate' => '$mapping_startdate', 'mapping_enddate' => '$mapping_enddate')),
-		);
+		$match_query = ['_id'=>(int)$assignId];
+		$ops = [
+			['$match' => $match_query],
+			['$project' => ['mapping_driverid' => '$mapping_driverid','mapping_taxiid' => '$mapping_taxiid','mapping_startdate' => '$mapping_startdate', 'mapping_enddate' => '$mapping_enddate']],
+		];
 		$result = $this->mongo_db->aggregate(MDB_TAXI_DRIVER_MAPPING,$ops);
 		//echo '<pre>'; print_r($result);exit;
 		return (!empty($result['result']))?$result['result']:0;
@@ -8203,7 +8203,7 @@ Class Model_Manage extends Model
 	
 	public function check_already_assigned($driver_id, $taxi_id, $startdate, $enddate)
     {
-		$match_query = array();
+		$match_query = [];
 		$match_query['mapping.mapping_status'] = 'A';
 		if ($driver_id!="") {
 			$match_query['mapping.mapping_driverid'] = (int)$driver_id;
@@ -8212,67 +8212,67 @@ Class Model_Manage extends Model
 			$match_query['mapping.mapping_taxiid'] = (int)$taxi_id;
 		}
 		if ($startdate!="" && $enddate!="") {
-			$match_query['mapping.mapping_startdate'] = array('$gte' => $startdate);
-			$match_query['mapping.mapping_enddate'] = array('$lte' => $enddate);
+			$match_query['mapping.mapping_startdate'] = ['$gte' => $startdate];
+			$match_query['mapping.mapping_enddate'] = ['$lte' => $enddate];
 		}else{
 			if ($startdate!="") {
-				$match_query['mapping.mapping_startdate'] = array('$gte' => $startdate);
-				$match_query['mapping.mapping_enddate'] = array('$lte' => $startdate);
+				$match_query['mapping.mapping_startdate'] = ['$gte' => $startdate];
+				$match_query['mapping.mapping_enddate'] = ['$lte' => $startdate];
 			}
 			if ($enddate!="") {
-				$match_query['mapping.mapping_startdate'] = array('$gte' => $enddate);
-				$match_query['mapping.mapping_enddate'] = array('$lte' => $enddate);
+				$match_query['mapping.mapping_startdate'] = ['$gte' => $enddate];
+				$match_query['mapping.mapping_enddate'] = ['$lte' => $enddate];
 			}
 		}	
 		//echo "<pre>"; print_r($match_query); exit;
-		$arguments = array(
-			array(
+		$arguments = [
+			[
 				'$unwind' => '$stateinfo'
-			),
-			array(
+			],
+			[
 				'$unwind' => '$stateinfo.cityinfo'
-			),
-			array(
-				'$lookup' => array(
+			],
+			[
+				'$lookup' => [
 					'from' => MDB_TAXI_DRIVER_MAPPING,
 					'localField' => 'stateinfo.cityinfo.city_id',
 					'foreignField' => 'mapping_countryid',
 					'foreignField' => 'mapping_cityid',
 					'as' => 'mapping'
-				)
-			),
-			array(
+				]
+			],
+			[
 				'$unwind' => '$mapping'
-			),
+			],
 		
-			array(
-				'$lookup' => array(
+			[
+				'$lookup' => [
 					'from' => MDB_COMPANY,
 					'localField' => 'mapping.mapping_companyid',
 					'foreignField' => '_id',
 					'as' => 'company'
-				)
-			),
-			array(
+				]
+			],
+			[
 				'$unwind' => '$company'
-			),
-			array(
+			],
+			[
 				'$match' => $match_query
-			),
-			array(
-				'$project' => array(
+			],
+			[
+				'$project' => [
 					'result' => '$mapping._id'
-				)
-			),
-			array(
-				'$group' => array(
+				]
+			],
+			[
+				'$group' => [
 					'_id' => NULL,
-					'count' => array(
+					'count' => [
 						'$sum' => 1
-					)
-				)
-			)
-		);
+					]
+				]
+			]
+		];
 		$result    = $this->mongo_db->aggregate(MDB_CSC, $arguments);
 		return (!empty($result['result']) && isset($result['result'][0]['count'])) ? $result['result'][0]['count'] : 0;
     }
@@ -8286,73 +8286,73 @@ Class Model_Manage extends Model
 	
 	public function check_driver_have_taxi($mapId, $driver_id, $startdate, $enddate)
     {
-		$match_query = array();
-		$match_query['mapping._id'] = array('$ne' => $mapId);
+		$match_query = [];
+		$match_query['mapping._id'] = ['$ne' => $mapId];
 		if ($driver_id!="") {
 			$match_query['mapping.mapping_driverid'] = (int)$driver_id;
 		}
 		if ($startdate!="" && $enddate!="") {
-			$match_query['mapping.mapping_startdate'] = array('$gte' => $startdate);
-			$match_query['mapping.mapping_enddate'] = array('$lte' => $enddate);
+			$match_query['mapping.mapping_startdate'] = ['$gte' => $startdate];
+			$match_query['mapping.mapping_enddate'] = ['$lte' => $enddate];
 		}else{
 			if ($startdate!="") {
-				$match_query['mapping.mapping_startdate'] = array('$gte' => $startdate);
-				$match_query['mapping.mapping_enddate'] = array('$lte' => $startdate);
+				$match_query['mapping.mapping_startdate'] = ['$gte' => $startdate];
+				$match_query['mapping.mapping_enddate'] = ['$lte' => $startdate];
 			}
 			if ($enddate!="") {
-				$match_query['mapping.mapping_startdate'] = array('$gte' => $enddate);
-				$match_query['mapping.mapping_enddate'] = array('$lte' => $enddate);
+				$match_query['mapping.mapping_startdate'] = ['$gte' => $enddate];
+				$match_query['mapping.mapping_enddate'] = ['$lte' => $enddate];
 			}
 		}	
 		//echo "<pre>"; print_r($match_query); exit;
-		$arguments = array(
-			array(
+		$arguments = [
+			[
 				'$unwind' => '$stateinfo'
-			),
-			array(
+			],
+			[
 				'$unwind' => '$stateinfo.cityinfo'
-			),
-			array(
-				'$lookup' => array(
+			],
+			[
+				'$lookup' => [
 					'from' => MDB_TAXI_DRIVER_MAPPING,
 					'localField' => 'stateinfo.cityinfo.city_id',
 					'foreignField' => 'mapping_countryid',
 					'foreignField' => 'mapping_cityid',
 					'as' => 'mapping'
-				)
-			),
-			array(
+				]
+			],
+			[
 				'$unwind' => '$mapping'
-			),
+			],
 		
-			array(
-				'$lookup' => array(
+			[
+				'$lookup' => [
 					'from' => MDB_COMPANY,
 					'localField' => 'mapping.mapping_companyid',
 					'foreignField' => '_id',
 					'as' => 'company'
-				)
-			),
-			array(
+				]
+			],
+			[
 				'$unwind' => '$company'
-			),
-			array(
+			],
+			[
 				'$match' => $match_query
-			),
-			array(
-				'$project' => array(
+			],
+			[
+				'$project' => [
 					'result' => '$mapping._id'
-				)
-			),
-			array(
-				'$group' => array(
+				]
+			],
+			[
+				'$group' => [
 					'_id' => NULL,
-					'count' => array(
+					'count' => [
 						'$sum' => 1
-					)
-				)
-			)
-		);
+					]
+				]
+			]
+		];
 		$result    = $this->mongo_db->aggregate(MDB_CSC, $arguments);
 		return (!empty($result['result']) && isset($result['result'][0]['count'])) ? $result['result'][0]['count'] : 0;
     }
@@ -8361,62 +8361,62 @@ Class Model_Manage extends Model
 	// Accounts Type Module
 	public function count_account_type_list()
     {
-        $result = $this->mongo_db->count(MDB_CHILD_ACCOUNT_TYPE,array());
+        $result = $this->mongo_db->count(MDB_CHILD_ACCOUNT_TYPE,[]);
         return $result;
     }
 	
 	public function all_account_list($offset, $val)
     {
         
-		$ops = array(
-					array(
-						'$project' => array(
+		$ops = [
+					[
+						'$project' => [
 						'_id' => '$_id',
 						'account_type' => '$account_type',
 						'status' => '$status',
-						)
-					),
-					array(
-						'$sort' => array("_id"=>1)
-					),
-					array(
-						'$match' => array("status"=>'A')
-					),
-					array(
+						]
+					],
+					[
+						'$sort' => ["_id"=>1]
+					],
+					[
+						'$match' => ["status"=>'A']
+					],
+					[
 						'$skip' => (int)$offset
-					),
-					array(
+					],
+					[
 						'$limit' => (int)$val
-					)
-			);
+					]
+			];
 		$result = $this->mongo_db->aggregate(MDB_CHILD_ACCOUNT_TYPE,$ops);
 		//echo '<pre>';print_r($result);exit;
-		return (!empty($result['result']))?$result['result']:array();
+		return (!empty($result['result']))?$result['result']:[];
     }
 	
 	//For deleting account_type
     public function delete_account_type($id)
     {
-        $result = $this->mongo_db->remove(MDB_CHILD_ACCOUNT_TYPE,array('_id'=>(int)$id));
+        $result = $this->mongo_db->remove(MDB_CHILD_ACCOUNT_TYPE,['_id'=>(int)$id]);
 		return (empty($result['err']))?1:$result['err'];
     }
 	// Accounts Type Module
 	//Passenger Module : View Passenger info: Get Child Details 
 	public function get_passenger_childlist($id){
-		 $arguments = array(
+		 $arguments = [
              
-                array(
-				'$lookup' => array(
+                [
+				'$lookup' => [
 					'from' => MDB_CHILD_ACCOUNT_TYPE,
 					'localField' => 'account_type',
 					'foreignField' => '_id',
 					'as' => 'account'
-				)
-				),
-				array('$unwind' => '$account'),
+				]
+				],
+				['$unwind' => '$account'],
 				
-                array(
-                    '$project' => array(
+                [
+                    '$project' => [
 						'_id' => '$_id',
 						'name' => '$name',
 						'email' => '$email',
@@ -8427,20 +8427,20 @@ Class Model_Manage extends Model
 						'parent_id' => '$parent_id',
 						'account_type' => '$account_type',
 						'account_type_name' => '$account.account_type',
-                    )
-                ),
-                array(
-				'$match' => array('parent_id' => (int)$id))
-		);
+                    ]
+                ],
+                [
+				'$match' => ['parent_id' => (int)$id]]
+		];
 		$result    = $this->mongo_db->aggregate(MDB_PASSENGERS, $arguments);
 		//echo '<pre>'; print_r($result['result']);echo '</pre>';exit;
-		return (!empty($result['result']))?$result['result']:array();
+		return (!empty($result['result']))?$result['result']:[];
 	}
 	
 	public function get_favourite_list($passenger_id="")
     {	
-		$match = array('passenger_id' => (int)$passenger_id,'status' => 'A');
-		$project = array('p_favourite_id' => '$_id',
+		$match = ['passenger_id' => (int)$passenger_id,'status' => 'A'];
+		$project = ['p_favourite_id' => '$_id',
 						 'passenger_id' => '$passenger_id',
 						 'p_favourite_place' => '$p_favourite_place',
 						 'p_fav_latitude' => '$p_fav_latitude',
@@ -8451,12 +8451,12 @@ Class Model_Manage extends Model
 						 'fav_comments' => '$fav_comments',
 						 'fav_icon' => '$fav_icon',
 						 'notes' => '$notes',
-						 'fav_loction_type' => '$fav_loction_type');		
-		$args = array(array('$match' => $match),
-					  array('$project' => $project)
-					  );
+						 'fav_loction_type' => '$fav_loction_type'];		
+		$args = [['$match' => $match],
+					  ['$project' => $project]
+					  ];
 		$res = $this->mongo_db->aggregate(MDB_PASSENGERS_FAVOURITES,$args);
-		return (isset($res['result'])) ? $res['result'] : array();
+		return (isset($res['result'])) ? $res['result'] : [];
     }
 	/*** MANAGE CONTACTS ***/
 	  public function count_contact_list($cid = '')
@@ -8470,7 +8470,7 @@ Class Model_Manage extends Model
             //$rs = DB::select()->from(CONTACTS)->where('contact_cid', '=', $cid)->execute();
 			
 			//MongoDB
-			$rs = $this->mongo_db->count(MDB_CONTACTS,array('contact_cid'=>$cid));
+			$rs = $this->mongo_db->count(MDB_CONTACTS,['contact_cid'=>$cid]);
         }
         //return count($rs);
 		return $rs;
@@ -8481,12 +8481,12 @@ Class Model_Manage extends Model
             //$rs = DB::select()->from(CONTACTS)->order_by('sent_date', 'desc')->limit($val)->offset($offset)->execute()->as_array();
 			
 			//MongoDB
-			$res = $this->mongo_db->find(MDB_CONTACTS)->sort(array('sent_date'=>-1))->skip($offset)->limit($val);
+			$res = $this->mongo_db->find(MDB_CONTACTS)->sort(['sent_date'=>-1])->skip($offset)->limit($val);
 			
         } else {
             //$rs = DB::select()->from(CONTACTS)->where('contact_cid', '=', $cid)->order_by('sent_date', 'desc')->limit($val)->offset($offset)->execute()->as_array();
 			
-			$res = $this->mongo_db->find(MDB_CONTACTS,array('contact_cid'=>$cid))->sort(array('sent_date'=>-1))->skip($offset)->limit($val);
+			$res = $this->mongo_db->find(MDB_CONTACTS,['contact_cid'=>$cid])->sort(['sent_date'=>-1])->skip($offset)->limit($val);
         }
 		
 		$rs = iterator_to_array($res);
@@ -8509,10 +8509,10 @@ Class Model_Manage extends Model
 		
 		//MongoDB
 		if($keyword){
-			$srch_query = array( "\$or" => array(array( "subject" => new MongoRegex("/$keyword/i")) , array("name" => new MongoRegex("/$keyword/i") ) ) );
+			$srch_query = [ "\$or" => [[ "subject" => new \MongoDB\BSON\Regex($keyword, 'i')] , ["name" => new \MongoDB\BSON\Regex($keyword, 'i') ] ] ];
 		}
 		if(!empty($cid)){
-			$srch_query = array(array("\$and"=>array("contact_cid"=>$cid)),"\$or"=>array(array('name'=>new MongoRegex("/$keyword/i")),array('subject'=>new MongoRegex("/$keyword/i"))));
+			$srch_query = [["\$and"=>["contact_cid"=>$cid]],"\$or"=>[['name'=>new \MongoDB\BSON\Regex($keyword, 'i')],['subject'=>new \MongoDB\BSON\Regex($keyword, 'i')]]];
 		}
 		//print_r($srch_query);exit;
 		$res = $this->mongo_db->count(MDB_CONTACTS,$srch_query);
@@ -8535,24 +8535,24 @@ Class Model_Manage extends Model
 		
 		//MongoDB
 		if($keyword){
-			$srch_query = array( "\$or" => array(array( "subject" => new MongoRegex("/$keyword/i")) , array("name" => new MongoRegex("/$keyword/i") ) ) );
+			$srch_query = [ "\$or" => [[ "subject" => new \MongoDB\BSON\Regex($keyword, 'i')] , ["name" => new \MongoDB\BSON\Regex($keyword, 'i') ] ] ];
 		}
 		if(!empty($cid)){
-			$srch_query = array(array("\$and"=>array("contact_cid"=>$cid)),"\$or"=>array(array('name'=>new MongoRegex("/$keyword/i")),array('subject'=>new MongoRegex("/$keyword/i"))));
+			$srch_query = [["\$and"=>["contact_cid"=>$cid]],"\$or"=>[['name'=>new \MongoDB\BSON\Regex($keyword, 'i')],['subject'=>new \MongoDB\BSON\Regex($keyword, 'i')]]];
 		}
 		//print_r($srch_query);exit;
-		$res = $this->mongo_db->find(MDB_CONTACTS,$srch_query)->sort(array('sent_date'=>-1))->skip($offset)->limit($val);
+		$res = $this->mongo_db->find(MDB_CONTACTS,$srch_query)->sort(['sent_date'=>-1])->skip($offset)->limit($val);
 		return $res;
     }
 	/*** MANAGE CONTACTS ***/
 	public function update_priority($priority,$model_id){
 			
-			$result1 = $this->mongo_db->find_one(MDB_MOTOR_MODEL,array("_id"=>(int)$model_id),array('priority'));
-			$result2 = $this->mongo_db->find_one(MDB_MOTOR_MODEL,array("priority"=>(int)$priority),array('_id'));
+			$result1 = $this->mongo_db->find_one(MDB_MOTOR_MODEL,["_id"=>(int)$model_id],['priority']);
+			$result2 = $this->mongo_db->find_one(MDB_MOTOR_MODEL,["priority"=>(int)$priority],['_id']);
 			//print_r($result);exit;
 			
-			$res1 = $this->mongo_db->update(MDB_MOTOR_MODEL,array('_id'=>(int)$model_id),array('$set'=>array('priority' => (int)$priority)));
-			$res2 = $this->mongo_db->update(MDB_MOTOR_MODEL,array('_id'=>(int)$result2['_id']),array('$set'=>array('priority' => (int)$result1['priority'])));
+			$res1 = $this->mongo_db->update(MDB_MOTOR_MODEL,['_id'=>(int)$model_id],['$set'=>['priority' => (int)$priority]]);
+			$res2 = $this->mongo_db->update(MDB_MOTOR_MODEL,['_id'=>(int)$result2['_id']],['$set'=>['priority' => (int)$result1['priority']]]);
 			return (int)$result2['_id'].'||'.(int)$result1['priority'];	
 	}
 	
@@ -8566,9 +8566,9 @@ Class Model_Manage extends Model
 			return $res;
 		}else{
 			//MongoDB
-			$res = $this->mongo_db->find(MDB_COUPON_PACKAGE,array('coupon_package_status'=>array('$ne'=>'T')),array('_id','coupon_package_name','coupon_package_description','corporate_commission','passenger_commission','coupon_package_status','fixed_fare_apply'))->sort(array('coupon_package_name'=>1))->skip($offset)->limit($val);
+			$res = $this->mongo_db->find(MDB_COUPON_PACKAGE,['coupon_package_status'=>['$ne'=>'T']],['_id','coupon_package_name','coupon_package_description','corporate_commission','passenger_commission','coupon_package_status','fixed_fare_apply'])->sort(['coupon_package_name'=>1])->skip($offset)->limit($val);
 			//echo '<pre>'; print_r(iterator_to_array($res));exit;
-			return (!empty($res))?iterator_to_array($res):array();	
+			return (!empty($res))?iterator_to_array($res):[];	
 		}
 		
 	
@@ -8577,22 +8577,22 @@ Class Model_Manage extends Model
     {
        
 	   //MongoDB
-	   $srch_query = array();
+	   $srch_query = [];
 		if((!empty($keyword)) && (!empty($status))) {
-			$srch_query = array( "\$and" => array(array( "coupon_package_name" => new MongoRegex("/$keyword/i")) , array("coupon_package_status" => $status ) ) );
+			$srch_query = [ "\$and" => [[ "coupon_package_name" => new \MongoDB\BSON\Regex($keyword, 'i')] , ["coupon_package_status" => $status ] ] ];
 		} else if (!empty($keyword)) {
-			$srch_query = array( "coupon_package_name" => new MongoRegex("/$keyword/i"));
+			$srch_query = [ "coupon_package_name" => new \MongoDB\BSON\Regex($keyword, 'i')];
 		} else if (!empty($status)) {
-			$srch_query = array("coupon_package_status" => $status );
+			$srch_query = ["coupon_package_status" => $status ];
 			
 		}
 		
 		if($find_count) {
-			$res = $this->mongo_db->count(MDB_COUPON_PACKAGE,$srch_query,array('_id'));
+			$res = $this->mongo_db->count(MDB_COUPON_PACKAGE,$srch_query,['_id']);
 			return $res;
 		} else {
-			$res = $this->mongo_db->find(MDB_COUPON_PACKAGE,$srch_query,array('_id','coupon_package_name','coupon_package_description','corporate_commission','passenger_commission','coupon_package_status'))->sort(array('coupon_package_name'=>1))->skip($offset)->limit($val);
-			return (!empty($res))?iterator_to_array($res):array();
+			$res = $this->mongo_db->find(MDB_COUPON_PACKAGE,$srch_query,['_id','coupon_package_name','coupon_package_description','corporate_commission','passenger_commission','coupon_package_status'])->sort(['coupon_package_name'=>1])->skip($offset)->limit($val);
+			return (!empty($res))?iterator_to_array($res):[];
 		}
 		
     }
@@ -8608,11 +8608,11 @@ Class Model_Manage extends Model
 	
 		//MongoDB
 		//Here changing array values with string to integers values
-		$active_ids = array();
+		$active_ids = [];
 		foreach($activeids as $each_id):
 			$active_ids[] = (int)$each_id;
 		endforeach;
-		$res = $this->mongo_db->update(MDB_COUPON_PACKAGE,array('_id'=>array('$in'=>$active_ids)),array('$set'=>array('coupon_package_status' => 'A')),array('multiple'=>true));
+		$res = $this->mongo_db->update(MDB_COUPON_PACKAGE,['_id'=>['$in'=>$active_ids]],['$set'=>['coupon_package_status' => 'A']],['multiple'=>true]);
 		return (empty($res['err']))?1:$res['errmsg'];
 	
     }
@@ -8628,11 +8628,11 @@ Class Model_Manage extends Model
 	
 		//MongoDB
 		//Here changing array values with string to integers values
-		$active_ids = array();
+		$active_ids = [];
 		foreach($activeids as $each_id):
 			$active_ids[] = (int)$each_id;
 		endforeach;
-		$res = $this->mongo_db->update(MDB_COUPON_PACKAGE,array('_id'=>array('$in'=>$active_ids)),array('$set'=>array('coupon_package_status' => 'D')),array('multiple'=>true));
+		$res = $this->mongo_db->update(MDB_COUPON_PACKAGE,['_id'=>['$in'=>$active_ids]],['$set'=>['coupon_package_status' => 'D']],['multiple'=>true]);
 		return (empty($res['err']))?1:$res['errmsg'];
 		
     }
@@ -8644,7 +8644,7 @@ Class Model_Manage extends Model
         return $result;*/
 		$active_ids = Commonfunction::mongo_format_array($activeids);
 		
-		$res = $this->mongo_db->update(MDB_COUPON_PACKAGE,array('_id'=>array('$in'=>$active_ids)),array('$set'=>array('coupon_package_status' => 'T')),array('multiple'=>true));
+		$res = $this->mongo_db->update(MDB_COUPON_PACKAGE,['_id'=>['$in'=>$active_ids]],['$set'=>['coupon_package_status' => 'T']],['multiple'=>true]);
 		return (empty($res['err']))?1:$res['errmsg'];
     }
          
@@ -8658,9 +8658,9 @@ Class Model_Manage extends Model
 		$country_id                      = $this->country_id;
 		$state_id                        = $this->state_id;
 		$city_id                         = $this->city_id;
-		$match_query                     = array();
+		$match_query                     = [];
 		$match_query['people.user_type'] = 'O';
-		$match_query['people.status']    = array('$ne' => 'T');
+		$match_query['people.status']    = ['$ne' => 'T'];
 		
 		if ($usertype == 'M' ||$usertype == 'A' ) {
 			//$match_query['people.company_id']    = (int) $company_id;
@@ -8676,61 +8676,61 @@ Class Model_Manage extends Model
 			$match_query['people.company_id'] = (int) $company_id;
 		}
 		//echo "<pre>"; print_r($match_query); exit;
-		$common_arguments = array(
-			array(
+		$common_arguments = [
+			[
 				'$unwind' => '$stateinfo'
-			),
-			array(
+			],
+			[
 				'$unwind' => '$stateinfo.cityinfo'
-			),
-			array(
-				'$lookup' => array(
+			],
+			[
+				'$lookup' => [
 					'from' => MDB_PEOPLE,
 					'localField' => 'stateinfo.cityinfo.city_id',
 					'foreignField' => 'login_country',
 					'foreignField' => 'login_city',
 					'as' => 'people'
-				)
-			),
-			array(
+				]
+			],
+			[
 				'$unwind' => '$people'
-			),
+			],
 			
 			
-			array(
+			[
 				'$match' => $match_query
-			),
-		);
+			],
+		];
 		
 		if ($find_count == TRUE) {
-			$count_arguments = array(
-				array(
-					'$project' => array(
+			$count_arguments = [
+				[
+					'$project' => [
 						'result' => '$people._id'
-					)
-				),
-				array(
-					'$group' => array(
+					]
+				],
+				[
+					'$group' => [
 						'_id' => NULL,
-						'count' => array(
+						'count' => [
 							'$sum' => 1
-						)
-					)
-				)
-			);
+						]
+					]
+				]
+			];
 			$merge_arguments = array_merge($common_arguments, $count_arguments);
 			$result          = $this->mongo_db->aggregate(MDB_CSC, $merge_arguments);
 			//echo "<pre>";print_r($result['result']);exit;
 			return (!empty($result['result']) && isset($result['result'][0]['count'])) ? $result['result'][0]['count'] : 0;
 		} else {
-			$field_arguments = array(
-				array(
-					'$sort' => array( 
+			$field_arguments = [
+				[
+					'$sort' => [ 
 						'people.created_date' => -1
-					),
-				),
-				array(
-					'$project' => array(
+					],
+				],
+				[
+					'$project' => [
 						'id' => '$people._id',
 						'created_by' => '$people.user_createdby',
 						'name' => '$people.name',
@@ -8749,16 +8749,16 @@ Class Model_Manage extends Model
 						'cid' => '$company.companydetails.userid',
 						'photo' => '$people.profile_picture',
 						'corporate_status' => '$people.status',
-					)
-				),
-				array('$skip'	=> (int)$offset ),
-				array('$limit'	=> (int)$val )
-			);
+					]
+				],
+				['$skip'	=> (int)$offset ],
+				['$limit'	=> (int)$val ]
+			];
 			$merge_arguments = array_merge($common_arguments, $field_arguments);
 			$result    = $this->mongo_db->aggregate(MDB_CSC, $merge_arguments);
 			//echo "<pre>";print_r($merge_arguments); exit;
 			//echo "<pre>";print_r($result['result']); exit;
-			return (!empty($result['result'])) ? $result['result'] : array();
+			return (!empty($result['result'])) ? $result['result'] : [];
 		}
     }
    
@@ -8775,7 +8775,7 @@ Class Model_Manage extends Model
 		//MongoDB
 		//Here changing array values with string to integers values
 		$active_ids = Commonfunction::mongo_format_array($activeids);
-		$res = $this->mongo_db->update(MDB_PEOPLE,array('_id'=>array('$in'=>$active_ids)),array('$set'=>array('status' => 'A')),array('multiple'=>true));
+		$res = $this->mongo_db->update(MDB_PEOPLE,['_id'=>['$in'=>$active_ids]],['$set'=>['status' => 'A']],['multiple'=>true]);
 		return (empty($res['err']))?1:$res['errmsg'];
     }
     public function block_corporate_request($activeids)
@@ -8791,7 +8791,7 @@ Class Model_Manage extends Model
 		//MongoDB
 		//Here changing array values with string to integers values
 		$active_ids = Commonfunction::mongo_format_array($activeids);
-		$res = $this->mongo_db->update(MDB_PEOPLE,array('_id'=>array('$in'=>$active_ids)),array('$set'=>array('status' => 'D')),array('multiple'=>true));
+		$res = $this->mongo_db->update(MDB_PEOPLE,['_id'=>['$in'=>$active_ids]],['$set'=>['status' => 'D']],['multiple'=>true]);
 		return (empty($res['err']))?1:$res['errmsg'];
     }
      public function trash_corporate_request($activeids)
@@ -8802,7 +8802,7 @@ Class Model_Manage extends Model
         return $result;*/
 	
 		$active_ids = Commonfunction::mongo_format_array($activeids);
-		$res = $this->mongo_db->update(MDB_PEOPLE,array('_id'=>array('$in'=>$active_ids)),array('$set'=>array('status' => 'T')),array('multiple'=>true));
+		$res = $this->mongo_db->update(MDB_PEOPLE,['_id'=>['$in'=>$active_ids]],['$set'=>['status' => 'T']],['multiple'=>true]);
 		return (empty($res['err']))?1:$res['errmsg'];
     }
 	
@@ -8816,75 +8816,75 @@ Class Model_Manage extends Model
 		$city_id                         = $this->city_id;
 		$keyword       = str_replace("%", "!%", $keyword);
         $keyword       = str_replace("_", "!_", $keyword);
-		$status = ($status!="")?$status:array('$ne' => 'T');
+		$status = ($status!="")?$status:['$ne' => 'T'];
 		if ($usertype == 'M') {
-			$match_query = array('people.user_type'=>'O', 'people.login_country'=>(int) $country_id,'people.login_state' =>(int) $state_id,'people.login_city'=>(int) $city_id,'people.company_id' => (int)$c_id,'people.status' => $status);
+			$match_query = ['people.user_type'=>'O', 'people.login_country'=>(int) $country_id,'people.login_state' =>(int) $state_id,'people.login_city'=>(int) $city_id,'people.company_id' => (int)$c_id,'people.status' => $status];
 		} else if ($usertype == 'C') {
-			$match_query = array('people.user_type'=>'O', 'people.status' => $status );
+			$match_query = ['people.user_type'=>'O', 'people.status' => $status ];
 		}else{
-			$match_query = array('people.user_type'=>'O', 'people.status' => $status );
+			$match_query = ['people.user_type'=>'O', 'people.status' => $status ];
 		}
 		if(!empty($keyword)) {
-			$srch_query = array( "\$and" => array($match_query,array("\$or"=>array(array( 'people.name' => new MongoRegex("/$keyword/i")) , array( 'people.lastname' => new MongoRegex("/$keyword/i") ), array( 'people.email' => new MongoRegex("/$keyword/i") ),array( 'people.phone' => new MongoRegex("/$keyword/i") ), array( 'company.companydetails.company_name' => new MongoRegex("/$keyword/i") ) ) ) ) );
+			$srch_query = [ "\$and" => [$match_query,["\$or"=>[[ 'people.name' => new \MongoDB\BSON\Regex($keyword, 'i')] , [ 'people.lastname' => new \MongoDB\BSON\Regex($keyword, 'i') ], [ 'people.email' => new \MongoDB\BSON\Regex($keyword, 'i') ],[ 'people.phone' => new \MongoDB\BSON\Regex($keyword, 'i') ], [ 'company.companydetails.company_name' => new \MongoDB\BSON\Regex($keyword, 'i') ] ] ] ] ];
 }else{
 			$srch_query = $match_query;
 		}
 		//echo "<pre>"; print_r($srch_query); exit;
-		$common_arguments = array(
-			array(
+		$common_arguments = [
+			[
 				'$unwind' => '$stateinfo'
-			),
-			array(
+			],
+			[
 				'$unwind' => '$stateinfo.cityinfo'
-			),
-			array(
-				'$lookup' => array(
+			],
+			[
+				'$lookup' => [
 					'from' => MDB_PEOPLE,
 					'localField' => 'stateinfo.cityinfo.city_id',
 					'foreignField' => 'login_country',
 					'foreignField' => 'login_city',
 					'as' => 'people'
-				)
-			),
-			array(
+				]
+			],
+			[
 				'$unwind' => '$people'
-			),
+			],
 			
 			
-			array(
+			[
 				'$match' => $srch_query
-			),
-		);
+			],
+		];
 		
 		if ($find_count == TRUE) {
-			$count_arguments = array(
-				array(
-					'$project' => array(
+			$count_arguments = [
+				[
+					'$project' => [
 						'result' => '$people._id'
-					)
-				),
-				array(
-					'$group' => array(
+					]
+				],
+				[
+					'$group' => [
 						'_id' => NULL,
-						'count' => array(
+						'count' => [
 							'$sum' => 1
-						)
-					)
-				)
-			);
+						]
+					]
+				]
+			];
 			$merge_arguments = array_merge($common_arguments, $count_arguments);
 			$result          = $this->mongo_db->aggregate(MDB_CSC, $merge_arguments);
 		//echo "<pre>";print_r($result['result']);exit;
 			return (!empty($result['result']) && isset($result['result'][0]['count'])) ? $result['result'][0]['count'] : 0;
 		} else {
-			$field_arguments = array(
-				array(
-					'$sort' => array( 
+			$field_arguments = [
+				[
+					'$sort' => [ 
 						'people.created_date' => -1
-					),
-				),
-				array(
-					'$project' => array(
+					],
+				],
+				[
+					'$project' => [
 						'id' => '$people._id',
 						'created_by' => '$people.user_createdby',
 						'name' => '$people.name',
@@ -8902,33 +8902,33 @@ Class Model_Manage extends Model
 						'cid' => '$company.companydetails.userid',
 						'photo' => '$people.profile_picture',
 						'corporate_status' => '$people.status',
-					)
-				),
-				array('$skip'	=> (int)$offset ),
-				array('$limit'	=> (int)$val )
-			);
+					]
+				],
+				['$skip'	=> (int)$offset ],
+				['$limit'	=> (int)$val ]
+			];
 			$merge_arguments = array_merge($common_arguments, $field_arguments);
 			$result    = $this->mongo_db->aggregate(MDB_CSC, $merge_arguments);
 			//echo "<pre>";print_r($result['result']); exit;
-			return (!empty($result['result'])) ? $result['result'] : array();
+			return (!empty($result['result'])) ? $result['result'] : [];
 		}
     }
 	public function avail_package(){
-		$res = $this->mongo_db->find(MDB_COUPON_PACKAGE,array('coupon_package_status'=>array('$ne'=>'T')),array('_id','coupon_package_name','coupon_package_description','corporate_commission','passenger_commission','coupon_package_status','fixed_fare_apply'))->sort(array('coupon_package_name'=>1));
-		return (!empty($res))?iterator_to_array($res,false):array();	
+		$res = $this->mongo_db->find(MDB_COUPON_PACKAGE,['coupon_package_status'=>['$ne'=>'T']],['_id','coupon_package_name','coupon_package_description','corporate_commission','passenger_commission','coupon_package_status','fixed_fare_apply'])->sort(['coupon_package_name'=>1]);
+		return (!empty($res))?iterator_to_array($res,false):[];	
 	}
 	/* Promo Report */
 	public function promocode_list_report($offset, $val, $search, $company_id = 0, $corporate_id = 0, $package_id = 0,$find_count = FALSE)
     {
 		
-		$match_query = array();
+		$match_query = [];
 		$match_query['company.companydetails.company_status'] = "A";
 		if(!empty($search))
 		{
 			$keyword       = str_replace("%", "!%", $search["keyword"]);
 			$keyword       = str_replace("_", "!_", $search["keyword"]);
 			if($search['keyword'] != "") {
-				$match_query['promocode'] = new MongoRegex("/$keyword/i");
+				$match_query['promocode'] = new \MongoDB\BSON\Regex($keyword, 'i');
 			}
 			
 			
@@ -8966,130 +8966,130 @@ Class Model_Manage extends Model
 			
 		
 		if($find_count == TRUE){
-            $arguments = array(
-						array(
-							'$lookup' => array(
+            $arguments = [
+						[
+							'$lookup' => [
 										'from'=>MDB_COMPANY,
 										'localField'=> 'company_id',
 										'foreignField' => "_id",
 										'as'=> "company"
-									)
-						),
-						array('$unwind' => '$company'),
-						array(
-							'$lookup' => array(
+									]
+						],
+						['$unwind' => '$company'],
+						[
+							'$lookup' => [
 										'from'=>MDB_PEOPLE,
 										'localField'=> 'corporate_id',
 										'foreignField' => "_id",
 										'as'=> "corporate"
-									)
-						),
-						array('$unwind' => '$corporate'),
-						array('$lookup' =>
-							array(
+									]
+						],
+						['$unwind' => '$corporate'],
+						['$lookup' =>
+							[
 								'from'=>MDB_PASSENGERS,
 								'localField'=> "customer_number",
 								'foreignField' => "phone",
 								'as'=> "passengers"
-							)
-						),
-						array('$unwind'=>'$passengers'),
-						array(
-							'$lookup' => array(
+							]
+						],
+						['$unwind'=>'$passengers'],
+						[
+							'$lookup' => [
 										'from'=>MDB_COUPON_PACKAGE,
 										'localField'=> 'package',
 										'foreignField' => "_id",
 										'as'=> "pack"
-									)
-						),
-						array('$unwind' => '$pack'),
-						array(
-							'$lookup' => array(
+									]
+						],
+						['$unwind' => '$pack'],
+						[
+							'$lookup' => [
 										'from'=>MDB_PASSENGERSLOGS_COMPLETED,
 										'localField'=> 'promocode',
 										'foreignField' => "promocode",
 										'as'=> "passlog"
-							)
-						),
-						array('$unwind' => '$passlog'),
-						array(
-							'$lookup' => array(
+							]
+						],
+						['$unwind' => '$passlog'],
+						[
+							'$lookup' => [
 										'from'=>MDB_TRANSACTION,
 										'localField'=> 'passlog._id',
 										'foreignField' => "passengers_log_id",
 										'as'=> "trans"
-							)
-						),
-						array('$unwind' => '$trans'),
-						array('$match'=> $match_query),
-						array(
-							'$project' => array(
+							]
+						],
+						['$unwind' => '$trans'],
+						['$match'=> $match_query],
+						[
+							'$project' => [
 							'id' => '$_id',
-							)
-						)
-                    );
+							]
+						]
+                    ];
             $result = $this->mongo_db->aggregate(MDB_PASSENGERS_PROMO,$arguments);
 			//echo "<pre>"; print_r($result['result'][0]['count']); exit;
             return (!empty($result['result']) )?count($result['result']):0;
 		}else{
 			//echo "ssss";exit;
-			$arguments = array(
-					array(
-							'$lookup' => array(
+			$arguments = [
+					[
+							'$lookup' => [
 										'from'=>MDB_COMPANY,
 										'localField'=> 'company_id',
 										'foreignField' => "_id",
 										'as'=> "company"
-									)
-						),
-						array('$unwind' => '$company'),
-						array(
-							'$lookup' => array(
+									]
+						],
+						['$unwind' => '$company'],
+						[
+							'$lookup' => [
 										'from'=>MDB_PEOPLE,
 										'localField'=> 'corporate_id',
 										'foreignField' => "_id",
 										'as'=> "corporate"
-									)
-						),
-						array('$unwind' => '$corporate'),
-						array('$lookup' =>
-							array(
+									]
+						],
+						['$unwind' => '$corporate'],
+						['$lookup' =>
+							[
 								'from'=>MDB_PASSENGERS,
 								'localField'=> "customer_number",
 								'foreignField' => "phone",
 								'as'=> "passengers"
-							)
-						),
-						array('$unwind'=>'$passengers'),
-						array(
-							'$lookup' => array(
+							]
+						],
+						['$unwind'=>'$passengers'],
+						[
+							'$lookup' => [
 										'from'=>MDB_COUPON_PACKAGE,
 										'localField'=> 'package',
 										'foreignField' => "_id",
 										'as'=> "pack"
-									)
-						),
-						array('$unwind' => '$pack'),
-						array(
-							'$lookup' => array(
+									]
+						],
+						['$unwind' => '$pack'],
+						[
+							'$lookup' => [
 										'from'=>MDB_PASSENGERSLOGS_COMPLETED,
 										'localField'=> 'promocode',
 										'foreignField' => "promocode",
 										'as'=> "passlog"
-							)
-						),
-						array('$unwind' => '$passlog'),
-						array(
-							'$lookup' => array(
+							]
+						],
+						['$unwind' => '$passlog'],
+						[
+							'$lookup' => [
 										'from'=>MDB_TRANSACTION,
 										'localField'=> 'passlog._id',
 										'foreignField' => "passengers_log_id",
 										'as'=> "trans"
-							)
-						), 
-						array('$unwind' => '$trans'),
-						array('$match'=> $match_query),
-						array('$project' => array(
+							]
+						], 
+						['$unwind' => '$trans'],
+						['$match'=> $match_query],
+						['$project' => [
 						
 						'passenger_number' => '$passengers.phone',
 						'passenger_name' => '$passengers.name',
@@ -9100,12 +9100,12 @@ Class Model_Manage extends Model
 						'corporate_id' => '$corporate_id',
 						'discount' => '$trans.passenger_discount',
 						'corporate_amount' => '$trans.corporate_amount'
-						)
-						),
+						]
+						],
 				
-					array('$skip' => (int)$offset),
-					array('$limit' => (int)$val),
-				);
+					['$skip' => (int)$offset],
+					['$limit' => (int)$val],
+				];
 			//	echo REC_PER_PAGE;
 			//	echo "<pre>"; print_r($arguments); exit;
             $result = $this->mongo_db->aggregate(MDB_PASSENGERS_PROMO,$arguments);
@@ -9121,27 +9121,27 @@ Class Model_Manage extends Model
 	/** MANAGE CORPORATE COUPON CODE **/
 	public function ratings_management_list($total_flag,$search,$offset,$val){
           $status_query['status'] = 'A';
-          $status_query['ratings_no'] = array('$ne'=>NULL);
-          $srch_query = array();
-          $baba_query = array();
+          $status_query['ratings_no'] = ['$ne'=>NULL];
+          $srch_query = [];
+          $baba_query = [];
 
         if(isset($search['keyword']) && $search['keyword']!=''){
             $keyword = rtrim($search['keyword']);
          //   echo "<pre>";print_r($keyword);exit();
-             $srch_query = array(
-                "\$or" => array(
-                    array(
-                        'ratings_no' => new MongoRegex("/$keyword/i")
-                    ),
-                    array(
-                        'ratings_title' => new MongoRegex("/$keyword/i")
-                    ),
-                     array(
-                        'ratings_tags' => new MongoRegex("/$keyword/i")
-                    )
-                )
+             $srch_query = [
+                "\$or" => [
+                    [
+                        'ratings_no' => new \MongoDB\BSON\Regex($keyword, 'i')
+                    ],
+                    [
+                        'ratings_title' => new \MongoDB\BSON\Regex($keyword, 'i')
+                    ],
+                     [
+                        'ratings_tags' => new \MongoDB\BSON\Regex($keyword, 'i')
+                    ]
+                ]
                     
-            );
+            ];
              //db.ratings.find({'ratings_title': {'$regex': 'ratings','$options':'i'}})
 
             /* $baba_query = array(
@@ -9156,33 +9156,33 @@ Class Model_Manage extends Model
        $match_query = array_merge($status_query,$srch_query);
  
   	//echo "<pre>";print_r($match_query);exit();
-        $ops = array(
-                    array('$match'=>$match_query),
-                    array(
-                        '$project' => array(
+        $ops = [
+                    ['$match'=>$match_query],
+                    [
+                        '$project' => [
                         '_id' => '$_id',
                         'ratings_no' => '$ratings_no',
                         'ratings_title' => '$ratings_title',
                         'ratings_tags' => '$ratings_tags',
-                        )
-                    ),
-                    array(
-                        '$sort' => array("_id"=>-1)
-                    ),
-            );
+                        ]
+                    ],
+                    [
+                        '$sort' => ["_id"=>-1]
+                    ],
+            ];
         if($total_flag == 1){
-        	$countarr = array('$group'=> array('_id'=> NULL, 'total'=> array( '$sum'=> 1 ) ) );
+        	$countarr = ['$group'=> ['_id'=> NULL, 'total'=> [ '$sum'=> 1 ] ] ];
             array_push($ops,$countarr);
         }
         if($offset!='' && $val!=''){
          //$limitarr = array('$skip'($offset)->limit($val))    
-         $offsetarray = array('$skip'  => (int)$offset );
+         $offsetarray = ['$skip'  => (int)$offset ];
         
          array_push($ops,$offsetarray);
          
         }
         if($val!=''){
-            $limitarray = array('$limit'  => (int)$val );
+            $limitarray = ['$limit'  => (int)$val ];
              array_push($ops,$limitarray);
         }
 
@@ -9191,7 +9191,7 @@ Class Model_Manage extends Model
 	        return (!empty($result['result']))?count($result['result']):0;
 
         }else{
-        	return (!empty($result['result']))?$result['result']:array();	
+        	return (!empty($result['result']))?$result['result']:[];	
         }
         
 	}
@@ -9199,39 +9199,39 @@ Class Model_Manage extends Model
 	public function delete_ratings($id)
     {
       
-        $update_log_array = array('status' => 'T');
-		$update_res          = $this->mongo_db->update('ratings',array('_id'=>(int)$id),array('$set'=> $update_log_array),array('upsert'=>false));
+        $update_log_array = ['status' => 'T'];
+		$update_res          = $this->mongo_db->update('ratings',['_id'=>(int)$id],['$set'=> $update_log_array],['upsert'=>false]);
 	//	echo "<pre>";print_r($update_res);exit();
 		return empty($update_res['err'])?1:0;
     }
     public function get_allpassenger_details()
     {
-	$field_arguments = array(
-				array(
-					  '$match'=>array('user_status'=>'A','device_type'=>array('$in'=>['1','2']),'device_token'=>array('$ne'=>''))
-					),
-				array( '$project' => array('_id'=>'$_id','device_type'=>'$device_type','device_token'=>'$device_token')
-				),
+	$field_arguments = [
+				[
+					  '$match'=>['user_status'=>'A','device_type'=>['$in'=>['1','2']],'device_token'=>['$ne'=>'']]
+					],
+				[ '$project' => ['_id'=>'$_id','device_type'=>'$device_type','device_token'=>'$device_token']
+				],
 				
-				array('$group' => array("_id" => array('device_type'=>'$device_type'),
+				['$group' => ["_id" => ['device_type'=>'$device_type'],
 
-						"details" => array( '$push' => array('_id'=>'$_id','device_type' => '$device_type','device_token' => '$device_token') ),
+						"details" => [ '$push' => ['_id'=>'$_id','device_type' => '$device_type','device_token' => '$device_token'] ],
 							
-						"count" => array( '$sum' => 1 ),
-					)
-				),
+						"count" => [ '$sum' => 1 ],
+					]
+				],
 				
-			);
+			];
 
 		
 		$qresult = $this->mongo_db->aggregate(MDB_PASSENGERS,$field_arguments);	
-		return (!empty($qresult['result']))?$qresult['result']:array();	
+		return (!empty($qresult['result']))?$qresult['result']:[];	
 
 				
     }
      public function admin_push_notification($pushmessage,$image='') {
 
-            $rs = $this->mongo_db->find(MDB_NOTIFICATIONS,array(),array('_id'))->sort(array('_id'=>-1))->limit(1);
+            $rs = $this->mongo_db->find(MDB_NOTIFICATIONS,[],['_id'])->sort(['_id'=>-1])->limit(1);
 			$rs = iterator_to_array($rs);
 			reset($rs);
 			$rs_first_key = key($rs);
@@ -9240,13 +9240,13 @@ Class Model_Manage extends Model
             $current_date      = date('Y-m-d H:i:s', time());
             $currentdate = new \MongoDB\BSON\UTCDateTime(strtotime($current_date) * 1000);
 
-            $data = array('_id'=>$_id,
+            $data = ['_id'=>$_id,
 				'message' => $pushmessage,
 				'image'=>$image,
 				'notification_type' => (int)4,	
 				'created_date'=>$currentdate		
 													
-			);
+			];
 			$result = $this->mongo_db->insert(MDB_NOTIFICATIONS,$data);
 			return empty($result['err'])?1:0;
 			//echo "<pre>";print_r($result);exit();
@@ -9254,13 +9254,13 @@ Class Model_Manage extends Model
       }
 
     public function pushnotification_list($offset, $val,$find_count = FALSE){
-    	$ops = array('notification_type'=>(int)4);
-		$select_ops = array('_id','title','sub_title','message','sent_status','created_date','sent_date','image');
+    	$ops = ['notification_type'=>(int)4];
+		$select_ops = ['_id','title','sub_title','message','sent_status','created_date','sent_date','image'];
 		if($find_count){
 	    	$qresult = $this->mongo_db->count(MDB_NOTIFICATIONS,$ops);
 			return $qresult;
 		}else{
-	    	$qresult = $this->mongo_db->find(MDB_NOTIFICATIONS,$ops,$select_ops)->sort(array('_id'=>-1));
+	    	$qresult = $this->mongo_db->find(MDB_NOTIFICATIONS,$ops,$select_ops)->sort(['_id'=>-1]);
 			$itqresult = iterator_to_array($qresult);
 	    	$ar_result = array_values($itqresult);
 	    	return $ar_result;
@@ -9281,44 +9281,44 @@ Class Model_Manage extends Model
         
 		//MongoDB
 		if ($usertype == 'M' || $usertype == 'A') {
-			$match_query = array('taxi.taxi_status'=>array('$ne'=>'T'),'km_reach_status'=>array('$eq'=>true),'end_km'=>array('$ne'=>0));
+			$match_query = ['taxi.taxi_status'=>['$ne'=>'T'],'km_reach_status'=>['$eq'=>true],'end_km'=>['$ne'=>0]];
 		} else if ($usertype == 'C' ) {
-			$match_query = array('taxi.taxi_company'=>(int)$company_id,'taxi.taxi_status'=>array('$ne'=>'T'),'km_reach_status'=>array('$eq'=>true),'end_km'=>array('$ne'=>0));
+			$match_query = ['taxi.taxi_company'=>(int)$company_id,'taxi.taxi_status'=>['$ne'=>'T'],'km_reach_status'=>['$eq'=>true],'end_km'=>['$ne'=>0]];
 		} else {
-			$match_query = array('taxi.taxi_status'=>array('$ne'=>'T'),'km_reach_status'=>array('$eq'=>true),'end_km'=>array('$ne'=>0));
+			$match_query = ['taxi.taxi_status'=>['$ne'=>'T'],'km_reach_status'=>['$eq'=>true],'end_km'=>['$ne'=>0]];
 		}
 		
-		$srch_query = array();
+		$srch_query = [];
 		if(!empty($_REQUEST)) {
 			$keyword = isset($_REQUEST['keyword']) ? $_REQUEST['keyword'] : "";
 			$status = isset($_REQUEST['status']) ? $_REQUEST['status'] : "";
 			$company = isset($_REQUEST['filter_company']) ? $_REQUEST['filter_company'] : "";
 			
 			if((!empty($keyword)) && (!empty($status)) && (!empty($company))) {
-				$srch_query = array( "\$and" => array(array('taxi.taxi_company' => (int)$company ),array('service_status' => $status ),array("\$or"=>array(array( 'taxi.taxi_no' => new MongoRegex("/$keyword/i")), array('driver.name' => new MongoRegex("/$keyword/i")) ) ) ) );
+				$srch_query = [ "\$and" => [['taxi.taxi_company' => (int)$company ],['service_status' => $status ],["\$or"=>[[ 'taxi.taxi_no' => new \MongoDB\BSON\Regex($keyword, 'i')], ['driver.name' => new \MongoDB\BSON\Regex($keyword, 'i')] ] ] ] ];
 			} else if ((!empty($keyword)) && (!empty($status))){
 				if($usertype=='A'){
-					$srch_query = array( "\$and" => array(array('service_status' => $status ),array("\$or"=>array(array( 'taxi.taxi_no' => new MongoRegex("/$keyword/i")), array('driver.name' => new MongoRegex("/$keyword/i")) ) ) ) );
+					$srch_query = [ "\$and" => [['service_status' => $status ],["\$or"=>[[ 'taxi.taxi_no' => new \MongoDB\BSON\Regex($keyword, 'i')], ['driver.name' => new \MongoDB\BSON\Regex($keyword, 'i')] ] ] ] ];
 				} else {
-					$srch_query = array( "\$and" => array(array('taxi.taxi_company' => (int)$company ),array('service_status' => $status ),array("\$or"=>array(array( 'taxi.taxi_no' => new MongoRegex("/$keyword/i")), array('driver.name' => new MongoRegex("/$keyword/i")) ) ) ) );
+					$srch_query = [ "\$and" => [['taxi.taxi_company' => (int)$company ],['service_status' => $status ],["\$or"=>[[ 'taxi.taxi_no' => new \MongoDB\BSON\Regex($keyword, 'i')], ['driver.name' => new \MongoDB\BSON\Regex($keyword, 'i')] ] ] ] ];
 				}
 			} else if ((!empty($keyword)) && (!empty($company))){				
-				$srch_query = array( "\$and" => array(array('taxi.taxi_company' => (int)$company ),array("\$or"=>array(array( 'taxi.taxi_no' => new MongoRegex("/$keyword/i")), array('driver.name' => new MongoRegex("/$keyword/i")) ) ) ) );
+				$srch_query = [ "\$and" => [['taxi.taxi_company' => (int)$company ],["\$or"=>[[ 'taxi.taxi_no' => new \MongoDB\BSON\Regex($keyword, 'i')], ['driver.name' => new \MongoDB\BSON\Regex($keyword, 'i')] ] ] ] ];
 			} else if ((!empty($status)) && (!empty($company))){
-				$srch_query = array( "\$and" => array(array('taxi.taxi_company' => (int)$company ),array('service_status' => $status ) ) );
+				$srch_query = [ "\$and" => [['taxi.taxi_company' => (int)$company ],['service_status' => $status ] ] ];
 			} else if (!empty($keyword)) {
 				if($usertype=='A'){
-					$srch_query = array( "\$and" => array(array("\$or"=>array(array( 'taxi.taxi_no' => new MongoRegex("/$keyword/i")), array('driver.name' => new MongoRegex("/$keyword/i")) ) ) ) );
+					$srch_query = [ "\$and" => [["\$or"=>[[ 'taxi.taxi_no' => new \MongoDB\BSON\Regex($keyword, 'i')], ['driver.name' => new \MongoDB\BSON\Regex($keyword, 'i')] ] ] ] ];
 				} else {
-					$srch_query = array( "\$and" => array(array('taxi.taxi_company' => (int)$company ),array("\$or"=>array(array( 'taxi.taxi_no' => new MongoRegex("/$keyword/i")), array('driver.name' => new MongoRegex("/$keyword/i")) ) ) ) );
+					$srch_query = [ "\$and" => [['taxi.taxi_company' => (int)$company ],["\$or"=>[[ 'taxi.taxi_no' => new \MongoDB\BSON\Regex($keyword, 'i')], ['driver.name' => new \MongoDB\BSON\Regex($keyword, 'i')] ] ] ] ];
 				}
 			} else if (!empty($company)) {
-					$srch_query = array( "\$and" => array(array('taxi.taxi_company' => (int)$company )));
+					$srch_query = [ "\$and" => [['taxi.taxi_company' => (int)$company ]]];
 			} else if (!empty($status)) {
 				if($usertype=='A'){
-					$srch_query = array( "\$and" => array(array('service_status' => $status )));
+					$srch_query = [ "\$and" => [['service_status' => $status ]]];
 				} else {
-					$srch_query = array( "\$and" => array(array('taxi.taxi_company' => (int)$company ),array('service_status' => $status )));
+					$srch_query = [ "\$and" => [['taxi.taxi_company' => (int)$company ],['service_status' => $status ]]];
 				}
 			}
 		}
@@ -9327,92 +9327,92 @@ Class Model_Manage extends Model
 		
 		
 		if($find_count){
-			$arguments = array(
-				array('$lookup' => array(
+			$arguments = [
+				['$lookup' => [
 						'from' => MDB_TAXI,
 						'localField' => 'taxi_id',
 						'foreignField' => "_id",
 						'as' => "taxi"
-					)
-				),
-				array('$unwind' => '$taxi'),
-				array('$lookup' => array(
+					]
+				],
+				['$unwind' => '$taxi'],
+				['$lookup' => [
 						'from' => MDB_MOTOR_MODEL,
 						'localField' => 'taxi.taxi_model',
 						'foreignField' => "_id",
 						'as' => "motormodel"
-					)
-				),
-				array('$unwind' => '$motormodel'),
-				array('$lookup' => array(
+					]
+				],
+				['$unwind' => '$motormodel'],
+				['$lookup' => [
 						'from' => MDB_TAXI_SERVICE_RANGE,
 						'localField' => 'taxi_service_id',
 						'foreignField' => "_id",
 						'as' => "service"
-					)
-				),
-				array('$unwind' => '$service'),
-				array('$lookup' => array(
+					]
+				],
+				['$unwind' => '$service'],
+				['$lookup' => [
 						'from' => MDB_PEOPLE,
 						'localField' => 'driver_id',
 						'foreignField' => "_id",
 						'as' => "driver"
-					)
-				),
-				array('$unwind' => '$driver'),
-				array('$match'  => $match_query),
-				array('$sort' =>array('created_date' => -1) ),
-				array('$project' => array('_id'=>0,
+					]
+				],
+				['$unwind' => '$driver'],
+				['$match'  => $match_query],
+				['$sort' =>['created_date' => -1] ],
+				['$project' => ['_id'=>0,
 						'service_id' => '$_id',
-					)
-				),array(
-					'$group' => array(
+					]
+				],[
+					'$group' => [
 						'_id' => NULL,
-						'count' => array(
+						'count' => [
 							'$sum' => 1
-						)
-					)
-				)
-			);
+						]
+					]
+				]
+			];
 			$result = $this->mongo_db->aggregate(MDB_SHIFT_HISTORY,$arguments);
 			return (!empty($result['result']) && isset($result['result']))?$result['result'][0]['count']:0;
 		} else {
-			$arguments = array(
-				array('$lookup' => array(
+			$arguments = [
+				['$lookup' => [
 						'from' => MDB_TAXI,
 						'localField' => 'taxi_id',
 						'foreignField' => "_id",
 						'as' => "taxi"
-					)
-				),
-				array('$unwind' => '$taxi'),
-				array('$lookup' => array(
+					]
+				],
+				['$unwind' => '$taxi'],
+				['$lookup' => [
 						'from' => MDB_MOTOR_MODEL,
 						'localField' => 'taxi.taxi_model',
 						'foreignField' => "_id",
 						'as' => "motormodel"
-					)
-				),
-				array('$unwind' => '$motormodel'),
-				array('$lookup' => array(
+					]
+				],
+				['$unwind' => '$motormodel'],
+				['$lookup' => [
 						'from' => MDB_TAXI_SERVICE_RANGE,
 						'localField' => 'taxi_service_id',
 						'foreignField' => "_id",
 						'as' => "service"
-					)
-				),
-				array('$unwind' => '$service'),
-				array('$lookup' => array(
+					]
+				],
+				['$unwind' => '$service'],
+				['$lookup' => [
 						'from' => MDB_PEOPLE,
 						'localField' => 'driver_id',
 						'foreignField' => "_id",
 						'as' => "driver"
-					)
-				),
-				array('$unwind' => '$driver'),
-				array('$match'  => $match_query),
-				array('$sort' =>array('created_date' => -1) ),
-				array('$project' => array('_id'=>0,
+					]
+				],
+				['$unwind' => '$driver'],
+				['$match'  => $match_query],
+				['$sort' =>['created_date' => -1] ],
+				['$project' => ['_id'=>0,
 						'service_id' => '$_id',
 						'service_status' => '$service_status',
 						'start_km' => '$start_km',
@@ -9425,28 +9425,28 @@ Class Model_Manage extends Model
 						'service_label' => '$service.label',
 						'service_km' => '$service.km',
 						'createdate' => '$createdate',
-					)
-				),				
-				array('$skip' => (int)$offset),
-				array('$limit' => (int)$val)
-			);
+					]
+				],				
+				['$skip' => (int)$offset],
+				['$limit' => (int)$val]
+			];
 			//echo $offset.'='.$val;
 			$result = $this->mongo_db->aggregate(MDB_SHIFT_HISTORY,$arguments);
-			return (!empty($result['result']) && isset($result['result']))?$result['result']:array();
+			return (!empty($result['result']) && isset($result['result']))?$result['result']:[];
 		}
     }
     
     public function active_taxi_service_request($activeids)
     {
         $active_ids = Commonfunction::mongo_format_array($activeids);
-		$result = $this->mongo_db->update(MDB_SHIFT_HISTORY,array('_id'=>array('$in'=>$active_ids)),array('$set'=>array('service_status' => 'A')),array('multiple'=>true));
+		$result = $this->mongo_db->update(MDB_SHIFT_HISTORY,['_id'=>['$in'=>$active_ids]],['$set'=>['service_status' => 'A']],['multiple'=>true]);
 		//echo '<pre>';print_r($result);exit;
 		return (empty($result['err']))?1:$result['errmsg'];
     }
     public function block_taxi_service_request($activeids)
     {
         $active_ids = Commonfunction::mongo_format_array($activeids);
-		$result = $this->mongo_db->update(MDB_SHIFT_HISTORY,array('_id'=>array('$in'=>$active_ids)),array('$set'=>array('service_status' => 'D')),array('multiple'=>true));
+		$result = $this->mongo_db->update(MDB_SHIFT_HISTORY,['_id'=>['$in'=>$active_ids]],['$set'=>['service_status' => 'D']],['multiple'=>true]);
 		//echo '<pre>';print_r($result);exit;
 		return (empty($result['err']))?1:$result['errmsg'];
     }
@@ -9458,7 +9458,7 @@ Class Model_Manage extends Model
 		$user_createdby                  = $this->userid;
 		$keyword       = str_replace("%", "!%", $keyword);
         $keyword       = str_replace("_", "!_", $keyword);
-		$match_query = array('pass.user_status'=>'A');
+		$match_query = ['pass.user_status'=>'A'];
 
 		if(!empty($recharge_type))
 		{
@@ -9471,75 +9471,75 @@ Class Model_Manage extends Model
             $end_date = date("Y-m-d 23:59:59");
 		}
 		
-		$match_query['created_date'] = array(
-                        '$gte' => New MongoDate(strtotime($start_date)),
-                        '$lte' => New MongoDate(strtotime($end_date))
-                    );
+		$match_query['created_date'] = [
+                        '$gte' => new \MongoDB\BSON\UTCDateTime(strtotime($start_date) * 1000),
+                        '$lte' => new \MongoDB\BSON\UTCDateTime(strtotime($end_date) * 1000)
+                    ];
 	
 		if(!empty($keyword)) {
-			$srch_query = array( "\$and" => array($match_query,array("\$or"=>array(array( 'pass.name' => new MongoRegex("/$keyword/i")) , array( 'pass.lastname' => new MongoRegex("/$keyword/i") ), array( 'pass.email' => new MongoRegex("/$keyword/i") ), array( 'pass.phone' => new MongoRegex("/$keyword/i") ) ) ) ) );
+			$srch_query = [ "\$and" => [$match_query,["\$or"=>[[ 'pass.name' => new \MongoDB\BSON\Regex($keyword, 'i')] , [ 'pass.lastname' => new \MongoDB\BSON\Regex($keyword, 'i') ], [ 'pass.email' => new \MongoDB\BSON\Regex($keyword, 'i') ], [ 'pass.phone' => new \MongoDB\BSON\Regex($keyword, 'i') ] ] ] ] ];
 		}else{
 			$srch_query = $match_query;
 		}
 
 
-		$common_arguments = array(
-			array(
-				'$lookup' => array(
+		$common_arguments = [
+			[
+				'$lookup' => [
 					'from' => MDB_PASSENGERS,
 					'localField' => 'passenger_id',
 					'foreignField' => '_id',
 					'as' => 'pass'
-				)
-			),
-			array(
+				]
+			],
+			[
 				'$unwind' => '$pass'
-			),
-			array(
-				'$lookup' => array(
+			],
+			[
+				'$lookup' => [
 					'from' => MDB_TRANSACTION,
 					'localField' => 'trip_id',
 					'foreignField' => 'passengers_log_id',
 					'as' => 'trans'
-				)
-			),
-			array(
-				'$unwind' => array('path'=>'$trans','preserveNullAndEmptyArrays'=>true)
-			),
-			array(
+				]
+			],
+			[
+				'$unwind' => ['path'=>'$trans','preserveNullAndEmptyArrays'=>true]
+			],
+			[
 				'$match' => $srch_query
-			),
-		);
+			],
+		];
 		
 		if ($find_count == TRUE) {
-			$count_arguments = array(
-				array(
-					'$project' => array(
+			$count_arguments = [
+				[
+					'$project' => [
 						'result' => '$_id'
-					)
-				),
-				array(
-					'$group' => array(
+					]
+				],
+				[
+					'$group' => [
 						'_id' => NULL,
-						'count' => array(
+						'count' => [
 							'$sum' => 1
-						)
-					)
-				)
-			);
+						]
+					]
+				]
+			];
 			$merge_arguments = array_merge($common_arguments, $count_arguments);
 			$result          = $this->mongo_db->aggregate(PASSENGER_WALLET_LOG, $merge_arguments);
 		//echo "<pre>";print_r($result['result']);exit;
 			return (!empty($result['result']) && isset($result['result'][0]['count'])) ? $result['result'][0]['count'] : 0;
 		} else {
-			$field_arguments = array(
-				array(
-					'$sort' => array( 
+			$field_arguments = [
+				[
+					'$sort' => [ 
 						'created_date' => -1
-					),
-				),
-				array(
-					'$project' => array(
+					],
+				],
+				[
+					'$project' => [
 						'id' => '$_id',
 						'passenger_email' => '$pass.email',
 						'passenger_id' => '$pass._id',
@@ -9560,19 +9560,19 @@ Class Model_Manage extends Model
                             array('$sum'=>array('$change_amount'))
        					)),*/
        					/* June 8 2023 */
-       					'redeem_points'=> array('$ifNull' => ['$redeem_points', 0]),
+       					'redeem_points'=> ['$ifNull' => ['$redeem_points', 0]],
        					
        					'tripfare'=>'$trans.tripfare',
        					'surge_price'=>'$trans.surge_price',
-					)
-				),
-				array('$skip'	=> (int)$offset ),
-				array('$limit'	=> (int)$val )
-			);
+					]
+				],
+				['$skip'	=> (int)$offset ],
+				['$limit'	=> (int)$val ]
+			];
 			$merge_arguments = array_merge($common_arguments, $field_arguments);
 			$result    = $this->mongo_db->aggregate(PASSENGER_WALLET_LOG, $merge_arguments);
 			//echo "<pre>";print_r($result['result']); exit;
-			return (!empty($result['result'])) ? $result['result'] : array();
+			return (!empty($result['result'])) ? $result['result'] : [];
 		}
     }
 
@@ -9580,7 +9580,7 @@ Class Model_Manage extends Model
     public function update_wallet_amount($id,$add_amt,$negative,$notes,$wallet_type = 1)
     {	
     	/* Sasidharan june 17 2023 */
-		$result = $this->mongo_db->find_one(MDB_PASSENGERS,array('_id' => (int)$id),array('wallet_amount','discount_wallet'));
+		$result = $this->mongo_db->find_one(MDB_PASSENGERS,['_id' => (int)$id],['wallet_amount','discount_wallet']);
         
         if(count($result) > 0)
         {
@@ -9601,18 +9601,18 @@ Class Model_Manage extends Model
 				
 				$update_wallet_amt = round($update_wallet_amt,3);
 
-				$update_data      = array(
+				$update_data      = [
 				"wallet_amount"=>$update_wallet_amt
-				);
-				$people_result = $this->mongo_db->update(MDB_PASSENGERS,array('_id'=>(int)$id),array('$set'=>$update_data),array('upsert'=>false));
+				];
+				$people_result = $this->mongo_db->update(MDB_PASSENGERS,['_id'=>(int)$id],['$set'=>$update_data],['upsert'=>false]);
 
-				$data = array(
+				$data = [
 					'passenger_id'=>$id,
 					'add_amt'=>$additional_amt,
 					'current_wallet_amt'=>$update_wallet_amt,
 					'notes'=>$notes
 
-				);
+				];
 				$this->add_wallet_log($data);
 				return true;
 			} else {
@@ -9632,18 +9632,18 @@ Class Model_Manage extends Model
 				
 				$update_wallet_amt = round($update_wallet_amt,3);
 
-				$update_data      = array(
+				$update_data      = [
 					"discount_wallet"=>$update_wallet_amt
-				);
-				$people_result = $this->mongo_db->update(MDB_PASSENGERS,array('_id'=>(int)$id),array('$set'=>$update_data),array('upsert'=>false));
+				];
+				$people_result = $this->mongo_db->update(MDB_PASSENGERS,['_id'=>(int)$id],['$set'=>$update_data],['upsert'=>false]);
 
-				$data = array(
+				$data = [
 					'passenger_id'=>$id,
 					'add_amt'=>$additional_amt,
 					'current_wallet_amt'=>$update_wallet_amt,
 					'notes'=>$notes
 
-				);
+				];
 				$this->add_discount_wallet_log($data);
 				return true;
 			}
@@ -9656,7 +9656,7 @@ Class Model_Manage extends Model
 	
 	public function update_wallet_amount_invoice($id,$add_amt,$negative,$notes,$invoice_id)
     {
-		$result = $this->mongo_db->find_one(MDB_PASSENGERS,array('_id' => (int)$id),array('wallet_amount'));
+		$result = $this->mongo_db->find_one(MDB_PASSENGERS,['_id' => (int)$id],['wallet_amount']);
         
         if(count($result) > 0)
         {
@@ -9676,19 +9676,19 @@ Class Model_Manage extends Model
 			
 			$update_wallet_amt = round($update_wallet_amt,3);
 
-			$update_data      = array(
+			$update_data      = [
 			"wallet_amount"=>$update_wallet_amt,
 			"last_invoice_id"=>$invoice_id
-			);
-			$people_result = $this->mongo_db->update(MDB_PASSENGERS,array('_id'=>(int)$id),array('$set'=>$update_data),array('upsert'=>false));
+			];
+			$people_result = $this->mongo_db->update(MDB_PASSENGERS,['_id'=>(int)$id],['$set'=>$update_data],['upsert'=>false]);
 
-			$data = array(
+			$data = [
 				'passenger_id'=>$id,
 				'add_amt'=>$additional_amt,
 				'current_wallet_amt'=>$update_wallet_amt,
 				'notes'=>$notes,
 				'trip_id' => $invoice_id
-			);
+			];
 			$this->add_wallet_log($data);
 			return true;
 		}	
@@ -9723,14 +9723,14 @@ Class Model_Manage extends Model
                     $phone_split = substr(trim($split_value[1]), 0, -1);
                     $phone_no    = substr(trim($phone_split), 1);
                     $phone_no    = trim($phone_no);
-                    $condition =array('phone' => new MongoRegex("/$phone_no/i"),'user_status'=>'A','passenger_cid'=>(int)$company_id);
+                    $condition =array('phone' => new \MongoDB\BSON\Regex($phone_no, 'i'),'user_status'=>'A','passenger_cid'=>(int)$company_id);
                 } else {
-                    $condition =array('name' => new MongoRegex("/$like/i"),'user_status'=>'A','passenger_cid'=>(int)$company_id);
+                    $condition =array('name' => new \MongoDB\BSON\Regex($like, 'i'),'user_status'=>'A','passenger_cid'=>(int)$company_id);
                 }
             } else if($type==2){
-                $condition =array('email' => new MongoRegex("/$like/i"),'user_status'=>'A','passenger_cid'=>(int)$company_id);
+                $condition =array('email' => new \MongoDB\BSON\Regex($like, 'i'),'user_status'=>'A','passenger_cid'=>(int)$company_id);
             } else if($type==3){
-               $condition =array('phone' => new MongoRegex("/$like/i"),'user_status'=>'A','passenger_cid'=>(int)$company_id);
+               $condition =array('phone' => new \MongoDB\BSON\Regex($like, 'i'),'user_status'=>'A','passenger_cid'=>(int)$company_id);
             }
             $results = $this->mongo_db->find(MDB_PASSENGERS,$condition,array('name','phone','email','wallet_amount'));
             return (!empty($results))?iterator_to_array($results):array();
@@ -9742,14 +9742,14 @@ Class Model_Manage extends Model
                     $phone_split = substr(trim($split_value[1]), 0, -1);
                     $phone_no    = substr(trim($phone_split), 1);
                     $phone_no    = trim($phone_no);
-                    $condition =array('phone' => new MongoRegex("/$phone_no/i"),'user_status'=>'A',"\$or"=>array(array('passenger_cid'=>(int)$company_id),array('logs.company_id'=>(int)$company_id)));
+                    $condition =array('phone' => new \MongoDB\BSON\Regex($phone_no, 'i'),'user_status'=>'A',"\$or"=>array(array('passenger_cid'=>(int)$company_id),array('logs.company_id'=>(int)$company_id)));
                 } else {
-                    $condition =array('name' => new MongoRegex("/$like/i"),'user_status'=>'A',"\$or"=>array(array('passenger_cid'=>(int)$company_id),array('logs.company_id'=>(int)$company_id)));
+                    $condition =array('name' => new \MongoDB\BSON\Regex($like, 'i'),'user_status'=>'A',"\$or"=>array(array('passenger_cid'=>(int)$company_id),array('logs.company_id'=>(int)$company_id)));
                 }
             } else if($type==2){
-                $condition =array('email' => new MongoRegex("/$like/i"),'user_status'=>'A',"\$or"=>array(array('passenger_cid'=>(int)$company_id),array('logs.company_id'=>(int)$company_id)));
+                $condition =array('email' => new \MongoDB\BSON\Regex($like, 'i'),'user_status'=>'A',"\$or"=>array(array('passenger_cid'=>(int)$company_id),array('logs.company_id'=>(int)$company_id)));
             } else if($type==3){
-               $condition =array('phone' => new MongoRegex("/$like/i"),'user_status'=>'A',"\$or"=>array(array('passenger_cid'=>(int)$company_id),array('logs.company_id'=>(int)$company_id)));
+               $condition =array('phone' => new \MongoDB\BSON\Regex($like, 'i'),'user_status'=>'A',"\$or"=>array(array('passenger_cid'=>(int)$company_id),array('logs.company_id'=>(int)$company_id)));
             }
             $arguments = array(
                 array(
@@ -9783,19 +9783,19 @@ Class Model_Manage extends Model
                     $phone_split = substr(trim($split_value[1]), 0, -1);
                     $phone_no    = substr(trim($phone_split), 1);
                     $phone_no    = trim($phone_no);
-                    $condition =array('phone' => new MongoRegex("/$phone_no/i"),'user_status'=>'A');
+                    $condition =['phone' => new \MongoDB\BSON\Regex($phone_no, 'i'),'user_status'=>'A'];
                 } else {
-                    $condition =array('name' => new MongoRegex("/$like/i"),'user_status'=>'A');
+                    $condition =['name' => new \MongoDB\BSON\Regex($like, 'i'),'user_status'=>'A'];
                 }
             } else if($type==2){
-                $condition =array('email' => new MongoRegex("/$like/i"),'user_status'=>'A');
+                $condition =['email' => new \MongoDB\BSON\Regex($like, 'i'),'user_status'=>'A'];
             } else if($type==3){
-               $condition =array('phone' => new MongoRegex("/$like/i"),'user_status'=>'A');
+               $condition =['phone' => new \MongoDB\BSON\Regex($like, 'i'),'user_status'=>'A'];
             }
 
             /* Sasidharan June 17 2023 */
-            $results = $this->mongo_db->find(MDB_PASSENGERS,$condition,array('_id','name','phone','email','wallet_amount','discount_wallet'))->sort(array('name'=>1));
-            return (!empty($results))?iterator_to_array($results):array();
+            $results = $this->mongo_db->find(MDB_PASSENGERS,$condition,['_id','name','phone','email','wallet_amount','discount_wallet'])->sort(['name'=>1]);
+            return (!empty($results))?iterator_to_array($results):[];
         //}
     }
 
@@ -9803,7 +9803,7 @@ Class Model_Manage extends Model
     {	
     	$tripId = isset($data['trip_id']) ? $data['trip_id'] : "";
 
-    	$insert_array      = array(
+    	$insert_array      = [
 			"passenger_id"=>(int)$data['passenger_id'],
 			"change_amount"=>(double)$data['add_amt'],
 			"wallet_amount"=>$data['current_wallet_amt'],
@@ -9812,7 +9812,7 @@ Class Model_Manage extends Model
             "recharge_type" =>(int)1,
 	    	"notes"=>$data['notes'],
 	    	"trip_id" => (int)$tripId
-		);
+		];
 		$result= $this->mongo_db->Insert(PASSENGER_WALLET_LOG,$insert_array);
 		return true;
     }
@@ -9822,7 +9822,7 @@ Class Model_Manage extends Model
     {	
     	$tripId = isset($data['trip_id']) ? $data['trip_id'] : "";
 
-    	$insert_array = array(
+    	$insert_array = [
 			"passenger_id"=>(int)$data['passenger_id'],
 			"change_amount"=>(double)$data['add_amt'],
 			"wallet_amount"=>$data['current_wallet_amt'],
@@ -9833,7 +9833,7 @@ Class Model_Manage extends Model
 	    	"discount_wallet_status" => 1,
 	    	"dashboard_alteration" => 1,
 	    	"trip_id" => $tripId
-		);
+		];
 		
 		$result= $this->mongo_db->Insert(PASSENGER_WALLET_LOG,$insert_array);
 		return true;
@@ -9844,89 +9844,89 @@ Class Model_Manage extends Model
 		$user_createdby                  = $this->userid;
 		$keyword       = str_replace("%", "!%", $keyword);
         $keyword       = str_replace("_", "!_", $keyword);
-		$match_query = array(
+		$match_query = [
 			'user_status'=>'A',
 			'vip_user'=>(int)1,
-			'wallet_amount'=>array('$lt'=>(int)0)
-		);
+			'wallet_amount'=>['$lt'=>(int)0]
+		];
 	
 		if(!empty($keyword)) {
-			$srch_query = array( "\$and" => array($match_query,array("\$or"=>array(array( 'name' => new MongoRegex("/$keyword/i")) , array( 'email' => new MongoRegex("/$keyword/i") ), array( 'phone' => new MongoRegex("/$keyword/i") ) ) ) ) );
+			$srch_query = [ "\$and" => [$match_query,["\$or"=>[[ 'name' => new \MongoDB\BSON\Regex($keyword, 'i')] , [ 'email' => new \MongoDB\BSON\Regex($keyword, 'i') ], [ 'phone' => new \MongoDB\BSON\Regex($keyword, 'i') ] ] ] ] ];
 		}else{
 			$srch_query = $match_query;
 		}
-		$common_arguments = array(
-			array(
-				'$lookup' => array(
+		$common_arguments = [
+			[
+				'$lookup' => [
 					'from' => MDB_PASSENGERS_LOGS,
 					'localField' => '_id',
 					'foreignField' => 'passengers_id',
 					'as' => 'pass'
-				)
-			),
-			array(
-				'$unwind' => array('path'=>'$passengers_log','preserveNullAndEmptyArrays'=>true)
-			),
-			array(
+				]
+			],
+			[
+				'$unwind' => ['path'=>'$passengers_log','preserveNullAndEmptyArrays'=>true]
+			],
+			[
 				'$match' => $srch_query
-			),
-		);
+			],
+		];
 		
 		if ($find_count == TRUE) {
-			$count_arguments = array(
-				array(
-					'$project' => array(
+			$count_arguments = [
+				[
+					'$project' => [
 						'result' => '$_id'
-					)
-				),
-				array(
-					'$group' => array(
+					]
+				],
+				[
+					'$group' => [
 						'_id' => NULL,
-						'count' => array(
+						'count' => [
 							'$sum' => 1
-						)
-					)
-				)
-			);
+						]
+					]
+				]
+			];
 			$merge_arguments = array_merge($common_arguments, $count_arguments);
 			$result          = $this->mongo_db->aggregate(PASSENGERS, $merge_arguments);
 		//echo "<pre>";print_r($result['result']);exit;
 			return (!empty($result['result']) && isset($result['result'][0]['count'])) ? $result['result'][0]['count'] : 0;
 		} else {
-			$field_arguments = array(
-				array(
-					'$sort' => array( 
+			$field_arguments = [
+				[
+					'$sort' => [ 
 						'created_date' => -1
-					),
-				),
-				array(
-					'$project' => array(
+					],
+				],
+				[
+					'$project' => [
 						'passenger_email' => '$email',
 						'id' => '$_id',
 						'passenger_name' => '$name',
 						'passenger_phone' => '$phone',
 						'passenger_country_code' => '$country_code',
 						'wallet_amount' => '$wallet_amount',
-						'last_payment_update' => array('$ifNull'=>array('$last_payment_update','')),
-						'last_payment_amt' => array('$ifNull'=>array('$last_payment_amt','0')),
-						'lateral_start_date' => array('$ifNull'=>array('$lateral_start_date','')),
-						'lateral_end_date' => array('$ifNull'=>array('$lateral_end_date','')),
-						'pay_by' => array('$ifNull'=>array('$pay_by','')),
-					)
-				),
-				array('$skip'	=> (int)$offset ),
-				array('$limit'	=> (int)$val )
-			);
+						'last_payment_update' => ['$ifNull'=>['$last_payment_update','']],
+						'last_payment_amt' => ['$ifNull'=>['$last_payment_amt','0']],
+						'lateral_start_date' => ['$ifNull'=>['$lateral_start_date','']],
+						'lateral_end_date' => ['$ifNull'=>['$lateral_end_date','']],
+						'pay_by' => ['$ifNull'=>['$pay_by','']],
+					]
+				],
+				['$skip'	=> (int)$offset ],
+				['$limit'	=> (int)$val ]
+			];
 			$merge_arguments = array_merge($common_arguments, $field_arguments);
 			$result    = $this->mongo_db->aggregate(PASSENGERS, $merge_arguments);
 			//echo "<pre>";print_r($result['result']); exit;
-			return (!empty($result['result'])) ? $result['result'] : array();
+			return (!empty($result['result'])) ? $result['result'] : [];
 		}
     }
 
     public function update_payout($id,$add_amt)
     {
-        $result = $this->mongo_db->find_one(MDB_PASSENGERS,array('_id' => (int)$id),array('wallet_amount'));
+        $result = $this->mongo_db->find_one(MDB_PASSENGERS,['_id' => (int)$id],['wallet_amount']);
         
         if(count($result) > 0)
         {
@@ -9946,20 +9946,20 @@ Class Model_Manage extends Model
 
             $currentdate = new \MongoDB\BSON\UTCDateTime(strtotime($this->currentdate) * 1000);
 
-            $update_data      = array(
+            $update_data      = [
             "wallet_amount"=>(double)$update_wallet_amt,
             "last_payment_update"=>$currentdate,
             "last_payment_amt"=>(double)$add_amt
-            );
-            $people_result = $this->mongo_db->update(MDB_PASSENGERS,array('_id'=>(int)$id),array('$set'=>$update_data),array('upsert'=>false));
+            ];
+            $people_result = $this->mongo_db->update(MDB_PASSENGERS,['_id'=>(int)$id],['$set'=>$update_data],['upsert'=>false]);
 
-            $data = array(
+            $data = [
                 'passenger_id'=>$id,
                 'add_amt'=>$additional_amt,
                 'current_wallet_amt'=>$update_wallet_amt,
                 'recharge_type'=>(int)3,
                 //'transaction_id'=>''
-            );
+            ];
             $this->insert_wallet_log($data);
             return true;
         }   
@@ -9971,7 +9971,7 @@ Class Model_Manage extends Model
 
      public function insert_wallet_log($data)
     {
-        $insert_array      = array(
+        $insert_array      = [
             "passenger_id"=>(int)$data['passenger_id'],
             "change_amount"=>(double)$data['add_amt'],
             "wallet_amount"=>(double)$data['current_wallet_amt'],
@@ -9979,7 +9979,7 @@ Class Model_Manage extends Model
             "created_by" => (int)$data['passenger_id'],
             "recharge_type" =>(int)$data['recharge_type'],
             //"transaction_id" =>(int)$data['transaction_id'],
-            );
+            ];
         $result= $this->mongo_db->Insert(PASSENGER_WALLET_LOG,$insert_array);
         return true;
     }
@@ -9991,66 +9991,66 @@ Class Model_Manage extends Model
         $keyword       = str_replace("_", "!_", $keyword);
        // $match_query = array('status'=>'A');
 
-        $match_query =array();   
+        $match_query =[];   
 
         //$start_date = $search_date." 05:00:01";
         //$end_date = date('Y-m-d',strtotime('+1 days '.$search_date))." 05:00:01";
 
-       $match_query['shift_start'] = array(
-                        '$gte' => New MongoDate(strtotime($start_date)),
-                        '$lte' => New MongoDate(strtotime($end_date))
-                    );
+       $match_query['shift_start'] = [
+                        '$gte' => new \MongoDB\BSON\UTCDateTime(strtotime($start_date) * 1000),
+                        '$lte' => new \MongoDB\BSON\UTCDateTime(strtotime($end_date) * 1000)
+                    ];
    
 
         if(!empty($keyword)) {
-            $srch_query = array( "\$and" => array($match_query,array("\$or"=>array(array( 'people.name' => new MongoRegex("/$keyword/i")) , array( 'people.lastname' => new MongoRegex("/$keyword/i") ), array( 'people.email' => new MongoRegex("/$keyword/i") ), array( 'people.phone' => new MongoRegex("/$keyword/i") ) ) ) ) );
+            $srch_query = [ "\$and" => [$match_query,["\$or"=>[[ 'people.name' => new \MongoDB\BSON\Regex($keyword, 'i')] , [ 'people.lastname' => new \MongoDB\BSON\Regex($keyword, 'i') ], [ 'people.email' => new \MongoDB\BSON\Regex($keyword, 'i') ], [ 'people.phone' => new \MongoDB\BSON\Regex($keyword, 'i') ] ] ] ] ];
         }else{
             $srch_query = $match_query;
         }
-        $common_arguments = array(
-            array(
-                '$lookup' => array(
+        $common_arguments = [
+            [
+                '$lookup' => [
                     'from' => MDB_PEOPLE,
                     'localField' => 'driver_id',
                     'foreignField' => '_id',
                     'as' => 'people'
-                )
-            ),
-            array(
-                '$unwind' =>array('path'=>'$people','preserveNullAndEmptyArrays'=>true)
-            ),
-            array(
+                ]
+            ],
+            [
+                '$unwind' =>['path'=>'$people','preserveNullAndEmptyArrays'=>true]
+            ],
+            [
                 '$match' => $srch_query
-            ),
-        );
+            ],
+        ];
         
         if ($find_count == TRUE) {
-            $count_arguments = array(
+            $count_arguments = [
                 // array(
                 // '$match' => $srch_query
                 // ),
-                array(
-                    '$project' => array(
-                        'create_day'=>array('$dateToString' => array('format'=> "%Y-%m-%d", 'date'=> '$shift_start')),
+                [
+                    '$project' => [
+                        'create_day'=>['$dateToString' => ['format'=> "%Y-%m-%d", 'date'=> '$shift_start']],
                         'driver_id'=>'$driver_id'
-                    )
-                ),
-                array(
-                    '$group' => array(
+                    ]
+                ],
+                [
+                    '$group' => [
                         '_id' => '$driver_id',
-                         'count' => array(
+                         'count' => [
                             '$sum' => 1
-                        )
-                    )
-                )
-            );
+                        ]
+                    ]
+                ]
+            ];
             $result          = $this->mongo_db->aggregate(MDB_PEOPLE, $count_arguments);
             return (!empty($result['result']) && isset($result['result'][0]['count'])) ? $result['result'][0]['count'] : 0;
         } else {
-            $field_arguments = array(
+            $field_arguments = [
               
-                array(
-                    '$project' => array(
+                [
+                    '$project' => [
                     	'driver_name'=>'$people.name',
                     	'driver_id'=>'$driver_id',
                     	'driver_lastname'=>'$people.lastname',
@@ -10061,44 +10061,44 @@ Class Model_Manage extends Model
                     	'shift_end'=>'$shift_end',
                     	'status'=>'$status',
                     	//'createdate'=>'$createdate',
-                    	'create_day'=>array('$dateToString' => array('format'=> "%Y-%m-%d", 'date'=> '$shift_start'))
+                    	'create_day'=>['$dateToString' => ['format'=> "%Y-%m-%d", 'date'=> '$shift_start']]
 
-                    )
-                ),
-                array(
-                    '$group' => array(
+                    ]
+                ],
+                [
+                    '$group' => [
                         '_id' => '$driver_id',
-                        'tripdet' =>array('$push'=>'$$ROOT'),
-                        'driver_name' => array('$first'=>'$driver_name'),
-                        'driver_lastname' => array('$first'=>'$driver_lastname'),
-                        'driver_id' => array('$first'=>'$driver_id'),
+                        'tripdet' =>['$push'=>'$$ROOT'],
+                        'driver_name' => ['$first'=>'$driver_name'],
+                        'driver_lastname' => ['$first'=>'$driver_lastname'],
+                        'driver_id' => ['$first'=>'$driver_id'],
                         //'create_day' => array('$first'=>'$create_day'),
                         //'shift_hours' => array('$first'=>'$shift_hours'),
                         //'shift_start' => array('$first'=>'$shift_start'),
                         //'shift_start_date' => array('$first'=>'$shift_start_date'),
                         //'shift_end' => array('$first'=>'$shift_end'),
                         //'driver_id' => array('$first'=>'$driver_id'),
-                      )
-                ),
+                      ]
+                ],
                // array('$skip'   => (int)$offset ),
                // array('$limit'  => (int)$val ),
-                 array(
-                    '$sort' => array( 
+                 [
+                    '$sort' => [ 
                         'create_day' => -1
-                    ),
-                ),
-            );
+                    ],
+                ],
+            ];
             $merge_arguments = array_merge($common_arguments, $field_arguments);
 
             $result    = $this->mongo_db->aggregate(MDB_SHIFT_HISTORY, $merge_arguments);
-            return (!empty($result['result'])) ? $result['result'] : array();
+            return (!empty($result['result'])) ? $result['result'] : [];
         }
     }
 
 
     public function get_company_time_details($companyid)
     {
-        $timezone_details = array();
+        $timezone_details = [];
         /*** Start ***/
         if ($companyid == '') {
             if (TIMEZONE) {
@@ -10116,7 +10116,7 @@ Class Model_Manage extends Model
         } else {
             /*$timezone_base_query = "select time_zone from  company where cid='$companyid' ";
             $timezone_fetch      = Db::query(Database::SELECT, $timezone_base_query)->execute()->as_array();*/
-            $result = $this->mongo_db->find(MDB_COMPANY,array('_id'=>(int)$companyid),array('companydetails.time_zone'));
+            $result = $this->mongo_db->find(MDB_COMPANY,['_id'=>(int)$companyid],['companydetails.time_zone']);
             $model_fetch = iterator_to_array($result);
             $timezone_fetch = reset($model_fetch);
             if ($timezone_fetch['companydetails']['time_zone'] != '') {
@@ -10142,58 +10142,58 @@ Class Model_Manage extends Model
 
     public function get_allpassenger_details_limit()
     {
-		$field_arguments = array(
-				array(
-					  '$match'=>array('push_notification' => array('$ne' => (int)1), 'user_status'=>'A','device_type'=>array('$in'=>['1','2']),'device_token'=>array('$ne'=>''))
-					),
-				array( '$project' => array('_id'=>'$_id','device_type'=>'$device_type','device_token'=>'$device_token')
-				),
+		$field_arguments = [
+				[
+					  '$match'=>['push_notification' => ['$ne' => (int)1], 'user_status'=>'A','device_type'=>['$in'=>['1','2']],'device_token'=>['$ne'=>'']]
+					],
+				[ '$project' => ['_id'=>'$_id','device_type'=>'$device_type','device_token'=>'$device_token']
+				],
 				
-				array('$group' => array("_id" => array('device_type'=>'$device_type'),
+				['$group' => ["_id" => ['device_type'=>'$device_type'],
 
-						"details" => array( '$push' => array('_id'=>'$_id','device_type' => '$device_type','device_token' => '$device_token') ),
+						"details" => [ '$push' => ['_id'=>'$_id','device_type' => '$device_type','device_token' => '$device_token'] ],
 							
-						"count" => array( '$sum' => 1 ),
-					)
-				),
-				array(
-					'$sort' => array(
+						"count" => [ '$sum' => 1 ],
+					]
+				],
+				[
+					'$sort' => [
 						'_id' => -1
-					),
-				),
-				array(
+					],
+				],
+				[
 					'$skip' => 0
-				),
-				array(
+				],
+				[
 				  '$limit' => 100
-				)
+				]
 
 				
-			);
+			];
 
 		$qresult = $this->mongo_db->aggregate(MDB_PASSENGERS,$field_arguments);	
 		//print_r($qresult);exit;
-		return (!empty($qresult['result']))?$qresult['result']:array();					
+		return (!empty($qresult['result']))?$qresult['result']:[];					
     }
 
     public function passengers_count_push()
     {	
 		//MongoDB
-		$result = $this->mongo_db->count(MDB_PASSENGERS,array('user_status'=>'A', 'push_notification' => (int)1 ));
+		$result = $this->mongo_db->count(MDB_PASSENGERS,['user_status'=>'A', 'push_notification' => (int)1 ]);
 		return (!empty($result))?$result:0;
     }
 
     public function passengers_uncount_push()
     {	
 		//MongoDB
-		$result = $this->mongo_db->count(MDB_PASSENGERS,array('user_status'=>'A', 'push_notification' => array('$ne' => (int)1) ));
+		$result = $this->mongo_db->count(MDB_PASSENGERS,['user_status'=>'A', 'push_notification' => ['$ne' => (int)1] ]);
 		return (!empty($result))?$result:0;
     }
 
      public function passengers_count_update($id)
     {	
 		//MongoDB
-		$result = $this->mongo_db->update(MDB_PASSENGERS,array('_id'=>$id), array('$set' => array('push_notification' => (int)1)),array('multiple'=>true));
+		$result = $this->mongo_db->update(MDB_PASSENGERS,['_id'=>$id], ['$set' => ['push_notification' => (int)1]],['multiple'=>true]);
 		return (!empty($result))?$result:0;
 
 		//$result = $this->mongo_db->update(MDB_PEOPLE,array('_id'=>array('$in'=>$active_ids),'user_type'=>'C'),array('$set'=>array('status' => 'A')),array('multiple'=>true));
@@ -10202,7 +10202,7 @@ Class Model_Manage extends Model
      public function all_passengers_count()
     {	
 		//MongoDB
-		$result = $this->mongo_db->count(MDB_PASSENGERS,array('user_status'=>'A'));
+		$result = $this->mongo_db->count(MDB_PASSENGERS,['user_status'=>'A']);
 		return (!empty($result))?$result:0;
     }
 
@@ -10211,151 +10211,151 @@ Class Model_Manage extends Model
 		$user_createdby                  = $this->userid;
 		$keyword       = str_replace("%", "!%", $keyword);
         $keyword       = str_replace("_", "!_", $keyword);
-		$match_query = array(
+		$match_query = [
 			'user_status'=>'A',
 			'vip_user'=>(int)0,
-			'wallet_amount'=>array('$lt'=>(int)0)
-		);
+			'wallet_amount'=>['$lt'=>(int)0]
+		];
 	
 		if(!empty($keyword)) {
-			$srch_query = array( "\$and" => array($match_query,array("\$or"=>array(array( 'name' => new MongoRegex("/$keyword/i")) , array( 'email' => new MongoRegex("/$keyword/i") ), array( 'phone' => new MongoRegex("/$keyword/i") ) ) ) ) );
+			$srch_query = [ "\$and" => [$match_query,["\$or"=>[[ 'name' => new \MongoDB\BSON\Regex($keyword, 'i')] , [ 'email' => new \MongoDB\BSON\Regex($keyword, 'i') ], [ 'phone' => new \MongoDB\BSON\Regex($keyword, 'i') ] ] ] ] ];
 		}else{
 			$srch_query = $match_query;
 		}
-		$common_arguments = array(
-			array(
-				'$lookup' => array(
+		$common_arguments = [
+			[
+				'$lookup' => [
 					'from' => MDB_PASSENGERS_LOGS,
 					'localField' => '_id',
 					'foreignField' => 'passengers_id',
 					'as' => 'pass'
-				)
-			),
-			array(
-				'$unwind' => array('path'=>'$passengers_log','preserveNullAndEmptyArrays'=>true)
-			),
-			array(
+				]
+			],
+			[
+				'$unwind' => ['path'=>'$passengers_log','preserveNullAndEmptyArrays'=>true]
+			],
+			[
 				'$match' => $srch_query
-			),
-		);
+			],
+		];
 		
 		if ($find_count == TRUE) {
-			$count_arguments = array(
-				array(
-					'$project' => array(
+			$count_arguments = [
+				[
+					'$project' => [
 						'result' => '$_id'
-					)
-				),
-				array(
-					'$group' => array(
+					]
+				],
+				[
+					'$group' => [
 						'_id' => NULL,
-						'count' => array(
+						'count' => [
 							'$sum' => 1
-						)
-					)
-				)
-			);
+						]
+					]
+				]
+			];
 			$merge_arguments = array_merge($common_arguments, $count_arguments);
 			$result          = $this->mongo_db->aggregate(PASSENGERS, $merge_arguments);
 		//echo "<pre>";print_r($result['result']);exit;
 			return (!empty($result['result']) && isset($result['result'][0]['count'])) ? $result['result'][0]['count'] : 0;
 		} else {
-			$field_arguments = array(
-				array(
-					'$sort' => array( 
+			$field_arguments = [
+				[
+					'$sort' => [ 
 						'created_date' => -1
-					),
-				),
-				array(
-					'$project' => array(
+					],
+				],
+				[
+					'$project' => [
 						'passenger_email' => '$email',
 						'id' => '$_id',
 						'passenger_name' => '$name',
 						'passenger_phone' => '$phone',
 						'passenger_country_code' => '$country_code',
 						'wallet_amount' => '$wallet_amount',
-						'last_payment_update' => array('$ifNull'=>array('$last_payment_update','')),
-						'last_payment_amt' => array('$ifNull'=>array('$last_payment_amt','0')),
-						'lateral_start_date' => array('$ifNull'=>array('$lateral_start_date','')),
-						'lateral_end_date' => array('$ifNull'=>array('$lateral_end_date','')),
-						'pay_by' => array('$ifNull'=>array('$pay_by','')),
-					)
-				),
-				array('$skip'	=> (int)$offset ),
-				array('$limit'	=> (int)$val )
-			);
+						'last_payment_update' => ['$ifNull'=>['$last_payment_update','']],
+						'last_payment_amt' => ['$ifNull'=>['$last_payment_amt','0']],
+						'lateral_start_date' => ['$ifNull'=>['$lateral_start_date','']],
+						'lateral_end_date' => ['$ifNull'=>['$lateral_end_date','']],
+						'pay_by' => ['$ifNull'=>['$pay_by','']],
+					]
+				],
+				['$skip'	=> (int)$offset ],
+				['$limit'	=> (int)$val ]
+			];
 			$merge_arguments = array_merge($common_arguments, $field_arguments);
 			$result    = $this->mongo_db->aggregate(PASSENGERS, $merge_arguments);
 			//echo "<pre>";print_r($result['result']); exit;
-			return (!empty($result['result'])) ? $result['result'] : array();
+			return (!empty($result['result'])) ? $result['result'] : [];
 		}
     }
 
    public function delete_id_image($passenger_id)
     {
-       $result = $this->mongo_db->update(MDB_PASSENGERS,array('_id'=>(int)$passenger_id), array('$set' => array('id_image' => '')),array('upsert'=>false));
+       $result = $this->mongo_db->update(MDB_PASSENGERS,['_id'=>(int)$passenger_id], ['$set' => ['id_image' => '']],['upsert'=>false]);
        return $result;
     }
 
 
     public function careers_list($keyword = "", $status = "",$offset, $val,$find_count = FALSE){
     	
-			$match_query =array('_id'=>array('$ne'=>(int)0));
+			$match_query =['_id'=>['$ne'=>(int)0]];
 
 			if($status){
 				$match_query['status'] = $status;
 			}
 			if(!empty($keyword)) {
-            	$srch_query = array( "\$and" => array($match_query,array("\$or"=>array(array( 'title' => new MongoRegex("/$keyword/i")) , array( 'title_ar' => new MongoRegex("/$keyword/i") ), array( 'description' => new MongoRegex("/$keyword/i") ), array( 'description_ar' => new MongoRegex("/$keyword/i") ) ) ) ) );
+            	$srch_query = [ "\$and" => [$match_query,["\$or"=>[[ 'title' => new \MongoDB\BSON\Regex($keyword, 'i')] , [ 'title_ar' => new \MongoDB\BSON\Regex($keyword, 'i') ], [ 'description' => new \MongoDB\BSON\Regex($keyword, 'i') ], [ 'description_ar' => new \MongoDB\BSON\Regex($keyword, 'i') ] ] ] ] ];
 	        }else{
 	            $srch_query = $match_query;
 	        }
 	//print_r($srch_query);exit;
 			if ($find_count == TRUE) {
-	            $count_arguments = array(
-	                array(
+	            $count_arguments = [
+	                [
 	                '$match' => $srch_query
-	                ),
-	                array(
-	                    '$project' => array(
+	                ],
+	                [
+	                    '$project' => [
 	                        'result' => '$_id'
-	                    )
-	                ),
-	                array(
-	                    '$group' => array(
+	                    ]
+	                ],
+	                [
+	                    '$group' => [
 	                        '_id' => NULL,
-	                        'count' => array(
+	                        'count' => [
 	                            '$sum' => 1
-	                        )
-	                    )
-	                ),
-	            );
+	                        ]
+	                    ]
+	                ],
+	            ];
 	           // $merge_arguments = array_merge($common_arguments, $count_arguments);
 
 	            $result          = $this->mongo_db->aggregate(MDB_CARRERS_LIST, $count_arguments);
 	            return (!empty($result['result']) && isset($result['result'][0]['count'])) ? $result['result'][0]['count'] : 0;
 	        } else {
 
-	        	$field_arguments = array(array('$project' => array('title'=>'$title',
+	        	$field_arguments = [['$project' => ['title'=>'$title',
 							        							'description'=>'$description',
 							        							'status'=>'$status',
-							        							'created_date'=>array('$dateToString' => array('format'=> "%d/%m/%Y", 'date'=> '$created_date')),							        							
-							        							'_id'=>'$_id')
-							        		),
-	        							array('$match' => $srch_query),	        							
-	        							array(
-						                    '$sort' => array( 
+							        							'created_date'=>['$dateToString' => ['format'=> "%d/%m/%Y", 'date'=> '$created_date']],							        							
+							        							'_id'=>'$_id']
+							        		],
+	        							['$match' => $srch_query],	        							
+	        							[
+						                    '$sort' => [ 
 						                        '_id' => -1,
-						                    ),
-						                ),
-						                array('$skip'	=> (int)$offset ),
-                    					array('$limit'	=> (int)$val ),
-	        							);        	
+						                    ],
+						                ],
+						                ['$skip'	=> (int)$offset ],
+                    					['$limit'	=> (int)$val ],
+	        							];        	
 
 	        	$result    = $this->mongo_db->aggregate(MDB_CARRERS_LIST, $field_arguments);
 				// echo "<pre>";
 	           	//print_r($result);exit;
-	            return (!empty($result['result'])) ? $result['result'] : array();
+	            return (!empty($result['result'])) ? $result['result'] : [];
     
     		}
 
@@ -10364,25 +10364,25 @@ Class Model_Manage extends Model
     public function validate_add_career($arr){
 
     	return Validation::factory($arr)->rule('title', 'not_empty')	        
-	            ->rule('title', 'min_length', array(
+	            ->rule('title', 'min_length', [
 	            ':value',
 	            '2'
-	        )) ->rule('title_ar', 'not_empty')->rule('title_ar', 'min_length', array(
+	        ]) ->rule('title_ar', 'not_empty')->rule('title_ar', 'min_length', [
 	            ':value',
 	            '2'
-	        ))->rule('description', 'not_empty')->rule('description', 'min_length', array(
+	        ])->rule('description', 'not_empty')->rule('description', 'min_length', [
 	            ':value',
 	            '10'
-	        ))->rule('description_ar', 'not_empty')->rule('description_ar', 'min_length', array(
+	        ])->rule('description_ar', 'not_empty')->rule('description_ar', 'min_length', [
 	            ':value',
 	            '10'
-	        ));
+	        ]);
 
     }
 
     public function add_career($arr){
 
-    	$rs = $this->mongo_db->find(MDB_CARRERS_LIST,array(),array('_id'))->sort(array('_id'=>-1))->limit(1);
+    	$rs = $this->mongo_db->find(MDB_CARRERS_LIST,[],['_id'])->sort(['_id'=>-1])->limit(1);
 		$res = iterator_to_array($rs);
 		reset($res);
 		$first_key = key($res);
@@ -10395,7 +10395,7 @@ Class Model_Manage extends Model
 			$status = 'D';
 		}
 
-		$career_data = array('_id' => (int)$inc_id,'title'=>$arr['title'],'title_ar'=>$arr['title_ar'],'description'=>$arr['description'],'description_ar'=>$arr['description_ar'],'status'=>$status,'created_date' => new \MongoDB\BSON\UTCDateTime(strtotime($this->currentdate) * 1000) );
+		$career_data = ['_id' => (int)$inc_id,'title'=>$arr['title'],'title_ar'=>$arr['title_ar'],'description'=>$arr['description'],'description_ar'=>$arr['description_ar'],'status'=>$status,'created_date' => new \MongoDB\BSON\UTCDateTime(strtotime($this->currentdate) * 1000) ];
 
 		$result = $this->mongo_db->insert(MDB_CARRERS_LIST,$career_data);
 
@@ -10406,17 +10406,17 @@ Class Model_Manage extends Model
     {
        
         $active_ids = Commonfunction::mongo_format_array($activeids);
-        $result     = $this->mongo_db->update(MDB_CARRERS_LIST, array(
-            '_id' => array(
+        $result     = $this->mongo_db->update(MDB_CARRERS_LIST, [
+            '_id' => [
                 '$in' => $active_ids
-            )
-        ), array(
-            '$set' => array(
+            ]
+        ], [
+            '$set' => [
                 'status' => 'D'
-            )
-        ), array(
+            ]
+        ], [
             'multiple' => true
-        ));
+        ]);
         //echo '<pre>';print_r($result);exit;
         return (empty($result['err'])) ? 1 : $result['errmsg'];
     }
@@ -10424,24 +10424,24 @@ Class Model_Manage extends Model
     {
        
         $active_ids = Commonfunction::mongo_format_array($activeids);
-        $result     = $this->mongo_db->update(MDB_CARRERS_LIST, array(
-            '_id' => array(
+        $result     = $this->mongo_db->update(MDB_CARRERS_LIST, [
+            '_id' => [
                 '$in' => $active_ids
-            )
-        ), array(
-            '$set' => array(
+            ]
+        ], [
+            '$set' => [
                 'status' => 'A'
-            )
-        ), array(
+            ]
+        ], [
             'multiple' => true
-        ));
+        ]);
        
         return (empty($result['err'])) ? 1 : $result['errmsg'];
     }
 
     public function get_careers($id){
 
-    	$query = $this->mongo_db->find(MDB_CARRERS_LIST,array('_id' => (int)$id));
+    	$query = $this->mongo_db->find(MDB_CARRERS_LIST,['_id' => (int)$id]);
         $result = iterator_to_array($query);
         $finrest = array_shift($result);
         //echo "<pre>";print_r($finrest);exit();
@@ -10457,52 +10457,52 @@ Class Model_Manage extends Model
 			$status = 'D';
 		}
 
-    	$query = array('title'=>$arr['title'],'title_ar'=>$arr['title_ar'],'description'=>$arr['description'],'description_ar'=>$arr['description_ar'],'status'=>$status);
-    	$result = $this->mongo_db->update(MDB_CARRERS_LIST,array('_id'=>(int)$id),array('$set'=>$query));
+    	$query = ['title'=>$arr['title'],'title_ar'=>$arr['title_ar'],'description'=>$arr['description'],'description_ar'=>$arr['description_ar'],'status'=>$status];
+    	$result = $this->mongo_db->update(MDB_CARRERS_LIST,['_id'=>(int)$id],['$set'=>$query]);
 
     	return (empty($result['err']))?1:$result['err'];
     }
 
     public function careers_request_list($keyword = "", $status = "",$offset, $val,$find_count = FALSE){    		
     	
-			$match_query =array('_id'=>array('$ne'=>(int)0));
+			$match_query =['_id'=>['$ne'=>(int)0]];
 
 			if($status){
 				$match_query['status'] = $status;
 			}
 			if(!empty($keyword)) {
-            	$srch_query = array( "\$and" => array($match_query,array("\$or"=>array(array( 'name' => new MongoRegex("/$keyword/i")) , array( 'email' => new MongoRegex("/$keyword/i") ), array( 'phone' => new MongoRegex("/$keyword/i") ), array( 'jobs.title' => new MongoRegex("/$keyword/i") ) ) ) ) );
+            	$srch_query = [ "\$and" => [$match_query,["\$or"=>[[ 'name' => new \MongoDB\BSON\Regex($keyword, 'i')] , [ 'email' => new \MongoDB\BSON\Regex($keyword, 'i') ], [ 'phone' => new \MongoDB\BSON\Regex($keyword, 'i') ], [ 'jobs.title' => new \MongoDB\BSON\Regex($keyword, 'i') ] ] ] ] ];
 	        }else{
 	            $srch_query = $match_query;
 	        }
 
 	//print_r($srch_query);exit;
 			if ($find_count == TRUE) {
-	            $count_arguments = array(
-	            	array('$lookup'=>array(
+	            $count_arguments = [
+	            	['$lookup'=>[
                             'from'=>MDB_CARRERS_LIST,
                             'localField'=>"job_id",
                             'foreignField'=>"_id",
                              'as'=>"jobs"        
-                        )),
-                        array('$unwind'=>'$jobs'),
-	                array(
+                        ]],
+                        ['$unwind'=>'$jobs'],
+	                [
 	                '$match' => $srch_query
-	                ),
-	                array(
-	                    '$project' => array(
+	                ],
+	                [
+	                    '$project' => [
 	                        'result' => '$_id'
-	                    )
-	                ),
-	                array(
-	                    '$group' => array(
+	                    ]
+	                ],
+	                [
+	                    '$group' => [
 	                        '_id' => NULL,
-	                        'count' => array(
+	                        'count' => [
 	                            '$sum' => 1
-	                        )
-	                    )
-	                ),
-	            );
+	                        ]
+	                    ]
+	                ],
+	            ];
 	           // $merge_arguments = array_merge($common_arguments, $count_arguments);
 
 	            $result          = $this->mongo_db->aggregate(MDB_CARRERS_LIST, $count_arguments);
@@ -10524,32 +10524,32 @@ Class Model_Manage extends Model
 						                array('$skip'	=> (int)$offset ),
                     					array('$limit'	=> (int)$val ),
 	        							);    */
-	        	$arguments = array( array('$lookup'=>array(
+	        	$arguments = [ ['$lookup'=>[
                             'from'=>MDB_CARRERS_LIST,
                             'localField'=>"job_id",
                             'foreignField'=>"_id",
                              'as'=>"jobs"        
-                        )),
-                        array('$unwind'=>'$jobs'),                        
-                        array('$match'=>$srch_query),
-                        array('$project' => array(                        
+                        ]],
+                        ['$unwind'=>'$jobs'],                        
+                        ['$match'=>$srch_query],
+                        ['$project' => [                        
                             'name' => '$name',
                             'email' => '$email',
                             'phone' => '$phone',
                             'resume_file' => '$resume_file',                            
                             'title' => '$jobs.title',
-                            'created_date'=>array('$dateToString' => array('format'=> "%d/%m/%Y", 'date'=> '$created_date')),				
-							'_id'=>'$_id'),
-                        ),array('$sort' => array('_id' => -1)),
-                          array('$skip'	=> (int)$offset ),
-                    	  array('$limit'	=> (int)$val ),
-                        );
+                            'created_date'=>['$dateToString' => ['format'=> "%d/%m/%Y", 'date'=> '$created_date']],				
+							'_id'=>'$_id'],
+                        ],['$sort' => ['_id' => -1]],
+                          ['$skip'	=> (int)$offset ],
+                    	  ['$limit'	=> (int)$val ],
+                        ];
 
 
 	        	$result    = $this->mongo_db->aggregate(MDB_RESUMES, $arguments);
 				// echo "<pre>";
 	           	//print_r($result);exit;
-	            return (!empty($result['result'])) ? $result['result'] : array();
+	            return (!empty($result['result'])) ? $result['result'] : [];
     
     		}
 
@@ -10558,37 +10558,37 @@ Class Model_Manage extends Model
     public function validate_add_push_notification($arr){
 
     	return Validation::factory($arr)->rule('admin_push_message', 'not_empty')        
-						            ->rule('admin_push_message', 'min_length', array(
+						            ->rule('admin_push_message', 'min_length', [
 						            ':value',
 						            '4'
-						        ))->rule('admin_push_message', 'max_length', array(
+						        ])->rule('admin_push_message', 'max_length', [
 						            ':value',
 						            '200'
-						        ))->rule('push_title', 'not_empty')        
-						            ->rule('push_title', 'min_length', array(
+						        ])->rule('push_title', 'not_empty')        
+						            ->rule('push_title', 'min_length', [
 						            ':value',
 						            '4'
-						        ))->rule('push_title', 'max_length', array(
+						        ])->rule('push_title', 'max_length', [
 						            ':value',
 						            '30'
-						        ))->rule('push_sub_title', 'not_empty')        
-						            ->rule('push_sub_title', 'min_length', array(
+						        ])->rule('push_sub_title', 'not_empty')        
+						            ->rule('push_sub_title', 'min_length', [
 						            ':value',
 						            '4'
-						        ))->rule('push_sub_title', 'max_length', array(
+						        ])->rule('push_sub_title', 'max_length', [
 						            ':value',
 						            '60'
-						        ))->rule('notification_image', 'Upload::not_empty', array(
+						        ])->rule('notification_image', 'Upload::not_empty', [
 						            $arr['notification_image']
-						        ))->rule('notification_image', 'Upload::type', array(
-						            ':value', array('jpeg','jpg','png','gif')
-						        ));
+						        ])->rule('notification_image', 'Upload::type', [
+						            ':value', ['jpeg','jpg','png','gif']
+						        ]);
     }
 
 
     public function admin_add_push_notification($pushmessage,$image='',$title,$sub_title) {
 
-            $rs = $this->mongo_db->find(MDB_NOTIFICATIONS,array(),array('_id'))->sort(array('_id'=>-1))->limit(1);
+            $rs = $this->mongo_db->find(MDB_NOTIFICATIONS,[],['_id'])->sort(['_id'=>-1])->limit(1);
 			$rs = iterator_to_array($rs);
 			reset($rs);
 			$rs_first_key = key($rs);
@@ -10597,7 +10597,7 @@ Class Model_Manage extends Model
             $current_date      = date('Y-m-d H:i:s', time());
             $currentdate = new \MongoDB\BSON\UTCDateTime(strtotime($current_date) * 1000);
 
-            $data = array('_id'=>$_id,
+            $data = ['_id'=>$_id,
             	'title'=>$title,
             	'sub_title'=>$sub_title,
 				'message' => $pushmessage,
@@ -10606,7 +10606,7 @@ Class Model_Manage extends Model
 				'sent_status'=>0,	
 				'created_date'=>$currentdate		
 													
-			);
+			];
 			$result = $this->mongo_db->insert(MDB_NOTIFICATIONS,$data);
 			return empty($result['err'])?1:0;
 			//echo "<pre>";print_r($result);exit();
@@ -10615,52 +10615,52 @@ Class Model_Manage extends Model
 
       public function get_testimonial($keyword){
       		
-      		$match_query =array('_id'=>array('$ne'=>(int)0));
+      		$match_query =['_id'=>['$ne'=>(int)0]];
 			
 			if(!empty($keyword)) {      		
 
-      			$match_data = array('name' => new MongoRegex("/$keyword/i"));
+      			$match_data = ['name' => new \MongoDB\BSON\Regex($keyword, 'i')];
       		}else{
-      			$match_data = array('_id'=>array('$ne'=>(int)0));
+      			$match_data = ['_id'=>['$ne'=>(int)0]];
       		}
 
-      		$arguments = array(
-	      					array('$match'=>$match_data),
-	                        array('$project' => array(                        
+      		$arguments = [
+	      					['$match'=>$match_data],
+	                        ['$project' => [                        
 	                            'name' => '$name',
 	                            'skype' => '$skype',
 	                            'description' => '$description',
 	                            'status' => '$status',                            
 	                            'image' => '$image',
-	                            'created_date'=>array('$dateToString' => array('format'=> "%d/%m/%Y", 'date'=> '$created_date')),				
-								'_id'=>'$_id'),
-	                        ),array('$sort' => array('_id' => -1))	                          
-	                      );
+	                            'created_date'=>['$dateToString' => ['format'=> "%d/%m/%Y", 'date'=> '$created_date']],				
+								'_id'=>'$_id'],
+	                        ],['$sort' => ['_id' => -1]]	                          
+	                      ];
 
 
       		$result = $this->mongo_db->aggregate(MDB_TESTIMONIAL, $arguments);
       		
-      		return (!empty($result['result'])) ? $result['result'] : array();
+      		return (!empty($result['result'])) ? $result['result'] : [];
       }
 
       public function delete_testimonial($id){
 
-      	$result = $this->mongo_db->remove(MDB_TESTIMONIAL,array('_id'=>(int)$id));
+      	$result = $this->mongo_db->remove(MDB_TESTIMONIAL,['_id'=>(int)$id]);
 		return (empty($result['err']))?1:$result['err'];
       }
       
       public function delete_promocode($id){
 
-      	$result = $this->mongo_db->remove(MDB_PASSENGERS_PROMO,array('_id'=>(int)$id));
+      	$result = $this->mongo_db->remove(MDB_PASSENGERS_PROMO,['_id'=>(int)$id]);
 		return (empty($result['err']))?1:$result['err'];
       }
 
       public function get_website_content(){
 
-      		$result = $this->mongo_db->aggregate(MDB_WEBSITE_CONTENT,array( array( '$match'=> array('_id'=>1)) ) );
+      		$result = $this->mongo_db->aggregate(MDB_WEBSITE_CONTENT,[ [ '$match'=> ['_id'=>1]] ] );
       		
       		//echo "<pre>";print_r($result);exit();
-      		return (!empty($result['result'][0])) ? $result['result'][0] : array();
+      		return (!empty($result['result'][0])) ? $result['result'][0] : [];
 
       }
 
@@ -10788,137 +10788,137 @@ Class Model_Manage extends Model
     public function validate_website_content($arr){
 
     	return Validation::factory($arr)->rule('vehicle_type', 'not_empty')        
-						            ->rule('vehicle_type', 'min_length', array(
+						            ->rule('vehicle_type', 'min_length', [
 						            ':value',
 						            '4'
-						        ))->rule('vehicle_type_arabic', 'not_empty')        
-						            ->rule('vehicle_type_arabic', 'min_length', array(
+						        ])->rule('vehicle_type_arabic', 'not_empty')        
+						            ->rule('vehicle_type_arabic', 'min_length', [
 						            ':value',
 						            '4'
-						        ))->rule('vehicle_description', 'not_empty')        
-						            ->rule('vehicle_description', 'min_length', array(
+						        ])->rule('vehicle_description', 'not_empty')        
+						            ->rule('vehicle_description', 'min_length', [
 						            ':value',
 						            '4'
-						        ))->rule('vehicle_description_arabic', 'not_empty')        
-						            ->rule('vehicle_description_arabic', 'min_length', array(
+						        ])->rule('vehicle_description_arabic', 'not_empty')        
+						            ->rule('vehicle_description_arabic', 'min_length', [
 						            ':value',
 						            '4'
-						        ))->rule('meet_driver', 'not_empty')        
-						            ->rule('meet_driver', 'min_length', array(
+						        ])->rule('meet_driver', 'not_empty')        
+						            ->rule('meet_driver', 'min_length', [
 						            ':value',
 						            '4'
-						        ))->rule('meet_driver_arabic', 'not_empty')        
-						            ->rule('meet_driver_arabic', 'min_length', array(
+						        ])->rule('meet_driver_arabic', 'not_empty')        
+						            ->rule('meet_driver_arabic', 'min_length', [
 						            ':value',
 						            '4'
-						        ))->rule('meet_driver_description', 'not_empty')        
-						            ->rule('meet_driver_description', 'min_length', array(
+						        ])->rule('meet_driver_description', 'not_empty')        
+						            ->rule('meet_driver_description', 'min_length', [
 						            ':value',
 						            '4'
-						        ))->rule('meet_driver_description_arabic', 'not_empty')        
-						            ->rule('meet_driver_description_arabic', 'min_length', array(
+						        ])->rule('meet_driver_description_arabic', 'not_empty')        
+						            ->rule('meet_driver_description_arabic', 'min_length', [
 						            ':value',
 						            '4'
-						        ))->rule('website_certificate', 'not_empty')        
-						            ->rule('website_certificate', 'min_length', array(
+						        ])->rule('website_certificate', 'not_empty')        
+						            ->rule('website_certificate', 'min_length', [
 						            ':value',
 						            '4'
-						        ))->rule('website_certificate_arabic', 'not_empty')        
-						            ->rule('website_certificate_arabic', 'min_length', array(
+						        ])->rule('website_certificate_arabic', 'not_empty')        
+						            ->rule('website_certificate_arabic', 'min_length', [
 						            ':value',
 						            '4'
-						        ))->rule('website_certificate_description', 'not_empty')        
-						            ->rule('website_certificate_description', 'min_length', array(
+						        ])->rule('website_certificate_description', 'not_empty')        
+						            ->rule('website_certificate_description', 'min_length', [
 						            ':value',
 						            '4'
-						        ))->rule('website_certificate_description_arabic', 'not_empty')        
-						            ->rule('website_certificate_description_arabic', 'min_length', array(
+						        ])->rule('website_certificate_description_arabic', 'not_empty')        
+						            ->rule('website_certificate_description_arabic', 'min_length', [
 						            ':value',
 						            '4'
-						        ))->rule('banner_title', 'not_empty')        
-						            ->rule('banner_title', 'min_length', array(
+						        ])->rule('banner_title', 'not_empty')        
+						            ->rule('banner_title', 'min_length', [
 						            ':value',
 						            '4'
-						        ))->rule('banner_title_arabic', 'not_empty')        
-						            ->rule('banner_title_arabic', 'min_length', array(
+						        ])->rule('banner_title_arabic', 'not_empty')        
+						            ->rule('banner_title_arabic', 'min_length', [
 						            ':value',
 						            '4'
-						        ))->rule('banner_description', 'not_empty')        
-						            ->rule('banner_description', 'min_length', array(
+						        ])->rule('banner_description', 'not_empty')        
+						            ->rule('banner_description', 'min_length', [
 						            ':value',
 						            '4'
-						        ))->rule('banner_description_arabic', 'not_empty')        
-						            ->rule('banner_description_arabic', 'min_length', array(
+						        ])->rule('banner_description_arabic', 'not_empty')        
+						            ->rule('banner_description_arabic', 'min_length', [
 						            ':value',
 						            '4'
-						        ))->rule('pick_at_title', 'not_empty')        
-						            ->rule('pick_at_title', 'min_length', array(
+						        ])->rule('pick_at_title', 'not_empty')        
+						            ->rule('pick_at_title', 'min_length', [
 						            ':value',
 						            '4'
-						        ))->rule('pick_at_title_arabic', 'not_empty')        
-						            ->rule('pick_at_title_arabic', 'min_length', array(
+						        ])->rule('pick_at_title_arabic', 'not_empty')        
+						            ->rule('pick_at_title_arabic', 'min_length', [
 						            ':value',
 						            '4'
-						        ))->rule('pick_at_description', 'not_empty')        
-						            ->rule('pick_at_description', 'min_length', array(
+						        ])->rule('pick_at_description', 'not_empty')        
+						            ->rule('pick_at_description', 'min_length', [
 						            ':value',
 						            '4'
-						        ))->rule('pick_at_description_arabic', 'not_empty')        
-						            ->rule('pick_at_description_arabic', 'min_length', array(
+						        ])->rule('pick_at_description_arabic', 'not_empty')        
+						            ->rule('pick_at_description_arabic', 'min_length', [
 						            ':value',
 						            '4'
-						        ))->rule('card_payment', 'not_empty')        
-						            ->rule('card_payment', 'min_length', array(
+						        ])->rule('card_payment', 'not_empty')        
+						            ->rule('card_payment', 'min_length', [
 						            ':value',
 						            '4'
-						        ))->rule('card_payment_arabic', 'not_empty')        
-						            ->rule('card_payment_arabic', 'min_length', array(
+						        ])->rule('card_payment_arabic', 'not_empty')        
+						            ->rule('card_payment_arabic', 'min_length', [
 						            ':value',
 						            '4'
-						        ))->rule('card_description', 'not_empty')        
-						            ->rule('card_description', 'min_length', array(
+						        ])->rule('card_description', 'not_empty')        
+						            ->rule('card_description', 'min_length', [
 						            ':value',
 						            '4'
-						        ))->rule('card_description_arabic', 'not_empty')        
-						            ->rule('card_description_arabic', 'min_length', array(
+						        ])->rule('card_description_arabic', 'not_empty')        
+						            ->rule('card_description_arabic', 'min_length', [
 						            ':value',
 						            '4'
-						        ))->rule('secure_title', 'not_empty')        
-						            ->rule('secure_title', 'min_length', array(
+						        ])->rule('secure_title', 'not_empty')        
+						            ->rule('secure_title', 'min_length', [
 						            ':value',
 						            '4'
-						        ))->rule('secure_title_arabic', 'not_empty')        
-						            ->rule('secure_title_arabic', 'min_length', array(
+						        ])->rule('secure_title_arabic', 'not_empty')        
+						            ->rule('secure_title_arabic', 'min_length', [
 						            ':value',
 						            '4'
-						        ))->rule('web_email_contact', 'not_empty')->rule('web_email_contact', 'email')
+						        ])->rule('web_email_contact', 'not_empty')->rule('web_email_contact', 'email')
 						          ->rule('web_phone', 'not_empty')        
-						            ->rule('web_phone', 'min_length', array(
+						            ->rule('web_phone', 'min_length', [
 						            ':value',
 						            '4'
-						        ))->rule('country_arabic', 'not_empty')        
-						            ->rule('country_arabic', 'min_length', array(
+						        ])->rule('country_arabic', 'not_empty')        
+						            ->rule('country_arabic', 'min_length', [
 						            ':value',
 						            '4'
-						        ))->rule('country', 'not_empty')        
-						            ->rule('country', 'min_length', array(
+						        ])->rule('country', 'not_empty')        
+						            ->rule('country', 'min_length', [
 						            ':value',
 						            '4'
-						        ))->rule('address_two_arabic', 'min_length', array(
+						        ])->rule('address_two_arabic', 'min_length', [
 						            ':value',
 						            '4'
-						        ))->rule('address_two', 'min_length', array(
+						        ])->rule('address_two', 'min_length', [
 						            ':value',
 						            '4'
-						        ))->rule('address_arabic', 'not_empty')        
-						            ->rule('address_arabic', 'min_length', array(
+						        ])->rule('address_arabic', 'not_empty')        
+						            ->rule('address_arabic', 'min_length', [
 						            ':value',
 						            '4'
-						        ))->rule('address', 'not_empty')        
-						            ->rule('address', 'min_length', array(
+						        ])->rule('address', 'not_empty')        
+						            ->rule('address', 'min_length', [
 						            ':value',
 						            '4'
-						        ))  ;
+						        ])  ;
     }
 
 
@@ -10929,14 +10929,14 @@ Class Model_Manage extends Model
 
          //$home_page = array('vehicle_type'=>$post['vehicle_type'],'vehicle_type_arabic'=> $post['vehicle_type_arabic'],'vehicle_description'=>$post['vehicle_description'],'vehicle_description_arabic'=>$post['vehicle_description_arabic'],'meet_driver'=>$post['meet_driver'],'meet_driver_arabic'=>$post['meet_driver_arabic'],'meet_driver_description'=>$post['meet_driver_description'],'meet_driver_description_arabic'=>$post['meet_driver_description_arabic'],'banner_title'=>$post['banner_title'],'banner_title_arabic'=>$post['banner_title_arabic'],'banner_description'=>$post['banner_description'],'banner_description_arabic'=>$post['banner_description_arabic'],'pick_at_title'=>$post['pick_at_title'],'pick_at_title_arabic'=>$post['pick_at_title_arabic'],'pick_at_description'=>$post['pick_at_description'],'pick_at_description_arabic'=>$post['pick_at_description_arabic'],'card_payment'=>$post['card_payment'],'card_payment_arabic'=>$post['card_payment_arabic'],'card_description'=>$post['card_description'],'card_description_arabic'=>$post['card_description_arabic'],'secure_title'=>$post['secure_title'],'secure_title_arabic'=>$post['secure_title_arabic'],'secure_description'=>$post['secure_description'],'secure_description_arabic'=>$post['secure_description_arabic'],'update_date'=>$currentdate);
 		
-		$home_page = array('vehicle_type'=>$post['vehicle_type'],'vehicle_type_arabic'=> $post['vehicle_type_arabic'],'vehicle_description'=>$post['vehicle_description'],'vehicle_description_arabic'=>$post['vehicle_description_arabic'],'meet_driver'=>$post['meet_driver'],'meet_driver_arabic'=>$post['meet_driver_arabic'],'meet_driver_description'=>$post['meet_driver_description'],'meet_driver_description_arabic'=>$post['meet_driver_description_arabic'],'website_certificate'=>$post['website_certificate'],'website_certificate_arabic'=>$post['website_certificate_arabic'],'website_certificate_description'=>$post['website_certificate_description'],'website_certificate_description_arabic'=>$post['website_certificate_description_arabic'],'banner_title'=>$post['banner_title'],'banner_title_arabic'=>$post['banner_title_arabic'],'banner_description'=>$post['banner_description'],'banner_description_arabic'=>$post['banner_description_arabic'],'pick_at_title'=>$post['pick_at_title'],'pick_at_title_arabic'=>$post['pick_at_title_arabic'],'pick_at_description'=>$post['pick_at_description'],'pick_at_description_arabic'=>$post['pick_at_description_arabic'],'card_payment'=>$post['card_payment'],'card_payment_arabic'=>$post['card_payment_arabic'],'card_description'=>$post['card_description'],'card_description_arabic'=>$post['card_description_arabic'],'secure_title'=>$post['secure_title'],'secure_title_arabic'=>$post['secure_title_arabic'],'secure_description'=>$post['secure_description'],'secure_description_arabic'=>$post['secure_description_arabic'],'update_date'=>$currentdate);
+		$home_page = ['vehicle_type'=>$post['vehicle_type'],'vehicle_type_arabic'=> $post['vehicle_type_arabic'],'vehicle_description'=>$post['vehicle_description'],'vehicle_description_arabic'=>$post['vehicle_description_arabic'],'meet_driver'=>$post['meet_driver'],'meet_driver_arabic'=>$post['meet_driver_arabic'],'meet_driver_description'=>$post['meet_driver_description'],'meet_driver_description_arabic'=>$post['meet_driver_description_arabic'],'website_certificate'=>$post['website_certificate'],'website_certificate_arabic'=>$post['website_certificate_arabic'],'website_certificate_description'=>$post['website_certificate_description'],'website_certificate_description_arabic'=>$post['website_certificate_description_arabic'],'banner_title'=>$post['banner_title'],'banner_title_arabic'=>$post['banner_title_arabic'],'banner_description'=>$post['banner_description'],'banner_description_arabic'=>$post['banner_description_arabic'],'pick_at_title'=>$post['pick_at_title'],'pick_at_title_arabic'=>$post['pick_at_title_arabic'],'pick_at_description'=>$post['pick_at_description'],'pick_at_description_arabic'=>$post['pick_at_description_arabic'],'card_payment'=>$post['card_payment'],'card_payment_arabic'=>$post['card_payment_arabic'],'card_description'=>$post['card_description'],'card_description_arabic'=>$post['card_description_arabic'],'secure_title'=>$post['secure_title'],'secure_title_arabic'=>$post['secure_title_arabic'],'secure_description'=>$post['secure_description'],'secure_description_arabic'=>$post['secure_description_arabic'],'update_date'=>$currentdate];
 		
-         $query = array('home_page'=>$home_page);
+         $query = ['home_page'=>$home_page];
 
-         $result = $this->mongo_db->update(MDB_WEBSITE_CONTENT,array('_id'=>1),array('$set'=>$query),array('upsert'=>true));
+         $result = $this->mongo_db->update(MDB_WEBSITE_CONTENT,['_id'=>1],['$set'=>$query],['upsert'=>true]);
 
-         $site_query = array('address_one'=>$post['address'],'address_one_arabic'=>$post['address_arabic'],'address_two'=>$post['address_two'],'address_two_arabic'=>$post['address_two_arabic'],'country'=>$post['country'],'country_arabic'=>$post['country_arabic'],'web_email_contact'=>$post['web_email_contact'],'web_phone'=>$post['web_phone']);
-         $result = $this->mongo_db->update(MDB_SITEINFO,array('_id'=>1),array('$set'=>$site_query),array('upsert'=>true));
+         $site_query = ['address_one'=>$post['address'],'address_one_arabic'=>$post['address_arabic'],'address_two'=>$post['address_two'],'address_two_arabic'=>$post['address_two_arabic'],'country'=>$post['country'],'country_arabic'=>$post['country_arabic'],'web_email_contact'=>$post['web_email_contact'],'web_phone'=>$post['web_phone']];
+         $result = $this->mongo_db->update(MDB_SITEINFO,['_id'=>1],['$set'=>$site_query],['upsert'=>true]);
 
          return (empty($result['err']))?1:$result['err'];
     }
@@ -10945,122 +10945,122 @@ Class Model_Manage extends Model
     public function validate_website_features_content($arr){
 
     	return Validation::factory($arr)->rule('banner_content', 'not_empty')        
-						            ->rule('banner_content', 'min_length', array(
+						            ->rule('banner_content', 'min_length', [
 						            ':value',
 						            '4'
-						        ))->rule('banner_content_arabic', 'not_empty')        
-						            ->rule('banner_content_arabic', 'min_length', array(
+						        ])->rule('banner_content_arabic', 'not_empty')        
+						            ->rule('banner_content_arabic', 'min_length', [
 						            ':value',
 						            '4'
-						        ))->rule('feature_title', 'not_empty')        
-						            ->rule('feature_title', 'min_length', array(
+						        ])->rule('feature_title', 'not_empty')        
+						            ->rule('feature_title', 'min_length', [
 						            ':value',
 						            '4'
-						        ))->rule('feature_title_arabic', 'not_empty')        
-						            ->rule('feature_title_arabic', 'min_length', array(
+						        ])->rule('feature_title_arabic', 'not_empty')        
+						            ->rule('feature_title_arabic', 'min_length', [
 						            ':value',
 						            '4'
-						        ))->rule('feature_description', 'not_empty')        
-						            ->rule('feature_description', 'min_length', array(
+						        ])->rule('feature_description', 'not_empty')        
+						            ->rule('feature_description', 'min_length', [
 						            ':value',
 						            '4'
-						        ))->rule('feature_description_arabic', 'not_empty')        
-						            ->rule('feature_description_arabic', 'min_length', array(
+						        ])->rule('feature_description_arabic', 'not_empty')        
+						            ->rule('feature_description_arabic', 'min_length', [
 						            ':value',
 						            '4'
-						        ))->rule('gps', 'not_empty')        
-						            ->rule('gps', 'min_length', array(
+						        ])->rule('gps', 'not_empty')        
+						            ->rule('gps', 'min_length', [
 						            ':value',
 						            '3'
-						        ))->rule('gps_arabic', 'not_empty')        
-						            ->rule('gps_arabic', 'min_length', array(
+						        ])->rule('gps_arabic', 'not_empty')        
+						            ->rule('gps_arabic', 'min_length', [
 						            ':value',
 						            '3'
-						        ))->rule('gps_description', 'not_empty')        
-						            ->rule('gps_description', 'min_length', array(
+						        ])->rule('gps_description', 'not_empty')        
+						            ->rule('gps_description', 'min_length', [
 						            ':value',
 						            '4'
-						        ))->rule('gps_description_arabic', 'not_empty')        
-						            ->rule('gps_description_arabic', 'min_length', array(
+						        ])->rule('gps_description_arabic', 'not_empty')        
+						            ->rule('gps_description_arabic', 'min_length', [
 						            ':value',
 						            '4'
-						        ))->rule('fare_quote', 'not_empty')        
-						            ->rule('fare_quote', 'min_length', array(
+						        ])->rule('fare_quote', 'not_empty')        
+						            ->rule('fare_quote', 'min_length', [
 						            ':value',
 						            '4'
-						        ))->rule('fare_quote_arabic', 'not_empty')        
-						            ->rule('fare_quote_arabic', 'min_length', array(
+						        ])->rule('fare_quote_arabic', 'not_empty')        
+						            ->rule('fare_quote_arabic', 'min_length', [
 						            ':value',
 						            '4'
-						        ))->rule('fare_quote_description', 'not_empty')        
-						            ->rule('fare_quote_description', 'min_length', array(
+						        ])->rule('fare_quote_description', 'not_empty')        
+						            ->rule('fare_quote_description', 'min_length', [
 						            ':value',
 						            '4'
-						        ))->rule('fare_quote_description_arabic', 'not_empty')        
-						            ->rule('fare_quote_description_arabic', 'min_length', array(
+						        ])->rule('fare_quote_description_arabic', 'not_empty')        
+						            ->rule('fare_quote_description_arabic', 'min_length', [
 						            ':value',
 						            '4'
-						        ))->rule('social_share', 'not_empty')        
-						            ->rule('social_share', 'min_length', array(
+						        ])->rule('social_share', 'not_empty')        
+						            ->rule('social_share', 'min_length', [
 						            ':value',
 						            '4'
-						        ))->rule('social_share_arabic', 'not_empty')        
-						            ->rule('social_share_arabic', 'min_length', array(
+						        ])->rule('social_share_arabic', 'not_empty')        
+						            ->rule('social_share_arabic', 'min_length', [
 						            ':value',
 						            '4'
-						        ))->rule('social_share_description', 'not_empty')        
-						            ->rule('social_share_description', 'min_length', array(
+						        ])->rule('social_share_description', 'not_empty')        
+						            ->rule('social_share_description', 'min_length', [
 						            ':value',
 						            '4'
-						        ))->rule('social_share_description_arabic', 'not_empty')        
-						            ->rule('social_share_description_arabic', 'min_length', array(
+						        ])->rule('social_share_description_arabic', 'not_empty')        
+						            ->rule('social_share_description_arabic', 'min_length', [
 						            ':value',
 						            '4'
-						        ))->rule('rate_your_driver', 'not_empty')        
-						            ->rule('rate_your_driver', 'min_length', array(
+						        ])->rule('rate_your_driver', 'not_empty')        
+						            ->rule('rate_your_driver', 'min_length', [
 						            ':value',
 						            '4'
-						        ))->rule('rate_your_driver_arabic', 'not_empty')        
-						            ->rule('rate_your_driver_arabic', 'min_length', array(
+						        ])->rule('rate_your_driver_arabic', 'not_empty')        
+						            ->rule('rate_your_driver_arabic', 'min_length', [
 						            ':value',
 						            '4'
-						        ))->rule('rate_your_driver_description_arabic', 'not_empty')        
-						            ->rule('rate_your_driver_description_arabic', 'min_length', array(
+						        ])->rule('rate_your_driver_description_arabic', 'not_empty')        
+						            ->rule('rate_your_driver_description_arabic', 'min_length', [
 						            ':value',
 						            '4'
-						        ))->rule('reliability', 'not_empty')        
-						            ->rule('reliability', 'min_length', array(
+						        ])->rule('reliability', 'not_empty')        
+						            ->rule('reliability', 'min_length', [
 						            ':value',
 						            '4'
-						        ))->rule('reliability_arabic', 'not_empty')        
-						            ->rule('reliability_arabic', 'min_length', array(
+						        ])->rule('reliability_arabic', 'not_empty')        
+						            ->rule('reliability_arabic', 'min_length', [
 						            ':value',
 						            '4'
-						        ))->rule('reliability_description', 'not_empty')        
-						            ->rule('reliability_description', 'min_length', array(
+						        ])->rule('reliability_description', 'not_empty')        
+						            ->rule('reliability_description', 'min_length', [
 						            ':value',
 						            '4'
-						        ))->rule('reliability_description_arabic', 'not_empty')        
-						            ->rule('reliability_description_arabic', 'min_length', array(
+						        ])->rule('reliability_description_arabic', 'not_empty')        
+						            ->rule('reliability_description_arabic', 'min_length', [
 						            ':value',
 						            '4'
-						        ))->rule('schedule_ride', 'not_empty')        
-						            ->rule('schedule_ride', 'min_length', array(
+						        ])->rule('schedule_ride', 'not_empty')        
+						            ->rule('schedule_ride', 'min_length', [
 						            ':value',
 						            '4'
-						        ))->rule('schedule_ride_arabic', 'not_empty')        
-						            ->rule('schedule_ride_arabic', 'min_length', array(
+						        ])->rule('schedule_ride_arabic', 'not_empty')        
+						            ->rule('schedule_ride_arabic', 'min_length', [
 						            ':value',
 						            '4'
-						        ))->rule('schedule_ride_decription', 'not_empty')        
-						            ->rule('schedule_ride_decription', 'min_length', array(
+						        ])->rule('schedule_ride_decription', 'not_empty')        
+						            ->rule('schedule_ride_decription', 'min_length', [
 						            ':value',
 						            '4'
-						        ))->rule('schedule_ride_decription_arabic', 'not_empty')        
-						            ->rule('schedule_ride_decription_arabic', 'min_length', array(
+						        ])->rule('schedule_ride_decription_arabic', 'not_empty')        
+						            ->rule('schedule_ride_decription_arabic', 'min_length', [
 						            ':value',
 						            '4'
-						        ));
+						        ]);
     }
 
 
@@ -11069,11 +11069,11 @@ Class Model_Manage extends Model
     	 $current_date      = date('Y-m-d H:i:s', time());
          $currentdate = new \MongoDB\BSON\UTCDateTime(strtotime($current_date) * 1000);
 
-         $home_page = array('banner_content'=>$post['banner_content'],'banner_content_arabic'=> $post['banner_content_arabic'],'feature_title'=>$post['feature_title'],'feature_title_arabic'=>$post['feature_title_arabic'],'feature_description'=>$post['feature_description'],'feature_description_arabic'=>$post['feature_description_arabic'],'gps'=>$post['gps'],'gps_arabic'=>$post['gps_arabic'],'gps_description'=>$post['gps_description'],'gps_description_arabic'=>$post['gps_description_arabic'],'fare_quote'=>$post['fare_quote'],'fare_quote_arabic'=>$post['fare_quote_arabic'],'fare_quote_description'=>$post['fare_quote_description'],'fare_quote_description_arabic'=>$post['fare_quote_description_arabic'],'social_share'=>$post['social_share'],'social_share_arabic'=>$post['social_share_arabic'],'social_share_description'=>$post['social_share_description'],'social_share_description_arabic'=>$post['social_share_description_arabic'],'rate_your_driver'=>$post['rate_your_driver'],'rate_your_driver_arabic'=>$post['rate_your_driver_arabic'],'rate_your_driver_description'=>$post['rate_your_driver_description'],'rate_your_driver_description_arabic'=>$post['rate_your_driver_description_arabic'],'reliability'=>$post['reliability'],'reliability_arabic'=>$post['reliability_arabic'],'reliability_description'=>$post['reliability_description'],'reliability_description_arabic'=>$post['reliability_description_arabic'],'schedule_ride'=>$post['schedule_ride'],'schedule_ride_arabic'=>$post['schedule_ride_arabic'],'schedule_ride_decription'=>$post['schedule_ride_decription'],'schedule_ride_decription_arabic'=>$post['schedule_ride_decription_arabic'],'update_date'=>$currentdate);
+         $home_page = ['banner_content'=>$post['banner_content'],'banner_content_arabic'=> $post['banner_content_arabic'],'feature_title'=>$post['feature_title'],'feature_title_arabic'=>$post['feature_title_arabic'],'feature_description'=>$post['feature_description'],'feature_description_arabic'=>$post['feature_description_arabic'],'gps'=>$post['gps'],'gps_arabic'=>$post['gps_arabic'],'gps_description'=>$post['gps_description'],'gps_description_arabic'=>$post['gps_description_arabic'],'fare_quote'=>$post['fare_quote'],'fare_quote_arabic'=>$post['fare_quote_arabic'],'fare_quote_description'=>$post['fare_quote_description'],'fare_quote_description_arabic'=>$post['fare_quote_description_arabic'],'social_share'=>$post['social_share'],'social_share_arabic'=>$post['social_share_arabic'],'social_share_description'=>$post['social_share_description'],'social_share_description_arabic'=>$post['social_share_description_arabic'],'rate_your_driver'=>$post['rate_your_driver'],'rate_your_driver_arabic'=>$post['rate_your_driver_arabic'],'rate_your_driver_description'=>$post['rate_your_driver_description'],'rate_your_driver_description_arabic'=>$post['rate_your_driver_description_arabic'],'reliability'=>$post['reliability'],'reliability_arabic'=>$post['reliability_arabic'],'reliability_description'=>$post['reliability_description'],'reliability_description_arabic'=>$post['reliability_description_arabic'],'schedule_ride'=>$post['schedule_ride'],'schedule_ride_arabic'=>$post['schedule_ride_arabic'],'schedule_ride_decription'=>$post['schedule_ride_decription'],'schedule_ride_decription_arabic'=>$post['schedule_ride_decription_arabic'],'update_date'=>$currentdate];
 
-         $query = array('features_page'=>$home_page);
+         $query = ['features_page'=>$home_page];
 
-         $result = $this->mongo_db->update(MDB_WEBSITE_CONTENT,array('_id'=>1),array('$set'=>$query),array('upsert'=>true));
+         $result = $this->mongo_db->update(MDB_WEBSITE_CONTENT,['_id'=>1],['$set'=>$query],['upsert'=>true]);
 
          return (empty($result['err']))?1:$result['err'];
     }
@@ -11081,134 +11081,134 @@ Class Model_Manage extends Model
     public function validate_website_how_works_content($arr){
 
     	return Validation::factory($arr)->rule('banner_content', 'not_empty')        
-						            ->rule('banner_content', 'min_length', array(
+						            ->rule('banner_content', 'min_length', [
 						            ':value',
 						            '4'
-						        ))->rule('banner_content_arabic', 'not_empty')        
-						            ->rule('banner_content_arabic', 'min_length', array(
+						        ])->rule('banner_content_arabic', 'not_empty')        
+						            ->rule('banner_content_arabic', 'min_length', [
 						            ':value',
 						            '4'
-						        ))->rule('how_its_work', 'not_empty')        
-						            ->rule('how_its_work', 'min_length', array(
+						        ])->rule('how_its_work', 'not_empty')        
+						            ->rule('how_its_work', 'min_length', [
 						            ':value',
 						            '4'
-						        ))->rule('how_its_work_arabic', 'not_empty')        
-						            ->rule('how_its_work_arabic', 'min_length', array(
+						        ])->rule('how_its_work_arabic', 'not_empty')        
+						            ->rule('how_its_work_arabic', 'min_length', [
 						            ':value',
 						            '4'
-						        ))->rule('how_its_work_description', 'not_empty')        
-						            ->rule('how_its_work_description', 'min_length', array(
+						        ])->rule('how_its_work_description', 'not_empty')        
+						            ->rule('how_its_work_description', 'min_length', [
 						            ':value',
 						            '4'
-						        ))->rule('how_its_work_description_arabic', 'not_empty')        
-						            ->rule('how_its_work_description_arabic', 'min_length', array(
+						        ])->rule('how_its_work_description_arabic', 'not_empty')        
+						            ->rule('how_its_work_description_arabic', 'min_length', [
 						            ':value',
 						            '4'
-						        ))->rule('booking', 'not_empty')        
-						            ->rule('booking', 'min_length', array(
+						        ])->rule('booking', 'not_empty')        
+						            ->rule('booking', 'min_length', [
 						            ':value',
 						            '3'
-						        ))->rule('booking_arabic', 'not_empty')        
-						            ->rule('booking_arabic', 'min_length', array(
+						        ])->rule('booking_arabic', 'not_empty')        
+						            ->rule('booking_arabic', 'min_length', [
 						            ':value',
 						            '3'
-						        ))->rule('booking_description', 'not_empty')        
-						            ->rule('booking_description', 'min_length', array(
+						        ])->rule('booking_description', 'not_empty')        
+						            ->rule('booking_description', 'min_length', [
 						            ':value',
 						            '4'
-						        ))->rule('booking_description_arabic', 'not_empty')        
-						            ->rule('booking_description_arabic', 'min_length', array(
+						        ])->rule('booking_description_arabic', 'not_empty')        
+						            ->rule('booking_description_arabic', 'min_length', [
 						            ':value',
 						            '4'
-						        ))->rule('select_car', 'not_empty')        
-						            ->rule('select_car', 'min_length', array(
+						        ])->rule('select_car', 'not_empty')        
+						            ->rule('select_car', 'min_length', [
 						            ':value',
 						            '4'
-						        ))->rule('select_car_arabic', 'not_empty')        
-						            ->rule('select_car_arabic', 'min_length', array(
+						        ])->rule('select_car_arabic', 'not_empty')        
+						            ->rule('select_car_arabic', 'min_length', [
 						            ':value',
 						            '4'
-						        ))->rule('airport_pickup', 'not_empty')        
-						            ->rule('airport_pickup', 'min_length', array(
+						        ])->rule('airport_pickup', 'not_empty')        
+						            ->rule('airport_pickup', 'min_length', [
 						            ':value',
 						            '4'
-						        ))->rule('airport_pickup_arabic', 'not_empty')        
-						            ->rule('airport_pickup_arabic', 'min_length', array(
+						        ])->rule('airport_pickup_arabic', 'not_empty')        
+						            ->rule('airport_pickup_arabic', 'min_length', [
 						            ':value',
 						            '4'
-						        ))->rule('airport_pickup_description', 'not_empty')        
-						            ->rule('airport_pickup_description', 'min_length', array(
+						        ])->rule('airport_pickup_description', 'not_empty')        
+						            ->rule('airport_pickup_description', 'min_length', [
 						            ':value',
 						            '4'
-						        ))->rule('airport_pickup_description_arabic', 'not_empty')        
-						            ->rule('airport_pickup_description_arabic', 'min_length', array(
+						        ])->rule('airport_pickup_description_arabic', 'not_empty')        
+						            ->rule('airport_pickup_description_arabic', 'min_length', [
 						            ':value',
 						            '4'
-						        ))->rule('fare', 'not_empty')        
-						            ->rule('fare', 'min_length', array(
+						        ])->rule('fare', 'not_empty')        
+						            ->rule('fare', 'min_length', [
 						            ':value',
 						            '4'
-						        ))->rule('fare_arabic', 'not_empty')        
-						            ->rule('fare_arabic', 'min_length', array(
+						        ])->rule('fare_arabic', 'not_empty')        
+						            ->rule('fare_arabic', 'min_length', [
 						            ':value',
 						            '4'
-						        ))->rule('fare_description', 'not_empty')        
-						            ->rule('fare_description', 'min_length', array(
+						        ])->rule('fare_description', 'not_empty')        
+						            ->rule('fare_description', 'min_length', [
 						            ':value',
 						            '4'
-						        ))->rule('fare_description_arabic', 'not_empty')        
-						            ->rule('fare_description_arabic', 'min_length', array(
+						        ])->rule('fare_description_arabic', 'not_empty')        
+						            ->rule('fare_description_arabic', 'min_length', [
 						            ':value',
 						            '4'
-						        ))->rule('ride_confirm', 'not_empty')        
-						            ->rule('ride_confirm', 'min_length', array(
+						        ])->rule('ride_confirm', 'not_empty')        
+						            ->rule('ride_confirm', 'min_length', [
 						            ':value',
 						            '4'
-						        )) ->rule('ride_confirm_arabic', 'not_empty')        
-						            ->rule('ride_confirm_arabic', 'min_length', array(
+						        ]) ->rule('ride_confirm_arabic', 'not_empty')        
+						            ->rule('ride_confirm_arabic', 'min_length', [
 						            ':value',
 						            '4'
-						        ))->rule('ride_confirm_description', 'not_empty')        
-						            ->rule('ride_confirm_description', 'min_length', array(
+						        ])->rule('ride_confirm_description', 'not_empty')        
+						            ->rule('ride_confirm_description', 'min_length', [
 						            ':value',
 						            '4'
-						        ))->rule('ride_confirm_description_arabic', 'not_empty')        
-						            ->rule('ride_confirm_description_arabic', 'min_length', array(
+						        ])->rule('ride_confirm_description_arabic', 'not_empty')        
+						            ->rule('ride_confirm_description_arabic', 'min_length', [
 						            ':value',
 						            '4'
-						        ))->rule('ride_complete', 'not_empty')        
-						            ->rule('ride_complete', 'min_length', array(
+						        ])->rule('ride_complete', 'not_empty')        
+						            ->rule('ride_complete', 'min_length', [
 						            ':value',
 						            '4'
-						        ))->rule('ride_complete_arabic', 'not_empty')        
-						            ->rule('ride_complete_arabic', 'min_length', array(
+						        ])->rule('ride_complete_arabic', 'not_empty')        
+						            ->rule('ride_complete_arabic', 'min_length', [
 						            ':value',
 						            '4'
-						        ))->rule('ride_complete_description', 'not_empty')        
-						            ->rule('ride_complete_description', 'min_length', array(
+						        ])->rule('ride_complete_description', 'not_empty')        
+						            ->rule('ride_complete_description', 'min_length', [
 						            ':value',
 						            '4'
-						        ))->rule('ride_complete_description_arabic', 'not_empty')        
-						            ->rule('ride_complete_description_arabic', 'min_length', array(
+						        ])->rule('ride_complete_description_arabic', 'not_empty')        
+						            ->rule('ride_complete_description_arabic', 'min_length', [
 						            ':value',
 						            '4'
-						        ))->rule('rate_driver', 'not_empty')        
-						            ->rule('rate_driver', 'min_length', array(
+						        ])->rule('rate_driver', 'not_empty')        
+						            ->rule('rate_driver', 'min_length', [
 						            ':value',
 						            '4'
-						        ))->rule('rate_driver_arabic', 'not_empty')        
-						            ->rule('rate_driver_arabic', 'min_length', array(
+						        ])->rule('rate_driver_arabic', 'not_empty')        
+						            ->rule('rate_driver_arabic', 'min_length', [
 						            ':value',
 						            '4'
-						        ))->rule('rate_driver_description', 'not_empty')        
-						            ->rule('rate_driver_description', 'min_length', array(
+						        ])->rule('rate_driver_description', 'not_empty')        
+						            ->rule('rate_driver_description', 'min_length', [
 						            ':value',
 						            '4'
-						        ))->rule('rate_driver_description_arabic', 'not_empty')        
-						            ->rule('rate_driver_description_arabic', 'min_length', array(
+						        ])->rule('rate_driver_description_arabic', 'not_empty')        
+						            ->rule('rate_driver_description_arabic', 'min_length', [
 						            ':value',
 						            '4'
-						        ));
+						        ]);
     }
 
 
@@ -11217,11 +11217,11 @@ Class Model_Manage extends Model
     	 $current_date      = date('Y-m-d H:i:s', time());
          $currentdate = new \MongoDB\BSON\UTCDateTime(strtotime($current_date) * 1000);
 
-         $home_page = array('banner_content'=>$post['banner_content'],'banner_content_arabic'=> $post['banner_content_arabic'],'how_its_work'=>$post['how_its_work'],'how_its_work_arabic'=>$post['how_its_work_arabic'],'how_its_work_description'=>$post['how_its_work_description'],'how_its_work_description_arabic'=>$post['how_its_work_description_arabic'],'booking'=>$post['booking'],'booking_arabic'=>$post['booking_arabic'],'booking_description'=>$post['booking_description'],'booking_description_arabic'=>$post['booking_description_arabic'],'select_car'=>$post['select_car'],'select_car_arabic'=>$post['select_car_arabic'],'select_car_description'=>$post['select_car_description'],'select_car_description_arabic'=>$post['select_car_description_arabic'],'airport_pickup'=>$post['airport_pickup'],'airport_pickup_arabic'=>$post['airport_pickup_arabic'],'airport_pickup_description'=>$post['airport_pickup_description'],'airport_pickup_description_arabic'=>$post['airport_pickup_description_arabic'],'fare'=>$post['fare'],'fare_arabic'=>$post['fare_arabic'],'fare_description'=>$post['fare_description'],'fare_description_arabic'=>$post['fare_description_arabic'],'ride_confirm'=>$post['ride_confirm'],'ride_confirm_arabic'=>$post['ride_confirm_arabic'],'ride_confirm_description'=>$post['ride_confirm_description'],'ride_confirm_description_arabic'=>$post['ride_confirm_description_arabic'],'ride_complete'=>$post['ride_complete'],'ride_complete_arabic'=>$post['ride_complete_arabic'],'ride_complete_description'=>$post['ride_complete_description'],'ride_complete_description_arabic'=>$post['ride_complete_description_arabic'],'rate_driver'=>$post['rate_driver'],'rate_driver_arabic'=>$post['rate_driver_arabic'],'rate_driver_description'=>$post['rate_driver_description'],'rate_driver_description_arabic'=>$post['rate_driver_description_arabic'],'update_date'=>$currentdate);
+         $home_page = ['banner_content'=>$post['banner_content'],'banner_content_arabic'=> $post['banner_content_arabic'],'how_its_work'=>$post['how_its_work'],'how_its_work_arabic'=>$post['how_its_work_arabic'],'how_its_work_description'=>$post['how_its_work_description'],'how_its_work_description_arabic'=>$post['how_its_work_description_arabic'],'booking'=>$post['booking'],'booking_arabic'=>$post['booking_arabic'],'booking_description'=>$post['booking_description'],'booking_description_arabic'=>$post['booking_description_arabic'],'select_car'=>$post['select_car'],'select_car_arabic'=>$post['select_car_arabic'],'select_car_description'=>$post['select_car_description'],'select_car_description_arabic'=>$post['select_car_description_arabic'],'airport_pickup'=>$post['airport_pickup'],'airport_pickup_arabic'=>$post['airport_pickup_arabic'],'airport_pickup_description'=>$post['airport_pickup_description'],'airport_pickup_description_arabic'=>$post['airport_pickup_description_arabic'],'fare'=>$post['fare'],'fare_arabic'=>$post['fare_arabic'],'fare_description'=>$post['fare_description'],'fare_description_arabic'=>$post['fare_description_arabic'],'ride_confirm'=>$post['ride_confirm'],'ride_confirm_arabic'=>$post['ride_confirm_arabic'],'ride_confirm_description'=>$post['ride_confirm_description'],'ride_confirm_description_arabic'=>$post['ride_confirm_description_arabic'],'ride_complete'=>$post['ride_complete'],'ride_complete_arabic'=>$post['ride_complete_arabic'],'ride_complete_description'=>$post['ride_complete_description'],'ride_complete_description_arabic'=>$post['ride_complete_description_arabic'],'rate_driver'=>$post['rate_driver'],'rate_driver_arabic'=>$post['rate_driver_arabic'],'rate_driver_description'=>$post['rate_driver_description'],'rate_driver_description_arabic'=>$post['rate_driver_description_arabic'],'update_date'=>$currentdate];
 
-         $query = array('how_its_work_page'=>$home_page);
+         $query = ['how_its_work_page'=>$home_page];
 
-         $result = $this->mongo_db->update(MDB_WEBSITE_CONTENT,array('_id'=>1),array('$set'=>$query),array('upsert'=>true));
+         $result = $this->mongo_db->update(MDB_WEBSITE_CONTENT,['_id'=>1],['$set'=>$query],['upsert'=>true]);
 
          return (empty($result['err']))?1:$result['err'];
     }
@@ -11230,30 +11230,30 @@ Class Model_Manage extends Model
     public function validate_website_pricing_content($arr){
 
     	return Validation::factory($arr)->rule('banner_content', 'not_empty')        
-						            ->rule('banner_content', 'min_length', array(
+						            ->rule('banner_content', 'min_length', [
 						            ':value',
 						            '4'
-						        ))->rule('banner_content_arabic', 'not_empty')        
-						            ->rule('banner_content_arabic', 'min_length', array(
+						        ])->rule('banner_content_arabic', 'not_empty')        
+						            ->rule('banner_content_arabic', 'min_length', [
 						            ':value',
 						            '4'
-						        ))->rule('pricing', 'not_empty')        
-						            ->rule('pricing', 'min_length', array(
+						        ])->rule('pricing', 'not_empty')        
+						            ->rule('pricing', 'min_length', [
 						            ':value',
 						            '4'
-						        ))->rule('pricing_arabic', 'not_empty')        
-						            ->rule('pricing_arabic', 'min_length', array(
+						        ])->rule('pricing_arabic', 'not_empty')        
+						            ->rule('pricing_arabic', 'min_length', [
 						            ':value',
 						            '4'
-						        ))->rule('pricing_description', 'not_empty')        
-						            ->rule('pricing_description', 'min_length', array(
+						        ])->rule('pricing_description', 'not_empty')        
+						            ->rule('pricing_description', 'min_length', [
 						            ':value',
 						            '4'
-						        ))->rule('pricing_description_arabic', 'not_empty')        
-						            ->rule('pricing_description_arabic', 'min_length', array(
+						        ])->rule('pricing_description_arabic', 'not_empty')        
+						            ->rule('pricing_description_arabic', 'min_length', [
 						            ':value',
 						            '4'
-						        ));
+						        ]);
     }
 
 
@@ -11262,11 +11262,11 @@ Class Model_Manage extends Model
     	 $current_date      = date('Y-m-d H:i:s', time());
          $currentdate = new \MongoDB\BSON\UTCDateTime(strtotime($current_date) * 1000);  
 
-         $home_page = array('banner_content'=>$post['banner_content'],'banner_content_arabic'=> $post['banner_content_arabic'],'pricing'=>$post['pricing'],'pricing_arabic'=>$post['pricing_arabic'],'pricing_description'=>$post['pricing_description'],'pricing_description_arabic'=>$post['pricing_description_arabic'],'update_date'=>$currentdate);
+         $home_page = ['banner_content'=>$post['banner_content'],'banner_content_arabic'=> $post['banner_content_arabic'],'pricing'=>$post['pricing'],'pricing_arabic'=>$post['pricing_arabic'],'pricing_description'=>$post['pricing_description'],'pricing_description_arabic'=>$post['pricing_description_arabic'],'update_date'=>$currentdate];
 
-         $query = array('pricing_page'=>$home_page);
+         $query = ['pricing_page'=>$home_page];
 
-         $result = $this->mongo_db->update(MDB_WEBSITE_CONTENT,array('_id'=>1),array('$set'=>$query),array('upsert'=>true));
+         $result = $this->mongo_db->update(MDB_WEBSITE_CONTENT,['_id'=>1],['$set'=>$query],['upsert'=>true]);
 
          return (empty($result['err']))?1:$result['err'];
     }
@@ -11275,30 +11275,30 @@ Class Model_Manage extends Model
     public function validate_website_careers_content($arr){
 
     	return Validation::factory($arr)->rule('banner_content', 'not_empty')        
-						            ->rule('banner_content', 'min_length', array(
+						            ->rule('banner_content', 'min_length', [
 						            ':value',
 						            '4'
-						        ))->rule('banner_content_arabic', 'not_empty')        
-						            ->rule('banner_content_arabic', 'min_length', array(
+						        ])->rule('banner_content_arabic', 'not_empty')        
+						            ->rule('banner_content_arabic', 'min_length', [
 						            ':value',
 						            '4'
-						        ))->rule('career', 'not_empty')        
-						            ->rule('career', 'min_length', array(
+						        ])->rule('career', 'not_empty')        
+						            ->rule('career', 'min_length', [
 						            ':value',
 						            '4'
-						        ))->rule('career_arabic', 'not_empty')        
-						            ->rule('career_arabic', 'min_length', array(
+						        ])->rule('career_arabic', 'not_empty')        
+						            ->rule('career_arabic', 'min_length', [
 						            ':value',
 						            '4'
-						        ))->rule('career_description', 'not_empty')        
-						            ->rule('career_description', 'min_length', array(
+						        ])->rule('career_description', 'not_empty')        
+						            ->rule('career_description', 'min_length', [
 						            ':value',
 						            '4'
-						        ))->rule('career_description_arabic', 'not_empty')        
-						            ->rule('career_description_arabic', 'min_length', array(
+						        ])->rule('career_description_arabic', 'not_empty')        
+						            ->rule('career_description_arabic', 'min_length', [
 						            ':value',
 						            '4'
-						        ));
+						        ]);
     }
 
 
@@ -11307,11 +11307,11 @@ Class Model_Manage extends Model
     	 $current_date      = date('Y-m-d H:i:s', time());
          $currentdate = new \MongoDB\BSON\UTCDateTime(strtotime($current_date) * 1000);  
 
-         $home_page = array('banner_content'=>$post['banner_content'],'banner_content_arabic'=> $post['banner_content_arabic'],'career'=>$post['career'],'career_arabic'=>$post['career_arabic'],'career_description'=>$post['career_description'],'career_description_arabic'=>$post['career_description_arabic'],'update_date'=>$currentdate);
+         $home_page = ['banner_content'=>$post['banner_content'],'banner_content_arabic'=> $post['banner_content_arabic'],'career'=>$post['career'],'career_arabic'=>$post['career_arabic'],'career_description'=>$post['career_description'],'career_description_arabic'=>$post['career_description_arabic'],'update_date'=>$currentdate];
 
-         $query = array('careers_page'=>$home_page);
+         $query = ['careers_page'=>$home_page];
 
-         $result = $this->mongo_db->update(MDB_WEBSITE_CONTENT,array('_id'=>1),array('$set'=>$query),array('upsert'=>true));
+         $result = $this->mongo_db->update(MDB_WEBSITE_CONTENT,['_id'=>1],['$set'=>$query],['upsert'=>true]);
 
          return (empty($result['err']))?1:$result['err'];
     }
@@ -11319,14 +11319,14 @@ Class Model_Manage extends Model
     public function validate_website_cms_content($arr){
 
     	return Validation::factory($arr)->rule('content', 'not_empty')        
-						            ->rule('content', 'min_length', array(
+						            ->rule('content', 'min_length', [
 						            ':value',
 						            '4'
-						        ))->rule('content_arabic', 'not_empty')        
-						            ->rule('content_arabic', 'min_length', array(
+						        ])->rule('content_arabic', 'not_empty')        
+						            ->rule('content_arabic', 'min_length', [
 						            ':value',
 						            '4'
-						        ));
+						        ]);
     }
 
 
@@ -11337,22 +11337,22 @@ Class Model_Manage extends Model
 
          $page = isset($post['type'])?$post['type']:"";
 
-         $home_page = array('content'=>$post['content'],'content_arabic'=> $post['content_arabic'],'update_date'=>$currentdate);
+         $home_page = ['content'=>$post['content'],'content_arabic'=> $post['content_arabic'],'update_date'=>$currentdate];
 
-         $query = array('careers_page'=>$home_page);
+         $query = ['careers_page'=>$home_page];
 
          if($page=='about_us_page'){
 
-         	$query = array('about_us_page'=>$home_page);
+         	$query = ['about_us_page'=>$home_page];
 
          }else if($page=='terms_and_conditions_page'){
 
-         	$query = array('terms_and_conditions_page'=>$home_page);
+         	$query = ['terms_and_conditions_page'=>$home_page];
          }
 
          if($page=='terms_and_conditions_page' || $page=='about_us_page'){
 
-         	$result = $this->mongo_db->update(MDB_WEBSITE_CONTENT,array('_id'=>1),array('$set'=>$query),array('upsert'=>true));
+         	$result = $this->mongo_db->update(MDB_WEBSITE_CONTENT,['_id'=>1],['$set'=>$query],['upsert'=>true]);
 
          	return (empty($result['err']))?1:$result['err'];
 
@@ -11363,13 +11363,13 @@ Class Model_Manage extends Model
 
     public function change_notification_status($id,$status=2){
 
-    	$res = $this->mongo_db->find_one(MDB_NOTIFICATIONS,array("_id"=>(int)$id));
+    	$res = $this->mongo_db->find_one(MDB_NOTIFICATIONS,["_id"=>(int)$id]);
 
     	//print_r($res);exit;
 
     	if(isset($res['sent_status']) && $res['sent_status']==0){    		
 
-    		$result = $this->mongo_db->update(MDB_NOTIFICATIONS,array('_id'=>(int)$id ),array('$set'=>array('sent_status'=>$status) ) );
+    		$result = $this->mongo_db->update(MDB_NOTIFICATIONS,['_id'=>(int)$id ],['$set'=>['sent_status'=>$status] ] );
     	
     		return (empty($result['err']))?1:$result['err'];
 
@@ -11380,7 +11380,7 @@ Class Model_Manage extends Model
 
     public function delete_notification($id){
 
-    	$res = $this->mongo_db->find_one(MDB_NOTIFICATIONS,array("_id"=>(int)$id));
+    	$res = $this->mongo_db->find_one(MDB_NOTIFICATIONS,["_id"=>(int)$id]);
     	//print_r($res);exit;
 
     	if(isset($res['sent_status']) && ( $res['sent_status']==0 || $res['sent_status']==1 ) ){
@@ -11393,7 +11393,7 @@ Class Model_Manage extends Model
 	            unlink($path22);
 	        }   		
 
-    		$result = $this->mongo_db->remove(MDB_NOTIFICATIONS,array('_id'=>(int)$id));
+    		$result = $this->mongo_db->remove(MDB_NOTIFICATIONS,['_id'=>(int)$id]);
 
 			return (empty($result['err']))?1:$result['err'];    	
     	}
@@ -11408,12 +11408,12 @@ Class Model_Manage extends Model
 		$user_createdby                  = $this->userid;
 		$keyword       = str_replace("%", "!%", $keyword);
         $keyword       = str_replace("_", "!_", $keyword);
-		$match_query = array('pass.user_status'=>'A');
+		$match_query = ['pass.user_status'=>'A'];
 
-		$match_query["recharge_type"] = array('$ne'=>6); //avoid pending repayment
+		$match_query["recharge_type"] = ['$ne'=>6]; //avoid pending repayment
 
 		//get credit transactions or trip payment only
-		$match_query["\$or"] = array( array( 'wallet_amount' => array('$gte'=>0 ) ), array('recharge_type'=> array('$in'=> array(1,2,3,8) ) ) );
+		$match_query["\$or"] = [ [ 'wallet_amount' => ['$gte'=>0 ] ], ['recharge_type'=> ['$in'=> [1,2,3,8] ] ] ];
 
 		if(!empty($recharge_type))
 		{
@@ -11426,75 +11426,75 @@ Class Model_Manage extends Model
             $end_date = date("Y-m-d 23:59:59");
 		}
 		
-		$match_query['created_date'] = array(
-                        '$gte' => New MongoDate(strtotime($start_date)),
-                        '$lte' => New MongoDate(strtotime($end_date))
-                    );
+		$match_query['created_date'] = [
+                        '$gte' => new \MongoDB\BSON\UTCDateTime(strtotime($start_date) * 1000),
+                        '$lte' => new \MongoDB\BSON\UTCDateTime(strtotime($end_date) * 1000)
+                    ];
 	
 		if(!empty($keyword)) {
-			$srch_query = array( "\$and" => array($match_query,array("\$or"=>array(array( 'pass.name' => new MongoRegex("/$keyword/i")) , array( 'pass.lastname' => new MongoRegex("/$keyword/i") ), array( 'pass.email' => new MongoRegex("/$keyword/i") ), array( 'pass.phone' => new MongoRegex("/$keyword/i") ) ) ) ) );
+			$srch_query = [ "\$and" => [$match_query,["\$or"=>[[ 'pass.name' => new \MongoDB\BSON\Regex($keyword, 'i')] , [ 'pass.lastname' => new \MongoDB\BSON\Regex($keyword, 'i') ], [ 'pass.email' => new \MongoDB\BSON\Regex($keyword, 'i') ], [ 'pass.phone' => new \MongoDB\BSON\Regex($keyword, 'i') ] ] ] ] ];
 		}else{
 			$srch_query = $match_query;
 		}
 
 
-		$common_arguments = array(
-			array(
-				'$lookup' => array(
+		$common_arguments = [
+			[
+				'$lookup' => [
 					'from' => MDB_PASSENGERS,
 					'localField' => 'passenger_id',
 					'foreignField' => '_id',
 					'as' => 'pass'
-				)
-			),
-			array(
+				]
+			],
+			[
 				'$unwind' => '$pass'
-			),
-			array(
-				'$lookup' => array(
+			],
+			[
+				'$lookup' => [
 					'from' => MDB_TRANSACTION,
 					'localField' => 'trip_id',
 					'foreignField' => 'passengers_log_id',
 					'as' => 'trans'
-				)
-			),
-			array(
-				'$unwind' => array('path'=>'$trans','preserveNullAndEmptyArrays'=>true)
-			),
-			array(
+				]
+			],
+			[
+				'$unwind' => ['path'=>'$trans','preserveNullAndEmptyArrays'=>true]
+			],
+			[
 				'$match' => $srch_query
-			),
-		);
+			],
+		];
 		
 		if ($find_count == TRUE) {
-			$count_arguments = array(
-				array(
-					'$project' => array(
+			$count_arguments = [
+				[
+					'$project' => [
 						'result' => '$_id'
-					)
-				),
-				array(
-					'$group' => array(
+					]
+				],
+				[
+					'$group' => [
 						'_id' => NULL,
-						'count' => array(
+						'count' => [
 							'$sum' => 1
-						)
-					)
-				)
-			);
+						]
+					]
+				]
+			];
 			$merge_arguments = array_merge($common_arguments, $count_arguments);
 			$result          = $this->mongo_db->aggregate(PASSENGER_WALLET_LOG, $merge_arguments);
 		//echo "<pre>";print_r($result['result']);exit;
 			return (!empty($result['result']) && isset($result['result'][0]['count'])) ? $result['result'][0]['count'] : 0;
 		} else {
-			$field_arguments = array(
-				array(
-					'$sort' => array( 
+			$field_arguments = [
+				[
+					'$sort' => [ 
 						'created_date' => -1
-					),
-				),
-				array(
-					'$project' => array(
+					],
+				],
+				[
+					'$project' => [
 						'id' => '$_id',
 						'passenger_email' => '$pass.email',
 						'passenger_id' => '$pass._id',
@@ -11509,26 +11509,26 @@ Class Model_Manage extends Model
 						'transaction_id' => '$transaction_id',
 						'trip_id' => '$trip_id',
 						'notes'=>'$notes',
-						'change_amount'=> array('$cond'=>array( 
-                            array('$gt'=>array('$trip_id',0)),
-                            array('$sum'=>array('$trans.passenger_pending_amt','$change_amount')),
-                            array('$sum'=>array('$change_amount'))
-       					)),
+						'change_amount'=> ['$cond'=>[ 
+                            ['$gt'=>['$trip_id',0]],
+                            ['$sum'=>['$trans.passenger_pending_amt','$change_amount']],
+                            ['$sum'=>['$change_amount']]
+       					]],
        					'tripfare'=>'$trans.tripfare',
-					)
-				),
-				array('$skip'	=> (int)$offset ),
-				array('$limit'	=> (int)$val ),
-				array('$sort' => array( 
+					]
+				],
+				['$skip'	=> (int)$offset ],
+				['$limit'	=> (int)$val ],
+				['$sort' => [ 
                         'passenger_id' => -1,
                         'created_date' => -1,
-                    ),
-                ),
-			);
+                    ],
+                ],
+			];
 			$merge_arguments = array_merge($common_arguments, $field_arguments);
 			$result    = $this->mongo_db->aggregate(PASSENGER_WALLET_LOG, $merge_arguments);
 			//echo "<pre>";print_r($result['result']); exit;
-			return (!empty($result['result'])) ? $result['result'] : array();
+			return (!empty($result['result'])) ? $result['result'] : [];
 		}
     }
     
@@ -11538,12 +11538,12 @@ Class Model_Manage extends Model
 		$user_createdby                  = $this->userid;
 		$keyword       = str_replace("%", "!%", $keyword);
         $keyword       = str_replace("_", "!_", $keyword);
-		$match_query = array('pass.user_status'=>'A');
+		$match_query = ['pass.user_status'=>'A'];
 
-		$match_query["recharge_type"] = array('$ne'=>6); //avoid pending repayment
+		$match_query["recharge_type"] = ['$ne'=>6]; //avoid pending repayment
 
 		//get credit transactions or trip payment only
-		$match_query["\$or"] = array( array( 'wallet_amount' => array('$gte'=>0 ) ), array('recharge_type'=> array('$in'=> array(1,2,3,8) ) ) );
+		$match_query["\$or"] = [ [ 'wallet_amount' => ['$gte'=>0 ] ], ['recharge_type'=> ['$in'=> [1,2,3,8] ] ] ];
 
 		if(!empty($recharge_type))
 		{
@@ -11556,76 +11556,76 @@ Class Model_Manage extends Model
             $end_date = date("Y-m-d 23:59:59");
 		}
 		
-		$match_query['created_date'] = array(
-                        '$gte' => New MongoDate(strtotime($start_date)),
-                        '$lte' => New MongoDate(strtotime($end_date))
-                    );
+		$match_query['created_date'] = [
+                        '$gte' => new \MongoDB\BSON\UTCDateTime(strtotime($start_date) * 1000),
+                        '$lte' => new \MongoDB\BSON\UTCDateTime(strtotime($end_date) * 1000)
+                    ];
 	
 		if(!empty($keyword)) {
-			$srch_query = array( "\$and" => array($match_query,array("\$or"=>array(array( 'pass.name' => new MongoRegex("/$keyword/i")) , array( 'pass.lastname' => new MongoRegex("/$keyword/i") ), array( 'pass.email' => new MongoRegex("/$keyword/i") ), array( 'pass.phone' => new MongoRegex("/$keyword/i") ) ) ) ) );
+			$srch_query = [ "\$and" => [$match_query,["\$or"=>[[ 'pass.name' => new \MongoDB\BSON\Regex($keyword, 'i')] , [ 'pass.lastname' => new \MongoDB\BSON\Regex($keyword, 'i') ], [ 'pass.email' => new \MongoDB\BSON\Regex($keyword, 'i') ], [ 'pass.phone' => new \MongoDB\BSON\Regex($keyword, 'i') ] ] ] ] ];
 		}else{
 			$srch_query = $match_query;
 		}
 
 
-		$common_arguments = array(
-			array(
-				'$lookup' => array(
+		$common_arguments = [
+			[
+				'$lookup' => [
 					'from' => MDB_PASSENGERS,
 					'localField' => 'passenger_id',
 					'foreignField' => '_id',
 					'as' => 'pass'
-				)
-			),
-			array(
+				]
+			],
+			[
 				'$unwind' => '$pass'
-			),
-			array(
-				'$lookup' => array(
+			],
+			[
+				'$lookup' => [
 					'from' => MDB_TRANSACTION,
 					'localField' => 'trip_id',
 					'foreignField' => 'passengers_log_id',
 					'as' => 'trans'
-				)
-			),
-			array(
-				'$unwind' => array('path'=>'$trans','preserveNullAndEmptyArrays'=>true)
-			),
-			array(
+				]
+			],
+			[
+				'$unwind' => ['path'=>'$trans','preserveNullAndEmptyArrays'=>true]
+			],
+			[
 				'$match' => $srch_query
-			),
-		);
+			],
+		];
 		
 		if ($find_count == TRUE) {
-			$count_arguments = array(
-				array(
-					'$project' => array(
+			$count_arguments = [
+				[
+					'$project' => [
 						'passenger_id' => '$pass._id',
 						'result' => '$_id'
-					)
-				),
-				array(
-					'$group' => array(
+					]
+				],
+				[
+					'$group' => [
 						 '_id' => '$passenger_id', 
-						'count' => array(
+						'count' => [
 							'$sum' => 1
-						)
-					)
-				)
-			);
+						]
+					]
+				]
+			];
 			$merge_arguments = array_merge($common_arguments, $count_arguments);
 			$result          = $this->mongo_db->aggregate(PASSENGER_WALLET_LOG, $merge_arguments);
 			//echo "<pre>";print_r($result['result']);exit;
 			return (!empty($result['result'])) ? count($result['result']) : 0;
 		} else {
-			$field_arguments = array(
-				array(
-					'$sort' => array( 
+			$field_arguments = [
+				[
+					'$sort' => [ 
 						'created_date' => -1
-					),
-				),
-				array(
-					'$project' => array(
+					],
+				],
+				[
+					'$project' => [
 						'id' => '$_id',
 						'passenger_email' => '$pass.email',
 						'passenger_id' => '$pass._id',
@@ -11645,48 +11645,48 @@ Class Model_Manage extends Model
                             array('$sum'=>array('$trans.passenger_pending_amt','$change_amount')),
                             array('$sum'=>array('$change_amount'))
        					)),*/
-       					'credit_amt'=>array('$cond'=>array(array('$gt'=>array('$change_amount',0)),'$change_amount',0)),
-       					'debit_amt'=>array('$cond'=>array(array('$lt'=>array('$change_amount',0)),'$change_amount',0)),
+       					'credit_amt'=>['$cond'=>[['$gt'=>['$change_amount',0]],'$change_amount',0]],
+       					'debit_amt'=>['$cond'=>[['$lt'=>['$change_amount',0]],'$change_amount',0]],
        					'tripfare'=>'$trans.tripfare',
        					'balance_wallet_amount'=>'$pass.wallet_amount',
-					)
-				),
-				array(
-                    '$group' => array(
+					]
+				],
+				[
+                    '$group' => [
                         '_id' => '$passenger_id',                       
-						'passenger_email' => array('$first'=>'$passenger_email'),
-						'passenger_id' => array('$first'=>'$passenger_id'),
-						'passenger_name' => array('$first'=>'$passenger_name'),
-						'passenger_phone' => array('$first'=>'$passenger_phone'),
-						'passenger_country_code' => array('$first'=>'$passenger_country_code'),
+						'passenger_email' => ['$first'=>'$passenger_email'],
+						'passenger_id' => ['$first'=>'$passenger_id'],
+						'passenger_name' => ['$first'=>'$passenger_name'],
+						'passenger_phone' => ['$first'=>'$passenger_phone'],
+						'passenger_country_code' => ['$first'=>'$passenger_country_code'],
 						//'change_amount' => '$change_amount',
-						'wallet_amount' => array('$first'=>'$wallet_amount'),
-						'created_date' => array('$first'=>'$created_date'),
-						'created_by' => array('$first'=>'$created_by'),
-						'recharge_type' => array('$first'=>'$recharge_type'),
-						'transaction_id' => array('$first'=>'$transaction_id'),
-						'trip_id' => array('$first'=>'$trip_id'),
-						'notes'=>array('$first'=>'$notes'),
-						'change_amount'=> array('$first'=>'$change_amount'),
+						'wallet_amount' => ['$first'=>'$wallet_amount'],
+						'created_date' => ['$first'=>'$created_date'],
+						'created_by' => ['$first'=>'$created_by'],
+						'recharge_type' => ['$first'=>'$recharge_type'],
+						'transaction_id' => ['$first'=>'$transaction_id'],
+						'trip_id' => ['$first'=>'$trip_id'],
+						'notes'=>['$first'=>'$notes'],
+						'change_amount'=> ['$first'=>'$change_amount'],
                         //'wallet_detail' =>array('$push'=>'$$ROOT'),
-                        'total_credit' => array('$sum'=>'$credit_amt'),
-                        'total_debit' => array('$sum'=>'$debit_amt'),
+                        'total_credit' => ['$sum'=>'$credit_amt'],
+                        'total_debit' => ['$sum'=>'$debit_amt'],
                         //'balance_amount' => array('$subtract'=> array('$total_credit','$total_debit')),
-                        'balance_wallet_amount'=>array('$first'=>'$balance_wallet_amount'),
-                        )
-                ),
-				array('$skip'	=> (int)$offset ),
-				array('$limit'	=> (int)$val ),
-				array('$sort' => array( 
+                        'balance_wallet_amount'=>['$first'=>'$balance_wallet_amount'],
+                        ]
+                ],
+				['$skip'	=> (int)$offset ],
+				['$limit'	=> (int)$val ],
+				['$sort' => [ 
                         'passenger_id' => -1,
                         'created_date' => -1,
-                    ),
-                ),
-			);
+                    ],
+                ],
+			];
 			$merge_arguments = array_merge($common_arguments, $field_arguments);
 			$result    = $this->mongo_db->aggregate(PASSENGER_WALLET_LOG, $merge_arguments);
 			//echo "<pre>";print_r($result['result']); exit;
-			return (!empty($result['result'])) ? $result['result'] : array();
+			return (!empty($result['result'])) ? $result['result'] : [];
 		}
     }
     
@@ -11697,16 +11697,16 @@ Class Model_Manage extends Model
 		$user_createdby                  = $this->userid;
 		$keyword       = str_replace("%", "!%", $keyword);
         $keyword       = str_replace("_", "!_", $keyword);
-		$match_query = array('pass.user_status'=>'A');
+		$match_query = ['pass.user_status'=>'A'];
 
 		//$match_query["recharge_type"] = array('$ne'=>6); //avoid pending repayment
 		//$match_query["pass.balance_wallet_amount"] = array('$lte'=> 0 ); //avoid pending repayment
 		//$match_query["wallet_amount"] = array('$lt'=>0 );
 		//$match_query["wallet_amount"] = array('$lt'=>0 );
-		$match_query["pass.wallet_amount"] = array('$lt'=>0);
+		$match_query["pass.wallet_amount"] = ['$lt'=>0];
 
 		//get credit transactions or trip payment only
-		$match_query["\$or"] = array( array('wallet_amount' => array('$lte'=>0 ) ), array('recharge_type'=> array('$in'=> array(1,2,3,4,5,6,8) ) ) );
+		$match_query["\$or"] = [ ['wallet_amount' => ['$lte'=>0 ] ], ['recharge_type'=> ['$in'=> [1,2,3,4,5,6,8] ] ] ];
 
 		if(!empty($recharge_type))
 		{
@@ -11719,76 +11719,76 @@ Class Model_Manage extends Model
             $end_date = date("Y-m-d 23:59:59");
 		}
 		
-		$match_query['created_date'] = array(
-                        '$gte' => New MongoDate(strtotime($start_date)),
-                        '$lte' => New MongoDate(strtotime($end_date))
-                    );
+		$match_query['created_date'] = [
+                        '$gte' => new \MongoDB\BSON\UTCDateTime(strtotime($start_date) * 1000),
+                        '$lte' => new \MongoDB\BSON\UTCDateTime(strtotime($end_date) * 1000)
+                    ];
 	
 		if(!empty($keyword)) {
-			$srch_query = array( "\$and" => array($match_query,array("\$or"=>array(array( 'pass.name' => new MongoRegex("/$keyword/i")) , array( 'pass.lastname' => new MongoRegex("/$keyword/i") ), array( 'pass.email' => new MongoRegex("/$keyword/i") ), array( 'pass.phone' => new MongoRegex("/$keyword/i") ) ) ) ) );
+			$srch_query = [ "\$and" => [$match_query,["\$or"=>[[ 'pass.name' => new \MongoDB\BSON\Regex($keyword, 'i')] , [ 'pass.lastname' => new \MongoDB\BSON\Regex($keyword, 'i') ], [ 'pass.email' => new \MongoDB\BSON\Regex($keyword, 'i') ], [ 'pass.phone' => new \MongoDB\BSON\Regex($keyword, 'i') ] ] ] ] ];
 		}else{
 			$srch_query = $match_query;
 		}
 
 
-		$common_arguments = array(
-			array(
-				'$lookup' => array(
+		$common_arguments = [
+			[
+				'$lookup' => [
 					'from' => MDB_PASSENGERS,
 					'localField' => 'passenger_id',
 					'foreignField' => '_id',
 					'as' => 'pass'
-				)
-			),
-			array(
+				]
+			],
+			[
 				'$unwind' => '$pass'
-			),
-			array(
-				'$lookup' => array(
+			],
+			[
+				'$lookup' => [
 					'from' => MDB_TRANSACTION,
 					'localField' => 'trip_id',
 					'foreignField' => 'passengers_log_id',
 					'as' => 'trans'
-				)
-			),
-			array(
-				'$unwind' => array('path'=>'$trans','preserveNullAndEmptyArrays'=>true)
-			),
-			array(
+				]
+			],
+			[
+				'$unwind' => ['path'=>'$trans','preserveNullAndEmptyArrays'=>true]
+			],
+			[
 				'$match' => $srch_query
-			),
-		);
+			],
+		];
 		
 		if ($find_count == TRUE) {
-			$count_arguments = array(
-				array(
-					'$project' => array(
+			$count_arguments = [
+				[
+					'$project' => [
 						'passenger_id' => '$pass._id',
 						'result' => '$_id'
-					)
-				),
-				array(
-					'$group' => array(
+					]
+				],
+				[
+					'$group' => [
 						 '_id' => '$passenger_id', 
-						'count' => array(
+						'count' => [
 							'$sum' => 1
-						)
-					)
-				)
-			);
+						]
+					]
+				]
+			];
 			$merge_arguments = array_merge($common_arguments, $count_arguments);
 			$result          = $this->mongo_db->aggregate(PASSENGER_WALLET_LOG, $merge_arguments);
 			//echo "<pre>";print_r($result['result']);exit;
 			return (!empty($result['result'])) ? count($result['result']) : 0;
 		} else {
-			$field_arguments = array(
+			$field_arguments = [
 				//~ array(
 					//~ '$sort' => array( 
 						//~ 'created_date' => -1
 					//~ ),
 				//~ ),
-				array(
-					'$project' => array(
+				[
+					'$project' => [
 						'id' => '$_id',
 						'passenger_email' => '$pass.email',
 						'passenger_id' => '$pass._id',
@@ -11808,50 +11808,50 @@ Class Model_Manage extends Model
                             array('$sum'=>array('$trans.passenger_pending_amt','$change_amount')),
                             array('$sum'=>array('$change_amount'))
        					)),*/
-       					'credit_amt'=>array('$cond'=>array(array('$gt'=>array('$change_amount',0)),'$change_amount',0)),
-       					'debit_amt'=>array('$cond'=>array(array('$lt'=>array('$change_amount',0)),'$change_amount',0)),
+       					'credit_amt'=>['$cond'=>[['$gt'=>['$change_amount',0]],'$change_amount',0]],
+       					'debit_amt'=>['$cond'=>[['$lt'=>['$change_amount',0]],'$change_amount',0]],
        					'tripfare'=>'$trans.tripfare',
        					'balance_wallet_amount'=>'$pass.wallet_amount',
-					)
-				),
-				array(
-                    '$group' => array(
+					]
+				],
+				[
+                    '$group' => [
                         '_id' => '$passenger_id',                       
-						'passenger_email' => array('$first'=>'$passenger_email'),
-						'passenger_id' => array('$first'=>'$passenger_id'),
-						'passenger_name' => array('$first'=>'$passenger_name'),
-						'passenger_phone' => array('$first'=>'$passenger_phone'),
-						'passenger_country_code' => array('$first'=>'$passenger_country_code'),
+						'passenger_email' => ['$first'=>'$passenger_email'],
+						'passenger_id' => ['$first'=>'$passenger_id'],
+						'passenger_name' => ['$first'=>'$passenger_name'],
+						'passenger_phone' => ['$first'=>'$passenger_phone'],
+						'passenger_country_code' => ['$first'=>'$passenger_country_code'],
 						//'change_amount' => '$change_amount',
-						'wallet_amount' => array('$first'=>'$wallet_amount'),
-						'created_date' => array('$first'=>'$created_date'),
-						'created_by' => array('$first'=>'$created_by'),
-						'recharge_type' => array('$first'=>'$recharge_type'),
-						'transaction_id' => array('$first'=>'$transaction_id'),
-						'trip_id' => array('$first'=>'$trip_id'),
-						'notes'=>array('$first'=>'$notes'),
-						'change_amount'=> array('$first'=>'$change_amount'),
+						'wallet_amount' => ['$first'=>'$wallet_amount'],
+						'created_date' => ['$first'=>'$created_date'],
+						'created_by' => ['$first'=>'$created_by'],
+						'recharge_type' => ['$first'=>'$recharge_type'],
+						'transaction_id' => ['$first'=>'$transaction_id'],
+						'trip_id' => ['$first'=>'$trip_id'],
+						'notes'=>['$first'=>'$notes'],
+						'change_amount'=> ['$first'=>'$change_amount'],
                         //'wallet_detail' =>array('$push'=>'$$ROOT'),
-                        'total_credit' => array('$sum'=>'$credit_amt'),
-                        'total_debit' => array('$sum'=>'$debit_amt'),
+                        'total_credit' => ['$sum'=>'$credit_amt'],
+                        'total_debit' => ['$sum'=>'$debit_amt'],
                         //'balance_amount' => array('$subtract'=> array('$total_credit','$total_debit')),
-                        'balance_wallet_amount'=>array('$first'=>'$balance_wallet_amount'),
-                        )
-                ),
-				array('$skip'	=> (int)$offset ),
-				array('$limit'	=> (int)$val ),
-				array('$sort' => array( 
+                        'balance_wallet_amount'=>['$first'=>'$balance_wallet_amount'],
+                        ]
+                ],
+				['$skip'	=> (int)$offset ],
+				['$limit'	=> (int)$val ],
+				['$sort' => [ 
                         //'passenger_id' => -1,
                         'created_date' => -1,
-                    ),
-                ),
-			);
+                    ],
+                ],
+			];
 			$merge_arguments = array_merge($common_arguments, $field_arguments);
 			$result    = $this->mongo_db->aggregate(PASSENGER_WALLET_LOG, $merge_arguments);
 			//echo "<pre>";echo json_encode($merge_arguments);
 			//print_r($result); 
 			//exit;
-			return (!empty($result['result'])) ? $result['result'] : array();
+			return (!empty($result['result'])) ? $result['result'] : [];
 		}
     }
     
@@ -11860,7 +11860,7 @@ Class Model_Manage extends Model
 		$user_createdby                  = $this->userid;
 		$keyword       = str_replace("%", "!%", $keyword);
         $keyword       = str_replace("_", "!_", $keyword);
-		$match_query = array('pass.user_status'=>'A');
+		$match_query = ['pass.user_status'=>'A'];
 
 		if($start_date == '' && $end_date == '')
 		{
@@ -11868,71 +11868,71 @@ Class Model_Manage extends Model
             $end_date = date("Y-m-d 23:59:59");
 		}
 		
-		$match_query['trip_date'] = array(
-                        '$gte' => New MongoDate(strtotime($start_date)),
-                        '$lte' => New MongoDate(strtotime($end_date))
-                    );
+		$match_query['trip_date'] = [
+                        '$gte' => new \MongoDB\BSON\UTCDateTime(strtotime($start_date) * 1000),
+                        '$lte' => new \MongoDB\BSON\UTCDateTime(strtotime($end_date) * 1000)
+                    ];
 	
 		if(!empty($keyword)) {
-			$srch_query = array( "\$and" => array($match_query,array("\$or"=>array(array( 'pass.name' => new MongoRegex("/$keyword/i")) , array( 'pass.lastname' => new MongoRegex("/$keyword/i") ), array( 'pass.email' => new MongoRegex("/$keyword/i") ), array( 'pass.phone' => new MongoRegex("/$keyword/i") ) ) ) ) );
+			$srch_query = [ "\$and" => [$match_query,["\$or"=>[[ 'pass.name' => new \MongoDB\BSON\Regex($keyword, 'i')] , [ 'pass.lastname' => new \MongoDB\BSON\Regex($keyword, 'i') ], [ 'pass.email' => new \MongoDB\BSON\Regex($keyword, 'i') ], [ 'pass.phone' => new \MongoDB\BSON\Regex($keyword, 'i') ] ] ] ] ];
 		}else{
 			$srch_query = $match_query;
 		}
 
 
-		$common_arguments = array(
-			array(
-				'$lookup' => array(
+		$common_arguments = [
+			[
+				'$lookup' => [
 					'from' => MDB_PASSENGERS,
 					'localField' => 'passenger_id',
 					'foreignField' => '_id',
 					'as' => 'pass'
-				)
-			),
-			array(
+				]
+			],
+			[
 				'$unwind' => '$pass'
-			),
-			array(
-				'$lookup' => array(
+			],
+			[
+				'$lookup' => [
 					'from' => MDB_TRANSACTION,
 					'localField' => 'trip_id',
 					'foreignField' => 'passengers_log_id',
 					'as' => 'trans'
-				)
-			),
-			array(
-				'$unwind' => array('path'=>'$trans','preserveNullAndEmptyArrays'=>true)
-			),
-			array(
+				]
+			],
+			[
+				'$unwind' => ['path'=>'$trans','preserveNullAndEmptyArrays'=>true]
+			],
+			[
 				'$match' => $srch_query
-			),
-		);
+			],
+		];
 		
 		if ($find_count == TRUE) {
-			$count_arguments = array(
-				array(
-					'$project' => array(
+			$count_arguments = [
+				[
+					'$project' => [
 						'passenger_id' => '$pass._id',
 						'result' => '$_id'
-					)
-				),
-				array(
-					'$group' => array(
+					]
+				],
+				[
+					'$group' => [
 						 '_id' => NULL, 
-						'count' => array(
+						'count' => [
 							'$sum' => 1
-						)
-					)
-				)
-			);
+						]
+					]
+				]
+			];
 			$merge_arguments = array_merge($common_arguments, $count_arguments);
 			$result          = $this->mongo_db->aggregate(MDB_PENDING_TRIP_REPORT, $merge_arguments);
 			//echo "<pre>";print_r($result['result']['0']['count']);exit;
 			return (!empty($result['result']['0']['count'])) ? $result['result']['0']['count'] : 0;
 		} else {
-			$field_arguments = array(				
-				array(
-					'$project' => array(
+			$field_arguments = [				
+				[
+					'$project' => [
 						'_id'=>0,
 						'id' => '$_id',
 						'passenger_email' => '$pass.email',
@@ -11947,20 +11947,20 @@ Class Model_Manage extends Model
        					'pending_amount'=>'$pending_amount',
        					'clear_pending'=>'$clear_pending',
        					'payment_data'=>'$payment_data',					
-					)
-				),							
-				array('$skip'	=> (int)$offset ),
-				array('$limit'	=> (int)$val ),
-				array('$sort' => array( 
+					]
+				],							
+				['$skip'	=> (int)$offset ],
+				['$limit'	=> (int)$val ],
+				['$sort' => [ 
                         'passenger_id' => 1,                       
-                    ),
-                ),
-			);
+                    ],
+                ],
+			];
 			$merge_arguments = array_merge($common_arguments, $field_arguments);
 			$result    = $this->mongo_db->aggregate(MDB_PENDING_TRIP_REPORT, $merge_arguments);
 			//echo json_encode($merge_arguments);exit;
 			//echo "<pre>";print_r($result['result']); exit;
-			return (!empty($result['result'])) ? $result['result'] : array();
+			return (!empty($result['result'])) ? $result['result'] : [];
 		}
     }
     
@@ -11969,17 +11969,17 @@ Class Model_Manage extends Model
 		$user_createdby                  = $this->userid;
 		$keyword       = str_replace("%", "!%", $keyword);
         $keyword       = str_replace("_", "!_", $keyword);
-		$match_query = array('pass.user_status'=>'A');
+		$match_query = ['pass.user_status'=>'A'];
 
 		//$match_query["recharge_type"] = array('$ne'=>6); //avoid pending repayment
 		//$match_query["recharge_type"] = 5; //avoid pending repayment
 
 		//$match_query["pass.wallet_amount"] = array('$lt'=>0);
 
-		$match_query["recharge_type"] = array('$in'=> array(1,2,3,4,5,7,8) );
+		$match_query["recharge_type"] = ['$in'=> [1,2,3,4,5,7,8] ];
 
 		//get credit transactions or trip payment only
-		$match_query["\$or"] = array( array('wallet_amount' => array('$lte'=>0 ) ), array('pass.wallet_amount' => array('$lte'=>0 ) )  );
+		$match_query["\$or"] = [ ['wallet_amount' => ['$lte'=>0 ] ], ['pass.wallet_amount' => ['$lte'=>0 ] ]  ];
 
 		if($start_date == '' && $end_date == '')
 		{
@@ -11987,75 +11987,75 @@ Class Model_Manage extends Model
             $end_date = date("Y-m-d 23:59:59");
 		}
 		
-		$match_query['created_date'] = array(
-                        '$gte' => New MongoDate(strtotime($start_date)),
-                        '$lte' => New MongoDate(strtotime($end_date))
-                    );
+		$match_query['created_date'] = [
+                        '$gte' => new \MongoDB\BSON\UTCDateTime(strtotime($start_date) * 1000),
+                        '$lte' => new \MongoDB\BSON\UTCDateTime(strtotime($end_date) * 1000)
+                    ];
 	
 		if(!empty($keyword)) {
-			$srch_query = array( "\$and" => array($match_query,array("\$or"=>array(array( 'pass.name' => new MongoRegex("/$keyword/i")) , array( 'pass.lastname' => new MongoRegex("/$keyword/i") ), array( 'pass.email' => new MongoRegex("/$keyword/i") ), array( 'pass.phone' => new MongoRegex("/$keyword/i") ) ) ) ) );
+			$srch_query = [ "\$and" => [$match_query,["\$or"=>[[ 'pass.name' => new \MongoDB\BSON\Regex($keyword, 'i')] , [ 'pass.lastname' => new \MongoDB\BSON\Regex($keyword, 'i') ], [ 'pass.email' => new \MongoDB\BSON\Regex($keyword, 'i') ], [ 'pass.phone' => new \MongoDB\BSON\Regex($keyword, 'i') ] ] ] ] ];
 		}else{
 			$srch_query = $match_query;
 		}
 
 
-		$common_arguments = array(
-			array(
-				'$lookup' => array(
+		$common_arguments = [
+			[
+				'$lookup' => [
 					'from' => MDB_PASSENGERS,
 					'localField' => 'passenger_id',
 					'foreignField' => '_id',
 					'as' => 'pass'
-				)
-			),
-			array(
+				]
+			],
+			[
 				'$unwind' => '$pass'
-			),
-			array(
-				'$lookup' => array(
+			],
+			[
+				'$lookup' => [
 					'from' => MDB_TRANSACTION,
 					'localField' => 'trip_id',
 					'foreignField' => 'passengers_log_id',
 					'as' => 'trans'
-				)
-			),
-			array(
-				'$unwind' => array('path'=>'$trans','preserveNullAndEmptyArrays'=>true)
-			),
-			array(
+				]
+			],
+			[
+				'$unwind' => ['path'=>'$trans','preserveNullAndEmptyArrays'=>true]
+			],
+			[
 				'$match' => $srch_query
-			),
-		);
+			],
+		];
 		
 		if ($find_count == TRUE) {
-			$count_arguments = array(
-				array(
-					'$project' => array(
+			$count_arguments = [
+				[
+					'$project' => [
 						'result' => '$_id'
-					)
-				),
-				array(
-					'$group' => array(
+					]
+				],
+				[
+					'$group' => [
 						'_id' => NULL,
-						'count' => array(
+						'count' => [
 							'$sum' => 1
-						)
-					)
-				)
-			);
+						]
+					]
+				]
+			];
 			$merge_arguments = array_merge($common_arguments, $count_arguments);
 			$result          = $this->mongo_db->aggregate(PASSENGER_WALLET_LOG, $merge_arguments);
 		//echo "<pre>";print_r($result['result']);exit;
 			return (!empty($result['result']) && isset($result['result'][0]['count'])) ? $result['result'][0]['count'] : 0;
 		} else {
-			$field_arguments = array(
-				array(
-					'$sort' => array( 
+			$field_arguments = [
+				[
+					'$sort' => [ 
 						'created_date' => -1
-					),
-				),
-				array(
-					'$project' => array(
+					],
+				],
+				[
+					'$project' => [
 						'id' => '$_id',
 						'passenger_email' => '$pass.email',
 						'passenger_id' => '$pass._id',
@@ -12076,15 +12076,15 @@ Class Model_Manage extends Model
       //                       array('$sum'=>array('$change_amount'))
       //  					)),
        					'tripfare'=>'$trans.tripfare',
-					)
-				),
-				array('$skip'	=> (int)$offset ),
-				array('$limit'	=> (int)$val )
-			);
+					]
+				],
+				['$skip'	=> (int)$offset ],
+				['$limit'	=> (int)$val ]
+			];
 			$merge_arguments = array_merge($common_arguments, $field_arguments);
 			$result    = $this->mongo_db->aggregate(PASSENGER_WALLET_LOG, $merge_arguments);
 			//echo "<pre>";print_r($result['result']); exit;
-			return (!empty($result['result'])) ? $result['result'] : array();
+			return (!empty($result['result'])) ? $result['result'] : [];
 		}
     }
     
@@ -12096,7 +12096,7 @@ Class Model_Manage extends Model
         $keyword       = str_replace("_", "!_", $keyword);
        // $match_query = array('status'=>'A');
 
-        $match_query =array();   
+        $match_query =[];   
 //echo $start_date.'---'.$end_date;exit;
        // $start_date = $search_date." 05:00:01";
        // $end_date = date('Y-m-d',strtotime('+1 days '.$search_date))." 05:00:01";
@@ -12114,94 +12114,94 @@ Class Model_Manage extends Model
 
         //$start_date = date("Y-m-d H:i:s",strtotime('+1 day',strtotime($start_date)));
 		//echo $start_date.'----'.$end_date;exit;
-       $match_query['actual_pickup_time'] = array(
-                        '$gte' => New MongoDate(strtotime($start_date)),
-                        '$lte' => New MongoDate(strtotime($end_date))
-                    );
+       $match_query['actual_pickup_time'] = [
+                        '$gte' => new \MongoDB\BSON\UTCDateTime(strtotime($start_date) * 1000),
+                        '$lte' => new \MongoDB\BSON\UTCDateTime(strtotime($end_date) * 1000)
+                    ];
 
        //$match_query['dispatcher_id'] = array('$gt'=>1);
     
 
 
         if(!empty($keyword)) {
-            $srch_query = array( "\$and" => array($match_query,array("\$or"=>array(array('dispatcher.name' => new MongoRegex("/$keyword/i")) , array( 'dispatcher.lastname' => new MongoRegex("/$keyword/i") ), array( 'dispatcher.email' => new MongoRegex("/$keyword/i") ), array( 'dispatcher.phone' => new MongoRegex("/$keyword/i") ) ) ) ) );
+            $srch_query = [ "\$and" => [$match_query,["\$or"=>[['dispatcher.name' => new \MongoDB\BSON\Regex($keyword, 'i')] , [ 'dispatcher.lastname' => new \MongoDB\BSON\Regex($keyword, 'i') ], [ 'dispatcher.email' => new \MongoDB\BSON\Regex($keyword, 'i') ], [ 'dispatcher.phone' => new \MongoDB\BSON\Regex($keyword, 'i') ] ] ] ] ];
         }else{
             $srch_query = $match_query;
         }
-        $common_arguments = array(
+        $common_arguments = [
   
-            array(
-                '$lookup' => array(
+            [
+                '$lookup' => [
                     'from' => MDB_PASSENGERS,
                     'localField' => 'passengers_id',
                     'foreignField' => '_id',
                     'as' => 'pass'
-                )
-            ),
-             array(
-                '$unwind' =>array('path'=>'$pass','preserveNullAndEmptyArrays'=>true)
-            ),
-            array(
-                '$lookup' => array(
+                ]
+            ],
+             [
+                '$unwind' =>['path'=>'$pass','preserveNullAndEmptyArrays'=>true]
+            ],
+            [
+                '$lookup' => [
                     'from' => MDB_PEOPLE,
                     'localField' => 'driver_id',
                     'foreignField' => '_id',
                     'as' => 'people'
-                )
-            ),
-            array(
-                '$unwind' =>array('path'=>'$people','preserveNullAndEmptyArrays'=>true)
-            ),
-            array(
-                '$lookup' => array(
+                ]
+            ],
+            [
+                '$unwind' =>['path'=>'$people','preserveNullAndEmptyArrays'=>true]
+            ],
+            [
+                '$lookup' => [
                     'from' => MDB_PEOPLE,
                     'localField' => 'dispatcher_id',
                     'foreignField' => '_id',
                     'as' => 'dispatcher'
-                )
-            ),
-            array('$unwind' => '$dispatcher'),
+                ]
+            ],
+            ['$unwind' => '$dispatcher'],
             // array(
             //     '$unwind' =>array('path'=>'$dispatcher','preserveNullAndEmptyArrays'=>true)
             // ),
-            array(
-                '$lookup' => array(
+            [
+                '$lookup' => [
                     'from' => MDB_TRANSACTION,
                     'localField' => '_id',
                     'foreignField' => 'passengers_log_id',
                     'as' => 'trans'
-                )
-            ),
-            array(
-                '$unwind' =>array('path'=>'$trans','preserveNullAndEmptyArrays'=>true)
-            ),           
+                ]
+            ],
+            [
+                '$unwind' =>['path'=>'$trans','preserveNullAndEmptyArrays'=>true]
+            ],           
             // array(
             //      '$unwind' =>array('path'=>'$fare_detail','preserveNullAndEmptyArrays'=>true)
             // ),
-            array(
+            [
                 '$match' => $srch_query
-            ),
-        );
+            ],
+        ];
         
         if ($find_count == TRUE) {
-            $count_arguments = array(
-                array(
+            $count_arguments = [
+                [
                 '$match' => $srch_query
-                ),
-                array(
-                    '$project' => array(
+                ],
+                [
+                    '$project' => [
                         'result' => '$_id',
                         'actual_pickup_time'=>'$actual_pickup_time',
                         'dispatcher_id' => '$dispatcher._id',
-                    )
-                ),
-                array(
-                    '$group' => array(
+                    ]
+                ],
+                [
+                    '$group' => [
                          '_id' => '$dispatcher_id',
                         //'count' => array('$sum' => 1)
-                    )
-                ),
-            );
+                    ]
+                ],
+            ];
             $merge_arguments = array_merge($common_arguments, $count_arguments);
 
             $result          = $this->mongo_db->aggregate(MDB_PASSENGERS_LOGS, $count_arguments);
@@ -12217,10 +12217,10 @@ Class Model_Manage extends Model
             }
 
             //echo $offset.'---'. $val;exit;
-            $field_arguments = array(
+            $field_arguments = [
 
-                array(
-                    '$project' => array(                        
+                [
+                    '$project' => [                        
                         'pending_amt'=>'$trans.pending_amt',
                         'driver_name'=>'$people.name',
                         'driver_id' =>'$people._id',
@@ -12235,52 +12235,52 @@ Class Model_Manage extends Model
                         'dispatcher_id' => '$dispatcher._id',
                         'dispatcher_name'=>'$dispatcher.name',
 
-                        'late'=>array('$cond'=>array(
-                            array('$eq'=>array('$performance_status',1)),
+                        'late'=>['$cond'=>[
+                            ['$eq'=>['$performance_status',1]],
                             1,
                             0,
-                        )),  
-                        'too_late'=>array('$cond'=>array(
-                            array('$eq'=>array('$performance_status',2)),
+                        ]],  
+                        'too_late'=>['$cond'=>[
+                            ['$eq'=>['$performance_status',2]],
                             1,
                             0,
-                        )), 
-                        'on_time'=>array('$cond'=>array(
-                            array('$eq'=>array('$performance_status',3)),
+                        ]], 
+                        'on_time'=>['$cond'=>[
+                            ['$eq'=>['$performance_status',3]],
                             1,
                             0,
-                        )), 
-                        'missed'=>array('$cond'=>array(
-                            array('$eq'=>array('$performance_status',4)),
+                        ]], 
+                        'missed'=>['$cond'=>[
+                            ['$eq'=>['$performance_status',4]],
                             1,
                             0,
-                        )), 
-                        'cancel'=>array('$cond'=>array(
-                            array('$eq'=>array('$performance_status',5)),
+                        ]], 
+                        'cancel'=>['$cond'=>[
+                            ['$eq'=>['$performance_status',5]],
                             1,
                             0,
-                        )),                     
-                    )
-                ),
-                array('$group' => array(
+                        ]],                     
+                    ]
+                ],
+                ['$group' => [
                           '_id' => '$dispatcher_id',
-                          'dispatcher_id' =>array('$first'=>'$dispatcher_id'),
-                          'dispatcher_name'=>array('$first'=>'$dispatcher_name'),
-                          'total_late' => array('$sum' => '$late'),
-                          'total_too_late' => array('$sum' => '$too_late'),                          
-                          'total_on_time' => array('$sum' => '$on_time'),
-                          'total_missed' => array('$sum' => '$missed'),
-                          'total_cancel' => array('$sum' => '$cancel'),                         
-                          'dispatch_det' =>array('$push'=>'$$ROOT')
-                          )),
-                array('$skip'   => (int)$offset ),
-                array('$limit'  => (int)$val ),
-                array(
-                    '$sort' => array( 
+                          'dispatcher_id' =>['$first'=>'$dispatcher_id'],
+                          'dispatcher_name'=>['$first'=>'$dispatcher_name'],
+                          'total_late' => ['$sum' => '$late'],
+                          'total_too_late' => ['$sum' => '$too_late'],                          
+                          'total_on_time' => ['$sum' => '$on_time'],
+                          'total_missed' => ['$sum' => '$missed'],
+                          'total_cancel' => ['$sum' => '$cancel'],                         
+                          'dispatch_det' =>['$push'=>'$$ROOT']
+                          ]],
+                ['$skip'   => (int)$offset ],
+                ['$limit'  => (int)$val ],
+                [
+                    '$sort' => [ 
                         '_id' => -1
-                    ),
-                ),
-            );
+                    ],
+                ],
+            ];
             $merge_arguments = array_merge($common_arguments, $field_arguments);
 
            //echo "<pre>";echo json_encode($merge_arguments);exit;
@@ -12289,7 +12289,7 @@ Class Model_Manage extends Model
             $result    = $this->mongo_db->aggregate(MDB_PASSENGERS_LOGS, $merge_arguments);
  //echo "<pre>";
  //print_r($result);exit;
-            return (!empty($result['result'])) ? $result['result'] : array();
+            return (!empty($result['result'])) ? $result['result'] : [];
         }
     }
 
@@ -12301,7 +12301,7 @@ Class Model_Manage extends Model
         $keyword       = str_replace("_", "!_", $keyword);
        // $match_query = array('status'=>'A');
 
-        $match_query =array();   
+        $match_query =[];   
 //echo $start_date.'---'.$end_date;exit;
        // $start_date = $search_date." 05:00:01";
        // $end_date = date('Y-m-d',strtotime('+1 days '.$search_date))." 05:00:01";
@@ -12319,87 +12319,87 @@ Class Model_Manage extends Model
 
         //$start_date = date("Y-m-d H:i:s",strtotime('+1 day',strtotime($start_date)));
 	//echo $start_date.'----'.$end_date;exit;
-       $match_query['actual_pickup_time'] = array(
-                        '$gte' => New MongoDate(strtotime($start_date)),
-                        '$lte' => New MongoDate(strtotime($end_date))
-                    );
+       $match_query['actual_pickup_time'] = [
+                        '$gte' => new \MongoDB\BSON\UTCDateTime(strtotime($start_date) * 1000),
+                        '$lte' => new \MongoDB\BSON\UTCDateTime(strtotime($end_date) * 1000)
+                    ];
 
        //$match_query['dispatcher_id'] = array('$gt'=>1);
        $match_query['dispatcher_id'] = (int)$dispatch_id;
-       $match_query['performance_status'] = array('$gt'=>0);
+       $match_query['performance_status'] = ['$gt'=>0];
         
         $srch_query = $match_query;
-        $common_arguments = array(
+        $common_arguments = [
   
-            array(
-                '$lookup' => array(
+            [
+                '$lookup' => [
                     'from' => MDB_PASSENGERS,
                     'localField' => 'passengers_id',
                     'foreignField' => '_id',
                     'as' => 'pass'
-                )
-            ),
-             array(
-                '$unwind' =>array('path'=>'$pass','preserveNullAndEmptyArrays'=>true)
-            ),
-            array(
-                '$lookup' => array(
+                ]
+            ],
+             [
+                '$unwind' =>['path'=>'$pass','preserveNullAndEmptyArrays'=>true]
+            ],
+            [
+                '$lookup' => [
                     'from' => MDB_PEOPLE,
                     'localField' => 'driver_id',
                     'foreignField' => '_id',
                     'as' => 'people'
-                )
-            ),
-            array(
-                '$unwind' =>array('path'=>'$people','preserveNullAndEmptyArrays'=>true)
-            ),
-             array(
-                '$lookup' => array(
+                ]
+            ],
+            [
+                '$unwind' =>['path'=>'$people','preserveNullAndEmptyArrays'=>true]
+            ],
+             [
+                '$lookup' => [
                     'from' => MDB_PEOPLE,
                     'localField' => 'dispatcher_id',
                     'foreignField' => '_id',
                     'as' => 'dispatcher'
-                )
-            ),
-            array(
-                '$unwind' =>array('path'=>'$dispatcher','preserveNullAndEmptyArrays'=>true)
-            ),
-            array(
-                '$lookup' => array(
+                ]
+            ],
+            [
+                '$unwind' =>['path'=>'$dispatcher','preserveNullAndEmptyArrays'=>true]
+            ],
+            [
+                '$lookup' => [
                     'from' => MDB_TRANSACTION,
                     'localField' => '_id',
                     'foreignField' => 'passengers_log_id',
                     'as' => 'trans'
-                )
-            ),
-            array(
-                '$unwind' =>array('path'=>'$trans','preserveNullAndEmptyArrays'=>true)
-            ),           
+                ]
+            ],
+            [
+                '$unwind' =>['path'=>'$trans','preserveNullAndEmptyArrays'=>true]
+            ],           
             // array(
             //      '$unwind' =>array('path'=>'$fare_detail','preserveNullAndEmptyArrays'=>true)
             // ),
-            array(
+            [
                 '$match' => $srch_query
-            ),
-        );
+            ],
+        ];
         
         if ($find_count == TRUE) {
-            $count_arguments = array(
-                array(
+            $count_arguments = [
+                [
                 '$match' => $srch_query
-                ),
-                array(
-                    '$project' => array(
+                ],
+                [
+                    '$project' => [
                         'result' => '$_id',                        
                         'performance_status'=>'$performance_status',
-                    )
-                ),
-                 array(
-                    '$group' => array(
+                    ]
+                ],
+                 [
+                    '$group' => [
                          '_id' => '$performance_status'                       
-                    )
-                ),                
-            );
+                    ]
+                ],                
+            ];
             $merge_arguments = array_merge($common_arguments, $count_arguments);
 
             $result          = $this->mongo_db->aggregate(MDB_PASSENGERS_LOGS, $count_arguments);
@@ -12415,10 +12415,10 @@ Class Model_Manage extends Model
             }
 
             //echo $offset.'---'. $val;exit;
-            $field_arguments = array(
+            $field_arguments = [
 
-                array(
-                    '$project' => array(                        
+                [
+                    '$project' => [                        
                         'pending_amt'=>'$trans.pending_amt',
                         'driver_name'=>'$people.name',
                         'driver_id' =>'$people._id',
@@ -12435,52 +12435,52 @@ Class Model_Manage extends Model
                         'performance_status'=>'$performance_status',
                         'actual_pickup_time'=>'$actual_pickup_time',
                         'createdate'=>'$createdate',
-                        'late'=>array('$cond'=>array(
-                            array('$eq'=>array('$performance_status',1)),
+                        'late'=>['$cond'=>[
+                            ['$eq'=>['$performance_status',1]],
                             1,
                             0,
-                        )),  
-                        'too_late'=>array('$cond'=>array(
-                            array('$eq'=>array('$performance_status',2)),
+                        ]],  
+                        'too_late'=>['$cond'=>[
+                            ['$eq'=>['$performance_status',2]],
                             1,
                             0,
-                        )), 
-                        'on_time'=>array('$cond'=>array(
-                            array('$eq'=>array('$performance_status',3)),
+                        ]], 
+                        'on_time'=>['$cond'=>[
+                            ['$eq'=>['$performance_status',3]],
                             1,
                             0,
-                        )), 
-                        'missed'=>array('$cond'=>array(
-                            array('$eq'=>array('$performance_status',4)),
+                        ]], 
+                        'missed'=>['$cond'=>[
+                            ['$eq'=>['$performance_status',4]],
                             1,
                             0,
-                        )), 
-                        'cancel'=>array('$cond'=>array(
-                            array('$eq'=>array('$performance_status',5)),
+                        ]], 
+                        'cancel'=>['$cond'=>[
+                            ['$eq'=>['$performance_status',5]],
                             1,
                             0,
-                        )),
-                    )
-                ),               
+                        ]],
+                    ]
+                ],               
                 //array('$skip'   => (int)$offset ),
                 //array('$limit'  => (int)$val ),
-                array('$group' => array(
+                ['$group' => [
                           '_id' => '$performance_status',
-                          'dispatcher_id' =>array('$first'=>'$dispatcher_id'),
-                          'dispatcher_name'=>array('$first'=>'$dispatcher_name'),
-                          'total_late' => array('$sum' => '$late'),
-                          'total_too_late' => array('$sum' => '$too_late'),                          
-                          'total_on_time' => array('$sum' => '$on_time'),
-                          'total_missed' => array('$sum' => '$missed'),
-                          'total_cancel' => array('$sum' => '$cancel'),
-                          'trip_details' =>array('$push'=>'$$ROOT')
-                )),
-                array(
-                    '$sort' => array( 
+                          'dispatcher_id' =>['$first'=>'$dispatcher_id'],
+                          'dispatcher_name'=>['$first'=>'$dispatcher_name'],
+                          'total_late' => ['$sum' => '$late'],
+                          'total_too_late' => ['$sum' => '$too_late'],                          
+                          'total_on_time' => ['$sum' => '$on_time'],
+                          'total_missed' => ['$sum' => '$missed'],
+                          'total_cancel' => ['$sum' => '$cancel'],
+                          'trip_details' =>['$push'=>'$$ROOT']
+                ]],
+                [
+                    '$sort' => [ 
                         '_id' => -1
-                    ),
-                ),
-            );
+                    ],
+                ],
+            ];
             $merge_arguments = array_merge($common_arguments, $field_arguments);
 
             //echo "<pre>";echo json_encode($merge_arguments);exit;
@@ -12489,7 +12489,7 @@ Class Model_Manage extends Model
             $result    = $this->mongo_db->aggregate(MDB_PASSENGERS_LOGS, $merge_arguments);
  //echo "<pre>";
  //print_r($result);exit;
-            return (!empty($result['result'])) ? $result['result'] : array();
+            return (!empty($result['result'])) ? $result['result'] : [];
         }
     }
     
@@ -12503,101 +12503,101 @@ Class Model_Manage extends Model
         $city_id          = $this->city_id;
        
 		//MongoDB
-		$lookup_arguments = array(
-			array(
-				'$lookup' => array(
+		$lookup_arguments = [
+			[
+				'$lookup' => [
 					'from' => MDB_PASSENGERS,
 					'localField' => 'passengers_id',
 					'foreignField' => '_id',
 					'as' => 'passengers'
-				)
-			),
-			array(
+				]
+			],
+			[
 				'$unwind' => '$passengers'
-			),
-		);
+			],
+		];
 
 		if($pass_name && $pass_name!=''){
-			$srch_query = array('travel_status'=>1,'passenger_rating'=>array('$gt'=>0),'passengers.name' => new MongoRegex("/$pass_name/i"));
+			$srch_query = ['travel_status'=>1,'passenger_rating'=>['$gt'=>0],'passengers.name' => new \MongoDB\BSON\Regex($pass_name, 'i')];
 		}else{
-			$srch_query = array('travel_status'=>1,'passenger_rating'=>array('$gt'=>0));
+			$srch_query = ['travel_status'=>1,'passenger_rating'=>['$gt'=>0]];
 		}	
 		
 
 		if($usertype == 'C'){
 			//$srch_query = array('travel_status'=>1,'passenger_rating'=>array('$ne'=>0));
-                        $common_arguments = array(array('$match' => $srch_query));
-			$srch_q = array('passengers.company_id' => (int)$company_id);
-                        $common_a = array(array('$match' => $srch_q));
+                        $common_arguments = [['$match' => $srch_query]];
+			$srch_q = ['passengers.company_id' => (int)$company_id];
+                        $common_a = [['$match' => $srch_q]];
         } else if($usertype=='M'){
 			
-			$lookup_argument = array(
-				array(
-					'$lookup' => array(
+			$lookup_argument = [
+				[
+					'$lookup' => [
 						'from' => MDB_CSC,
 						'localField'=> 'stateinfo.cityinfo.city_id',
 						'foreignField'=> "people.login_city",
 						'as' => 'csc'
-					)
-				),
-				array(
+					]
+				],
+				[
 					'$unwind' => '$csc'
-				),
-			);
+				],
+			];
 			//$srch_query = array('travel_status'=>1,'rating'=>array('$ne'=>0));
-			$common_arguments = array(array('$match' => $srch_query),);
-			$srch_q = array('people.company_id' => (int)$company_id,'people.user_type'=>'D','people.login_country'=>(int)$country_id,'people.login_state'=>(int)$state_id,'people.login_city'=>(int)$city_id);
-			$common_a = array(array('$match' => $srch_q),);
+			$common_arguments = [['$match' => $srch_query],];
+			$srch_q = ['people.company_id' => (int)$company_id,'people.user_type'=>'D','people.login_country'=>(int)$country_id,'people.login_state'=>(int)$state_id,'people.login_city'=>(int)$city_id];
+			$common_a = [['$match' => $srch_q],];
 			//$lookup_arguments = array_merge($lookup_arguments,$lookup_argument);
 		} else {
 			//$srch_query = array('travel_status'=>1,'rating'=>array('$ne'=>0));
-			$common_arguments = array(array('$match' => $srch_query),);
-			$srch_q = array('people.user_type'=>'D');
-			$common_a = array(array('$match' => $srch_q),);
+			$common_arguments = [['$match' => $srch_query],];
+			$srch_q = ['people.user_type'=>'D'];
+			$common_a = [['$match' => $srch_q],];
 		}
 		if($find_count){
 			$common_argument = array_merge($lookup_arguments,$common_arguments);
-			$count_arguments = array(
-				array(
-					'$group' => array(
-						'_id' => array('passengers_id'=>'$passengers_id'),
-						'count' => array(
+			$count_arguments = [
+				[
+					'$group' => [
+						'_id' => ['passengers_id'=>'$passengers_id'],
+						'count' => [
 							'$sum' => 1
-						)
-					)
-				)
-			);
+						]
+					]
+				]
+			];
 			$merge_arguments = array_merge($common_argument, $count_arguments);
 			$result          = $this->mongo_db->aggregate(MDB_PASSENGERSLOGS_COMPLETED, $merge_arguments);
 			//echo "<pre>";print_r($merge_arguments);exit;
 			return (!empty($result['result']) && isset($result['result'])) ? count($result['result']) : 0;
 		} else {
 			$common_argument = array_merge($lookup_arguments,$common_arguments);
-			$field_arguments = array(
-				array(
-					'$sort' => array( 
+			$field_arguments = [
+				[
+					'$sort' => [ 
 						'createdate' => -1
-					),
-				),
-				array('$group' => array("_id" => array('passengers_id'=>'$passengers_id','name'=>'$passengers.name'),
-						"total_ratings" => array( '$sum' => '$passenger_rating' ),
-						"count" => array( '$sum' => 1 ),
-					)
-				),
-				array( '$project' =>array('_id' => 0,
+					],
+				],
+				['$group' => ["_id" => ['passengers_id'=>'$passengers_id','name'=>'$passengers.name'],
+						"total_ratings" => [ '$sum' => '$passenger_rating' ],
+						"count" => [ '$sum' => 1 ],
+					]
+				],
+				[ '$project' =>['_id' => 0,
 						'passengers_id' => '$_id.passengers_id',
-						'name' => array('$ifNull'=>array('$_id.name','')),
+						'name' => ['$ifNull'=>['$_id.name','']],
 						'total_posts' => '$total_ratings',
 						'co_nt' => '$count',
-					)
-				),
-				array('$skip'	=> (int)$offset ),
-				array('$limit'	=> (int)$val )
-			);
+					]
+				],
+				['$skip'	=> (int)$offset ],
+				['$limit'	=> (int)$val ]
+			];
 			$merge_arguments = array_merge($common_argument, $field_arguments);
 			$result    = $this->mongo_db->aggregate(MDB_PASSENGERSLOGS_COMPLETED, $merge_arguments);
 			//echo "<pre>else";print_r($merge_arguments); exit;
-			return (!empty($result['result'])) ? $result['result'] : array();
+			return (!empty($result['result'])) ? $result['result'] : [];
 		}
     }
     
@@ -12629,14 +12629,14 @@ Class Model_Manage extends Model
        $match_query['travel_status'] = 1;
        $match_query['people.user_type'] = 'D';
        $match_query['actual_pickup_time'] = array(
-                        '$gte' => New MongoDate(strtotime($start_date)),
-                        '$lte' => New MongoDate(strtotime($end_date))
+                        '$gte' => new \MongoDB\BSON\UTCDateTime(strtotime($start_date) * 1000),
+                        '$lte' => new \MongoDB\BSON\UTCDateTime(strtotime($end_date) * 1000)
                     );       
         
         $srch_query = $match_query;
 
         if(!empty($keyword)) {
-			$srch_query = array( "\$and" => array($match_query,array("\$or"=>array(array( 'pass.name' => new MongoRegex("/$keyword/i")) , array( 'pass.lastname' => new MongoRegex("/$keyword/i") ), array( 'pass.email' => new MongoRegex("/$keyword/i") ), array( 'pass.phone' => new MongoRegex("/$keyword/i") ), array( 'people.name' => new MongoRegex("/$keyword/i")), array( 'people.email' => new MongoRegex("/$keyword/i")), array( 'people.phone' => new MongoRegex("/$keyword/i") ) ) ) ) );
+			$srch_query = array( "\$and" => array($match_query,array("\$or"=>array(array( 'pass.name' => new \MongoDB\BSON\Regex($keyword, 'i')) , array( 'pass.lastname' => new \MongoDB\BSON\Regex($keyword, 'i') ), array( 'pass.email' => new \MongoDB\BSON\Regex($keyword, 'i') ), array( 'pass.phone' => new \MongoDB\BSON\Regex($keyword, 'i') ), array( 'people.name' => new \MongoDB\BSON\Regex($keyword, 'i')), array( 'people.email' => new \MongoDB\BSON\Regex($keyword, 'i')), array( 'people.phone' => new \MongoDB\BSON\Regex($keyword, 'i') ) ) ) ) );
 		}else{
 			$srch_query = $match_query;
 		}
@@ -12758,161 +12758,161 @@ Class Model_Manage extends Model
        //$match_query['travel_status'] = 1;
        $match_query['people.user_type'] = 'D';
        //$match_query['actual_pickup_time'] =
-        $pickup_condition = array(
-                        '$gte' => New MongoDate(strtotime($start_date)),
-                        '$lte' => New MongoDate(strtotime($end_date))
-                    );       
+        $pickup_condition = [
+                        '$gte' => new \MongoDB\BSON\UTCDateTime(strtotime($start_date) * 1000),
+                        '$lte' => new \MongoDB\BSON\UTCDateTime(strtotime($end_date) * 1000)
+                    ];       
         
         $srch_query = $match_query;
 
         if(!empty($keyword)) {
-			$srch_query = array( "\$and" => array($match_query,array("\$or"=>array(array( 'pass.name' => new MongoRegex("/$keyword/i")) , array( 'pass.lastname' => new MongoRegex("/$keyword/i") ), array( 'pass.email' => new MongoRegex("/$keyword/i") ), array( 'pass.phone' => new MongoRegex("/$keyword/i") ), array( 'people.name' => new MongoRegex("/$keyword/i")), array( 'people.email' => new MongoRegex("/$keyword/i")), array( 'people.phone' => new MongoRegex("/$keyword/i") ) ) ) ) );
+			$srch_query = [ "\$and" => [$match_query,["\$or"=>[[ 'pass.name' => new \MongoDB\BSON\Regex($keyword, 'i')] , [ 'pass.lastname' => new \MongoDB\BSON\Regex($keyword, 'i') ], [ 'pass.email' => new \MongoDB\BSON\Regex($keyword, 'i') ], [ 'pass.phone' => new \MongoDB\BSON\Regex($keyword, 'i') ], [ 'people.name' => new \MongoDB\BSON\Regex($keyword, 'i')], [ 'people.email' => new \MongoDB\BSON\Regex($keyword, 'i')], [ 'people.phone' => new \MongoDB\BSON\Regex($keyword, 'i') ] ] ] ] ];
 		}else{
 			$srch_query = $match_query;
 		}
 
-		$common_arguments = array(array('$match' => $srch_query),);
+		$common_arguments = [['$match' => $srch_query],];
        
 		//MongoDB
-		$lookup_arguments = array(
-			array('$match' => array('travel_status'=>1,'actual_pickup_time'=>$pickup_condition )),
-			array(
-				'$lookup' => array(
+		$lookup_arguments = [
+			['$match' => ['travel_status'=>1,'actual_pickup_time'=>$pickup_condition ]],
+			[
+				'$lookup' => [
 					'from' => MDB_PEOPLE,
 					'localField' => 'driver_id',
 					'foreignField' => '_id',
 					'as' => 'people'
-				)
-			),
-			array(
+				]
+			],
+			[
 				'$unwind' => '$people'
-			),
-			array(
-				'$lookup' => array(
+			],
+			[
+				'$lookup' => [
 					'from' => MDB_PASSENGERS,
 					'localField' => 'passengers_id',
 					'foreignField' => '_id',
 					'as' => 'pass'
-				)
-			),
-			array(
+				]
+			],
+			[
 				'$unwind' => '$pass'
-			),
-			 array('$lookup'         => array(
+			],
+			 ['$lookup'         => [
                     'from'          => 'ratings',
                     'localField'    => 'rating',
                     'foreignField'  => "ratings_no",
                     'as'            => "ratingsinfo"
-                )
-            ),            
-            array(
-				'$unwind' => array('path'=>'$ratingsinfo','preserveNullAndEmptyArrays'=>true)
-			),
-		);		
+                ]
+            ],            
+            [
+				'$unwind' => ['path'=>'$ratingsinfo','preserveNullAndEmptyArrays'=>true]
+			],
+		];		
 
 
 		if($find_count){
 			$common_argument = array_merge($lookup_arguments,$common_arguments);
-			$count_arguments = array(
-				array(
-					'$group' => array(
+			$count_arguments = [
+				[
+					'$group' => [
 						'_id' => NULL,
-						'count' => array(
+						'count' => [
 							'$sum' => 1
-						)					
-					)
-				)
-			);
+						]					
+					]
+				]
+			];
 			$merge_arguments = array_merge($common_argument, $count_arguments);
 			$result          = $this->mongo_db->aggregate(MDB_PASSENGERSLOGS_COMPLETED, $merge_arguments);
 			//echo "<pre>";print_r($result);exit;
 			return isset($result['result'][0]['count']) ? $result['result'][0]['count'] : 0;
 		} else {
 			$common_argument = array_merge($lookup_arguments,$common_arguments);
-			$field_arguments = array(
-				array(
-					'$sort' => array( 
+			$field_arguments = [
+				[
+					'$sort' => [ 
 						'_id' => -1,
 						'people._id' => 1
 
-					),
-				),
-				array('$skip'	=> (int)$offset ),
-				array('$limit'	=> (int)$val ),				
-				array( '$project' =>array(
+					],
+				],
+				['$skip'	=> (int)$offset ],
+				['$limit'	=> (int)$val ],				
+				[ '$project' =>[
 						'driver_id' => '$driver_id',
 						'driver_name' => '$people.name',
 						'driver_phone' => '$people.phone',
 						'passenger_name'=>'$pass.name',
 						'passenger_phone'=>'$pass.phone',
-						'rating_points' => array('$ifNull'=>array('$rating',0)),
+						'rating_points' => ['$ifNull'=>['$rating',0]],
 						'trip_id' => '$_id',
 						'actual_pickup_time'=>'$actual_pickup_time',
 						'driver_tags'=>'$driver_tags',
 						'comments'=>'$comments',
 						'ratings_title'=>'$ratingsinfo.ratings_title',
-					)
-				),
-			);
+					]
+				],
+			];
 			$merge_arguments = array_merge($common_argument, $field_arguments);
 			$result    = $this->mongo_db->aggregate(MDB_PASSENGERSLOGS_COMPLETED, $merge_arguments);
 			//echo "<pre>else";echo json_encode($merge_arguments); exit;
 			//print_r($result);exit;
-			return (!empty($result['result'])) ? $result['result'] : array();
+			return (!empty($result['result'])) ? $result['result'] : [];
 		}
     }
     
     public function get_website_certificates(){
 
-    	$field_arguments = array(		
-    								array('$project' => array('certificate_name'=>'$certificate_name') ),
-        							array('$match' => array('_id'=>array('$ne'=>'0') ) ),	        							
-        							array(
-					                    '$sort' => array( 
+    	$field_arguments = [		
+    								['$project' => ['certificate_name'=>'$certificate_name'] ],
+        							['$match' => ['_id'=>['$ne'=>'0'] ] ],	        							
+        							[
+					                    '$sort' => [ 
 					                        '_id' => -1,
-					                    ),
-					                )
-	        				);        	
+					                    ],
+					                ]
+	        				];        	
 
 	    $result    = $this->mongo_db->aggregate(MDB_WEBSITE_CERTIFICATES, $field_arguments);
 				// echo "<pre>";
 	           	//print_r($result);exit;
-	    return (!empty($result['result'])) ? $result['result'] : array();
+	    return (!empty($result['result'])) ? $result['result'] : [];
     }
 
     public function get_website_certificate($id){
 
-    	$field_arguments = array(		
-    								array('$project' => array('certificate_name'=>'$certificate_name','certificate_name_arabic'=>'$certificate_name_arabic','certificate_description'=>'$certificate_description','certificate_description_arabic'=>'$certificate_description_arabic','image'=>'$image','status'=>'$status') ),
-        							array('$match' => array('_id'=> (int) $id ) ),     							
+    	$field_arguments = [		
+    								['$project' => ['certificate_name'=>'$certificate_name','certificate_name_arabic'=>'$certificate_name_arabic','certificate_description'=>'$certificate_description','certificate_description_arabic'=>'$certificate_description_arabic','image'=>'$image','status'=>'$status'] ],
+        							['$match' => ['_id'=> (int) $id ] ],     							
         							
-	        				);        	
+	        				];        	
 
 	    $result    = $this->mongo_db->aggregate(MDB_WEBSITE_CERTIFICATES, $field_arguments);
 				// echo "<pre>";
 	           	//print_r($result);exit;
-	    return (!empty($result['result'])) ? $result['result'] : array();
+	    return (!empty($result['result'])) ? $result['result'] : [];
     }
 
     public function validate_website_certificate($arr){
 
     	return Validation::factory($arr)->rule('certificate_name', 'not_empty')        
-						            ->rule('certificate_name', 'min_length', array(
+						            ->rule('certificate_name', 'min_length', [
 						            ':value',
 						            '3'
-						        ))->rule('certificate_name_arabic', 'not_empty')        
-						            ->rule('certificate_name_arabic', 'min_length', array(
+						        ])->rule('certificate_name_arabic', 'not_empty')        
+						            ->rule('certificate_name_arabic', 'min_length', [
 						            ':value',
 						            '3'
-						        ))->rule('certificate_description', 'not_empty')        
-						            ->rule('certificate_description', 'min_length', array(
+						        ])->rule('certificate_description', 'not_empty')        
+						            ->rule('certificate_description', 'min_length', [
 						            ':value',
 						            '4'
-						        ))->rule('certificate_description_arabic', 'not_empty')        
-						            ->rule('certificate_description_arabic', 'min_length', array(
+						        ])->rule('certificate_description_arabic', 'not_empty')        
+						            ->rule('certificate_description_arabic', 'min_length', [
 						            ':value',
 						            '4'
-						        ));
+						        ]);
     }
 
     public function update_website_certificate($post,$id){
@@ -12926,13 +12926,13 @@ Class Model_Manage extends Model
     	 $current_date      = date('Y-m-d H:i:s', time());
          $currentdate = new \MongoDB\BSON\UTCDateTime(strtotime($current_date) * 1000);
 
-         $fields = array('certificate_name'=>$post['certificate_name'],'certificate_name_arabic'=> $post['certificate_name_arabic'],'certificate_description'=>$post['certificate_description'],'certificate_description_arabic'=>$post['certificate_description_arabic'],'status'=>$web_status,'update_date'=>$currentdate); 
+         $fields = ['certificate_name'=>$post['certificate_name'],'certificate_name_arabic'=> $post['certificate_name_arabic'],'certificate_description'=>$post['certificate_description'],'certificate_description_arabic'=>$post['certificate_description_arabic'],'status'=>$web_status,'update_date'=>$currentdate]; 
 
          if($post['image']){
             $fields['image'] = $post['image'];
          }       
 
-         $result = $this->mongo_db->update(MDB_WEBSITE_CERTIFICATES,array('_id'=>(int)$id),array('$set'=>$fields),array('upsert'=>true));
+         $result = $this->mongo_db->update(MDB_WEBSITE_CERTIFICATES,['_id'=>(int)$id],['$set'=>$fields],['upsert'=>true]);
 
          return 1;
 
@@ -12941,30 +12941,30 @@ Class Model_Manage extends Model
      public function validate_website_booking_confirm_content($arr){
 
     	return Validation::factory($arr)->rule('confirm_title', 'not_empty')        
-						            ->rule('confirm_title', 'min_length', array(
+						            ->rule('confirm_title', 'min_length', [
 						            ':value',
 						            '4'
-						        ))->rule('confirm_title_arabic', 'not_empty')        
-						            ->rule('confirm_title_arabic', 'min_length', array(
+						        ])->rule('confirm_title_arabic', 'not_empty')        
+						            ->rule('confirm_title_arabic', 'min_length', [
 						            ':value',
 						            '4'
-						        ))->rule('confirm_description', 'not_empty')        
-						            ->rule('confirm_description', 'min_length', array(
+						        ])->rule('confirm_description', 'not_empty')        
+						            ->rule('confirm_description', 'min_length', [
 						            ':value',
 						            '4'
-						        ))->rule('confirm_description_arabic', 'not_empty')        
-						            ->rule('confirm_description_arabic', 'min_length', array(
+						        ])->rule('confirm_description_arabic', 'not_empty')        
+						            ->rule('confirm_description_arabic', 'min_length', [
 						            ':value',
 						            '4'
-						        ))->rule('confirm_contact_us', 'not_empty')        
-						            ->rule('confirm_contact_us', 'min_length', array(
+						        ])->rule('confirm_contact_us', 'not_empty')        
+						            ->rule('confirm_contact_us', 'min_length', [
 						            ':value',
 						            '4'
-						        ))->rule('confirm_contact_us_arabic', 'not_empty')        
-						            ->rule('confirm_contact_us_arabic', 'min_length', array(
+						        ])->rule('confirm_contact_us_arabic', 'not_empty')        
+						            ->rule('confirm_contact_us_arabic', 'min_length', [
 						            ':value',
 						            '4'
-						        ));
+						        ]);
     }
 
 
@@ -12974,11 +12974,11 @@ Class Model_Manage extends Model
          $currentdate = new \MongoDB\BSON\UTCDateTime(strtotime($current_date) * 1000);         
 
 
-         $home_page = array('confirm_title'=>$post['confirm_title'],'confirm_title_arabic'=> $post['confirm_title_arabic'],'confirm_description'=>$post['confirm_description'],'confirm_description_arabic'=>$post['confirm_description_arabic'],'confirm_contact_us'=>$post['confirm_contact_us'],'confirm_contact_us_arabic'=>$post['confirm_contact_us_arabic'],'update_date'=>$currentdate);
+         $home_page = ['confirm_title'=>$post['confirm_title'],'confirm_title_arabic'=> $post['confirm_title_arabic'],'confirm_description'=>$post['confirm_description'],'confirm_description_arabic'=>$post['confirm_description_arabic'],'confirm_contact_us'=>$post['confirm_contact_us'],'confirm_contact_us_arabic'=>$post['confirm_contact_us_arabic'],'update_date'=>$currentdate];
 
-         $query = array('confirm_page'=>$home_page);
+         $query = ['confirm_page'=>$home_page];
 
-         $result = $this->mongo_db->update(MDB_WEBSITE_CONTENT,array('_id'=>1),array('$set'=>$query),array('upsert'=>true));
+         $result = $this->mongo_db->update(MDB_WEBSITE_CONTENT,['_id'=>1],['$set'=>$query],['upsert'=>true]);
 
          return (empty($result['err']))?1:$result['err'];
     }
@@ -12990,15 +12990,15 @@ Class Model_Manage extends Model
         $keyword       = str_replace("_", "!_", $keyword);
        // $match_query = array('status'=>'A');
 
-        $match_query =array();   
+        $match_query =[];   
 
         //$start_date = $search_date." 05:00:01";
         //$end_date = date('Y-m-d',strtotime('+1 days '.$search_date))." 05:00:01";
 
-       $match_query['shift_start'] = array(
-                        '$gte' => New MongoDate(strtotime($start_date)),
-                        '$lte' => New MongoDate(strtotime($end_date))
-                    );
+       $match_query['shift_start'] = [
+                        '$gte' => new \MongoDB\BSON\UTCDateTime(strtotime($start_date) * 1000),
+                        '$lte' => new \MongoDB\BSON\UTCDateTime(strtotime($end_date) * 1000)
+                    ];
 
        if($driver_id && $driver_id!='' && $driver_id!=0){
        		$match_query['driver_id'] = (int) $driver_id;
@@ -13007,47 +13007,47 @@ Class Model_Manage extends Model
    
 
         if(!empty($keyword)) {
-            $srch_query = array( "\$and" => array($match_query,array("\$or"=>array(array( 'people.name' => new MongoRegex("/$keyword/i")) , array( 'people.lastname' => new MongoRegex("/$keyword/i") ), array( 'people.email' => new MongoRegex("/$keyword/i") ), array( 'people.phone' => new MongoRegex("/$keyword/i") ) ) ) ) );
+            $srch_query = [ "\$and" => [$match_query,["\$or"=>[[ 'people.name' => new \MongoDB\BSON\Regex($keyword, 'i')] , [ 'people.lastname' => new \MongoDB\BSON\Regex($keyword, 'i') ], [ 'people.email' => new \MongoDB\BSON\Regex($keyword, 'i') ], [ 'people.phone' => new \MongoDB\BSON\Regex($keyword, 'i') ] ] ] ] ];
         }else{
             $srch_query = $match_query;
         }
-        $common_arguments = array(
-            array(
-                '$lookup' => array(
+        $common_arguments = [
+            [
+                '$lookup' => [
                     'from' => MDB_PEOPLE,
                     'localField' => 'driver_id',
                     'foreignField' => '_id',
                     'as' => 'people'
-                )
-            ),
-            array(
-                '$unwind' =>array('path'=>'$people','preserveNullAndEmptyArrays'=>true)
-            ),
-            array(
+                ]
+            ],
+            [
+                '$unwind' =>['path'=>'$people','preserveNullAndEmptyArrays'=>true]
+            ],
+            [
                 '$match' => $srch_query
-            ),
-        );
+            ],
+        ];
         
         if ($find_count == TRUE) {
-            $count_arguments = array(
+            $count_arguments = [
                 // array(
                 // '$match' => $srch_query
                 // ),
-                array(
-                    '$project' => array(                        
+                [
+                    '$project' => [                        
                         'driver_id'=>'$driver_id'
-                    )
-                )                
-            );
+                    ]
+                ]                
+            ];
             $common_arguments = array_merge($common_arguments,$count_arguments);
             $result          = $this->mongo_db->aggregate(MDB_SHIFT_HISTORY, $common_arguments);
             //print_r(count($result['result']));exit;
             return (!empty($result['result']) && count($result['result'])) ? count($result['result']) : 0;
         } else {
-            $field_arguments = array(
+            $field_arguments = [
               
-                array(
-                    '$project' => array(
+                [
+                    '$project' => [
                     	'driver_name'=>'$people.name',
                     	'driver_id'=>'$driver_id',
                     	'driver_code'=>'$people.driver_code',
@@ -13059,96 +13059,96 @@ Class Model_Manage extends Model
                     	'shift_end'=>'$shift_end',
                     	'status'=>'$status',
                     	//'createdate'=>'$createdate',
-                    	'create_day'=>array('$dateToString' => array('format'=> "%Y-%m-%d", 'date'=> '$shift_start'))
+                    	'create_day'=>['$dateToString' => ['format'=> "%Y-%m-%d", 'date'=> '$shift_start']]
 
-                    )
-                ),               
-                array('$skip'   => (int)$offset ),
-                array('$limit'  => (int)$val ),
-                 array(
-                    '$sort' => array(                        
+                    ]
+                ],               
+                ['$skip'   => (int)$offset ],
+                ['$limit'  => (int)$val ],
+                 [
+                    '$sort' => [                        
                         'driver_id' => -1,
                         'create_day' => -1,
-                    ),
-                ),
-            );
+                    ],
+                ],
+            ];
             $merge_arguments = array_merge($common_arguments, $field_arguments);
 
             $result    = $this->mongo_db->aggregate(MDB_SHIFT_HISTORY, $merge_arguments);
-            return (!empty($result['result'])) ? $result['result'] : array();
+            return (!empty($result['result'])) ? $result['result'] : [];
         }
     }
     
      // Customization
     public function manage_zone()
     {
-    	$srch_query['status'] =array('$in'=>array('A','D'));
-    	$arguments = array(
-				array(
+    	$srch_query['status'] =['$in'=>['A','D']];
+    	$arguments = [
+				[
 					'$match' => $srch_query
-				),
+				],
 				//array('$sort' => array('zone_name' => -1)),
-				array(
-					'$project' => array(
+				[
+					'$project' => [
 						'_id'=>1,
 						'zone_name'=>1,
 						'status'=>1
-					)
-				)
-			);
+					]
+				]
+			];
 	    $res = $this->mongo_db->aggregate(MDB_ZONES,$arguments);
 	    //echo"<pre>";print_r($res);exit();
-	   	return !empty($res['result'])? $res['result'] : array();
+	   	return !empty($res['result'])? $res['result'] : [];
     }
 
     public function manage_zone_search($keyword = "", $status = "",$offset ="",$val ="", $find_count=false)
     {	
     	$keyword       = str_replace("%", "!%", $keyword);
         $keyword       = str_replace("_", "!_", $keyword);
-		$srch_query = array();
+		$srch_query = [];
 		//MongoDB with aggregate process only
 		if((!empty($keyword)) && (!empty($status))) {
-			$srch_query = array( "\$and" => array(array('status' => $status ),array("\$or"=>array(array( 'zone_name' => new MongoRegex("/$keyword/i")) ) ) ) );
+			$srch_query = [ "\$and" => [['status' => $status ],["\$or"=>[[ 'zone_name' => new \MongoDB\BSON\Regex($keyword, 'i')] ] ] ] ];
 		} else if (!empty($keyword)) {
-			$srch_query = array("\$or"=>array(array( 'zone_name' => new MongoRegex("/$keyword/i")) ));
+			$srch_query = ["\$or"=>[[ 'zone_name' => new \MongoDB\BSON\Regex($keyword, 'i')] ]];
 		} else if (!empty($status)) {
-			$srch_query = array( "\$and" => array(array('status' => $status )));
+			$srch_query = [ "\$and" => [['status' => $status ]]];
 		} else {
-			$srch_query = array( "\$and" => array(array('status' => 'A' )));
+			$srch_query = [ "\$and" => [['status' => 'A' ]]];
 		}
 
 		//echo '<pre>'; print_r($srch_query); exit();
 		if(!empty($srch_query))
 		{
-			$arguments = array(
-				array(
+			$arguments = [
+				[
 					'$match' => $srch_query
-				),
+				],
 				//array('$sort' => array('zone_name' => -1)),
-				array(
-					'$project' => array(
+				[
+					'$project' => [
 						'_id'=>1,
 						'zone_name'=>1,
 						'status'=>1
-					)
-				)
-			);
+					]
+				]
+			];
 		}
 		else
 		{
-			$arguments = array(
-				array(
+			$arguments = [
+				[
 					'$match' => $srch_query
-				),
+				],
 				//array('$sort' => array('zone_name' => -1)),
-				array(
-					'$project' => array(
+				[
+					'$project' => [
 						'_id'=>1,
 						'zone_name'=>1,
 						'status'=>1
-					)
-				)
-			);
+					]
+				]
+			];
 		}
 		
 		
@@ -13176,7 +13176,7 @@ Class Model_Manage extends Model
     {
     	$active_ids = Commonfunction::mongo_format_array($activeids);
 		//print_r($active_ids); exit();
-		$result = $this->mongo_db->update(MDB_ZONES,array('_id'=>array('$in'=>$active_ids)),array('$set'=>array('status' => 'D')), array('multiple'=>true));
+		$result = $this->mongo_db->update(MDB_ZONES,['_id'=>['$in'=>$active_ids]],['$set'=>['status' => 'D']], ['multiple'=>true]);
 		return (empty($res['err']))?1:$res['errmsg'];
     }
 
@@ -13184,7 +13184,7 @@ Class Model_Manage extends Model
     {
     	$active_ids = Commonfunction::mongo_format_array($activeids);
 		//print_r($active_ids); exit();
-		$result = $this->mongo_db->update(MDB_ZONES,array('_id'=>array('$in'=>$active_ids)),array('$set'=>array('status' => 'A')), array('multiple'=>true));
+		$result = $this->mongo_db->update(MDB_ZONES,['_id'=>['$in'=>$active_ids]],['$set'=>['status' => 'A']], ['multiple'=>true]);
 		return (empty($res['err']))?1:$res['errmsg'];
     }
 
@@ -13192,7 +13192,7 @@ Class Model_Manage extends Model
     {
     	$active_ids = Commonfunction::mongo_format_array($activeids);
 		//print_r($active_ids); exit();
-		$result = $this->mongo_db->update(MDB_ZONES,array('_id'=>array('$in'=>$active_ids)),array('$set'=>array('status' => 'T')), array('multiple'=>true));
+		$result = $this->mongo_db->update(MDB_ZONES,['_id'=>['$in'=>$active_ids]],['$set'=>['status' => 'T']], ['multiple'=>true]);
 		return (empty($res['err']))?1:$res['errmsg'];
     }
     
@@ -13202,10 +13202,10 @@ Class Model_Manage extends Model
 		$user_createdby                  = $this->userid;
 		$keyword       = str_replace("%", "!%", $keyword);
         $keyword       = str_replace("_", "!_", $keyword);
-		$match_query['activation_status'] = array('$in'=> array(0,"0") );
-		$code_query['activation_status'] = array('$in'=> array(0,"0") );
-		$match_query['user_status'] = array('$ne'=> "A" );
-		$code_query['user_status'] = array('$ne'=> "A" );
+		$match_query['activation_status'] = ['$in'=> [0,"0"] ];
+		$code_query['activation_status'] = ['$in'=> [0,"0"] ];
+		$match_query['user_status'] = ['$ne'=> "A" ];
+		$code_query['user_status'] = ['$ne'=> "A" ];
 				
 		$country_code = isset($_REQUEST['country_code']) ? $_REQUEST['country_code'] : "";		
 		if($country_code != '') {
@@ -13218,74 +13218,74 @@ Class Model_Manage extends Model
             $end_date = date("Y-m-d 23:59:59");
 		}
 		
-		$date_query1['created_date'] = array(
-                        '$gte' => New MongoDate(strtotime($start_date)),
-                        '$lte' => New MongoDate(strtotime($end_date))                        
-                    );
+		$date_query1['created_date'] = [
+                        '$gte' => new \MongoDB\BSON\UTCDateTime(strtotime($start_date) * 1000),
+                        '$lte' => new \MongoDB\BSON\UTCDateTime(strtotime($end_date) * 1000)                        
+                    ];
                     
-        $date_query2['created_date'] = array(
+        $date_query2['created_date'] = [
                         '$gte' => $start_date,
                         '$lte' => $end_date
-                    );            
+                    ];            
 	
-		$srch_query = array( "\$and" => array($match_query,array("\$or"=>array($date_query1 , $date_query2 ) ) ) );
+		$srch_query = [ "\$and" => [$match_query,["\$or"=>[$date_query1 , $date_query2 ] ] ] ];
 		
 		if(!empty($keyword)) {
-			$srch_query = array( "\$and" => array($srch_query,array("\$or"=>array(array( 'name' => new MongoRegex("/$keyword/i")) , array( 'lastname' => new MongoRegex("/$keyword/i") ), array( 'email' => new MongoRegex("/$keyword/i") ), array( 'phone' => new MongoRegex("/$keyword/i") ) ) ) ) );
+			$srch_query = [ "\$and" => [$srch_query,["\$or"=>[[ 'name' => new \MongoDB\BSON\Regex($keyword, 'i')] , [ 'lastname' => new \MongoDB\BSON\Regex($keyword, 'i') ], [ 'email' => new \MongoDB\BSON\Regex($keyword, 'i') ], [ 'phone' => new \MongoDB\BSON\Regex($keyword, 'i') ] ] ] ] ];
 		}else{
 			$srch_query = $srch_query;
 		}
 
 		if ($find_count == TRUE) {
-			$common_arguments = array(
-				array(
+			$common_arguments = [
+				[
 					'$match' => $srch_query
-				),
-				array(
-					'$project' => array(
+				],
+				[
+					'$project' => [
 						'passenger_id' => '$_id',
 						'result' => '$_id'
-					)
-				),
-				array(
-					'$group' => array(
+					]
+				],
+				[
+					'$group' => [
 						 '_id' => '$passenger_id', 
-						'count' => array(
+						'count' => [
 							'$sum' => 1
-						)
-					)
-				)
-			);
+						]
+					]
+				]
+			];
 			$result          = $this->mongo_db->aggregate(MDB_PASSENGERS, $common_arguments);
 			
-			$common_arguments1 = array(
-				array(
+			$common_arguments1 = [
+				[
 					'$match' => $code_query
-				),
-				array(
-					'$project' => array(
+				],
+				[
+					'$project' => [
 						'passenger_id' => '$_id',
 						'country_code' => '$country_code'
-					)
-				),
-				array(
-					'$group' => array(
+					]
+				],
+				[
+					'$group' => [
 						 '_id' => '$country_code'						
-					)
-				)
-			);
+					]
+				]
+			];
 			$result1          = $this->mongo_db->aggregate(MDB_PASSENGERS, $common_arguments1);
 			
 			$array['count'] = (!empty($result['result'])) ? count($result['result']) : 0; 
-			$array['country_code'] = (!empty($result1['result'])) ? $result1['result'] : array(); 
+			$array['country_code'] = (!empty($result1['result'])) ? $result1['result'] : []; 
 			return $array;			
 		} else {
-			$field_arguments = array(
-				array(
+			$field_arguments = [
+				[
 					'$match' => $srch_query
-				),
-				array(
-					'$project' => array(
+				],
+				[
+					'$project' => [
 						'id' => '$_id',
 						'passenger_id' => '$_id',
 						'passenger_email' => '$email',
@@ -13294,28 +13294,28 @@ Class Model_Manage extends Model
 						'passenger_phone' => '$phone',
 						'passenger_country_code' => '$country_code',
 						'created_date' => '$created_date',						
-					)
-				),
-				array(
-                    '$group' => array(
+					]
+				],
+				[
+                    '$group' => [
                         '_id' => '$passenger_id',                       
-						'passenger_email' => array('$first'=>'$passenger_email'),
-						'passenger_id' => array('$first'=>'$passenger_id'),
-						'passenger_name' => array('$first'=>'$passenger_name'),
-						'passenger_phone' => array('$first'=>'$passenger_phone'),
-						'passenger_country_code' => array('$first'=>'$passenger_country_code'),
-						'created_date' => array('$first'=>'$created_date'),						
-                        )
-                ),
-				array('$skip'	=> (int)$offset ),
-				array('$limit'	=> (int)$val ),
-				array('$sort' => array( 
+						'passenger_email' => ['$first'=>'$passenger_email'],
+						'passenger_id' => ['$first'=>'$passenger_id'],
+						'passenger_name' => ['$first'=>'$passenger_name'],
+						'passenger_phone' => ['$first'=>'$passenger_phone'],
+						'passenger_country_code' => ['$first'=>'$passenger_country_code'],
+						'created_date' => ['$first'=>'$created_date'],						
+                        ]
+                ],
+				['$skip'	=> (int)$offset ],
+				['$limit'	=> (int)$val ],
+				['$sort' => [ 
                         'created_date' => -1,
-                    ),
-                ),
-			);
+                    ],
+                ],
+			];
 			$result    = $this->mongo_db->aggregate(MDB_PASSENGERS, $field_arguments);
-			return (!empty($result['result'])) ? $result['result'] : array();
+			return (!empty($result['result'])) ? $result['result'] : [];
 		}
     }
     
@@ -13325,33 +13325,33 @@ Class Model_Manage extends Model
         $keyword       = str_replace("_", "!_", $keyword);
         
 		if($id != 0){
-			$srch_query =  array('passengers_id' => (int)$id,'driver_reply'=>'A','travel_status' => (int)1,'$and' => array(array('pickup_time' =>  array('$gte'=>new \MongoDB\BSON\UTCDateTime(strtotime($fromdate) * 1000)) ),array('pickup_time' =>  array('$lte'=>new \MongoDB\BSON\UTCDateTime(strtotime($todate) * 1000)) ) ) );
+			$srch_query =  ['passengers_id' => (int)$id,'driver_reply'=>'A','travel_status' => (int)1,'$and' => [['pickup_time' =>  ['$gte'=>new \MongoDB\BSON\UTCDateTime(strtotime($fromdate) * 1000)] ],['pickup_time' =>  ['$lte'=>new \MongoDB\BSON\UTCDateTime(strtotime($todate) * 1000)] ] ] ];
 		}else{
-			$match_query =  array('driver_reply'=>'A','travel_status' => (int)1,'$and' => array(array('pickup_time' =>  array('$gte'=>new \MongoDB\BSON\UTCDateTime(strtotime($fromdate) * 1000)) ),array('pickup_time' =>  array('$lte'=>new \MongoDB\BSON\UTCDateTime(strtotime($todate) * 1000)) ) ) );
+			$match_query =  ['driver_reply'=>'A','travel_status' => (int)1,'$and' => [['pickup_time' =>  ['$gte'=>new \MongoDB\BSON\UTCDateTime(strtotime($fromdate) * 1000)] ],['pickup_time' =>  ['$lte'=>new \MongoDB\BSON\UTCDateTime(strtotime($todate) * 1000)] ] ] ];
 			
-			$srch_query = array( "\$and" => array($match_query,array("\$or"=>array(array( 'pass.name' => new MongoRegex("/$keyword/i")) , array( 'pass.lastname' => new MongoRegex("/$keyword/i") ), array( 'pass.email' => new MongoRegex("/$keyword/i") ), array( 'pass.phone' => new MongoRegex("/$keyword/i") ) ) ) ) );
+			$srch_query = [ "\$and" => [$match_query,["\$or"=>[[ 'pass.name' => new \MongoDB\BSON\Regex($keyword, 'i')] , [ 'pass.lastname' => new \MongoDB\BSON\Regex($keyword, 'i') ], [ 'pass.email' => new \MongoDB\BSON\Regex($keyword, 'i') ], [ 'pass.phone' => new \MongoDB\BSON\Regex($keyword, 'i') ] ] ] ] ];
 		}
 		
-		$arguments = array(
-			array('$lookup' 		=> array(
+		$arguments = [
+			['$lookup' 		=> [
 					'from'			=>	MDB_PASSENGERS,
 					'localField'	=> 'passengers_id',
 					'foreignField'	=> '_id',
 					'as'			=> 'passenger'
-				)
-			),
-			array('$unwind' => '$passenger'),
-			array('$lookup' 		=> array(
+				]
+			],
+			['$unwind' => '$passenger'],
+			['$lookup' 		=> [
 					'from'			=>	MDB_TRANSACTION,
 					'localField'	=> '_id',
 					'foreignField'	=> 'passengers_log_id',
 					'as'			=> 'transaction'
-				)
-			),
-			array('$unwind' => '$transaction'),
-			array('$match'	=> $srch_query),
-			array(
-				'$project' => array(
+				]
+			],
+			['$unwind' => '$transaction'],
+			['$match'	=> $srch_query],
+			[
+				'$project' => [
 					'_id' => '$_id',
 					'passenger_id' => '$passengers_id',
 					'activity_date'=>'$pickup_time',
@@ -13359,22 +13359,22 @@ Class Model_Manage extends Model
 					'lastname' => '$passenger.lastname',
 					'email' => '$passenger.email',
 					'phone' => '$passenger.phone',
-					'wallet_amount' => array('$ifNull'=>array(0,0)),
-					'change_amount'=> array('$ifNull'=>array(0,0)),
-					'total_credit' => array('$ifNull'=>array(0,0)),
-					'total_debit' => array('$ifNull'=>array(0,0)),
+					'wallet_amount' => ['$ifNull'=>[0,0]],
+					'change_amount'=> ['$ifNull'=>[0,0]],
+					'total_credit' => ['$ifNull'=>[0,0]],
+					'total_debit' => ['$ifNull'=>[0,0]],
 					'balance_wallet_amount' => '$passenger.wallet_amount',
 					'fare'=>'$transaction.fare',
 					'amt'=>'$transaction.amt',					
-					'type' => array('$ifNull'=>array(1,1)),
-				)
-			),
-			array(
-				'$sort' => array(
+					'type' => ['$ifNull'=>[1,1]],
+				]
+			],
+			[
+				'$sort' => [
 					'activity_date' => 1
-				)
-			)
-		);
+				]
+			]
+		];
 		
 		$table=MDB_PASSENGERSLOGS_COMPLETED;
 		
@@ -13383,7 +13383,7 @@ Class Model_Manage extends Model
 			$arguments[]['$limit'] = (int)$limit;
 			$result = $this->mongo_db->aggregate($table,$arguments);
 			//echo "<pre>"; print_r($result); exit;			
-			return (!empty($result['result']))?$result['result']:array();
+			return (!empty($result['result']))?$result['result']:[];
 		} else {
 			$result = $this->mongo_db->aggregate($table,$arguments);
 			return (!empty($result['result']))?count($result['result']):0;
@@ -13397,12 +13397,12 @@ Class Model_Manage extends Model
 		$user_createdby                  = $this->userid;
 		$keyword       = str_replace("%", "!%", $keyword);
         $keyword       = str_replace("_", "!_", $keyword);
-		$match_query = array('pass.user_status'=>'A');
+		$match_query = ['pass.user_status'=>'A'];
 
 		//$match_query["recharge_type"] = array('$ne'=>6); //avoid pending repayment
 
 		//get credit transactions or trip payment only
-		$match_query["\$or"] = array( array('recharge_type'=> array('$in'=> array(4,6,8) ) ) );
+		$match_query["\$or"] = [ ['recharge_type'=> ['$in'=> [4,6,8] ] ] ];
 
 		if(!empty($recharge_type))
 		{
@@ -13415,69 +13415,69 @@ Class Model_Manage extends Model
             $end_date = date("Y-m-d 23:59:59");
 		}
 		
-		$match_query['created_date'] = array(
-                        '$gte' => New MongoDate(strtotime($start_date)),
-                        '$lte' => New MongoDate(strtotime($end_date))
-                    );
+		$match_query['created_date'] = [
+                        '$gte' => new \MongoDB\BSON\UTCDateTime(strtotime($start_date) * 1000),
+                        '$lte' => new \MongoDB\BSON\UTCDateTime(strtotime($end_date) * 1000)
+                    ];
                     
         if($id != 0) {            
 			$match_query['passenger_id'] = (int)$id;             
 		}
 		
 		if(!empty($keyword)) {
-			$srch_query = array( "\$and" => array($match_query,array("\$or"=>array(array( 'pass.name' => new MongoRegex("/$keyword/i")) , array( 'pass.lastname' => new MongoRegex("/$keyword/i") ), array( 'pass.email' => new MongoRegex("/$keyword/i") ), array( 'pass.phone' => new MongoRegex("/$keyword/i") ) ) ) ) );
+			$srch_query = [ "\$and" => [$match_query,["\$or"=>[[ 'pass.name' => new \MongoDB\BSON\Regex($keyword, 'i')] , [ 'pass.lastname' => new \MongoDB\BSON\Regex($keyword, 'i') ], [ 'pass.email' => new \MongoDB\BSON\Regex($keyword, 'i') ], [ 'pass.phone' => new \MongoDB\BSON\Regex($keyword, 'i') ] ] ] ] ];
 		}else{
 			$srch_query = $match_query;
 		}
 
 
-		$common_arguments = array(
-			array(
-				'$lookup' => array(
+		$common_arguments = [
+			[
+				'$lookup' => [
 					'from' => MDB_PASSENGERS,
 					'localField' => 'passenger_id',
 					'foreignField' => '_id',
 					'as' => 'pass'
-				)
-			),
-			array(
+				]
+			],
+			[
 				'$unwind' => '$pass'
-			),
-			array(
+			],
+			[
 				'$match' => $srch_query
-			),
-		);
+			],
+		];
 		
 		if ($find_count == TRUE) {
-			$count_arguments = array(
-				array(
-					'$project' => array(
+			$count_arguments = [
+				[
+					'$project' => [
 						'passenger_id' => '$pass._id',
 						'result' => '$_id'
-					)
-				),
-				array(
-					'$group' => array(
+					]
+				],
+				[
+					'$group' => [
 						 '_id' => '$passenger_id', 
-						'count' => array(
+						'count' => [
 							'$sum' => 1
-						)
-					)
-				)
-			);
+						]
+					]
+				]
+			];
 			$merge_arguments = array_merge($common_arguments, $count_arguments);
 			$result          = $this->mongo_db->aggregate(PASSENGER_WALLET_LOG, $merge_arguments);
 			//echo "<pre>";print_r($result['result']);exit;
 			return (!empty($result['result'])) ? count($result['result']) : 0;
 		} else {
-			$field_arguments = array(
-				array(
-					'$sort' => array( 
+			$field_arguments = [
+				[
+					'$sort' => [ 
 						'created_date' => -1
-					),
-				),
-				array(
-					'$project' => array(
+					],
+				],
+				[
+					'$project' => [
 						'id' => '$_id',
 						'passenger_email' => '$pass.email',
 						'passenger_id' => '$pass._id',
@@ -13493,40 +13493,40 @@ Class Model_Manage extends Model
 						'transaction_id' => '$transaction_id',
 						'trip_id' => '$trip_id',
 						'notes'=>'$notes',
-						'recharge_amt' => array('$cond' => array(array('$eq' => array('$recharge_type',8)),'$change_amount',0)),
-       					'trip_amt' => array('$cond' => array(array('$eq' => array('$recharge_type',4)),'$change_amount',0)),
+						'recharge_amt' => ['$cond' => [['$eq' => ['$recharge_type',8]],'$change_amount',0]],
+       					'trip_amt' => ['$cond' => [['$eq' => ['$recharge_type',4]],'$change_amount',0]],
        					'balance_wallet_amount'=>'$pass.wallet_amount',
        					'fare'=>'$change_amount',
 						'amt'=>'$change_amount',						
-					)
-				),
-				array(
-                    '$group' => array(
+					]
+				],
+				[
+                    '$group' => [
                         '_id' => '$passenger_id',                       
-						'passenger_id' => array('$first'=>'$passenger_id'),
-						'activity_date' => array('$first'=>'$created_date'),
-						'name' => array('$first'=>'$passenger_name'),
-						'lastname' => array('$first'=>'$passenger_lastname'),
-						'email' => array('$first'=>'$passenger_email'),
-						'phone' => array('$first'=>'$passenger_phone'),
-						'wallet_amount' => array('$first'=>'$wallet_amount'),
-						'change_amount'=> array('$first'=>'$change_amount'),
-                        'total_recharge_amt' => array('$sum'=>'$recharge_amt'),
-                        'total_trip_amt' => array('$sum'=>'$trip_amt'),
-                        'balance_wallet_amount'=>array('$first'=>'$balance_wallet_amount'),
-                        'fare'=>array('$first'=>'$fare'),
-                        'amt'=>array('$first'=>'$amt'),
-                        'recharge_type'=>array('$first'=>'$recharge_type'),                        
-                        )
-                ),
-				array('$skip'	=> (int)$offset ),
-				array('$limit'	=> (int)$val ),
-				array(
-					'$sort' => array(
+						'passenger_id' => ['$first'=>'$passenger_id'],
+						'activity_date' => ['$first'=>'$created_date'],
+						'name' => ['$first'=>'$passenger_name'],
+						'lastname' => ['$first'=>'$passenger_lastname'],
+						'email' => ['$first'=>'$passenger_email'],
+						'phone' => ['$first'=>'$passenger_phone'],
+						'wallet_amount' => ['$first'=>'$wallet_amount'],
+						'change_amount'=> ['$first'=>'$change_amount'],
+                        'total_recharge_amt' => ['$sum'=>'$recharge_amt'],
+                        'total_trip_amt' => ['$sum'=>'$trip_amt'],
+                        'balance_wallet_amount'=>['$first'=>'$balance_wallet_amount'],
+                        'fare'=>['$first'=>'$fare'],
+                        'amt'=>['$first'=>'$amt'],
+                        'recharge_type'=>['$first'=>'$recharge_type'],                        
+                        ]
+                ],
+				['$skip'	=> (int)$offset ],
+				['$limit'	=> (int)$val ],
+				[
+					'$sort' => [
 						'activity_date' => 1
-					)
-				),
-			);
+					]
+				],
+			];
 			$merge_arguments = array_merge($common_arguments, $field_arguments);
 			
 			$result    = $this->mongo_db->aggregate(PASSENGER_WALLET_LOG, $merge_arguments);
@@ -13534,7 +13534,7 @@ Class Model_Manage extends Model
 			//~ print_r($result);
 			//~ exit;
 			
-			return (!empty($result['result'])) ? $result['result'] : array();
+			return (!empty($result['result'])) ? $result['result'] : [];
 		}
     }
     
@@ -13543,12 +13543,12 @@ Class Model_Manage extends Model
 		$user_createdby                  = $this->userid;
 		$keyword       = str_replace("%", "!%", $keyword);
         $keyword       = str_replace("_", "!_", $keyword);
-		$match_query = array('pass.user_status'=>'A');
+		$match_query = ['pass.user_status'=>'A'];
 
 		//$match_query["recharge_type"] = array('$ne'=>6); //avoid pending repayment
 
 		//get credit transactions or trip payment only
-		$match_query["\$or"] = array(  array('recharge_type'=> array('$in'=> array(4,6,8) ) ) );
+		$match_query["\$or"] = [  ['recharge_type'=> ['$in'=> [4,6,8] ] ] ];
 
 		if(!empty($recharge_type))
 		{
@@ -13561,63 +13561,63 @@ Class Model_Manage extends Model
             $end_date = date("Y-m-d 23:59:59");
 		}
 		
-		$match_query['created_date'] = array(
-                        '$gte' => New MongoDate(strtotime($start_date)),
-                        '$lte' => New MongoDate(strtotime($end_date))
-                    );
+		$match_query['created_date'] = [
+                        '$gte' => new \MongoDB\BSON\UTCDateTime(strtotime($start_date) * 1000),
+                        '$lte' => new \MongoDB\BSON\UTCDateTime(strtotime($end_date) * 1000)
+                    ];
                     
         if($id != 0) {            
 			$match_query['passenger_id'] = (int)$id;             
 		}
 		
 		if(!empty($keyword)) {
-			$srch_query = array( "\$and" => array($match_query,array("\$or"=>array(array( 'pass.name' => new MongoRegex("/$keyword/i")) , array( 'pass.lastname' => new MongoRegex("/$keyword/i") ), array( 'pass.email' => new MongoRegex("/$keyword/i") ), array( 'pass.phone' => new MongoRegex("/$keyword/i") ) ) ) ) );
+			$srch_query = [ "\$and" => [$match_query,["\$or"=>[[ 'pass.name' => new \MongoDB\BSON\Regex($keyword, 'i')] , [ 'pass.lastname' => new \MongoDB\BSON\Regex($keyword, 'i') ], [ 'pass.email' => new \MongoDB\BSON\Regex($keyword, 'i') ], [ 'pass.phone' => new \MongoDB\BSON\Regex($keyword, 'i') ] ] ] ] ];
 		}else{
 			$srch_query = $match_query;
 		}
 
 
-		$common_arguments = array(
-			array(
-				'$lookup' => array(
+		$common_arguments = [
+			[
+				'$lookup' => [
 					'from' => MDB_PASSENGERS,
 					'localField' => 'passenger_id',
 					'foreignField' => '_id',
 					'as' => 'pass'
-				)
-			),
-			array(
+				]
+			],
+			[
 				'$unwind' => '$pass'
-			),
-			array(
+			],
+			[
 				'$match' => $srch_query
-			),
-		);
+			],
+		];
 		
 		if ($find_count == TRUE) {
-			$count_arguments = array(
-				array(
-					'$project' => array(
+			$count_arguments = [
+				[
+					'$project' => [
 						'passenger_id' => '$pass._id',
 						'result' => '$_id'
-					)
-				),
-				array(
-					'$group' => array(
+					]
+				],
+				[
+					'$group' => [
 						 '_id' => '$passenger_id', 
-						'count' => array(
+						'count' => [
 							'$sum' => 1
-						)
-					)
-				)
-			);
+						]
+					]
+				]
+			];
 			$merge_arguments = array_merge($common_arguments, $count_arguments);
 			$result          = $this->mongo_db->aggregate(PASSENGER_WALLET_LOG, $merge_arguments);
 			return (!empty($result['result'][0]['count'])) ? $result['result'][0]['count'] : 0;
 		} else {
-			$field_arguments = array(
-				array(
-					'$project' => array(
+			$field_arguments = [
+				[
+					'$project' => [
 						'id' => '$_id',
 						'passenger_email' => '$pass.email',
 						'passenger_id' => '$pass._id',
@@ -13633,42 +13633,42 @@ Class Model_Manage extends Model
 						'transaction_id' => '$transaction_id',
 						'trip_id' => '$trip_id',
 						'notes'=>'$notes',
-						'recharge_amt' => array('$cond' => array(array('$eq' => array('$recharge_type',8)),'$change_amount',0)),
-       					'trip_amt' => array('$cond' => array(array('$eq' => array('$recharge_type',4)),'$change_amount',0)),
-       					'pending_amt' => array('$cond' => array(array('$eq' => array('$recharge_type',6)),'$change_amount',0)),
+						'recharge_amt' => ['$cond' => [['$eq' => ['$recharge_type',8]],'$change_amount',0]],
+       					'trip_amt' => ['$cond' => [['$eq' => ['$recharge_type',4]],'$change_amount',0]],
+       					'pending_amt' => ['$cond' => [['$eq' => ['$recharge_type',6]],'$change_amount',0]],
        					'balance_wallet_amount'=>'$pass.wallet_amount',
        					'fare'=>'$change_amount',
 						'amt'=>'$change_amount',
-					)
-				),
-				array(
-                    '$group' => array(
+					]
+				],
+				[
+                    '$group' => [
                         '_id' => '$id',                       
-						'passenger_id' => array('$first'=>'$passenger_id'),
-						'activity_date' => array('$first'=>'$created_date'),
-						'name' => array('$first'=>'$passenger_name'),
-						'lastname' => array('$first'=>'$passenger_lastname'),
-						'email' => array('$first'=>'$passenger_email'),
-						'phone' => array('$first'=>'$passenger_phone'),
-						'wallet_amount' => array('$first'=>'$wallet_amount'),
-						'change_amount'=> array('$first'=>'$change_amount'),
-                        'total_recharge_amt' => array('$sum'=>'$recharge_amt'),
-                        'total_trip_amt' => array('$sum'=>'$trip_amt'),
-                        'total_pending_amt' => array('$sum'=>'$pending_amt'),
-                        'balance_wallet_amount'=>array('$first'=>'$balance_wallet_amount'),
-                        'fare'=>array('$first'=>'$fare'),
-                        'amt'=>array('$first'=>'$amt'),
-                        'recharge_type'=>array('$first'=>'$recharge_type')
-                        )
-                ),
-				array('$skip'	=> (int)$offset ),
-				array('$limit'	=> (int)$val ),
-				array(
-					'$sort' => array(
+						'passenger_id' => ['$first'=>'$passenger_id'],
+						'activity_date' => ['$first'=>'$created_date'],
+						'name' => ['$first'=>'$passenger_name'],
+						'lastname' => ['$first'=>'$passenger_lastname'],
+						'email' => ['$first'=>'$passenger_email'],
+						'phone' => ['$first'=>'$passenger_phone'],
+						'wallet_amount' => ['$first'=>'$wallet_amount'],
+						'change_amount'=> ['$first'=>'$change_amount'],
+                        'total_recharge_amt' => ['$sum'=>'$recharge_amt'],
+                        'total_trip_amt' => ['$sum'=>'$trip_amt'],
+                        'total_pending_amt' => ['$sum'=>'$pending_amt'],
+                        'balance_wallet_amount'=>['$first'=>'$balance_wallet_amount'],
+                        'fare'=>['$first'=>'$fare'],
+                        'amt'=>['$first'=>'$amt'],
+                        'recharge_type'=>['$first'=>'$recharge_type']
+                        ]
+                ],
+				['$skip'	=> (int)$offset ],
+				['$limit'	=> (int)$val ],
+				[
+					'$sort' => [
 						'activity_date' => 1
-					)
-				),
-			);
+					]
+				],
+			];
 			
 			$merge_arguments = array_merge($common_arguments, $field_arguments);
 			
@@ -13680,7 +13680,7 @@ Class Model_Manage extends Model
 			//~ echo $end_date;
 			//~ exit;
 			
-			return (!empty($result['result'])) ? $result['result'] : array();
+			return (!empty($result['result'])) ? $result['result'] : [];
 		}
     }
     
@@ -13691,7 +13691,7 @@ Class Model_Manage extends Model
         $keyword       = str_replace("_", "!_", $keyword);
        // $match_query = array('status'=>'A');
 
-        $match_query =array();   
+        $match_query =[];   
 
         if($start_date != '' && $end_date != '')
         {
@@ -13713,16 +13713,16 @@ Class Model_Manage extends Model
 
 
        //~ $match_query['plogs.actual_pickup_time'] = array(
-                        //~ '$gte' => New MongoDate(strtotime($start_date)),
-                        //~ '$lte' => New MongoDate(strtotime($end_date))
+                        //~ '$gte' => new \MongoDB\BSON\UTCDateTime(strtotime($start_date) * 1000),
+                        //~ '$lte' => new \MongoDB\BSON\UTCDateTime(strtotime($end_date) * 1000)
                     //~ );
 		 $match_query['taxi_status'] = 'A'; 	
 		 if(!empty($model)) {
 			$match_query['taxi_model'] = (int)$model;
 		 }	
          if(!empty($keyword)) {
-             //$srch_query = array( "\$and" => array($match_query,array("\$or"=>array(array( 'taxi_no' => new MongoRegex("/$keyword/i")) ) ) ) );
-             $match_query['taxi_no'] = new MongoRegex("/$keyword/i");
+             //$srch_query = array( "\$and" => array($match_query,array("\$or"=>array(array( 'taxi_no' => new \MongoDB\BSON\Regex($keyword, 'i')) ) ) ) );
+             $match_query['taxi_no'] = new \MongoDB\BSON\Regex($keyword, 'i');
              $srch_query = $match_query;
          }else{
 			 $srch_query = $match_query;
@@ -13731,105 +13731,105 @@ Class Model_Manage extends Model
         //~ print "<pre>";
         //~ print_r($srch_query);
         //~ exit;
-        $common_arguments = array(
+        $common_arguments = [
   
-            array(
-                 '$lookup' => array(
+            [
+                 '$lookup' => [
                      'from' => MDB_PASSENGERSLOGS_COMPLETED,
                      'localField' => '_id',
                      'foreignField' => 'taxi_id',
                      'as' => 'plogs'
-                 )
-             ),
-            array(
-                  '$unwind' =>array('path'=>'$plogs','preserveNullAndEmptyArrays'=>true)
-            ),
-            array(
-                '$lookup' => array(
+                 ]
+             ],
+            [
+                  '$unwind' =>['path'=>'$plogs','preserveNullAndEmptyArrays'=>true]
+            ],
+            [
+                '$lookup' => [
                     'from' => MDB_TRANSACTION,
                     'localField' => 'plogs._id',
                     'foreignField' => 'passengers_log_id',
                     'as' => 'trans'
-                )
-            ),
-            array(
-                '$unwind' =>array('path'=>'$trans','preserveNullAndEmptyArrays'=>true)
-            ),
-            array(
-                '$lookup' => array(
+                ]
+            ],
+            [
+                '$unwind' =>['path'=>'$trans','preserveNullAndEmptyArrays'=>true]
+            ],
+            [
+                '$lookup' => [
                     'from' => MDB_MOTOR_MODEL,
                     'localField' => 'taxi_model',
                     'foreignField' => '_id',
                     'as' => 'model'
-                )
-            ),
-            array(
-                '$unwind' =>array('path'=>'$model','preserveNullAndEmptyArrays'=>true)
-            ),
-            array(
+                ]
+            ],
+            [
+                '$unwind' =>['path'=>'$model','preserveNullAndEmptyArrays'=>true]
+            ],
+            [
                 '$match' => $srch_query
-            ),
-        );
+            ],
+        ];
         
         if ($find_count == TRUE) {
-            $count_arguments = array(
-                array(
-                    '$project' => array(
+            $count_arguments = [
+                [
+                    '$project' => [
 						'taxi_id'=>'$_id'
-                    )
-                ),
-                array(
-                    '$group' => array(
+                    ]
+                ],
+                [
+                    '$group' => [
                         '_id' => '$taxi_id',
-                         'count' => array(
+                         'count' => [
                             '$sum' => 1
-                        )
-                    )
-                )
-            );
+                        ]
+                    ]
+                ]
+            ];
            $merge_arguments = array_merge($common_arguments, $count_arguments);
 
             $result          = $this->mongo_db->aggregate(MDB_TAXI, $merge_arguments);       
             return (!empty($result['result']) && isset($result['result'][0]['count'])) ? count($result['result']) : 0;
         } else {
-            $field_arguments = array(
+            $field_arguments = [
               
-                array(
-                    '$project' => array(
-                        'total_trip_count' => array('$cond' => array(
+                [
+                    '$project' => [
+                        'total_trip_count' => ['$cond' => [
 									'if' => 
-										array('$and' => array(
-											array('$gte' =>  array('$plogs.actual_pickup_time',New MongoDate(strtotime($start_date)))),
-											array('$lte' => array('$plogs.actual_pickup_time',New MongoDate(strtotime($end_date)))), 
-										)),
+										['$and' => [
+											['$gte' =>  ['$plogs.actual_pickup_time',new \MongoDB\BSON\UTCDateTime(strtotime($start_date) * 1000)]],
+											['$lte' => ['$plogs.actual_pickup_time',new \MongoDB\BSON\UTCDateTime(strtotime($end_date) * 1000)]], 
+										]],
 									'then' =>  1, 
 									'else' => 0
-									)
-						),
-						'total_trip_fare' => array('$cond' => array(
+									]
+						],
+						'total_trip_fare' => ['$cond' => [
 									'if' => 
-										array('$and' => array(
-											array('$gte' =>  array('$plogs.actual_pickup_time',New MongoDate(strtotime($start_date)))),
-											array('$lte' => array('$plogs.actual_pickup_time',New MongoDate(strtotime($end_date)))), 											
-										)),
+										['$and' => [
+											['$gte' =>  ['$plogs.actual_pickup_time',new \MongoDB\BSON\UTCDateTime(strtotime($start_date) * 1000)]],
+											['$lte' => ['$plogs.actual_pickup_time',new \MongoDB\BSON\UTCDateTime(strtotime($end_date) * 1000)]], 											
+										]],
 									'then' => 
-										array('$cond' => array(
+										['$cond' => [
 											'if' => 
-											array('$and' => array(
-												array('$gt'=>array('$trans.driver_edit_status',0)),
-											)),
+											['$and' => [
+												['$gt'=>['$trans.driver_edit_status',0]],
+											]],
 											'then' => 
-												array('$sum'=>array('$trans.fare','$trans.wallet_amount_used','$trans.add_amt')), 
-											'else' => array('$sum'=>array('$trans.actual_paid_amt','$trans.wallet_amount_used'))
-										)),										 
+												['$sum'=>['$trans.fare','$trans.wallet_amount_used','$trans.add_amt']], 
+											'else' => ['$sum'=>['$trans.actual_paid_amt','$trans.wallet_amount_used']]
+										]],										 
 									'else' => 0										
-							)
-						),
+							]
+						],
 						//~ 'total_pending_amt' => array('$cond' => array(
 									//~ 'if' => 
 										//~ array('$and' => array(
-											//~ array('$gte' =>  array('$plogs.actual_pickup_time',New MongoDate(strtotime($start_date)))),
-											//~ array('$lte' => array('$plogs.actual_pickup_time',New MongoDate(strtotime($end_date)))), 
+											//~ array('$gte' =>  array('$plogs.actual_pickup_time',new \MongoDB\BSON\UTCDateTime(strtotime($start_date) * 1000))),
+											//~ array('$lte' => array('$plogs.actual_pickup_time',new \MongoDB\BSON\UTCDateTime(strtotime($end_date) * 1000))), 
 										//~ )),
 									//~ 'then' =>  array('$sum'=>array('$trans.pending_amt')), 
 									//~ 'else' => 0
@@ -13842,29 +13842,29 @@ Class Model_Manage extends Model
                         'model_name'=>'$model.model_name',
                         'category_name'=>'$model.category_name',
                         'taxi_id'=>'$_id'
-                    )
-                ),
-                array(
-                    '$group' => array(
+                    ]
+                ],
+                [
+                    '$group' => [
                         '_id' => '$taxi_id',
-                        'pickup_time' => array('$first'=>'$pickup_time'),
-                        'taxi_no' => array('$first'=>'$taxi_no'),
-                        'taxi_id' => array('$first'=>'$taxi_id'),
-                        'model_name' => array('$first'=>'$model_name'),
-                        'category_name' => array('$first'=>'$category_name'),
-                        'total_count' => array('$sum'=>'$total_trip_count'),
-                        'total_amount' => array('$sum'=>'$total_trip_fare'),
-                        'total_pending_amt' => array('$sum'=>'$pending_amt'),
-                    )
-                ),
-               array('$skip'   => (int)$offset ),
-               array('$limit'  => (int)$val ),
-                 array(
-                    '$sort' => array( 
+                        'pickup_time' => ['$first'=>'$pickup_time'],
+                        'taxi_no' => ['$first'=>'$taxi_no'],
+                        'taxi_id' => ['$first'=>'$taxi_id'],
+                        'model_name' => ['$first'=>'$model_name'],
+                        'category_name' => ['$first'=>'$category_name'],
+                        'total_count' => ['$sum'=>'$total_trip_count'],
+                        'total_amount' => ['$sum'=>'$total_trip_fare'],
+                        'total_pending_amt' => ['$sum'=>'$pending_amt'],
+                    ]
+                ],
+               ['$skip'   => (int)$offset ],
+               ['$limit'  => (int)$val ],
+                 [
+                    '$sort' => [ 
                         '_id' => -1
-                    ),
-                ),
-            );
+                    ],
+                ],
+            ];
             $merge_arguments = array_merge($common_arguments, $field_arguments);
 
             //echo "<pre>";echo json_encode($merge_arguments);
@@ -13872,28 +13872,28 @@ Class Model_Manage extends Model
 
            //~ print "<prE>";
            //~ print_r($result);exit;
-            return (!empty($result['result'])) ? $result['result'] : array();
+            return (!empty($result['result'])) ? $result['result'] : [];
         }
     }
     
     public function all_surge_pricing_model_list($keyword, $status, $offset, $val,$find_count=false)
     {
         //MongoDB
-        $match_auery['surge_pricing_status'] = array('$ne'=>'T');
+        $match_auery['surge_pricing_status'] = ['$ne'=>'T'];
 			
 		if($keyword != '') {
-			$match_auery['model_name'] = new MongoRegex("/$keyword/i");
+			$match_auery['model_name'] = new \MongoDB\BSON\Regex($keyword, 'i');
 		}
 		if($status != '') {
 			$match_auery['surge_pricing_status'] = $status;
 		}
 		if($find_count){
-			$result = $this->mongo_db->count(MDB_MOTOR_MODEL,$match_auery,array('_id','model_name','surge_pricing_status'));
+			$result = $this->mongo_db->count(MDB_MOTOR_MODEL,$match_auery,['_id','model_name','surge_pricing_status']);
 			return $result;
 		} else {
-			$result = $this->mongo_db->find(MDB_MOTOR_MODEL,$match_auery,array('_id','model_name','surge_pricing_status'))->sort(array('_id'=>1))->skip($offset)->limit($val);
+			$result = $this->mongo_db->find(MDB_MOTOR_MODEL,$match_auery,['_id','model_name','surge_pricing_status'])->sort(['_id'=>1])->skip($offset)->limit($val);
 			//echo '<pre>';print_r(iterator_to_array($result));exit;
-			return (!empty($result))?iterator_to_array($result):array();
+			return (!empty($result))?iterator_to_array($result):[];
 		}
     }
     
@@ -13902,7 +13902,7 @@ Class Model_Manage extends Model
        //MongoDB
 		//Here changing array values with string to integers values
 		$active_ids = Commonfunction::mongo_format_array($activeids);
-		$res = $this->mongo_db->update(MDB_MOTOR_MODEL,array('_id'=>array('$in'=>$active_ids)),array('$set'=>array('surge_pricing_status' => 'D')),array('multiple'=>true));
+		$res = $this->mongo_db->update(MDB_MOTOR_MODEL,['_id'=>['$in'=>$active_ids]],['$set'=>['surge_pricing_status' => 'D']],['multiple'=>true]);
 		return (empty($res['err']))?1:$res['errmsg'];
     }
 	public function active_surge_pricing_model_request($activeids)
@@ -13910,7 +13910,7 @@ Class Model_Manage extends Model
         //MongoDB
 		//Here changing array values with string to integers values
 		$active_ids = Commonfunction::mongo_format_array($activeids);
-		$res = $this->mongo_db->update(MDB_MOTOR_MODEL,array('_id'=>array('$in'=>$active_ids)),array('$set'=>array('surge_pricing_status' => 'A')),array('multiple'=>true));
+		$res = $this->mongo_db->update(MDB_MOTOR_MODEL,['_id'=>['$in'=>$active_ids]],['$set'=>['surge_pricing_status' => 'A']],['multiple'=>true]);
 		return (empty($res['err']))?1:$res['errmsg'];
     }
     // Customization
@@ -13920,33 +13920,33 @@ Class Model_Manage extends Model
     public function validate_add_notification($arr){
 
     	return Validation::factory($arr)->rule('content', 'not_empty')        
-						            ->rule('content', 'min_length', array(
+						            ->rule('content', 'min_length', [
 						            ':value',
 						            '4'
-						        ))->rule('content', 'max_length', array(
+						        ])->rule('content', 'max_length', [
 						            ':value',
 						            '700'
-						        ))->rule('title', 'not_empty')        
-						            ->rule('title', 'min_length', array(
+						        ])->rule('title', 'not_empty')        
+						            ->rule('title', 'min_length', [
 						            ':value',
 						            '4'
-						        ))->rule('title', 'max_length', array(
+						        ])->rule('title', 'max_length', [
 						            ':value',
 						            '30'
-						        ))->rule('sub_title', 'not_empty')        
-						            ->rule('sub_title', 'min_length', array(
+						        ])->rule('sub_title', 'not_empty')        
+						            ->rule('sub_title', 'min_length', [
 						            ':value',
 						            '4'
-						        ))->rule('sub_title', 'max_length', array(
+						        ])->rule('sub_title', 'max_length', [
 						            ':value',
 						            '30'
-						        ))->rule('template', 'not_empty')->rule('start_date', 'not_empty')->rule('expire_date', 'not_empty');
+						        ])->rule('template', 'not_empty')->rule('start_date', 'not_empty')->rule('expire_date', 'not_empty');
     }
 
 
     public function admin_add_notification($pushmessage,$image='',$title,$sub_title,$start_date,$expire_date,$image_only=0,$banner_image='') {
 
-            $rs = $this->mongo_db->find(MDB_NOTIFICATIONS,array(),array('_id'))->sort(array('_id'=>-1))->limit(1);
+            $rs = $this->mongo_db->find(MDB_NOTIFICATIONS,[],['_id'])->sort(['_id'=>-1])->limit(1);
 			$rs = iterator_to_array($rs);
 			reset($rs);
 			$rs_first_key = key($rs);
@@ -13960,7 +13960,7 @@ Class Model_Manage extends Model
             $start_date = new \MongoDB\BSON\UTCDateTime(strtotime($start_date) * 1000);
             $expire_date = new \MongoDB\BSON\UTCDateTime(strtotime($expire_date) * 1000);
 
-            $data = array('_id'=>$_id,
+            $data = ['_id'=>$_id,
             	'title'=>$title,
             	'sub_title'=>$sub_title,
 				'message' => $pushmessage,
@@ -13973,7 +13973,7 @@ Class Model_Manage extends Model
 				'created_date'=>$currentdate,
 				'image_only'=>$image_only		
 													
-			);
+			];
 			$result = $this->mongo_db->insert(MDB_NOTIFICATIONS,$data);
 			return empty($result['err'])?1:0;
 			//echo "<pre>";print_r($result);exit();
@@ -13981,13 +13981,13 @@ Class Model_Manage extends Model
     }
 
     public function notification_list($offset, $val,$find_count = FALSE){
-    	$ops = array('notification_type'=>(int)5);
-		$select_ops = array('_id','title','sub_title','message','sent_status','created_date','start_date','expire_date','image');
+    	$ops = ['notification_type'=>(int)5];
+		$select_ops = ['_id','title','sub_title','message','sent_status','created_date','start_date','expire_date','image'];
 		if($find_count){
 	    	$qresult = $this->mongo_db->count(MDB_NOTIFICATIONS,$ops);
 			return $qresult;
 		}else{
-	    	$qresult = $this->mongo_db->find(MDB_NOTIFICATIONS,$ops,$select_ops)->sort(array('_id'=>-1))->skip($offset)->limit($val);
+	    	$qresult = $this->mongo_db->find(MDB_NOTIFICATIONS,$ops,$select_ops)->sort(['_id'=>-1])->skip($offset)->limit($val);
 			$itqresult = iterator_to_array($qresult);
 	    	$ar_result = array_values($itqresult);
 	    	return $ar_result;
@@ -13998,7 +13998,7 @@ Class Model_Manage extends Model
 	public function trash_notification_request($activeids)
     {
 		$active_ids = Commonfunction::mongo_format_array($activeids);
-		$res = $this->mongo_db->remove(MDB_NOTIFICATIONS,array('_id'=>array('$in'=>$active_ids)));
+		$res = $this->mongo_db->remove(MDB_NOTIFICATIONS,['_id'=>['$in'=>$active_ids]]);
 		return (empty($res['err']))?1:$res['errmsg'];
     }
 
@@ -14008,21 +14008,21 @@ Class Model_Manage extends Model
 		$user_createdby                  = $this->userid;
 		$keyword       = str_replace("%", "!%", $keyword);
         $keyword       = str_replace("_", "!_", $keyword);
-		$match_query = array('user_status'=>'A');
+		$match_query = ['user_status'=>'A'];
 
-		$match_query["wallet_amount"] = array('$gt'=>0.0001);
+		$match_query["wallet_amount"] = ['$gt'=>0.0001];
 	
 		if(!empty($keyword)) {
-			$srch_query = array( "\$and" => array($match_query,array("\$or"=>array(array( 'name' => new MongoRegex("/$keyword/i")) , array( 'lastname' => new MongoRegex("/$keyword/i") ), array( 'email' => new MongoRegex("/$keyword/i") ), array( 'phone' => new MongoRegex("/$keyword/i") ) ) ) ) );
+			$srch_query = [ "\$and" => [$match_query,["\$or"=>[[ 'name' => new \MongoDB\BSON\Regex($keyword, 'i')] , [ 'lastname' => new \MongoDB\BSON\Regex($keyword, 'i') ], [ 'email' => new \MongoDB\BSON\Regex($keyword, 'i') ], [ 'phone' => new \MongoDB\BSON\Regex($keyword, 'i') ] ] ] ] ];
 		}else{
 			$srch_query = $match_query;
 		}
 
 
-			$field_arguments = array(
-				array('$match' => $srch_query),
-				array(
-					'$project' => array(
+			$field_arguments = [
+				['$match' => $srch_query],
+				[
+					'$project' => [
 						'id' => '$_id',
 						'passenger_email' => '$email',
 						'passenger_id' => '$_id',
@@ -14032,34 +14032,34 @@ Class Model_Manage extends Model
 						'created_date' => '$created_date',
 						'created_by' => '$created_by',
        					'balance_wallet_amount'=>'$wallet_amount',
-					)
-				),
+					]
+				],
 				 //  array(
 					//  '$sort' => array( 
 					// 	 'wallet_amount' => 1
 					//  ),
 				 // ),
-				);
+				];
 
 				if($offset != ''){
-					array_push($field_arguments,array('$skip'   => (int)$offset ));
+					array_push($field_arguments,['$skip'   => (int)$offset ]);
 				}
 				if($val != ''){
-					array_push($field_arguments,array('$limit'   => (int)$val));
+					array_push($field_arguments,['$limit'   => (int)$val]);
 				}
 
-				$sortCondition = array(
-					 '$sort' => array( 
+				$sortCondition = [
+					 '$sort' => [ 
 						 'wallet_amount' => 1
-					 ),
-				);
+					 ],
+				];
 				array_push($field_arguments,$sortCondition);
 
 			// echo json_encode($field_arguments);
 
 			$result    = $this->mongo_db->aggregate(PASSENGERS, $field_arguments);
 
-			return (!empty($result['result'])) ? $result['result'] : array();
+			return (!empty($result['result'])) ? $result['result'] : [];
     }
 
 public function gift_card_logs($keyword = "", $status = "",$recharge_type="",$start_date="",$end_date="", $company = "", $offset = "", $val = "", $find_count = FALSE)
@@ -14067,7 +14067,7 @@ public function gift_card_logs($keyword = "", $status = "",$recharge_type="",$st
 		$user_createdby                  = $this->userid;
 		$keyword       = str_replace("%", "!%", $keyword);
         $keyword       = str_replace("_", "!_", $keyword);
-		$match_query = array('pass.user_status'=>'A');
+		$match_query = ['pass.user_status'=>'A'];
 
 		// if(!empty($recharge_type))
 		// {
@@ -14080,75 +14080,75 @@ public function gift_card_logs($keyword = "", $status = "",$recharge_type="",$st
             $end_date = date("Y-m-d 23:59:59");
 		}
 		
-		$match_query['created_date'] = array(
-                        '$gte' => New MongoDate(strtotime($start_date)),
-                        '$lte' => New MongoDate(strtotime($end_date))
-                    );
+		$match_query['created_date'] = [
+                        '$gte' => new \MongoDB\BSON\UTCDateTime(strtotime($start_date) * 1000),
+                        '$lte' => new \MongoDB\BSON\UTCDateTime(strtotime($end_date) * 1000)
+                    ];
 	
 		if(!empty($keyword)) {
-			$srch_query = array( "\$and" => array($match_query,array("\$or"=>array(array( 'pass.name' => new MongoRegex("/$keyword/i")) , array( 'pass.lastname' => new MongoRegex("/$keyword/i") ), array( 'pass.email' => new MongoRegex("/$keyword/i") ), array( 'pass.phone' => new MongoRegex("/$keyword/i") ) ) ) ) );
+			$srch_query = [ "\$and" => [$match_query,["\$or"=>[[ 'pass.name' => new \MongoDB\BSON\Regex($keyword, 'i')] , [ 'pass.lastname' => new \MongoDB\BSON\Regex($keyword, 'i') ], [ 'pass.email' => new \MongoDB\BSON\Regex($keyword, 'i') ], [ 'pass.phone' => new \MongoDB\BSON\Regex($keyword, 'i') ] ] ] ] ];
 		}else{
 			$srch_query = $match_query;
 		}
 
 
-		$common_arguments = array(
-			array(
-				'$lookup' => array(
+		$common_arguments = [
+			[
+				'$lookup' => [
 					'from' => MDB_PASSENGERS,
 					'localField' => 'passenger_id',
 					'foreignField' => '_id',
 					'as' => 'pass'
-				)
-			),
-			array(
+				]
+			],
+			[
 				'$unwind' => '$pass'
-			),
-			array(
-				'$lookup' => array(
+			],
+			[
+				'$lookup' => [
 					'from' => MDB_TRANSACTION,
 					'localField' => 'trip_id',
 					'foreignField' => 'passengers_log_id',
 					'as' => 'trans'
-				)
-			),
-			array(
-				'$unwind' => array('path'=>'$trans','preserveNullAndEmptyArrays'=>true)
-			),
-			array(
+				]
+			],
+			[
+				'$unwind' => ['path'=>'$trans','preserveNullAndEmptyArrays'=>true]
+			],
+			[
 				'$match' => $srch_query
-			),
-		);
+			],
+		];
 		
 		if ($find_count == TRUE) {
-			$count_arguments = array(
-				array(
-					'$project' => array(
+			$count_arguments = [
+				[
+					'$project' => [
 						'result' => '$_id'
-					)
-				),
-				array(
-					'$group' => array(
+					]
+				],
+				[
+					'$group' => [
 						'_id' => NULL,
-						'count' => array(
+						'count' => [
 							'$sum' => 1
-						)
-					)
-				)
-			);
+						]
+					]
+				]
+			];
 			$merge_arguments = array_merge($common_arguments, $count_arguments);
 			$result          = $this->mongo_db->aggregate(MDB_GIFT_CARD_LOGS, $merge_arguments);
 		//echo "<pre>";print_r($result['result']);exit;
 			return (!empty($result['result']) && isset($result['result'][0]['count'])) ? $result['result'][0]['count'] : 0;
 		} else {
-			$field_arguments = array(
-				array(
-					'$sort' => array( 
+			$field_arguments = [
+				[
+					'$sort' => [ 
 						'created_date' => -1
-					),
-				),
-				array(
-					'$project' => array(
+					],
+				],
+				[
+					'$project' => [
 						'id' => '$_id',
 						'passenger_email' => '$pass.email',
 						'passenger_id' => '$pass._id',
@@ -14168,15 +14168,15 @@ public function gift_card_logs($keyword = "", $status = "",$recharge_type="",$st
 
 
 						   
-					)
-				),
-				array('$skip'	=> (int)$offset ),
-				array('$limit'	=> (int)$val )
-			);
+					]
+				],
+				['$skip'	=> (int)$offset ],
+				['$limit'	=> (int)$val ]
+			];
 			$merge_arguments = array_merge($common_arguments, $field_arguments);
 			$result    = $this->mongo_db->aggregate(MDB_GIFT_CARD_LOGS, $merge_arguments);
 			//echo "<pre>";print_r($result['result']); exit;
-			return (!empty($result['result'])) ? $result['result'] : array();
+			return (!empty($result['result'])) ? $result['result'] : [];
 		}
     }
 	
@@ -14188,8 +14188,8 @@ public function gift_card_logs($keyword = "", $status = "",$recharge_type="",$st
 		}
         $result = $this->mongo_db->find_one(
         	MDB_PASSENGERS,
-        	array('phone' => $phoneNumber),
-        	array('_id','last_invoice_id')
+        	['phone' => $phoneNumber],
+        	['_id','last_invoice_id']
        	);
 		return $result;
 	}
@@ -14238,16 +14238,16 @@ public function gift_card_logs($keyword = "", $status = "",$recharge_type="",$st
     /* Sasidharan */
 	public function check_promo_exit_corporate($promo_code = "", $company_id = 0)
     {
-		$match_query = array();
+		$match_query = [];
 		$match_query['promocode'] = $promo_code;
 		if($company_id != 0){
 			$match_query['company_id'] = (int)$company_id;
 		}
-		$arguments = array(
-			array('$match'=> $match_query),
-			array('$project' => array('promocode' 	=> '$promocode', 'promo_discount' => '$promo_discount','promo_used' => '$promo_used')),
-			array('$group' =>array('_id' => NULL,'count' => array('$sum' => 1))),
-		);
+		$arguments = [
+			['$match'=> $match_query],
+			['$project' => ['promocode' 	=> '$promocode', 'promo_discount' => '$promo_discount','promo_used' => '$promo_used']],
+			['$group' =>['_id' => NULL,'count' => ['$sum' => 1]]],
+		];
 		$result = $this->mongo_db->aggregate(MDB_CORPORATE_GROUP_PROMOCODE,$arguments);
         return (isset($result['result'][0]['count']))?$result['result'][0]['count']:0;
     }
@@ -14255,29 +14255,29 @@ public function gift_card_logs($keyword = "", $status = "",$recharge_type="",$st
     public function promocode_list_corporate($offset, $val, $search, $company_id = 0, $corporate_id = 0, $find_count = FALSE)
     {
 		
-		$match_query = array();
+		$match_query = [];
 		$match_query['company.companydetails.company_status'] = "A";
 		if(!empty($search))
 		{
 			$keyword       = str_replace("%", "!%", $search["keyword"]);
 			$keyword       = str_replace("_", "!_", $search["keyword"]);
 			if($search['keyword'] != "") {
-				$match_query['promocode'] = new MongoRegex("/$keyword/i");
+				$match_query['promocode'] = new \MongoDB\BSON\Regex($keyword, 'i');
 			}
 			if (!empty($search['startdate']) && !empty($search['enddate'])) {
-				$match_query['start_date'] = array('$gte' => new \MongoDB\BSON\UTCDateTime(strtotime($search["startdate"]) * 1000), '$lte' => new \MongoDB\BSON\UTCDateTime(strtotime($search["enddate"]) * 1000));
+				$match_query['start_date'] = ['$gte' => new \MongoDB\BSON\UTCDateTime(strtotime($search["startdate"]) * 1000), '$lte' => new \MongoDB\BSON\UTCDateTime(strtotime($search["enddate"]) * 1000)];
             }elseif(!empty($search['startdate'])) {
-				$match_query['start_date'] = array('$gte' => new \MongoDB\BSON\UTCDateTime(strtotime($search["startdate"]) * 1000));
+				$match_query['start_date'] = ['$gte' => new \MongoDB\BSON\UTCDateTime(strtotime($search["startdate"]) * 1000)];
             }elseif(!empty($search['enddate'])) {
-				$match_query['start_date'] = array('$lte' => new \MongoDB\BSON\UTCDateTime(strtotime($search["enddate"]) * 1000));
+				$match_query['start_date'] = ['$lte' => new \MongoDB\BSON\UTCDateTime(strtotime($search["enddate"]) * 1000)];
             }
 			
 			if (!empty($search['e_startdate']) && !empty($search['e_enddate'])) {
-				$match_query['expire_date'] = array('$gte' => new \MongoDB\BSON\UTCDateTime(strtotime($search["e_startdate"]) * 1000), '$lte' => new \MongoDB\BSON\UTCDateTime(strtotime($search["e_enddate"]) * 1000));
+				$match_query['expire_date'] = ['$gte' => new \MongoDB\BSON\UTCDateTime(strtotime($search["e_startdate"]) * 1000), '$lte' => new \MongoDB\BSON\UTCDateTime(strtotime($search["e_enddate"]) * 1000)];
             }elseif(!empty($search['e_startdate'])) {
-				$match_query['expire_date'] = array('$gte' => new \MongoDB\BSON\UTCDateTime(strtotime($search["e_startdate"]) * 1000));
+				$match_query['expire_date'] = ['$gte' => new \MongoDB\BSON\UTCDateTime(strtotime($search["e_startdate"]) * 1000)];
             }elseif(!empty($search['e_enddate'])) {
-				$match_query['expire_date'] = array('$lte' => new \MongoDB\BSON\UTCDateTime(strtotime($search["e_enddate"]) * 1000));
+				$match_query['expire_date'] = ['$lte' => new \MongoDB\BSON\UTCDateTime(strtotime($search["e_enddate"]) * 1000)];
             }
 			
             if (!empty($search['company'])) {
@@ -14297,62 +14297,62 @@ public function gift_card_logs($keyword = "", $status = "",$recharge_type="",$st
 		}
 		//echo "<pre>"; print_r($match_query); exit;
 		if($find_count == TRUE){
-            $arguments = array(
-						array(
-							'$lookup' => array(
+            $arguments = [
+						[
+							'$lookup' => [
 										'from'=>MDB_COMPANY,
 										'localField'=> 'company_id',
 										'foreignField' => "_id",
 										'as'=> "company"
-									)
-						),
-						array(
-							'$lookup' => array(
+									]
+						],
+						[
+							'$lookup' => [
 										'from'=>MDB_COUPON_PACKAGE,
 										'localField'=> 'package',
 										'foreignField' => "_id",
 										'as'=> "package"
-									)
-						),
-						array('$unwind' => '$promocode'),
-						array('$unwind' => '$company'),
-						array('$unwind' => '$package'),
-						array('$match'=> $match_query),
-						array('$project' => array('promocode' => 1)),
-						array('$group' =>array('_id' => '$promocode','count' => array('$sum' => 1))),
-						array('$group' =>array('_id' => NULL,'count' => array('$sum' => 1 ))),
-                    );
+									]
+						],
+						['$unwind' => '$promocode'],
+						['$unwind' => '$company'],
+						['$unwind' => '$package'],
+						['$match'=> $match_query],
+						['$project' => ['promocode' => 1]],
+						['$group' =>['_id' => '$promocode','count' => ['$sum' => 1]]],
+						['$group' =>['_id' => NULL,'count' => ['$sum' => 1 ]]],
+                    ];
             $result = $this->mongo_db->aggregate(MDB_CORPORATE_GROUP_PROMOCODE,$arguments);
 			//echo "<pre>"; print_r($result['result'][0]['count']); exit;
             return (!empty($result['result']) && isset($result['result'][0]['count']))?$result['result'][0]['count']:0;
 		}else{
-			$arguments = array(
-					array(
-						'$lookup' => array(
+			$arguments = [
+					[
+						'$lookup' => [
 							'from'=>MDB_COMPANY,
 							'localField'=> 'company_id',
 							'foreignField' => "_id",
 							'as'=> "company"
-						)
-					),array('$unwind' => '$company'),
-					array(
-						'$lookup' => array(
+						]
+					],['$unwind' => '$company'],
+					[
+						'$lookup' => [
 									'from'=>MDB_COUPON_PACKAGE,
 									'localField'=> 'package',
 									'foreignField' => "_id",
 									'as'=> "package"
-								)
-					),
+								]
+					],
 					
-					array('$unwind' => '$package'),
-					array('$match'=> $match_query),
-					array('$unwind' => '$_id'),
-					array('$project' => array('promocode' 	=> 1,'promo_discount'=> 1,'passenger_id'	=> 1,'start_date'	=> 1,'expire_date'	=> 1,'promo_limit'	=> 1,'fixed_fare_amt'=>1,'company_name'	=> '$company.companydetails.company_name','package_name'	=> '$package.coupon_package_name','fixed_fare_apply'	=> '$package.fixed_fare_apply')),
-					array('$group' =>array('_id' => array('passenger_promoid'=> '$_id','promocode'=> '$promocode','promo_discount'=>'$promo_discount','package' => '$package','passenger_id' => '$passenger_id','start_date'=>'$start_date','expire_date'=>'$expire_date','promo_limit'=>'$promo_limit','company_name'=>'$company_name','package_name' => '$package_name','fixed_fare_amt'=>'$fixed_fare_amt','fixed_fare_apply'=>'$fixed_fare_apply'),'passenger_count' => array('$sum' => 1))),
-					array( '$group' =>array('_id' => '$_id.promocode','promodetails' =>array( '$first' =>array('passenger_promoid'=> '$_id.passenger_promoid','package' => '$_id.package','promocode'=> '$_id.promocode','promo_discount'=>'$_id.promo_discount','start_date'=>'$_id.start_date','expire_date'=>'$_id.expire_date','promo_limit'=>'$_id.promo_limit','company_name'=>'$_id.company_name','package_name' => '$_id.package_name','fixed_fare_amt' => '$_id.fixed_fare_amt','fixed_fare_apply' => '$_id.fixed_fare_apply')),'count' => array('$sum' => '$passenger_count'))),
-					array('$skip' => (int)$offset),
-					array('$limit' => (int)$val),
-				);
+					['$unwind' => '$package'],
+					['$match'=> $match_query],
+					['$unwind' => '$_id'],
+					['$project' => ['promocode' 	=> 1,'promo_discount'=> 1,'passenger_id'	=> 1,'start_date'	=> 1,'expire_date'	=> 1,'promo_limit'	=> 1,'fixed_fare_amt'=>1,'company_name'	=> '$company.companydetails.company_name','package_name'	=> '$package.coupon_package_name','fixed_fare_apply'	=> '$package.fixed_fare_apply']],
+					['$group' =>['_id' => ['passenger_promoid'=> '$_id','promocode'=> '$promocode','promo_discount'=>'$promo_discount','package' => '$package','passenger_id' => '$passenger_id','start_date'=>'$start_date','expire_date'=>'$expire_date','promo_limit'=>'$promo_limit','company_name'=>'$company_name','package_name' => '$package_name','fixed_fare_amt'=>'$fixed_fare_amt','fixed_fare_apply'=>'$fixed_fare_apply'],'passenger_count' => ['$sum' => 1]]],
+					[ '$group' =>['_id' => '$_id.promocode','promodetails' =>[ '$first' =>['passenger_promoid'=> '$_id.passenger_promoid','package' => '$_id.package','promocode'=> '$_id.promocode','promo_discount'=>'$_id.promo_discount','start_date'=>'$_id.start_date','expire_date'=>'$_id.expire_date','promo_limit'=>'$_id.promo_limit','company_name'=>'$_id.company_name','package_name' => '$_id.package_name','fixed_fare_amt' => '$_id.fixed_fare_amt','fixed_fare_apply' => '$_id.fixed_fare_apply']],'count' => ['$sum' => '$passenger_count']]],
+					['$skip' => (int)$offset],
+					['$limit' => (int)$val],
+				];
             $result = $this->mongo_db->aggregate(MDB_CORPORATE_GROUP_PROMOCODE,$arguments);
 			
             return (!empty($result['result']) && isset($result['result']))?$result['result']:0;
@@ -14360,7 +14360,7 @@ public function gift_card_logs($keyword = "", $status = "",$recharge_type="",$st
     }
 
     public function delete_promocode_corporate($id){
-  		$result = $this->mongo_db->remove(MDB_CORPORATE_GROUP_PROMOCODE,array('_id'=>(int)$id));
+  		$result = $this->mongo_db->remove(MDB_CORPORATE_GROUP_PROMOCODE,['_id'=>(int)$id]);
 		return (empty($result['err']))?1:$result['err'];
   	}
     
@@ -14368,14 +14368,14 @@ public function gift_card_logs($keyword = "", $status = "",$recharge_type="",$st
   	public function add_promocode_with_excel($promocode, $insertArray) {
 
   		/* Find if the promocode is already exists */
-  		$query = array(
+  		$query = [
   			"promocode" => $promocode,
   			"corporate_promocode" => 1
-  		);
+  		];
 
-  		$promocodeDetails = $this->mongo_db->find_one(MDB_PASSENGERS_PROMO,$query,array("_id"=>1));
+  		$promocodeDetails = $this->mongo_db->find_one(MDB_PASSENGERS_PROMO,$query,["_id"=>1]);
   		if(!isset($promocodeDetails['_id'])) {
-	  		$rs = $this->mongo_db->find(MDB_PASSENGERS_PROMO,array(),array('_id'))->sort(array('_id'=>-1))->limit(1);
+	  		$rs = $this->mongo_db->find(MDB_PASSENGERS_PROMO,[],['_id'])->sort(['_id'=>-1])->limit(1);
 			$res = iterator_to_array($rs);
 			reset($res);
 			$first_key = key($res);
@@ -14394,28 +14394,28 @@ public function gift_card_logs($keyword = "", $status = "",$recharge_type="",$st
 
   	/* Sasidharan apr 17 - 2022 */
   	public function getCodes($limit = 100) {
-  		$filter = array(
-  			'status' => array('$exists' => false)
-  		);
-  		$project = array(
+  		$filter = [
+  			'status' => ['$exists' => false]
+  		];
+  		$project = [
   			"_id" => 0,
   			"Unique ID" => 1
-  		);
+  		];
   		$res = $this->mongo_db->find("kfh_promo_code_2024_jan17", $filter, $project)->limit($limit);
-		return (!empty($res))?iterator_to_array($res):array();
+		return (!empty($res))?iterator_to_array($res):[];
   	}
 
   	public function insertPromoCodeAndUpdateUniqueStatus($insertArray,$promocode = "") {
   		/* Find if the promocode is already exists */
-  		$query = array(
+  		$query = [
   			"promocode" => $promocode,
   			"corporate_promocode" => 1
-  		);
+  		];
 
-  		$promocodeDetails = $this->mongo_db->find_one(MDB_PASSENGERS_PROMO,$query,array("_id"=>1));
+  		$promocodeDetails = $this->mongo_db->find_one(MDB_PASSENGERS_PROMO,$query,["_id"=>1]);
   		if(!isset($promocodeDetails['_id'])) {
 
-	  		$rs = $this->mongo_db->find(MDB_PASSENGERS_PROMO,array(),array('_id'))->sort(array('_id'=>-1))->limit(1);
+	  		$rs = $this->mongo_db->find(MDB_PASSENGERS_PROMO,[],['_id'])->sort(['_id'=>-1])->limit(1);
 			$res = iterator_to_array($rs);
 			reset($res);
 			$first_key = key($res);
@@ -14427,22 +14427,22 @@ public function gift_card_logs($keyword = "", $status = "",$recharge_type="",$st
 	  		$result = ( empty($result['err']) ) ? 1 : 0;
 
 	  		if($result != 0) {
-	  			$updateArray =  array("status" => 1);
+	  			$updateArray =  ["status" => 1];
 	  			$updateResult = $this->mongo_db->update("kfh_promo_code_2024_jan17",
-	  				array('Unique ID'=> $promocode),
-	  				array('$set'=>$updateArray),
-	  				array("upsert" => false)
+	  				['Unique ID'=> $promocode],
+	  				['$set'=>$updateArray],
+	  				["upsert" => false]
 	  			);
 				return (empty($updateResult['err'])) ? 1 : 0;
 	  		} else {
 	  			return $result;
 	  		}
   		} else {
-  			$updateArray =  array("status" => 1);
+  			$updateArray =  ["status" => 1];
   			$updateResult = $this->mongo_db->update("kfh_promo_code_2024_jan17",
-  				array('Unique ID'=> $promocode),
-  				array('$set'=>$updateArray),
-  				array("upsert" => false)
+  				['Unique ID'=> $promocode],
+  				['$set'=>$updateArray],
+  				["upsert" => false]
   			);
   			return 2;
   		}
@@ -14451,7 +14451,7 @@ public function gift_card_logs($keyword = "", $status = "",$recharge_type="",$st
   	/* Sasidharan sep 07 2022 */
   	public function getAirportTerminals() {
   		$res = $this->mongo_db->find("airport_terminals", [], []);
-		return (!empty($res))?iterator_to_array($res):array();
+		return (!empty($res))?iterator_to_array($res):[];
   	}
 
   	/* Sasidharan Nov 16 2022 */
@@ -14460,8 +14460,8 @@ public function gift_card_logs($keyword = "", $status = "",$recharge_type="",$st
 			[
 				'$match' => [
 					"createdAt" => [
-						'$gte' => New MongoDate(strtotime($startDate)),
-	                    '$lte' => New MongoDate(strtotime($endDate))
+						'$gte' => new \MongoDB\BSON\UTCDateTime(strtotime($startDate) * 1000),
+	                    '$lte' => new \MongoDB\BSON\UTCDateTime(strtotime($endDate) * 1000)
 	                ],
 	                "corporate_id" => (int)$corporateId
 				],
@@ -14526,8 +14526,8 @@ public function gift_card_logs($keyword = "", $status = "",$recharge_type="",$st
 	public function getCorporateTripsCount($startDate, $endDate, $corporateId) {
 		$filter = [
 			"createdAt" => [
-				'$gte' => New MongoDate(strtotime($startDate)),
-                '$lte' => New MongoDate(strtotime($endDate))
+				'$gte' => new \MongoDB\BSON\UTCDateTime(strtotime($startDate) * 1000),
+                '$lte' => new \MongoDB\BSON\UTCDateTime(strtotime($endDate) * 1000)
             ],
             "corporate_id" => (int)$corporateId
 		];
@@ -14537,7 +14537,7 @@ public function gift_card_logs($keyword = "", $status = "",$recharge_type="",$st
 
 	public function getCorporateGroups() {
   		$res = $this->mongo_db->find(MDB_PROMOCODE_CORPORATE_GROUP, [], []);
-		return (!empty($res))?iterator_to_array($res):array();
+		return (!empty($res))?iterator_to_array($res):[];
   	}
 
   	public function getCorporateName($corporate){
@@ -14650,8 +14650,8 @@ public function gift_card_logs($keyword = "", $status = "",$recharge_type="",$st
 
     	$filter = [
     		"actual_pickup_time" => [
-				'$gte' => New MongoDate(strtotime($startDate)),
-                '$lte' => New MongoDate(strtotime($endDate))
+				'$gte' => new \MongoDB\BSON\UTCDateTime(strtotime($startDate) * 1000),
+                '$lte' => new \MongoDB\BSON\UTCDateTime(strtotime($endDate) * 1000)
             ],
             "promocode" => $promocode
     	];
@@ -14665,8 +14665,8 @@ public function gift_card_logs($keyword = "", $status = "",$recharge_type="",$st
     		[
     			'$match' => [
     				"actual_pickup_time" => [
-						'$gte' => New MongoDate(strtotime($startDate)),
-		                '$lte' => New MongoDate(strtotime($endDate))
+						'$gte' => new \MongoDB\BSON\UTCDateTime(strtotime($startDate) * 1000),
+		                '$lte' => new \MongoDB\BSON\UTCDateTime(strtotime($endDate) * 1000)
 		            ],
 		            "promocode" => $promocode
     			]

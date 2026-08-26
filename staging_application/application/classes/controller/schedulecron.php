@@ -51,8 +51,8 @@ class Controller_Schedulecron extends Controller_Config
             if( isset($trip_details['result']) && count($trip_details['result']) > 0 )
             {
                 //echo "<pre>";print_r($trip_details['result']);exit();
-                $emailres =array();
-                $emailres1 =array();
+                $emailres =[];
+                $emailres1 =[];
                 $mail_status    = 0;
                 $pay_status     = 0;
                 foreach ($trip_details['result'] as $k) {
@@ -73,7 +73,7 @@ class Controller_Schedulecron extends Controller_Config
                     $generate_pdf = $this->manage_model->send_pdf($html,'','', $filename);
                     //Mail Passenger
                     $to = $k['_id']['passenger_email']; //'manu@ndot.in';
-                    $replace_variables = array(
+                    $replace_variables = [
                                 REPLACE_SITENAME    => $this->app_name,
                                 '##START_DATE##'    => $weekstart_time,
                                 '##END_DATE##'      => $end_time,
@@ -86,7 +86,7 @@ class Controller_Schedulecron extends Controller_Config
                                 REPLACE_SITEURL     => URL_BASE,
                                 REPLACE_COPYRIGHTS  => SITE_COPYRIGHT,
                                 REPLACE_COPYRIGHTYEAR => COPYRIGHT_YEAR
-                            );
+                            ];
                         if ($this->lang != 'en') {
                             if (file_exists(DOCROOT . TEMPLATEPATH . $this->lang . '/otp-' . $this->lang . '.html')) {
                                 $message = $this->emailtemplate->emailtemplate(DOCROOT . TEMPLATEPATH . $this->lang . '/otp-' . $this->lang . '.html', $replace_variables);
@@ -134,8 +134,8 @@ class Controller_Schedulecron extends Controller_Config
                         }
                         $now = date('Y-m-d H:i:s');
                         
-                        $rs = $this->mongo_db->find('invoice_schedule_trip',array(),array('_id'))->sort(array('_id'=>-1))->limit(1);
-                        $res = (!empty($rs))?iterator_to_array($rs):array(1);
+                        $rs = $this->mongo_db->find('invoice_schedule_trip',[],['_id'])->sort(['_id'=>-1])->limit(1);
+                        $res = (!empty($rs))?iterator_to_array($rs):[1];
                         reset($res);
                         $first_key = key($res);
                         $inc_id = $first_key+1;

@@ -41,7 +41,7 @@ $payment_method_live_checked="checked='checked'"; }
                                         <?php echo isset($errors["description"])? $errors["description"]:""; ?>
                                    </span>
                                    <span class="info_label" id="info_desc_label">
-                                   <?php echo __('info_maxlength_label',array(':param'=>$max_len));?> 
+                                   <?php echo __('info_maxlength_label',[':param'=>$max_len]);?> 
                                    </span>  
                                 </td>
                         </tr>

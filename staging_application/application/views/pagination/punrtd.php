@@ -30,7 +30,7 @@ $n6 = (int) (($n5 + $n7) / 2);
 $use_n6 = ($use_middle && (($n7 - $n5) > 1));
 
 // Links to display as array(page => content)
-$links = array();
+$links = [];
 
 // Generate links data in accordance with calculated numbers
 for ($i = $n1; $i <= $n2; $i++)
@@ -58,7 +58,7 @@ for ($i = $n7; $i <= $n8; $i++)
 <div class="pagination_outer">
 <div class="pagination  mt10"> 
     <!--<p class="pagination">-->
-<p><small><?php echo __('Displayed :start-:end of :total', array(':start' => $current_first_item, ':end' => $current_last_item, ':total' => $total_items))?></small></p>
+<p><small><?php echo __('Displayed :start-:end of :total', [':start' => $current_first_item, ':end' => $current_last_item, ':total' => $total_items])?></small></p>
         <ul class="fr">
     
     	<?php if ($first_page !== FALSE): ?>

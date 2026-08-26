@@ -54,21 +54,21 @@ class Controller_Airportzonefare extends Controller_Siteadmin
 
         /**To get the form submit button name**/
         $signup_submit       = arr::get($_REQUEST, 'submit_zone');
-        $errors              = array();
-        $post_values         = array();
+        $errors              = [];
+        $post_values         = [];
 
         if ($signup_submit && Validation::factory($_POST)) {
 
             $post_values = Arr::map('trim', $this->request->post());
 
-            $form_values = Arr::extract($post_values, array(
+            $form_values = Arr::extract($post_values, [
                 'zone_id',
                 'model_id',
                 'is_drop',
                 'is_pickup',
                 'zone_fixed_fare'
 
-            ));
+            ]);
             $validator   = $this->airportzonefare_model->validate_add_airport_zone_fare($form_values);
 
             if ($validator->check()) {
@@ -117,15 +117,15 @@ class Controller_Airportzonefare extends Controller_Siteadmin
         if ( $page_no == 0 || $page_no == 'index' )
             $page_no = PAGE_NO;
         $offset                     = REC_PER_PAGE * ( $page_no - 1 );
-        $pag_data                   = Pagination::factory( array(
-             'current_page' => array(
+        $pag_data                   = Pagination::factory( [
+             'current_page' => [
                  'source' => 'query_string',
                 'key' => 'page' 
-            ),
+            ],
             'items_per_page' => REC_PER_PAGE,
             'total_items' => count($zone_details),
             'view' => 'pagination/punbb' 
-        ) );
+        ] );
 		$detail_zone = $this->airportzonefare_model->manage_zone_fare_search($keyword,$status,$offset, REC_PER_PAGE);
         //****pagination ends here***//
 

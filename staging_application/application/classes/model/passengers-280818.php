@@ -38,68 +38,68 @@ Class Model_Passengers extends Model
     /**Validating User SignUP details**/
     public function validate_signup($arr)
     {
-        return Validation::factory($arr)->rule('name', 'not_empty')->rule('name', 'min_length', array(
+        return Validation::factory($arr)->rule('name', 'not_empty')->rule('name', 'min_length', [
             ':value',
             '4'
-        ))->rule('name', 'max_length', array(
+        ])->rule('name', 'max_length', [
             ':value',
             '32'
-        ))->rule('lastname', 'not_empty')->rule('lastname', 'min_length', array(
+        ])->rule('lastname', 'not_empty')->rule('lastname', 'min_length', [
             ':value',
             '1'
-        ))->rule('lastname', 'max_length', array(
+        ])->rule('lastname', 'max_length', [
             ':value',
             '32'
-        ))->rule('email', 'not_empty')->rule('email', 'email')->rule('email', 'max_length', array(
+        ])->rule('email', 'not_empty')->rule('email', 'email')->rule('email', 'max_length', [
             ':value',
             '50'
-        ))->rule('password', 'valid_password', array(
+        ])->rule('password', 'valid_password', [
             ':value',
             '/^[A-Za-z0-9@#$%!^&*(){}?-_<>=+|~`\'".,:;[]+]*$/u'
-        ))->rule('password', 'not_empty')->rule('password', 'min_length', array(
+        ])->rule('password', 'not_empty')->rule('password', 'min_length', [
             ':value',
             '5'
-        ))->rule('password', 'max_length', array(
+        ])->rule('password', 'max_length', [
             ':value',
             '50'
-        ))->rule('password', 'valid_password', array(
+        ])->rule('password', 'valid_password', [
             ':value',
             '/^[A-Za-z0-9@#$%!^&*(){}?-_<>=+|~`\'".,:;[]+]*$/u'
-        )) /*->rule('repassword', 'not_empty')
+        ]) /*->rule('repassword', 'not_empty')
         ->rule('repassword', 'min_length', array(':value', '5'))
         ->rule('repassword', 'max_length', array(':value', '50'))
         ->rule('repassword',  'matches', array(':validation', 'password', 'repassword'))*/ ;
     }
     public function validate_twittersignup($arr)
     {
-        return Validation::factory($arr)->rule('name', 'not_empty')->rule('name', 'min_length', array(
+        return Validation::factory($arr)->rule('name', 'not_empty')->rule('name', 'min_length', [
             ':value',
             '4'
-        ))->rule('name', 'max_length', array(
+        ])->rule('name', 'max_length', [
             ':value',
             '32'
-        ))->rule('lastname', 'not_empty')->rule('lastname', 'min_length', array(
+        ])->rule('lastname', 'not_empty')->rule('lastname', 'min_length', [
             ':value',
             '1'
-        ))->rule('lastname', 'max_length', array(
+        ])->rule('lastname', 'max_length', [
             ':value',
             '32'
-        ))->rule('email', 'not_empty')->rule('email', 'email')->rule('email', 'max_length', array(
+        ])->rule('email', 'not_empty')->rule('email', 'email')->rule('email', 'max_length', [
             ':value',
             '50'
-        ))->rule('password', 'valid_password', array(
+        ])->rule('password', 'valid_password', [
             ':value',
             '/^[A-Za-z0-9@#$%!^&*(){}?-_<>=+|~`\'".,:;[]+]*$/u'
-        ))->rule('password', 'not_empty')->rule('password', 'min_length', array(
+        ])->rule('password', 'not_empty')->rule('password', 'min_length', [
             ':value',
             '5'
-        ))->rule('password', 'max_length', array(
+        ])->rule('password', 'max_length', [
             ':value',
             '50'
-        ))->rule('password', 'valid_password', array(
+        ])->rule('password', 'valid_password', [
             ':value',
             '/^[A-Za-z0-9@#$%!^&*(){}?-_<>=+|~`\'".,:;[]+]*$/u'
-        ))->rule('account_type', 'not_empty');
+        ])->rule('account_type', 'not_empty');
     }
     /**User Signup**/
     /**User Signup**/
@@ -118,7 +118,7 @@ Class Model_Passengers extends Model
         $creditcard_cvv = $val['creditcard_cvv'];
         $expdatemonth   = $val['expdatemonth'];
         $expdateyear    = $val['expdateyear'];
-		$pass_rs = $this->mongo_db->find(MDB_PASSENGERS,array(),array('_id'))->sort(array('_id'=>-1))->limit(1);
+		$pass_rs = $this->mongo_db->find(MDB_PASSENGERS,[],['_id'])->sort(['_id'=>-1])->limit(1);
 		$pass_rs = iterator_to_array($pass_rs);
 		reset($pass_rs);
 		$pass_first_key = key($pass_rs);
@@ -132,7 +132,7 @@ Class Model_Passengers extends Model
             $current_time = date('Y-m-d H:i:s');
         }
 		        
-		$child_passenger = array(
+		$child_passenger = [
 			'_id'=>$pass_id,
 			'parent_id' => 0,
 			'account_type' => '',					 
@@ -179,8 +179,8 @@ Class Model_Passengers extends Model
 			'referred_by' => 0,
 			'passenger_cid' => COMPANY_CID,
 			'skip_credit_card' => 0,
-			'loc' => array(),
-			'creditcard_details' => array(),						
+			'loc' => [],
+			'creditcard_details' => [],						
 			'user_status' => 'I',
 			'child_exist' => 0,
 			'allow_creditcard' => (isset($val['allow_creditcard']))?(int)$val['allow_creditcard']:(int)0,
@@ -191,7 +191,7 @@ Class Model_Passengers extends Model
 			'lateral_end_date' => '',
 			'referral_code'=>''
 
-		);
+		];
 		$child_result = $this->mongo_db->insert(MDB_PASSENGERS,$child_passenger);
 		return (!empty($child_result) && empty($child_result['err']))?1:0;		
     }
@@ -243,19 +243,19 @@ activation_status,user_status,created_date,updated_date,passenger_cid)values('" 
                 $passenger_id = '';
             }
             if ($referred_passenger_id != "") {
-                $ref_result = DB::insert(PASSENGERS_REF_DETAILS, array(
+                $ref_result = DB::insert(PASSENGERS_REF_DETAILS, [
                     'referred_passenger_id',
                     'registered_passenger_id',
                     'referral_status',
                     'referrer_earned',
                     'earned_amount'
-                ))->values(array(
+                ])->values([
                     $referred_passenger_id,
                     $passenger_id,
                     'S',
                     'N',
                     ''
-                ))->execute();
+                ])->execute();
             }
             return 1;
         } else {
@@ -353,7 +353,7 @@ activation_status,user_status,created_date,updated_date,passenger_cid)values('" 
             $booking_key       = $bookingkey_result[0]['random_key'];
         }
         /** Booking key generator **/
-        $fieldname_array            = array(
+        $fieldname_array            = [
             'booking_key',
             'passengers_id',
             'driver_id',
@@ -380,12 +380,12 @@ activation_status,user_status,created_date,updated_date,passenger_cid)values('" 
             'bookingtype',
             'bookby',
             'notes_driver'
-        );
+        ];
         $time                       = date('H:i:s', strtotime($pickup_time));
         $current_datetime           = convert_timezone('now', TIMEZONE);
         $curretnt_datetime_split    = explode(' ', $current_datetime);
         $update_time                = $curretnt_datetime_split[0] . ' ' . $time;
-        $values_array               = array(
+        $values_array               = [
             $booking_key,
             $usrid,
             mysql_real_escape_string($val['driver_id']),
@@ -412,19 +412,19 @@ activation_status,user_status,created_date,updated_date,passenger_cid)values('" 
             '1',
             '1',
             $notes_driver
-        );
+        ];
         $driver_availability_result = $this->get_driver_availability(mysql_real_escape_string($val['driver_id']), $update_time);
         //echo count($driver_availability_result);
         //exit;
         if (count($driver_availability_result) == 0) {
             $result = DB::insert(PASSENGERS_LOG, $fieldname_array)->values($values_array)->execute();
             if ($pass_logid == '') {
-                $update_pass_logid = DB::update(PASSENGERS_LOG)->set(array(
+                $update_pass_logid = DB::update(PASSENGERS_LOG)->set([
                     'sub_logid' => $result[0]
-                ))->where('passengers_log_id', '=', $result[0])->execute();
+                ])->where('passengers_log_id', '=', $result[0])->execute();
             }
             if ($result) {
-                $array               = array();
+                $array               = [];
                 //return array(1,$result);
                 $array['result']     = 1;
                 $array['pass_logid'] = $result[0];
@@ -509,7 +509,7 @@ activation_status,user_status,created_date,updated_date,passenger_cid)values('" 
         $update_time             = $curretnt_datetime_split[0] . ' ' . $time;
         $company_tax             = $get_taxi_fare_based_model[0]['company_tax'];
         if ($pass_log_id != '') {
-            $fieldname_array = array(
+            $fieldname_array = [
                 'passengers_id',
                 'driver_id',
                 'company_id',
@@ -534,8 +534,8 @@ activation_status,user_status,created_date,updated_date,passenger_cid)values('" 
                 'company_tax',
                 'bookingtype',
                 'bookby'
-            );
-            $values_array    = array(
+            ];
+            $values_array    = [
                 $usrid,
                 mysql_real_escape_string($val['driver_id']),
                 $d_company_id,
@@ -553,9 +553,9 @@ activation_status,user_status,created_date,updated_date,passenger_cid)values('" 
                 $waitingtime,
                 $this->currentdate,
                 mysql_real_escape_string($val['taxi_id'], $city_id, $pass_logid, $d_company_id, $company_tax, '1', '1')
-            );
+            ];
         } else {
-            $fieldname_array = array(
+            $fieldname_array = [
                 'passengers_id',
                 'driver_id',
                 'company_id',
@@ -579,8 +579,8 @@ activation_status,user_status,created_date,updated_date,passenger_cid)values('" 
                 'company_tax',
                 'bookingtype',
                 'bookby'
-            );
-            $values_array    = array(
+            ];
+            $values_array    = [
                 $usrid,
                 mysql_real_escape_string($val['driver_id']),
                 $d_company_id,
@@ -598,14 +598,14 @@ activation_status,user_status,created_date,updated_date,passenger_cid)values('" 
                 $waitingtime,
                 $this->currentdate,
                 mysql_real_escape_string($val['taxi_id'], $city_id, $d_company_id, $company_tax, '1', '1')
-            );
+            ];
         }
         $driver_availability_result = $this->get_driver_availability(mysql_real_escape_string($val['driver_id']), $update_time);
         //echo count($driver_availability_result);
         //exit;
         if (count($driver_availability_result) == 0) {
             if ($pass_log_id != '') {
-                $changearr = array(
+                $changearr = [
                     'current_location' => mysql_real_escape_string($val['c_location']),
                     'drop_location' => mysql_real_escape_string($val['d_location']),
                     'no_passengers' => mysql_real_escape_string($val['n_passengers']),
@@ -613,16 +613,16 @@ activation_status,user_status,created_date,updated_date,passenger_cid)values('" 
                     'driver_reply' => '',
                     'driver_id' => mysql_real_escape_string($val['driver_id']),
                     'sub_logid' => $passengerlog_id
-                );
+                ];
             } else {
-                $changearr = array(
+                $changearr = [
                     'current_location' => mysql_real_escape_string($val['c_location']),
                     'drop_location' => mysql_real_escape_string($val['d_location']),
                     'no_passengers' => mysql_real_escape_string($val['n_passengers']),
                     'pickup_time' => $update_time,
                     'driver_reply' => '',
                     'driver_id' => mysql_real_escape_string($val['driver_id'])
-                );
+                ];
             }
             $result = DB::update(PASSENGERS_LOG)->set($changearr)->where('passengers_log_id', '=', $passengerlog_id)->execute();
             if ($result) {
@@ -650,26 +650,26 @@ activation_status,user_status,created_date,updated_date,passenger_cid)values('" 
     public function change_driver_status($passenger_log_id = "", $status = "")
     {
         if ($status == 'A') {
-            $changearr = array(
+            $changearr = [
                 "driver_reply" => $status,
                 "msg_status" => 'R',
                 "travel_status" => '9',
                 "driver_comments" => __('confirmed')
-            );
+            ];
         } elseif ($status == 'R') {
-            $changearr = array(
+            $changearr = [
                 "driver_reply" => $status,
                 "msg_status" => 'R',
                 "travel_status" => '10',
                 "driver_comments" => __('missed')
-            );
+            ];
         } else {
-            $changearr = array(
+            $changearr = [
                 "driver_reply" => $status,
                 "msg_status" => 'R',
                 "travel_status" => '6',
                 "driver_comments" => ""
-            );
+            ];
         }
         return DB::update(PASSENGERS_LOG)->set($changearr)->where('passengers_log_id', '=', $passenger_log_id)->execute();
     }
@@ -692,9 +692,9 @@ activation_status,user_status,created_date,updated_date,passenger_cid)values('" 
         $checkkey = DB::select()->from(PASSENGERS)->where('activation_key', '=', $key)->execute()->as_array();
         if (count($checkkey) > 0) {
             //print_r($checkkey);
-            $actarr                   = array(
+            $actarr                   = [
                 'activation_status' => '1'
-            );
+            ];
             $accountactivation_update = DB::update(PASSENGERS)->set($actarr)->where('id', '=', $checkkey['0']['id'])->and_where('activation_key', '=', $key)->execute();
             if ($accountactivation_update > 0) {
                 return 1;
@@ -722,7 +722,7 @@ activation_status,user_status,created_date,updated_date,passenger_cid)values('" 
          /*$sql    = "SELECT phone FROM " . PASSENGERS . " WHERE phone='$email' AND id !='$id'";
           $result = Db::query(Database::SELECT, $sql)->execute()->as_array();*/
         
-         $result = $this->mongo_db->find_one(MDB_PASSENGERS,array('phone'=>$email, array('_id'=>array(array('$ne' => $id)))),array('_id','salutation','name','lastname','email','phone','deviceid','devicetoken','devicetype','child_exist','allow_creditcard','login_status'));
+         $result = $this->mongo_db->find_one(MDB_PASSENGERS,['phone'=>$email, ['_id'=>[['$ne' => $id]]]],['_id','salutation','name','lastname','email','phone','deviceid','devicetoken','devicetype','child_exist','allow_creditcard','login_status']);
          //print_r($result);exit;
          if (count($result) > 0) {
             return 1;
@@ -736,30 +736,30 @@ activation_status,user_status,created_date,updated_date,passenger_cid)values('" 
         if ($arr['password'] == 'Password') {
             $arr['password'] = "";
         }
-        return Validation::factory($arr)->rule('email', 'not_empty')->rule('email', 'email')->rule('password', 'not_empty')->rule('password', 'min_length', array(
+        return Validation::factory($arr)->rule('email', 'not_empty')->rule('email', 'email')->rule('password', 'not_empty')->rule('password', 'min_length', [
             ':value',
             '5'
-        ))->rule('password', 'valid_password', array(
+        ])->rule('password', 'valid_password', [
             ':value',
             '/^[A-Za-z0-9@#$%!^&*(){}?-_<>=+|~`\'".,:;[]+]*$/u'
-        ));
+        ]);
     }
     /**User Login**/
       public function login($phone, $pwd, $remember)
     {
 		$password = Html::chars(md5($pwd));
-        $result = $this->mongo_db->find_one(MDB_PASSENGERS,array('phone'=>$phone,'password'=>$password),array('_id','salutation','name','lastname','email','phone','deviceid','devicetoken','devicetype','child_exist','allow_creditcard','login_status','activation_status','user_status','parent_id'));
+        $result = $this->mongo_db->find_one(MDB_PASSENGERS,['phone'=>$phone,'password'=>$password],['_id','salutation','name','lastname','email','phone','deviceid','devicetoken','devicetype','child_exist','allow_creditcard','login_status','activation_status','user_status','parent_id']);
        	
 		if (count($result) > 0 && $result['activation_status'] == '1') {
 			 if (count($result) > 0 && $result['user_status'] == 'A') {
 				// echo "INNER";exit;
 			$login_time   = $this->currentdate;
-            $update_array    = array(
+            $update_array    = [
                 'last_login' => $login_time,
                 'login_status' => 'A'
-            );
+            ];
            
-				$update = $this->mongo_db->update(MDB_PASSENGERS,array('_id'=>(int)$result['_id']),array('$set'=> $update_array));
+				$update = $this->mongo_db->update(MDB_PASSENGERS,['_id'=>(int)$result['_id']],['$set'=> $update_array]);
 			    $this->session->set("id", $result["_id"]);
                 $this->session->set("email", $result["email"]);
                 $this->session->set("phone", $result["phone"]);
@@ -796,10 +796,10 @@ activation_status,user_status,created_date,updated_date,passenger_cid)values('" 
             if (count($result) == 1 && $result[0]['user_status'] == 'A') {
                 //Whenever user logged into the application, Add their IP and other details..
                 $login_time   = $this->currentdate;
-                $sql_query    = array(
+                $sql_query    = [
                     'last_login' => $login_time,
                     'login_status' => 'A'
-                );
+                ];
                 $result_login = DB::update(PASSENGERS)->set($sql_query)->where('phone', '=', $phone)
                 //->where('passenger_cid', '=',COMPANY_CID)
                     ->execute();
@@ -831,13 +831,13 @@ activation_status,user_status,created_date,updated_date,passenger_cid)values('" 
         //$values_array = array($val['phone'],$val['creditcard_no'],$val['creditcard_cvv'],$val['expdatemonth'],$val['expdateyear']);
         //print_r($val); exit;
         $creditcard_no = encrypt_decrypt('encrypt', $val['popup_creditcard_no']);
-        $update_result = DB::update(PASSENGERS)->set(array(
+        $update_result = DB::update(PASSENGERS)->set([
             'phone' => $val['lphone'],
             'creditcard_no' => $creditcard_no,
             'creditcard_cvv' => $val['popup_creditcard_cvv'],
             'expdatemonth' => $val['expdatemonth'],
             'expdateyear' => $val['expdateyear']
-        ))->where('id', '=', $usrid)->execute();
+        ])->where('id', '=', $usrid)->execute();
         if ($update_result == 1) {
             return 1;
         } else {
@@ -849,9 +849,9 @@ activation_status,user_status,created_date,updated_date,passenger_cid)values('" 
     {
         // echo 'user_id'.$userid.' '.'ratevalue'.' '.$ratevalue.' driver_id'.$driver_id.' log_id'.$log_id;
         
-          $update_result     = $this->mongo_db->update(MDB_PASSENGERSLOGS_COMPLETED,array('_id'=>(int)$log_id,'driver_id' =>(int)$driver_id,'passengers_id' => (int)$userid),array('$set'=>array(
+          $update_result     = $this->mongo_db->update(MDB_PASSENGERSLOGS_COMPLETED,['_id'=>(int)$log_id,'driver_id' =>(int)$driver_id,'passengers_id' => (int)$userid],['$set'=>[
             'rating' => $ratevalue
-        )),array('upsert'=>true));
+        ]],['upsert'=>true]);
         
        // echo '<pre>'; print_r($update_result);exit;
         if (empty($update_result['err'])) {
@@ -880,10 +880,10 @@ activation_status,user_status,created_date,updated_date,passenger_cid)values('" 
     {
 	
 		/** MONGO CONVERSION **/
-		 $result  = $this->mongo_db->find_one(MDB_PASSENGERSLOGS_COMPLETED, array(
+		 $result  = $this->mongo_db->find_one(MDB_PASSENGERSLOGS_COMPLETED, [
             '_id' => (int) $log_id
-        ), array('rating','comments'));
-        return (!empty($result)) ? $result : array();
+        ], ['rating','comments']);
+        return (!empty($result)) ? $result : [];
 		/** MONGO CONVERSION **/
 		
 		
@@ -897,16 +897,16 @@ activation_status,user_status,created_date,updated_date,passenger_cid)values('" 
     /*** Save Comments ***/
     public function savecomments($userid = "", $driver_id = "", $log_id = "", $comments = "")
     {
-        $update_result = DB::update(PASSENGERS_LOG)->set(array(
+        $update_result = DB::update(PASSENGERS_LOG)->set([
             'comments' => $comments
-        ))->where('passengers_id', '=', $userid)->where('driver_id', '=', $driver_id)->where('passengers_log_id', '=', $log_id)->execute();
+        ])->where('passengers_id', '=', $userid)->where('driver_id', '=', $driver_id)->where('passengers_log_id', '=', $log_id)->execute();
         return $update_result;
     }
     public function savefavourite($log_id = "", $mark_status = "")
     {
-        $update_result = DB::update(PASSENGERS_LOG)->set(array(
+        $update_result = DB::update(PASSENGERS_LOG)->set([
             'favourite_trip' => $mark_status
-        ))->where('passengers_log_id', '=', $log_id)->execute();
+        ])->where('passengers_log_id', '=', $log_id)->execute();
         return $update_result;
     }
     public function get_passenger_profile_details($id = "")
@@ -916,38 +916,38 @@ activation_status,user_status,created_date,updated_date,passenger_cid)values('" 
         ->execute()
         ->as_array();*/
 		
-        $result  = $this->mongo_db->find_one(MDB_PASSENGERS, array(
+        $result  = $this->mongo_db->find_one(MDB_PASSENGERS, [
             '_id' => (int) $id
-        ), array('name','phone','email','address','creditcard_no','profile_image', 'civilid','civilid_front','civilid_back'));
-        return (!empty($result)) ? $result : array();
+        ], ['name','phone','email','address','creditcard_no','profile_image', 'civilid','civilid_front','civilid_back']);
+        return (!empty($result)) ? $result : [];
     }
     /*** Passenger Log **/
      public function get_passenger_log_detail($passengerlog_id = "")
     {
 		
-		$arguments = array(array('$lookup'=>array(
+		$arguments = [['$lookup'=>[
 							'from'=>MDB_PASSENGERS,
 							'localField'=>"passengers_id",
 							'foreignField'=>"_id",
 							 'as'=>"passengers"        
-						)),
-						array('$unwind'=>'$passengers'),
-						array('$lookup'=>array(
+						]],
+						['$unwind'=>'$passengers'],
+						['$lookup'=>[
 							'from'=>MDB_PEOPLE,
 							'localField'=>"driver_id",
 							'foreignField'=>"_id",
 							 'as'=>"people"        
-						)),
-						array('$unwind'=>'$people'),
-						array('$lookup'=>array(
+						]],
+						['$unwind'=>'$people'],
+						['$lookup'=>[
 							'from'=>MDB_COMPANY,
 							'localField'=>"company_id",
 							'foreignField'=>"_id",
 							 'as'=>"company"        
-						)),
-						array('$unwind'=>'$company'),
-						array('$unwind'=>'$company.companyinfo'),
-						array('$project' => array(
+						]],
+						['$unwind'=>'$company'],
+						['$unwind'=>'$company.companyinfo'],
+						['$project' => [
 						
 							'_id' => '$_id',
 							'phone' => '$people.phone',
@@ -1013,16 +1013,16 @@ activation_status,user_status,created_date,updated_date,passenger_cid)values('" 
 							"passenger_trip_alert"=>'$passengers.trip_alert',
 							"cancellation_nfree"=>'$company.companyinfo.cancellation_fare',
 							"company_tax"=>'$company.companyinfo.company_tax',
-							'droplocation' => array('$ifNull'=>array('$drop_location',0)) 
-						)),
-						array('$match'=>array(
+							'droplocation' => ['$ifNull'=>['$drop_location',0]] 
+						]],
+						['$match'=>[
 							'_id'=>(int)$passengerlog_id
-						)),					
-					);
+						]],					
+					];
 					
         $result = $this->mongo_db->aggregate(MDB_PASSENGERS_LOGS,$arguments);
         //print_r($result);exit;
-        return (!empty($result['result'])?$result['result']:array());
+        return (!empty($result['result'])?$result['result']:[]);
     }
     public function get_passenger_log_details($userid = "", $status = "", $driver_reply = "", $createdate = "", $start = null, $limit = null, $company_id)
     {
@@ -1041,8 +1041,8 @@ activation_status,user_status,created_date,updated_date,passenger_cid)values('" 
         } else {
             //$timezone_base_query = "select time_zone from  company where cid='$company_id' ";
             //$timezone_fetch      = Db::query(Database::SELECT, $timezone_base_query)->execute()->as_array();
-            $result = $this->mongo_db->find_one(MDB_COMPANY, array('_id' => (int)$company_id),array("companydetails.time_zone"));
-            $timezone_fetch = array(array('time_zone' => $result['companydetails']['time_zone']));
+            $result = $this->mongo_db->find_one(MDB_COMPANY, ['_id' => (int)$company_id],["companydetails.time_zone"]);
+            $timezone_fetch = [['time_zone' => $result['companydetails']['time_zone']]];
             
             if ($timezone_fetch[0]['time_zone'] != '') {
                 $current_time = convert_timezone('now', $timezone_fetch[0]['time_zone']);
@@ -1057,29 +1057,29 @@ activation_status,user_status,created_date,updated_date,passenger_cid)values('" 
         }
         
         
-        $arguments = array(array('$lookup'=>array(
+        $arguments = [['$lookup'=>[
 							'from'=>MDB_PASSENGERS,
 							'localField'=>"passengers_id",
 							'foreignField'=>"_id",
 							 'as'=>"passengers"        
-						)),
-						array('$unwind'=>'$passengers'),
-						array('$lookup'=>array(
+						]],
+						['$unwind'=>'$passengers'],
+						['$lookup'=>[
 							'from'=>MDB_PEOPLE,
 							'localField'=>"driver_id",
 							'foreignField'=>"_id",
 							 'as'=>"people"        
-						)),
-						array('$unwind'=>'$people'),
-						array('$lookup'=>array(
+						]],
+						['$unwind'=>'$people'],
+						['$lookup'=>[
 							'from'=>MDB_COMPANY,
 							'localField'=>"company_id",
 							'foreignField'=>"_id",
 							 'as'=>"company"        
-						)),
-						array('$unwind'=>'$company'),
-						array('$unwind'=>'$company.companyinfo'),
-						array('$project' => array(
+						]],
+						['$unwind'=>'$company'],
+						['$unwind'=>'$company.companyinfo'],
+						['$project' => [
 						
 							'_id' => '$_id',
 							'phone' => '$people.phone',
@@ -1145,25 +1145,25 @@ activation_status,user_status,created_date,updated_date,passenger_cid)values('" 
 							"passenger_trip_alert"=>'$passengers.trip_alert',
 							"cancellation_nfree"=>'$company.companyinfo.cancellation_fare',
 							"company_tax"=>'$company.companyinfo.company_tax',
-							'droplocation' => array('$ifNull'=>array('$drop_location',0)) 
-						)),
-						array('$match'=>array(
+							'droplocation' => ['$ifNull'=>['$drop_location',0]] 
+						]],
+						['$match'=>[
 							'company_id'=>(int)$company_id,
 							'passengers_id'=>(int)$userid,
 							'travel_status'=>(int)$status,
 							'driver_reply'=>  $driver_reply,
-							'pickup_time'=> array('$gte' => new \MongoDB\BSON\UTCDateTime(strtotime($start_time) * 1000)),
+							'pickup_time'=> ['$gte' => new \MongoDB\BSON\UTCDateTime(strtotime($start_time) * 1000)],
 							
-						)),	
-						array('$sort' => array('_id' => -1)),
-						array('$skip' => (int)$start),
-						array('$limit' => (int)$limit)				
-					);
+						]],	
+						['$sort' => ['_id' => -1]],
+						['$skip' => (int)$start],
+						['$limit' => (int)$limit]				
+					];
 					
         $result = $this->mongo_db->aggregate(MDB_PASSENGERS_LOGS,$arguments);
         //echo '<pre>';print_r($arguments);exit;
        // echo '<pre>'; print_r($result);exit;
-        return (!empty($result['result'])?$result['result']:array());
+        return (!empty($result['result'])?$result['result']:[]);
         
         
         
@@ -1194,8 +1194,8 @@ activation_status,user_status,created_date,updated_date,passenger_cid)values('" 
         } else {
             //$timezone_base_query = "select time_zone from  company where cid='$company_id' ";
             //$timezone_fetch      = Db::query(Database::SELECT, $timezone_base_query)->execute()->as_array();
-            $result = $this->mongo_db->find_one(MDB_COMPANY, array('_id' => (int)$company_id),array("companydetails.time_zone"));
-            $timezone_fetch = array(array('time_zone' => $result['companydetails']['time_zone']));
+            $result = $this->mongo_db->find_one(MDB_COMPANY, ['_id' => (int)$company_id],["companydetails.time_zone"]);
+            $timezone_fetch = [['time_zone' => $result['companydetails']['time_zone']]];
             if ($timezone_fetch[0]['time_zone'] != '') {
                 $current_time = convert_timezone('now', $timezone_fetch[0]['time_zone']);
                 $current_date = explode(' ', $current_time);
@@ -1219,7 +1219,7 @@ activation_status,user_status,created_date,updated_date,passenger_cid)values('" 
         $sql = "SELECT  count(*) as co_nt FROM " . PASSENGERS_LOG . " WHERE passengers_id = '$userid' AND travel_status = '$status' AND driver_reply = '$driver_reply' $condition $company_condition  order by passengers_log_id desc";
         //echo $sql;
         //return Db::query(Database::SELECT, $sql)->execute()->as_array();
-        return array();
+        return [];
     }
     /** Get Passengers booked and cancelled logs **/
     public function get_passenger_booked_log_details($userid = "", $status = "", $driver_reply = "", $createdate = "", $start = null, $limit = null, $company_id)
@@ -1231,8 +1231,8 @@ activation_status,user_status,created_date,updated_date,passenger_cid)values('" 
         } else {
             //$timezone_base_query = "select time_zone from  company where cid='$company_id' ";
             //$timezone_fetch      = Db::query(Database::SELECT, $timezone_base_query)->execute()->as_array();
-            $result = $this->mongo_db->find_one(MDB_COMPANY, array('_id' => (int)$company_id),array("companydetails.time_zone"));
-            $timezone_fetch = array(array('time_zone' => $result['companydetails']['time_zone']));
+            $result = $this->mongo_db->find_one(MDB_COMPANY, ['_id' => (int)$company_id],["companydetails.time_zone"]);
+            $timezone_fetch = [['time_zone' => $result['companydetails']['time_zone']]];
             if ($timezone_fetch[0]['time_zone'] != '') {
                 $current_time = convert_timezone('now', $timezone_fetch[0]['time_zone']);
                 $current_date = explode(' ', $current_time);
@@ -1256,7 +1256,7 @@ activation_status,user_status,created_date,updated_date,passenger_cid)values('" 
         $sql = "SELECT *,(select concat(name,' ',lastname) from " . PEOPLE . " where id=" . PASSENGERS_LOG . ".driver_id) as drivername,(select phone from " . PEOPLE . " where id=" . PASSENGERS_LOG . ".driver_id) as driverphone,(select count(*) from " . PASSENGERS_LOG . " WHERE passengers_id = '$userid' AND travel_status = '$status' AND (driver_reply = '' or driver_reply = 'C' or driver_reply = 'R')  $condition) as total_count  FROM " . PASSENGERS_LOG . " WHERE passengers_id = '$userid' AND travel_status = '$status' AND (driver_reply = '' or driver_reply = 'C' or driver_reply = 'R')  $condition $company_condition  and " . PASSENGERS_LOG . ".driver_id!='' order by passengers_log_id desc LIMIT $start,$limit";
         //echo $sql;
         //return Db::query(Database::SELECT, $sql)->execute()->as_array();
-        return array();
+        return [];
     }
     public function get_passenger_booked_cancel_details($company_id, $userid = "", $status = "", $driver_reply = "", $createdate = "", $start = null, $limit = null)
     {
@@ -1311,8 +1311,8 @@ activation_status,user_status,created_date,updated_date,passenger_cid)values('" 
         } else {
             //$timezone_base_query = "select time_zone from  company where cid='$company_id' ";
             //$timezone_fetch      = Db::query(Database::SELECT, $timezone_base_query)->execute()->as_array();
-            $result = $this->mongo_db->find_one(MDB_COMPANY, array('_id' => (int)$company_id),array("companydetails.time_zone"));
-            $timezone_fetch = array(array('time_zone' => $result['companydetails']['time_zone']));
+            $result = $this->mongo_db->find_one(MDB_COMPANY, ['_id' => (int)$company_id],["companydetails.time_zone"]);
+            $timezone_fetch = [['time_zone' => $result['companydetails']['time_zone']]];
             if ($timezone_fetch[0]['time_zone'] != '') {
                 $current_time = convert_timezone('now', $timezone_fetch[0]['time_zone']);
                 $current_date = explode(' ', $current_time);
@@ -1328,29 +1328,29 @@ activation_status,user_status,created_date,updated_date,passenger_cid)values('" 
         //echo $check = new \MongoDB\BSON\UTCDateTime(strtotime($start_time) * 1000);exit;
         //echo $start_time;exit;
         /* MONGO CONVERSION */
-         $arguments = array(array('$lookup'=>array(
+         $arguments = [['$lookup'=>[
 							'from'=>MDB_PASSENGERS,
 							'localField'=>"passengers_id",
 							'foreignField'=>"_id",
 							 'as'=>"passengers"        
-						)),
-						array('$unwind'=>'$passengers'),
-						array('$lookup'=>array(
+						]],
+						['$unwind'=>'$passengers'],
+						['$lookup'=>[
 							'from'=>MDB_PEOPLE,
 							'localField'=>"driver_id",
 							'foreignField'=>"_id",
 							 'as'=>"people"        
-						)),
-						array('$unwind'=>'$people'),
-						array('$lookup'=>array(
+						]],
+						['$unwind'=>'$people'],
+						['$lookup'=>[
 							'from'=>MDB_COMPANY,
 							'localField'=>"company_id",
 							'foreignField'=>"_id",
 							 'as'=>"company"        
-						)),
-						array('$unwind'=>'$company'),
-						array('$unwind'=>'$company.companyinfo'),
-						array('$project' => array(
+						]],
+						['$unwind'=>'$company'],
+						['$unwind'=>'$company.companyinfo'],
+						['$project' => [
 						
 							'_id' => '$_id',
 							'phone' => '$people.phone',
@@ -1417,24 +1417,24 @@ activation_status,user_status,created_date,updated_date,passenger_cid)values('" 
 							"passenger_trip_alert"=>'$passengers.trip_alert',
 							"cancellation_nfree"=>'$company.companyinfo.cancellation_fare',
 							"company_tax"=>'$company.companyinfo.company_tax',
-							'droplocation' => array('$ifNull'=>array('$drop_location',0)) 
-						)),
-						array('$match'=>array(
+							'droplocation' => ['$ifNull'=>['$drop_location',0]] 
+						]],
+						['$match'=>[
 							'company_id'=>(int)$company_id,
 							'passengers_id'=>(int)$userid,
-							'travel_status'=> array('$in' => array(0,9,2)),
+							'travel_status'=> ['$in' => [0,9,2]],
 							'driver_reply'=> $driver_reply,
-							'pickup_time'=> array('$gte' => new \MongoDB\BSON\UTCDateTime(strtotime($start_time) * 1000))
+							'pickup_time'=> ['$gte' => new \MongoDB\BSON\UTCDateTime(strtotime($start_time) * 1000)]
 							
-						)),	
-						array('$sort' => array('_id' => -1)),
-						array('$skip' => (int)$start),
-						array('$limit' => (int)$limit)				
-					);
+						]],	
+						['$sort' => ['_id' => -1]],
+						['$skip' => (int)$start],
+						['$limit' => (int)$limit]				
+					];
 					
         $result = $this->mongo_db->aggregate(MDB_PASSENGERS_LOGS,$arguments);
         //print_r($result);exit;
-        return (!empty($result['result'])?$result['result']:array());
+        return (!empty($result['result'])?$result['result']:[]);
         /* MONGO CONVERSION */
         
         /*$company_condition = "";
@@ -1462,8 +1462,8 @@ activation_status,user_status,created_date,updated_date,passenger_cid)values('" 
         } else {
             //$timezone_base_query = "select time_zone from  company where cid='$company_id' ";
             //$timezone_fetch      = Db::query(Database::SELECT, $timezone_base_query)->execute()->as_array();
-            $result = $this->mongo_db->find_one(MDB_COMPANY, array('_id' => (int)$company_id),array("companydetails.time_zone"));
-            $timezone_fetch = array(array('time_zone' => $result['companydetails']['time_zone']));
+            $result = $this->mongo_db->find_one(MDB_COMPANY, ['_id' => (int)$company_id],["companydetails.time_zone"]);
+            $timezone_fetch = [['time_zone' => $result['companydetails']['time_zone']]];
             
             if ($timezone_fetch[0]['time_zone'] != '') {
                 $current_time = convert_timezone('now', $timezone_fetch[0]['time_zone']);
@@ -1478,36 +1478,36 @@ activation_status,user_status,created_date,updated_date,passenger_cid)values('" 
         }
         
         
-        $arguments = array(array('$lookup'=>array(
+        $arguments = [['$lookup'=>[
 							'from'=>MDB_PASSENGERS,
 							'localField'=>"passengers_id",
 							'foreignField'=>"_id",
 							 'as'=>"passengers"        
-						)),
-						array('$unwind'=>'$passengers'),
-						array('$lookup'=>array(
+						]],
+						['$unwind'=>'$passengers'],
+						['$lookup'=>[
 							'from'=>MDB_PEOPLE,
 							'localField'=>"driver_id",
 							'foreignField'=>"_id",
 							 'as'=>"people"        
-						)),
-						array('$unwind'=>'$people'),
-						array('$lookup'=>array(
+						]],
+						['$unwind'=>'$people'],
+						['$lookup'=>[
 							'from'=>MDB_TRANSACTION,
 							'localField'=>"_id",
 							'foreignField'=>"passengers_log_id",
 							 'as'=>"trans"        
-						)),
-						array('$unwind'=>'$trans'),
-						array('$lookup'=>array(
+						]],
+						['$unwind'=>'$trans'],
+						['$lookup'=>[
 							'from'=>MDB_COMPANY,
 							'localField'=>"company_id",
 							'foreignField'=>"_id",
 							 'as'=>"company"        
-						)),
-						array('$unwind'=>'$company'),
-						array('$unwind'=>'$company.companyinfo'),
-						array('$project' => array(
+						]],
+						['$unwind'=>'$company'],
+						['$unwind'=>'$company.companyinfo'],
+						['$project' => [
 						
 							'_id' => '$_id',
 							'phone' => '$people.phone',
@@ -1577,25 +1577,25 @@ activation_status,user_status,created_date,updated_date,passenger_cid)values('" 
 							"passenger_trip_alert"=>'$passengers.trip_alert',
 							"cancellation_nfree"=>'$company.companyinfo.cancellation_fare',
 							"company_tax"=>'$company.companyinfo.company_tax',
-							'droplocation' => array('$ifNull'=>array('$drop_location',0)) 
-						)),
-						array('$match'=>array(
+							'droplocation' => ['$ifNull'=>['$drop_location',0]] 
+						]],
+						['$match'=>[
 							'company_id'=>(int)$company_id,
 							'passengers_id'=>(int)$userid,
 							'travel_status'=>(int)$status,
 							'driver_reply'=>  $driver_reply,
 							//'pickup_time'=> array('$gte' => new \MongoDB\BSON\UTCDateTime(strtotime($start_time) * 1000)),
 							
-						)),	
-						array('$sort' => array('_id' => -1)),
-						array('$skip' => (int)$start),
-						array('$limit' => (int)$limit)				
-					);
+						]],	
+						['$sort' => ['_id' => -1]],
+						['$skip' => (int)$start],
+						['$limit' => (int)$limit]				
+					];
 					
         $result = $this->mongo_db->aggregate(MDB_PASSENGERS_LOGS,$arguments);
         //echo '<pre>';print_r($arguments);exit;
       // echo '<pre>'; print_r($result);exit;
-        return (!empty($result['result'])?$result['result']:array());
+        return (!empty($result['result'])?$result['result']:[]);
         
         
         
@@ -1670,8 +1670,8 @@ activation_status,user_status,created_date,updated_date,passenger_cid)values('" 
         } else {
             //$timezone_base_query = "select time_zone from  company where cid='$company_id' ";
             //$timezone_fetch      = Db::query(Database::SELECT, $timezone_base_query)->execute()->as_array();
-            $result = $this->mongo_db->find_one(MDB_COMPANY, array('_id' => (int)$company_id),array("companydetails.time_zone"));
-            $timezone_fetch = array(array('time_zone' => $result['companydetails']['time_zone']));
+            $result = $this->mongo_db->find_one(MDB_COMPANY, ['_id' => (int)$company_id],["companydetails.time_zone"]);
+            $timezone_fetch = [['time_zone' => $result['companydetails']['time_zone']]];
             if ($timezone_fetch[0]['time_zone'] != '') {
                 $current_time = convert_timezone('now', $timezone_fetch[0]['time_zone']);
                 $current_date = explode(' ', $current_time);
@@ -1683,36 +1683,36 @@ activation_status,user_status,created_date,updated_date,passenger_cid)values('" 
                 $end_time     = date('Y-m-d') . ' 23:59:59';
             }
         }
-		 $arguments = array(array('$lookup'=>array(
+		 $arguments = [['$lookup'=>[
 							'from'=>MDB_PASSENGERS,
 							'localField'=>"passengers_id",
 							'foreignField'=>"_id",
 							 'as'=>"passengers"        
-						)),
-						array('$unwind'=>'$passengers'),
-						array('$lookup'=>array(
+						]],
+						['$unwind'=>'$passengers'],
+						['$lookup'=>[
 							'from'=>MDB_PEOPLE,
 							'localField'=>"driver_id",
 							'foreignField'=>"_id",
 							 'as'=>"people"        
-						)),
-						array('$unwind'=>'$people'),
-						array('$lookup'=>array(
+						]],
+						['$unwind'=>'$people'],
+						['$lookup'=>[
 							'from'=>MDB_TRANSACTION,
 							'localField'=>"_id",
 							'foreignField'=>"passengers_log_id",
 							 'as'=>"trans"        
-						)),
-						array('$unwind'=>'$trans'),
-						array('$lookup'=>array(
+						]],
+						['$unwind'=>'$trans'],
+						['$lookup'=>[
 							'from'=>MDB_COMPANY,
 							'localField'=>"company_id",
 							'foreignField'=>"_id",
 							 'as'=>"company"        
-						)),
-						array('$unwind'=>'$company'),
-						array('$unwind'=>'$company.companyinfo'),
-						array('$project' => array(
+						]],
+						['$unwind'=>'$company'],
+						['$unwind'=>'$company.companyinfo'],
+						['$project' => [
 						
 							'_id' => '$_id',
 							'phone' => '$people.phone',
@@ -1780,25 +1780,25 @@ activation_status,user_status,created_date,updated_date,passenger_cid)values('" 
 							"passenger_trip_alert"=>'$passengers.trip_alert',
 							"cancellation_nfree"=>'$company.companyinfo.cancellation_fare',
 							"company_tax"=>'$company.companyinfo.company_tax',
-							'droplocation' => array('$ifNull'=>array('$drop_location',0)) 
-						)),
-						array('$match'=>array(
+							'droplocation' => ['$ifNull'=>['$drop_location',0]] 
+						]],
+						['$match'=>[
 							'company_id'=>(int)$company_id,
 							'passengers_id'=>(int)$userid,
 							'travel_status'=>(int)$status,
 							'driver_reply'=>  $driver_reply,
 							//'pickup_time'=> array('$gte' => new \MongoDB\BSON\UTCDateTime(strtotime($start_time) * 1000)),
 							
-						)),	
-						array('$sort' => array('_id' => -1))
+						]],	
+						['$sort' => ['_id' => -1]]
 						//array('$skip' => (int)$start),
 						//array('$limit' => (int)$limit)				
-					);
+					];
 					
         $result = $this->mongo_db->aggregate(MDB_PASSENGERS_LOGS,$arguments);
         //echo '<pre>';print_r($arguments);exit;
       // echo '<pre>'; print_r($result);exit;
-        return (!empty($result['result'])?$result['result']:array());
+        return (!empty($result['result'])?$result['result']:[]);
         
 		
 		
@@ -1839,33 +1839,33 @@ activation_status,user_status,created_date,updated_date,passenger_cid)values('" 
     // Validating User Details while Updating User Details
     public function validate_user_settings($arr, $files_value_array)
     {
-        return Validation::factory($arr, $files_value_array)->rule('file', 'Upload::type', array(
+        return Validation::factory($arr, $files_value_array)->rule('file', 'Upload::type', [
             $files_value_array['photo'],
-            array(
+            [
                 'jpg',
                 'jpeg',
                 'png',
                 'gif'
-            )
-        ))->rule('file', 'Upload::size', array(
+            ]
+        ])->rule('file', 'Upload::size', [
             $files_value_array['photo'],
             '2M'
-        ));
+        ]);
     }
     public function validate_passengers_profilesettings($arr)
     {
         
         return Validation::factory($arr)->rule('name', 'not_empty')
         //->rule('name','illegal_chars',array(':value','/^[\p{L}-.,_; \'0-9]*$/u'))
-            ->rule('name', 'min_length', array(
+            ->rule('name', 'min_length', [
             ':value',
             '4'
-        ))->rule('name', 'max_length', array(
+        ])->rule('name', 'max_length', [
             ':value',
             '32'
-        ))->rule('phone', 'not_empty')
+        ])->rule('phone', 'not_empty')
         //->rule('phone','numeric') //num
-            ->rule('address', 'not_empty')->rule('civilid', 'not_empty')->rule('civilid','Model_Add::civilid_isValid',array(':value'));
+            ->rule('address', 'not_empty')->rule('civilid', 'not_empty')->rule('civilid','Model_Add::civilid_isValid',[':value']);
         /*->rule('creditcard_no', 'not_empty')	
         ->rule('creditcard_no', 'numeric')
         ->rule('creditcard_no','min_length',array(':value','9'))
@@ -1894,7 +1894,7 @@ activation_status,user_status,created_date,updated_date,passenger_cid)values('" 
     
     public function civilid_duplicate($id="")
     {
-		$res = $this->mongo_db->count(MDB_PASSENGERS,array('civilid'=>$id),array('_id'));
+		$res = $this->mongo_db->count(MDB_PASSENGERS,['civilid'=>$id],['_id']);
         if($res > 0) {
             return 0;
         } else {
@@ -1925,7 +1925,7 @@ activation_status,user_status,created_date,updated_date,passenger_cid)values('" 
     public function update_passengerimage($image, $userid)
     {
        
-        $result = $this->mongo_db->find_one(MDB_PASSENGERS,array('_id' => (int)$userid), array('profile_image') );
+        $result = $this->mongo_db->find_one(MDB_PASSENGERS,['_id' => (int)$userid], ['profile_image'] );
         
         if (!empty($result['profile_image'])) {
             $id1 = PASS_IMG_IMGPATH . $result['profile_image'];
@@ -1942,70 +1942,70 @@ activation_status,user_status,created_date,updated_date,passenger_cid)values('" 
             }
         }
         $mdate     = $this->currentdate;
-        $sql_query = (array(
+        $sql_query = ([
             'updated_date' => $mdate
-        ));
+        ]);
         if (isset($image)) {
             $sql_query['profile_image'] = $image;
         }
-        $update_result     = $this->mongo_db->update(MDB_PASSENGERS,array('_id'=>(int)$userid),array('$set'=>array(
+        $update_result     = $this->mongo_db->update(MDB_PASSENGERS,['_id'=>(int)$userid],['$set'=>[
             'updated_date' => $mdate,'profile_image' => $image
-        )),array('upsert'=>true));
+        ]],['upsert'=>true]);
         
       
     }
     public function validate_user_profilesettings($arr)
     {
-        return Validation::factory($arr)->rule('name', 'not_empty')->rule('name', 'illegal_chars', array(
+        return Validation::factory($arr)->rule('name', 'not_empty')->rule('name', 'illegal_chars', [
             ':value',
             '/^[\p{L}-.,_; \'0-9]*$/u'
-        ))->rule('name', 'min_length', array(
+        ])->rule('name', 'min_length', [
             ':value',
             '4'
-        ))->rule('name', 'max_length', array(
+        ])->rule('name', 'max_length', [
             ':value',
             '32'
-        ))->rule('lastname', 'not_empty')->rule('lastname', 'illegal_chars', array(
+        ])->rule('lastname', 'not_empty')->rule('lastname', 'illegal_chars', [
             ':value',
             '/^[\p{L}-.,_; \'0-9]*$/u'
-        ))->rule('lastname', 'min_length', array(
+        ])->rule('lastname', 'min_length', [
             ':value',
             '1'
-        ))->rule('lastname', 'max_length', array(
+        ])->rule('lastname', 'max_length', [
             ':value',
             '32'
-        ))->rule('email', 'not_empty')->rule('email', 'max_length', array(
+        ])->rule('email', 'not_empty')->rule('email', 'max_length', [
             ':value',
             '50'
-        ))->rule('email', 'email_domain')->rule('description', 'not_empty')->rule('description', 'illegal_chars', array(
+        ])->rule('email', 'email_domain')->rule('description', 'not_empty')->rule('description', 'illegal_chars', [
             ':value',
             '/^[\p{L}-.,_; \'0-9]*$/u'
-        ))->rule('description', 'min_length', array(
+        ])->rule('description', 'min_length', [
             ':value',
             '5'
-        ))->rule('school', 'not_empty')->rule('education', 'illegal_chars', array(
+        ])->rule('school', 'not_empty')->rule('education', 'illegal_chars', [
             ':value',
             '/^[\p{L}-.,_; \'0-9]*$/u'
-        ))->rule('education', 'not_empty')->rule('education', 'illegal_chars', array(
+        ])->rule('education', 'not_empty')->rule('education', 'illegal_chars', [
             ':value',
             '/^[\p{L}-.,_; \'0-9]*$/u'
-        ));
+        ]);
     }
     public function validate_user_profilesettings_optional($arr)
     {
-        return Validation::factory($arr)->rule('phone', 'phone')->rule('dob', 'date')->rule('organisation', 'alpha_space')->rule('organisation', 'illegal_chars', array(
+        return Validation::factory($arr)->rule('phone', 'phone')->rule('dob', 'date')->rule('organisation', 'alpha_space')->rule('organisation', 'illegal_chars', [
             ':value',
             '/^[\p{L}-.,_; \'0-9]*$/u'
-        ))->rule('organisation', 'not_numeric')->rule('work', 'alpha_space')->rule('work', 'illegal_chars', array(
+        ])->rule('organisation', 'not_numeric')->rule('work', 'alpha_space')->rule('work', 'illegal_chars', [
             ':value',
             '/^[\p{L}-.,_; \'0-9]*$/u'
-        ))->rule('work', 'not_numeric')->rule('website', 'url')->rule('user_paypal_account', 'max_length', array(
+        ])->rule('work', 'not_numeric')->rule('website', 'url')->rule('user_paypal_account', 'max_length', [
             ':value',
             '60'
-        ))->rule('user_paypal_account', 'email')->rule('user_paypal_account', 'Model_Authorize::unique_email')->rule('account_balance_amt', 'numeric')->rule('group', 'alpha_space')->rule('group', 'illegal_chars', array(
+        ])->rule('user_paypal_account', 'email')->rule('user_paypal_account', 'Model_Authorize::unique_email')->rule('account_balance_amt', 'numeric')->rule('group', 'alpha_space')->rule('group', 'illegal_chars', [
             ':value',
             '/^[\p{L}-.,_; \'0-9]*$/u'
-        ))->rule('group', 'not_numeric');
+        ])->rule('group', 'not_numeric');
     }
     public function update_user_settings_optional($array_data, $id)
     {
@@ -2047,18 +2047,18 @@ activation_status,user_status,created_date,updated_date,passenger_cid)values('" 
     public function update_user_settings($array_data, $post_value_array, $userid)
     {
          $mdate           = $this->currentdate;
-         $update_array = array(
+         $update_array = [
             "name" => $array_data['name'],
             "phone" => $array_data['phone'],
             "address" =>  $array_data['address'],
             "civilid" =>  $array_data['civilid'],
             "updated_date" =>  $mdate
-        );	
+        ];	
         
         /*$sql             = "UPDATE `passengers` SET `updated_date` = '$mdate', `name` = '$name', `phone` = '$phone', `address` = '$address' WHERE `id` = '$userid'";
         $optional_result = Db::query(Database::UPDATE, $sql)->execute(); */ 
        
-        $result = $this->mongo_db->update(MDB_PASSENGERS,array('_id'=>(int)$userid),array('$set'=>$update_array),array('upsert'=>true));
+        $result = $this->mongo_db->update(MDB_PASSENGERS,['_id'=>(int)$userid],['$set'=>$update_array],['upsert'=>true]);
        
         
         return (count($result) > 0) ? 1 : 0;
@@ -2069,7 +2069,7 @@ activation_status,user_status,created_date,updated_date,passenger_cid)values('" 
         $lat    = $this->lat;
         $lon    = $this->lon;
         $rad    = '';
-        $result = array();
+        $result = [];
         if ($userid != null) {
             if ($rad == "") {
                 if (($lat != null) && ($lon != null)) {
@@ -2091,18 +2091,18 @@ activation_status,user_status,created_date,updated_date,passenger_cid)values('" 
     // Validating Forgot Password Details
     public function validate_forgotpwd($arr)
     {
-        return Validation::factory($arr)->rule('email', 'email')->rule('email', 'max_length', array(
+        return Validation::factory($arr)->rule('email', 'email')->rule('email', 'max_length', [
             ':value',
             '100'
-        ))->rule('email', 'not_empty');
+        ])->rule('email', 'not_empty');
     }
     
     public function validate_activate($arr)
     {
-        return Validation::factory($arr)->rule('email', 'email')->rule('email', 'max_length', array(
+        return Validation::factory($arr)->rule('email', 'email')->rule('email', 'max_length', [
             ':value',
             '100'
-        ))->rule('email', 'not_empty')->rule('otp', 'not_empty')->rule('otp', 'Model_Passengers::unique_otp');
+        ])->rule('email', 'not_empty')->rule('otp', 'not_empty')->rule('otp', 'Model_Passengers::unique_otp');
     }
     
     public static function unique_otp($otp) {        
@@ -2128,7 +2128,7 @@ activation_status,user_status,created_date,updated_date,passenger_cid)values('" 
             return 0;
         } */
         
-        $res = $this->mongo_db->find(MDB_PASSENGERS,array('email'=> $email, 'passenger_cid'=>(int)$company_id),array('email'));
+        $res = $this->mongo_db->find(MDB_PASSENGERS,['email'=> $email, 'passenger_cid'=>(int)$company_id],['email']);
         $result = iterator_to_array($res);
         return (count($result)>0) ? 1 : 0 ;
     }
@@ -2138,7 +2138,7 @@ activation_status,user_status,created_date,updated_date,passenger_cid)values('" 
         //$sql = "SELECT * FROM ".PASSENGERS." WHERE email='$email' and passenger_cid=".COMPANY_CID;   
        /* $sql = "SELECT * FROM " . PASSENGERS . " WHERE email='$email'";
         return $result = Db::query(Database::SELECT, $sql)->execute()->as_array(); */
-        $res = $this->mongo_db->find_one(MDB_PASSENGERS,array('email'=> $email),array('email','name'));
+        $res = $this->mongo_db->find_one(MDB_PASSENGERS,['email'=> $email],['email','name']);
         
         return $res;
         
@@ -2146,8 +2146,8 @@ activation_status,user_status,created_date,updated_date,passenger_cid)values('" 
     // Check Whether Passenger phone is Already Exist or Not
     public function check_phone_passengers($phone = "", $company_id = "")
     {
-        $match_query=array();
-	$match_query = array('phone'=> $phone);
+        $match_query=[];
+	$match_query = ['phone'=> $phone];
         if ($company_id != '' & $company_id!=0) {
 			//$match_query['passenger_cid'] = (int)$company_id;
         }
@@ -2160,11 +2160,11 @@ activation_status,user_status,created_date,updated_date,passenger_cid)values('" 
         $mdate  = $this->currentdate;
         $pass   = md5($random_key);
         // Create a new user record in the database
-        $result = DB::update(PASSENGERS)->set(array(
+        $result = DB::update(PASSENGERS)->set([
             'password' => $pass,
             'org_password' => $random_key,
             'updated_date' => $mdate
-        ))->where('email', '=', $array_data['email'])->execute();
+        ])->where('email', '=', $array_data['email'])->execute();
         if ($result) {
             $rs = DB::select('name', 'email', 'password', 'phone')->from(PASSENGERS)->where('email', '=', $post_value_array['email'])->where('activation_status', '=', '1')->execute()->as_array();
             return $rs;
@@ -2180,14 +2180,14 @@ activation_status,user_status,created_date,updated_date,passenger_cid)values('" 
          $pass   = md5($random_key);
         // Create a new user record in the database
         
-         $update_result     = $this->mongo_db->update(MDB_PASSENGERS,array('email'=>$email,'activation_status'=>'1'),array('$set'=>array(
+         $update_result     = $this->mongo_db->update(MDB_PASSENGERS,['email'=>$email,'activation_status'=>'1'],['$set'=>[
             'password' => $pass,
             'org_password' => $random_key,
             'updated_date' => $mdate
-          )),array('upsert'=>true));
+          ]],['upsert'=>true]);
          
          if (empty($update_result['err'])) {
-            $result = $this->mongo_db->find_one(MDB_PASSENGERS,array('email'=>$email,'activation_status'=>'1'),array('password','name','phone','confirm_password','email'));             
+            $result = $this->mongo_db->find_one(MDB_PASSENGERS,['email'=>$email,'activation_status'=>'1'],['password','name','phone','confirm_password','email']);             
             return $result;           
         }
         else {
@@ -2210,20 +2210,20 @@ activation_status,user_status,created_date,updated_date,passenger_cid)values('" 
     {
         $mdate  = new \MongoDB\BSON\UTCDateTime(strtotime($this->currentdate) * 1000);
         $pass   = md5($random_key);
-        $match =array();
+        $match =[];
         $match['phone'] = $value['phone_no'];
         if ($company_id != '' && $company_id != 0) {
             //$match['passenger_cid'] = (int)$company_id;
         }
-        $pwd_arr = array('password' => $pass, 'org_password' => $random_key,'updated_date'=>$mdate);
-        $update = $this->mongo_db->Update(MDB_PASSENGERS,$match,array('$set'=>$pwd_arr),array('upsert'=>true));
+        $pwd_arr = ['password' => $pass, 'org_password' => $random_key,'updated_date'=>$mdate];
+        $update = $this->mongo_db->Update(MDB_PASSENGERS,$match,['$set'=>$pwd_arr],['upsert'=>true]);
         $result = (isset($update['err'])) ? 0 :1;
         if ($result) {
 			
             $match['activation_status'] = '1';
-            $project = array('name', 'email', 'password', 'phone');
+            $project = ['name', 'email', 'password', 'phone'];
             $res = $this->mongo_db->find_one(MDB_PASSENGERS,$match,$project);
-            return (isset($res)) ? $res : array();
+            return (isset($res)) ? $res : [];
         } else {
             return 0;
         }
@@ -2236,12 +2236,12 @@ activation_status,user_status,created_date,updated_date,passenger_cid)values('" 
         $pass   = md5($array_data['confirm_password']);
         // Create a new user record in the database
         
-         $update_result     = $this->mongo_db->update(MDB_PASSENGERS,array('_id'=>(int)$userid),array('$set'=>array(
+         $update_result     = $this->mongo_db->update(MDB_PASSENGERS,['_id'=>(int)$userid],['$set'=>[
             'password' => $pass,
             'org_password' => $array_data['confirm_password'],
-            'updated_date' => $mdate)),array('upsert'=>true));
+            'updated_date' => $mdate]],['upsert'=>true]);
          
-            $result = $this->mongo_db->find_one(MDB_PASSENGERS,array('_id'=>(int)$userid),array('password','name','phone','confirm_password','email'));
+            $result = $this->mongo_db->find_one(MDB_PASSENGERS,['_id'=>(int)$userid],['password','name','phone','confirm_password','email']);
             return $result;
         
         
@@ -2250,64 +2250,64 @@ activation_status,user_status,created_date,updated_date,passenger_cid)values('" 
     // Validating Change Password Details
     public function validate_changepwd($arr)
     {
-        return Validation::factory($arr)->rule('old_password', 'not_empty')->rule('old_password', 'valid_password', array(
+        return Validation::factory($arr)->rule('old_password', 'not_empty')->rule('old_password', 'valid_password', [
             ':value',
             '/^[A-Za-z0-9@#$%!^&*(){}?-_<>=+|~`\'".,:;[]+]*$/u'
-        ))->rule('old_password', 'max_length', array(
+        ])->rule('old_password', 'max_length', [
             ':value',
             '16'
-        ))->rule('new_password', 'not_empty')->rule('new_password', 'valid_password', array(
+        ])->rule('new_password', 'not_empty')->rule('new_password', 'valid_password', [
             ':value',
             '/^[A-Za-z0-9@#$%!^&*(){}?-_<>=+|~`\'".,:;[]+]*$/u'
-        ))->rule('new_password', 'min_length', array(
+        ])->rule('new_password', 'min_length', [
             ':value',
             '5'
-        ))->rule('new_password', 'max_length', array(
+        ])->rule('new_password', 'max_length', [
             ':value',
             '16'
-        ))->rule('confirm_password', 'not_empty')->rule('confirm_password', 'valid_password', array(
+        ])->rule('confirm_password', 'not_empty')->rule('confirm_password', 'valid_password', [
             ':value',
             '/^[A-Za-z0-9@#$%!^&*(){}?-_<>=+|~`\'".,:;[]+]*$/u'
-        ))->rule('confirm_password', 'matches', array(
+        ])->rule('confirm_password', 'matches', [
             ':validation',
             'new_password',
             'confirm_password'
-        ))->rule('confirm_password', 'min_length', array(
+        ])->rule('confirm_password', 'min_length', [
             ':value',
             '5'
-        ))->rule('confirm_password', 'max_length', array(
+        ])->rule('confirm_password', 'max_length', [
             ':value',
             '16'
-        ));
+        ]);
     }
     /**Validating Reset Password Details **/
     public function validate_resetpwd($arr)
     {
         return Validation::factory($arr)->rule('new_password', 'not_empty')
         //->rule('new_password','alpha_dash')
-            ->rule('new_password', 'valid_password', array(
+            ->rule('new_password', 'valid_password', [
             ':value',
             '/^[A-Za-z0-9@#$%!^&*(){}?-_<>=+|~`\'".,:;[]+]*$/u'
-        ))->rule('new_password', 'max_length', array(
+        ])->rule('new_password', 'max_length', [
             ':value',
             '16'
-        ))->rule('conf_password', 'not_empty')
+        ])->rule('conf_password', 'not_empty')
         //->rule('conf_password','alpha_dash')
             
         //->rule('conf_password', array(':equals','new_password'))
-            ->rule('conf_password', 'valid_password', array(
+            ->rule('conf_password', 'valid_password', [
             ':value',
             '/^[A-Za-z0-9@#$%!^&*(){}?-_<>=+|~`\'".,:;[]+]*$/u'
-        ))->rule('conf_password', 'max_length', array(
+        ])->rule('conf_password', 'max_length', [
             ':value',
             '16'
-        ));
+        ]);
     }
     // Check Whether the Eneterd Password is Correct While User Change Password
     public function check_pass($pass = "", $userid = "")
     {
         $userid   = (isset($_SESSION['id']) ? $_SESSION['id'] : "");
-        $result = $this->mongo_db->find_one(MDB_PASSENGERS,array('_id'=>(int)$userid),array('password'));
+        $result = $this->mongo_db->find_one(MDB_PASSENGERS,['_id'=>(int)$userid],['password']);
         $pass     = md5($pass);
         $password = $result["password"];
         if ($password == $pass) {
@@ -2343,7 +2343,7 @@ activation_status,user_status,created_date,updated_date,passenger_cid)values('" 
     }
     public function get_passenger_details($key)
     {
-		$result = $this->mongo_db->find_one(MDB_PASSENGERS,array('activation_key'=>$key),array('_id','name','email','phone','org_password','login_from'));
+		$result = $this->mongo_db->find_one(MDB_PASSENGERS,['activation_key'=>$key],['_id','name','email','phone','org_password','login_from']);
        // $result = DB::select()->from(PASSENGERS)->where('activation_key', '=', $key)->execute()->as_array();
         return $result;
     }
@@ -2352,16 +2352,16 @@ activation_status,user_status,created_date,updated_date,passenger_cid)values('" 
      */
     public function validate_email($arr)
     {
-        return Validation::factory($arr)->rule('email', 'not_empty')->rule('email', 'max_length', array(
+        return Validation::factory($arr)->rule('email', 'not_empty')->rule('email', 'max_length', [
             ':value',
             '50'
-        ))->rule('email', 'Model_Authorize::check_label_not_empty', array(
+        ])->rule('email', 'Model_Authorize::check_label_not_empty', [
             ":value",
             __('enter_email')
-        ))->rule('email', 'email_domain')->rule('email', 'Model_Authorize::unique_email');
+        ])->rule('email', 'email_domain')->rule('email', 'Model_Authorize::unique_email');
     }
     /**For Facebook user signup insertion**/
-    public function register_facebook_user($profile_data = array(), $fb_access_token, $arr, $location_details, $userurl = null, $random_key = null, $pwd = '', $verify_code)
+    public function register_facebook_user($profile_data = [], $fb_access_token, $arr, $location_details, $userurl = null, $random_key = null, $pwd = '', $verify_code)
     {
         $lat         = $this->lat;
         $lng         = $this->lon;
@@ -2370,7 +2370,7 @@ activation_status,user_status,created_date,updated_date,passenger_cid)values('" 
         if (empty($result)) {
             $username      = Html::chars($profile_data->first_name);
             $password      = md5($pwd); //  md5(Commonfunction::randomkey_generator());
-            $insert_result = DB::insert(PASSENGERS, array(
+            $insert_result = DB::insert(PASSENGERS, [
                 'username',
                 'name',
                 'email',
@@ -2388,7 +2388,7 @@ activation_status,user_status,created_date,updated_date,passenger_cid)values('" 
                 'last_login',
                 'account_type',
                 'verify_link'
-            ))->values(array(
+            ])->values([
                 strtolower($username),
                 $profile_data->name,
                 $profile_data->email,
@@ -2406,7 +2406,7 @@ activation_status,user_status,created_date,updated_date,passenger_cid)values('" 
                 $this->currentdate,
                 $accounttype,
                 $verify_code
-            ))->execute();
+            ])->execute();
             //'latitude','langitude','login_city','login_state','login_country','login_country_code','login_ip',
             //,$lat,$lng,$city,$state,$country,$country_code,$ip
             $this->session->set("id", $insert_result[0]);
@@ -2414,18 +2414,18 @@ activation_status,user_status,created_date,updated_date,passenger_cid)values('" 
             $this->session->set("email", $profile_data->email);
             $this->session->set("fb_access_token", $fb_access_token);
             unset($_SESSION["account_type"]);
-            $rslt = array();
-            $rslt = array(
+            $rslt = [];
+            $rslt = [
                 "name" => $profile_data->first_name,
                 "email" => $profile_data->email,
                 "password" => $password
-            );
+            ];
             return $rslt;
         } else {
             $login_time   = $this->currentdate;
-            $result_login = DB::update(PASSENGERS)->set(array(
+            $result_login = DB::update(PASSENGERS)->set([
                 'last_login' => $login_time
-            ))->execute();
+            ])->execute();
             if (($result["0"]["user_type"] == ADMIN)) {
                 $this->session->set("user_email", $result[0]["email"]);
                 $this->session->set("name", $result[0]["name"]);
@@ -2442,7 +2442,7 @@ activation_status,user_status,created_date,updated_date,passenger_cid)values('" 
         }
     }
     /**For Facebook user signup insertion**/
-    public function register_facebook_user1($profile_data = array(), $fb_access_token, $arr, $location_details, $userurl = null, $random_key = null, $verify_code)
+    public function register_facebook_user1($profile_data = [], $fb_access_token, $arr, $location_details, $userurl = null, $random_key = null, $verify_code)
     {
         $lat         = $this->lat;
         $lng         = $this->lon;
@@ -2451,7 +2451,7 @@ activation_status,user_status,created_date,updated_date,passenger_cid)values('" 
         if (empty($result)) {
             $username      = Html::chars($profile_data->first_name);
             $password      = md5(Commonfunction::randomkey_generator());
-            $insert_result = DB::insert(PASSENGERS, array(
+            $insert_result = DB::insert(PASSENGERS, [
                 'username',
                 'name',
                 'email',
@@ -2469,7 +2469,7 @@ activation_status,user_status,created_date,updated_date,passenger_cid)values('" 
                 'last_login',
                 'account_type',
                 'verify_link'
-            ))->values(array(
+            ])->values([
                 strtolower($username),
                 $profile_data->name,
                 $profile_data->email,
@@ -2487,23 +2487,23 @@ activation_status,user_status,created_date,updated_date,passenger_cid)values('" 
                 $this->currentdate,
                 $accounttype,
                 $verify_code
-            ))->execute();
+            ])->execute();
             //'latitude','langitude','login_city','login_state','login_country','login_country_code','login_ip',
             //,$lat,$lng,$city,$state,$country,$country_code,$ip
             $this->session->set("fb_id", $insert_result[0]);
             unset($_SESSION["account_type"]);
-            $rslt = array();
-            $rslt = array(
+            $rslt = [];
+            $rslt = [
                 "name" => $profile_data->first_name,
                 "email" => $profile_data->email,
                 "password" => $password
-            );
+            ];
             return $rslt;
         } else {
             $login_time   = $this->currentdate;
-            $result_login = DB::update(PASSENGERS)->set(array(
+            $result_login = DB::update(PASSENGERS)->set([
                 'last_login' => $login_time
-            ))->execute();
+            ])->execute();
             if (($result["0"]["user_type"] == ADMIN)) {
                 $this->session->set("user_email", $result[0]["email"]);
                 $this->session->set("name", $result[0]["name"]);
@@ -2522,7 +2522,7 @@ activation_status,user_status,created_date,updated_date,passenger_cid)values('" 
     public function logged_user_status()
     {
 		
-		 $result = $this->mongo_db->find_one(MDB_PASSENGERS,array('_id'=>$this->session->get("id")),array('_id','salutation','name','lastname','email','phone','deviceid','devicetoken','devicetype','child_exist','allow_creditcard','login_status','activation_status'));
+		 $result = $this->mongo_db->find_one(MDB_PASSENGERS,['_id'=>$this->session->get("id")],['_id','salutation','name','lastname','email','phone','deviceid','devicetoken','devicetype','child_exist','allow_creditcard','login_status','activation_status']);
        // $query  = "SELECT activation_status FROM " . PASSENGERS . "  where id = '" . $this->session->get("id") . "' ";
        // $result = Db::query(Database::SELECT, $query)->execute()->as_array();
         if (count($result) >0 && $result['activation_status'] == '1') {
@@ -2598,15 +2598,15 @@ activation_status,user_status,created_date,updated_date,passenger_cid)values('" 
         $json   = json_decode($geoloc);
         //print_r($json);exit;
         if ($json->status == 'OK') {
-            return array(
+            return [
                 $json->results[0]->geometry->location->lat,
                 $json->results[0]->geometry->location->lng
-            );
+            ];
         } else {
-            return array(
+            return [
                 11.621354,
                 76.14253698
-            );
+            ];
         }
     }
     //Applying the Haversine Function to get the Distance
@@ -2638,7 +2638,7 @@ activation_status,user_status,created_date,updated_date,passenger_cid)values('" 
             ->values(array($fb_profile->first_name,$fb_profile->email,$fb_profile->id,$fb_access_token,'3','1','A',$fb_profile->id,$image_name,COMPANY_CID))	
             ->execute();
             */
-            $query = DB::insert("passengers", array(
+            $query = DB::insert("passengers", [
                 'name',
                 'email',
                 'fb_user_id',
@@ -2648,7 +2648,7 @@ activation_status,user_status,created_date,updated_date,passenger_cid)values('" 
                 'user_status',
                 'phone',
                 'profile_image'
-            ))->values(array(
+            ])->values([
                 $fb_profile->first_name,
                 $fb_profile->email,
                 $fb_profile->id,
@@ -2658,7 +2658,7 @@ activation_status,user_status,created_date,updated_date,passenger_cid)values('" 
                 'A',
                 $fb_profile->id,
                 $image_name
-            ))->execute();
+            ])->execute();
             if (empty($query)) {
                 return -1;
             } else {
@@ -2694,33 +2694,33 @@ activation_status,user_status,created_date,updated_date,passenger_cid)values('" 
         return Db::query(Database::SELECT, $sql)->execute()->as_array();*/
 		
 		//MongoDB
-		$result = $this->mongo_db->find_one(MDB_PASSENGERS,array('_id'=>(int)$id),array('login_from','phone'));
-		return (!empty($result))?$result:array();
+		$result = $this->mongo_db->find_one(MDB_PASSENGERS,['_id'=>(int)$id],['login_from','phone']);
+		return (!empty($result))?$result:[];
     }
     public function passenger_cancel_transaction_details($id = "", $company_id = "", $val = "", $offset = "")
     {
-		  $arguments = array(array('$match'=>array(
+		  $arguments = [['$match'=>[
 							'company_id'=>(int)$company_id,
 							'passengers_id'=>(int)$id,
 							'travel_status'=>(int)4,
 
-						)),	
-						array('$lookup'=>array(
+						]],	
+						['$lookup'=>[
 							'from'=>MDB_PASSENGERS,
 							'localField'=>"passengers_id",
 							'foreignField'=>"_id",
 							 'as'=>"passengers"        
-						)),
-						array('$unwind'=>'$passengers'),
-						array('$lookup'=>array(
+						]],
+						['$unwind'=>'$passengers'],
+						['$lookup'=>[
 							'from'=>MDB_COMPANY,
 							'localField'=>"company_id",
 							'foreignField'=>"_id",
 							 'as'=>"company"        
-						)),
-						array('$unwind'=>'$company'),
-						array('$unwind'=>'$company.companyinfo'),
-						array('$project' => array(
+						]],
+						['$unwind'=>'$company'],
+						['$unwind'=>'$company.companyinfo'],
+						['$project' => [
 						
 							'_id' => '$_id',
 							'promocode' => '$promocode',
@@ -2779,17 +2779,17 @@ activation_status,user_status,created_date,updated_date,passenger_cid)values('" 
 							"passenger_trip_alert"=>'$passengers.trip_alert',
 							"cancellation_nfree"=>'$company.companyinfo.cancellation_fare',
 							"company_tax"=>'$company.companyinfo.company_tax',
-							'droplocation' => array('$ifNull'=>array('$drop_location',0)) 
-						)),
-						array('$sort' => array('_id' => -1)),
-						array('$skip' => (int)$val),
-						array('$limit' => (int)$offset)				
-					);
+							'droplocation' => ['$ifNull'=>['$drop_location',0]] 
+						]],
+						['$sort' => ['_id' => -1]],
+						['$skip' => (int)$val],
+						['$limit' => (int)$offset]				
+					];
 					
         $result = $this->mongo_db->aggregate(MDB_PASSENGERSLOGS_CANCELLED,$arguments);
         //echo '<pre>';print_r($arguments);exit;
         //echo '<pre>'; print_r($result);exit;
-        return (!empty($result['result'])?$result['result']:array());
+        return (!empty($result['result'])?$result['result']:[]);
         
 		
         /*	$sql = "SELECT * FROM ".PASSENGERS_LOG." WHERE `passengers_id` = '".$id."' and `travel_status` = '4'";*/
@@ -2804,13 +2804,13 @@ activation_status,user_status,created_date,updated_date,passenger_cid)values('" 
     }
     public function passenger_tot_cancel_transaction_details($id = "", $company_id)
     {
-        $arguments = array(array('$lookup'=>array(
+        $arguments = [['$lookup'=>[
 							'from'=>MDB_PASSENGERS,
 							'localField'=>"passengers_id",
 							'foreignField'=>"_id",
 							 'as'=>"passengers"        
-						)),
-						array('$unwind'=>'$passengers'),
+						]],
+						['$unwind'=>'$passengers'],
 						/*array('$lookup'=>array(
 							'from'=>MDB_PEOPLE,
 							'localField'=>"driver_id",
@@ -2825,15 +2825,15 @@ activation_status,user_status,created_date,updated_date,passenger_cid)values('" 
 							 'as'=>"trans"        
 						)),
 						array('$unwind'=>'$trans'),*/
-						array('$lookup'=>array(
+						['$lookup'=>[
 							'from'=>MDB_COMPANY,
 							'localField'=>"company_id",
 							'foreignField'=>"_id",
 							 'as'=>"company"        
-						)),
-						array('$unwind'=>'$company'),
-						array('$unwind'=>'$company.companyinfo'),
-						array('$project' => array(
+						]],
+						['$unwind'=>'$company'],
+						['$unwind'=>'$company.companyinfo'],
+						['$project' => [
 						
 							'_id' => '$_id',
 							//'phone' => '$people.phone',
@@ -2901,24 +2901,24 @@ activation_status,user_status,created_date,updated_date,passenger_cid)values('" 
 							"passenger_trip_alert"=>'$passengers.trip_alert',
 							"cancellation_nfree"=>'$company.companyinfo.cancellation_fare',
 							"company_tax"=>'$company.companyinfo.company_tax',
-							'droplocation' => array('$ifNull'=>array('$drop_location',0)) 
-						)),
-						array('$match'=>array(
+							'droplocation' => ['$ifNull'=>['$drop_location',0]] 
+						]],
+						['$match'=>[
 							'company_id'=>(int)$company_id,
 							'passengers_id'=>(int)$id,
 							'travel_status'=>(int)4,
 							//'driver_reply'=>  $driver_reply,
 							//'pickup_time'=> array('$gte' => new \MongoDB\BSON\UTCDateTime(strtotime($start_time) * 1000)),
 							
-						)),	
-						array('$sort' => array('_id' => -1))
+						]],	
+						['$sort' => ['_id' => -1]]
 										
-					);
+					];
 					
         $result = $this->mongo_db->aggregate(MDB_PASSENGERSLOGS_CANCELLED,$arguments);
         //echo '<pre>';print_r($arguments);exit;
        // echo '<pre>'; print_r($result);exit;
-        return (!empty($result['result'])?$result['result']:array());
+        return (!empty($result['result'])?$result['result']:[]);
         
         
       /*  $company_condition = "";
@@ -2967,7 +2967,7 @@ activation_status,user_status,created_date,updated_date,passenger_cid)values('" 
         $nvpstr   = $response;
         curl_close($curl);
         $intial   = 0;
-        $nvpArray = array();
+        $nvpArray = [];
         while (strlen($nvpstr)) {
             //postion of Key
             $keypos                       = strpos($nvpstr, '=');
@@ -2998,8 +2998,8 @@ activation_status,user_status,created_date,updated_date,passenger_cid)values('" 
         //$sql = "select * from ".DRIVER." where driver_id=$driverid";
         return Db::query(Database::SELECT, $sql)->execute()->as_array();
         
-        $result = $this->mongo_db->find(MDB_DRIVER_INFO,array('_id' => (int)$driverid),array('loc'));
-        return (!empty($result))?iterator_to_array($result): array();
+        $result = $this->mongo_db->find(MDB_DRIVER_INFO,['_id' => (int)$driverid],['loc']);
+        return (!empty($result))?iterator_to_array($result): [];
     }
     public function get_sublogid($log_id)
     {
@@ -3073,7 +3073,7 @@ activation_status,user_status,created_date,updated_date,passenger_cid)values('" 
     }
     function isVAlidCreditCard($ccnum, $type = "", $returnobj = false)
     {
-        $creditcard = array(
+        $creditcard = [
             "visa" => "/^4\d{3}-?\d{4}-?\d{4}-?\d{4}$/",
             "mastercard" => "/^5[1-5]\d{2}-?\d{4}-?\d{4}-?\d{4}$/",
             "discover" => "/^6011-?\d{4}-?\d{4}-?\d{4}$/",
@@ -3083,7 +3083,7 @@ activation_status,user_status,created_date,updated_date,passenger_cid)values('" 
             "jcb" => "/^[3088|3096|3112|3158|3337|3528|3530]\d{12}$/",
             "enroute" => "/^[2014|2149]\d{11}$/",
             "switch" => "/^[4903|4911|4936|5641|6333|6759|6334|6767]\d{12}$/"
-        );
+        ];
         if (empty($type)) {
             $match = false;
             foreach ($creditcard as $type => $pattern)
@@ -3142,8 +3142,8 @@ activation_status,user_status,created_date,updated_date,passenger_cid)values('" 
         $result = Db::query(Database::SELECT, $query)->execute()->as_array();*/
         
 			$match['activation_key'] = $key;
-			$result = $this->mongo_db->find_one(MDB_PASSENGERS,$match,array('_id','email','name','lastname','phone','profile_image','creditcard_cvv','creditcard_no'));
-			return (isset($result)?$result:array()); 
+			$result = $this->mongo_db->find_one(MDB_PASSENGERS,$match,['_id','email','name','lastname','phone','profile_image','creditcard_cvv','creditcard_no']);
+			return (isset($result)?$result:[]); 
         
     }
     /** Account Validation **/
@@ -3157,7 +3157,7 @@ activation_status,user_status,created_date,updated_date,passenger_cid)values('" 
 				$match['user_status'] = 'A';
 				$match['activation_key'] = $key;
 				$match['activation_status'] = '1';
-			$checkkey = $this->mongo_db->find_one(MDB_PASSENGERS,$match,array('_id','email','name','lastname','phone','profile_image','creditcard_cvv','creditcard_no'));
+			$checkkey = $this->mongo_db->find_one(MDB_PASSENGERS,$match,['_id','email','name','lastname','phone','profile_image','creditcard_cvv','creditcard_no']);
             //$checkkey = DB::select()->from(PASSENGERS)->where('email', '=', $email)->where('user_status', '=', 'A')->where('activation_status', '=', '1')->where('passenger_cid', '=', $company_id)->execute()->as_array();
         } else {
 			$match['passenger_cid'] = 0;
@@ -3165,18 +3165,18 @@ activation_status,user_status,created_date,updated_date,passenger_cid)values('" 
 			$match['user_status'] = 'A';
 			$match['activation_key'] = $key;
 			$match['activation_status'] = '1';
-			$checkkey = $this->mongo_db->find_one(MDB_PASSENGERS,$match,array('_id','email','name','lastname','phone','profile_image','creditcard_cvv','creditcard_no'));
+			$checkkey = $this->mongo_db->find_one(MDB_PASSENGERS,$match,['_id','email','name','lastname','phone','profile_image','creditcard_cvv','creditcard_no']);
             //$checkkey = DB::select()->from(PASSENGERS)->where('email', '=', $email)->where('user_status', '=', 'A')->where('activation_status', '=', '1')->execute()->as_array();
         }
       
         if (count($checkkey) == 0) {
             //print_r($checkkey);
-            $actarr                   = array(
+            $actarr                   = [
                 'activation_status' => '1',
                 'user_status' => 'A'
-            );
+            ];
             //$accountactivation_update = DB::update(PASSENGERS)->set($actarr)->where('email', '=', $email)->and_where('activation_key', '=', $key)->execute();
-            $accountactivation_update = $this->mongo_db->update(MDB_PASSENGERS,array('email'=>$email,'activation_key'=>$key),array('$set'=> $actarr),array('upsert'=>true));
+            $accountactivation_update = $this->mongo_db->update(MDB_PASSENGERS,['email'=>$email,'activation_key'=>$key],['$set'=> $actarr],['upsert'=>true]);
             
             $res = (empty($accountactivation_update['err']))?1:0;
             if ($res > 0) {
@@ -3212,11 +3212,11 @@ activation_status,user_status,created_date,updated_date,passenger_cid)values('" 
         //print_r($checkkey);
         //echo count($checkkey);exit;
         if (count($checkkey) == 0) {
-            $update_otp = DB::update(PASSENGERS)->set(array(
+            $update_otp = DB::update(PASSENGERS)->set([
                 'otp' => $otp,
                 'activation_key' => $random_key,
                 'updated_date' => $current_time
-            ))->where('email', '=', $email)->execute();
+            ])->where('email', '=', $email)->execute();
             if ($update_otp) {
                 return 1;
             } else {
@@ -3233,11 +3233,11 @@ activation_status,user_status,created_date,updated_date,passenger_cid)values('" 
         return Db::query(Database::SELECT, $sql)->execute()->as_array(); */
         
         
-       $args = array(array('$unwind' => '$creditcard_details'),
-						  array('$sort' => array('creditcard_details.passenger_cardid' => -1)),
-						  array('$project' => array('card_id' => '$creditcard_details.passenger_cardid')),
-						  array('$match' => array('_id' => (int)$userid,'creditcard_details.status' => array('$in'=> array(0,1)) )),
-						  );
+       $args = [['$unwind' => '$creditcard_details'],
+						  ['$sort' => ['creditcard_details.passenger_cardid' => -1]],
+						  ['$project' => ['card_id' => '$creditcard_details.passenger_cardid']],
+						  ['$match' => ['_id' => (int)$userid,'creditcard_details.status' => ['$in'=> [0,1]] ]],
+						  ];
 	  $get_id = $this->mongo_db->aggregate(MDB_PASSENGERS,$args);
 	  return (count($get_id['result'])> 0)?count($get_id['result']):'0';
         
@@ -3254,9 +3254,9 @@ activation_status,user_status,created_date,updated_date,passenger_cid)values('" 
         $result = Db::query(Database::SELECT, $sql)->execute()->as_array();
         return $result; */
       
-        $args = array(array('$unwind' => '$creditcard_details'),
-						  array('$sort' => array('creditcard_details.passenger_cardid' => -1)),
-						  array('$project' => array(
+        $args = [['$unwind' => '$creditcard_details'],
+						  ['$sort' => ['creditcard_details.passenger_cardid' => -1]],
+						  ['$project' => [
 						  'passenger_cardid' => '$creditcard_details.passenger_cardid',
 						  'passenger_id' => '$creditcard_details.passenger_id',
 						  'card_type' => '$creditcard_details.card_type',
@@ -3267,13 +3267,13 @@ activation_status,user_status,created_date,updated_date,passenger_cid)values('" 
 						  'creditcard_cvv' => '$creditcard_details.creditcard_cvv',
 						  'cstatus' => '$creditcard_details.status'
 						  
-						  )),
-						  array('$match' => array('_id' => (int)$passenger_id,'cstatus' => array('$in'=> array(0,1)))),
-						  );
+						  ]],
+						  ['$match' => ['_id' => (int)$passenger_id,'cstatus' => ['$in'=> [0,1]]]],
+						  ];
 						  
 						  
 	  $get_id = $this->mongo_db->aggregate(MDB_PASSENGERS,$args);//print_r($get_id);exit;
-	  $result = (!empty($get_id['result']) ? $get_id['result']:array());
+	  $result = (!empty($get_id['result']) ? $get_id['result']:[]);
       return $result;
         
         
@@ -3283,33 +3283,33 @@ activation_status,user_status,created_date,updated_date,passenger_cid)values('" 
     public function update_default_card($card_id,$userid)
     {
 		
-		$args = array(array('$unwind' => '$creditcard_details'),
-					  array('$match' => array('_id' => (int)$userid)),
-					  array('$project' => array('card_id' => '$creditcard_details.passenger_cardid',
-												'default' => '$creditcard_details.default_card'))
-					);
+		$args = [['$unwind' => '$creditcard_details'],
+					  ['$match' => ['_id' => (int)$userid]],
+					  ['$project' => ['card_id' => '$creditcard_details.passenger_cardid',
+												'default' => '$creditcard_details.default_card']]
+					];
 		$keys = $this->mongo_db->aggregate(MDB_PASSENGERS,$args);
 		//echo '<pre>'; print_r($keys);exit;
-		$result = isset($keys['result']) ? $keys['result'] : array();
+		$result = isset($keys['result']) ? $keys['result'] : [];
 		if(count($result) > 0){
-			$i =0;$update_array = array();$default=0;
+			$i =0;$update_array = [];$default=0;
 			//echo '<pre>';;print_r($keys['result']);exit;
 			foreach($keys['result'] as $k => $v ){
 				if($v['card_id'] == $card_id){
 					$val["creditcard_details.".$k.".status"] = 1;
 					$val["creditcard_details.".$k.".default_card"] = 1;
 					$def_update          = $val;
-					$delete = $this->mongo_db->Update(MDB_PASSENGERS,array('_id'=>(int)$userid),
-										array('$set'=>$def_update),
-										array('upsert' => true));
+					$delete = $this->mongo_db->Update(MDB_PASSENGERS,['_id'=>(int)$userid],
+										['$set'=>$def_update],
+										['upsert' => true]);
 				}
 				else{
 					//$val["creditcard_details.".$k.".status"] =0;
 					$val["creditcard_details.".$k.".default_card"] = 0;
 					$def_update          = $val;
-					$delete = $this->mongo_db->Update(MDB_PASSENGERS,array('_id'=>(int)$userid),
-										array('$set'=>$def_update),
-										array('upsert' => true));
+					$delete = $this->mongo_db->Update(MDB_PASSENGERS,['_id'=>(int)$userid],
+										['$set'=>$def_update],
+										['upsert' => true]);
 				}
 				$i++;
 			}
@@ -3323,24 +3323,24 @@ activation_status,user_status,created_date,updated_date,passenger_cid)values('" 
     /**Validating Card Details **/
     public function validate_card_details($arr)
     {
-        return Validation::factory($arr)->rule('card_type', 'not_empty')->rule('org_creditcard_no', 'max_length', array(
+        return Validation::factory($arr)->rule('card_type', 'not_empty')->rule('org_creditcard_no', 'max_length', [
             ':value',
             '16'
-        ))->rule('org_creditcard_cvv', 'not_empty')->rule('org_creditcard_cvv', 'numeric')->rule('expdatemonth', 'numeric')->rule('expdateyear', 'numeric');
+        ])->rule('org_creditcard_cvv', 'not_empty')->rule('org_creditcard_cvv', 'numeric')->rule('expdatemonth', 'numeric')->rule('expdateyear', 'numeric');
     }
     
     public function send_request_validation($array)
     {
-        return Validation::factory($array)->rule('name', 'not_empty')->rule('email', 'not_empty')->rule('parent_id', 'not_empty')->rule('parent_id', 'numeric')->rule('account_type', 'not_empty')->rule('account_type', 'numeric')->rule('parent_id','Model_Add::parent_id_isValid',array(':value'))->rule('account_type','Model_Add::account_type_isValid',array(':value'))->rule('email', 'email')->rule('phone', 'not_empty')->rule('phone', 'min_length', array(
+        return Validation::factory($array)->rule('name', 'not_empty')->rule('email', 'not_empty')->rule('parent_id', 'not_empty')->rule('parent_id', 'numeric')->rule('account_type', 'not_empty')->rule('account_type', 'numeric')->rule('parent_id','Model_Add::parent_id_isValid',[':value'])->rule('account_type','Model_Add::account_type_isValid',[':value'])->rule('email', 'email')->rule('phone', 'not_empty')->rule('phone', 'min_length', [
             ':value',
             '7'
-        )); 
+        ]); 
     }
     
     public function check_phone_passengers_register_check($phone)
     {
         $mongo = MangoDB::instance('default');
-		$res = $mongo->find_one(MDB_PASSENGERS,array('phone'=>$phone),array('phone','parent_id'));
+		$res = $mongo->find_one(MDB_PASSENGERS,['phone'=>$phone],['phone','parent_id']);
         
 		if (count($res) > 0) {
 			$check_having_parent = $res['parent_id'];
@@ -3357,18 +3357,18 @@ activation_status,user_status,created_date,updated_date,passenger_cid)values('" 
     
     public function insert_child_request($account_type='',$passenger_id='',$user_name='',$user_number='',$email='',$check_user_status='',$request_type=''){
         $mongo = MangoDB::instance('default');
-		$res = $mongo->find(MDB_CHILD_REQUEST_TYPE,array('parent_id'=>$passenger_id,'phone'=> $user_number),array('phone'));
+		$res = $mongo->find(MDB_CHILD_REQUEST_TYPE,['parent_id'=>$passenger_id,'phone'=> $user_number],['phone']);
 		
         $result = iterator_to_array($res);
 		$cat_first_key = '';
 		$count = (count($result)>0) ? 1 : 0 ;
 		if($count ==  0 ){
-			$cat_rs = $mongo->find(MDB_CHILD_REQUEST_TYPE,array(),array('_id'))->sort(array('_id'=>-1))->limit(1);
+			$cat_rs = $mongo->find(MDB_CHILD_REQUEST_TYPE,[],['_id'])->sort(['_id'=>-1])->limit(1);
 			$cat_rs = iterator_to_array($cat_rs);
 			reset($cat_rs);
 			$cat_first_key = key($cat_rs);
 			$cat_id = $cat_first_key + 1;
-			$cat_request_type = array('_id'=>$cat_id,
+			$cat_request_type = ['_id'=>$cat_id,
 				'account_type' => $account_type,			
 				'parent_id' => $passenger_id,			
 				'name' => $user_name,			
@@ -3376,9 +3376,9 @@ activation_status,user_status,created_date,updated_date,passenger_cid)values('" 
 				'email' => $email,			
 				'user_status' => $check_user_status,			
 				//'request_type' => $request_type			
-			);
+			];
 			$cat_result = $mongo->insert(MDB_CHILD_REQUEST_TYPE,$cat_request_type);
-			$cat_rs = $mongo->find(MDB_CHILD_REQUEST_TYPE,array(),array('_id'))->sort(array('_id'=>-1))->limit(1);
+			$cat_rs = $mongo->find(MDB_CHILD_REQUEST_TYPE,[],['_id'])->sort(['_id'=>-1])->limit(1);
 			$cat_rs = iterator_to_array($cat_rs);
 			reset($cat_rs);
 			$cat_first_key = key($cat_rs);           
@@ -3438,15 +3438,15 @@ activation_status,user_status,created_date,updated_date,passenger_cid)values('" 
             $card_type      = $array['card_type'];
             $default        = '1';
 			
-			$args = array(array('$unwind' => '$creditcard_details'),
-						  array('$sort' => array('creditcard_details.passenger_cardid' => -1)),
-						  array('$project' => array('card_id' => '$creditcard_details.passenger_cardid')),
-						  array('$limit' => 1)
-						  );
+			$args = [['$unwind' => '$creditcard_details'],
+						  ['$sort' => ['creditcard_details.passenger_cardid' => -1]],
+						  ['$project' => ['card_id' => '$creditcard_details.passenger_cardid']],
+						  ['$limit' => 1]
+						  ];
 			$get_id = $this->mongo_db->aggregate(MDB_PASSENGERS,$args);
 			$inc_id = (!empty($get_id['result'])) ? $get_id['result'][0]['card_id'] : 0;
 			$inc_id +=1;			
-			$update_array = array("creditcard_details"=>array(
+			$update_array = ["creditcard_details"=>[
 								'passenger_cardid' => (int)$inc_id,
 								'passenger_id' => (int)$passenger_id,
 								'passenger_email' => $p_email,
@@ -3457,29 +3457,29 @@ activation_status,user_status,created_date,updated_date,passenger_cid)values('" 
 								'default_card' => (int)$default,
 								'creditcard_cvv' => $creditcard_cvv,
 								'status' => 1,
-								"createdate" => new \MongoDB\BSON\UTCDateTime(strtotime($this->currentdate) * 1000)));
+								"createdate" => new \MongoDB\BSON\UTCDateTime(strtotime($this->currentdate) * 1000)]];
             if ($default == 1) {
 				//echo "ssdsds ";exit;
-				$match = array('_id'=>(int)$passenger_id);
-				$args = array(array('$unwind' => '$creditcard_details'),
-						  array('$match' => array('_id' => (int)$passenger_id)),
-						  array('$project' => array('card_id' => '$creditcard_details.passenger_cardid'))
-						);
+				$match = ['_id'=>(int)$passenger_id];
+				$args = [['$unwind' => '$creditcard_details'],
+						  ['$match' => ['_id' => (int)$passenger_id]],
+						  ['$project' => ['card_id' => '$creditcard_details.passenger_cardid']]
+						];
 				$keys = $this->mongo_db->aggregate(MDB_PASSENGERS,$args);
 				//print_r($keys);exit;
-				$val = array();
+				$val = [];
 				if(!empty($keys['result'])){
 					foreach($keys['result'] as $k => $v ){
 						$val["creditcard_details.".$k.".default_card"] = 0;
 					}
 					$def_update          = $val;
-					$update = $this->mongo_db->Update(MDB_PASSENGERS,$match,array('$set'=>$def_update),array('upsert' => true));
+					$update = $this->mongo_db->Update(MDB_PASSENGERS,$match,['$set'=>$def_update],['upsert' => true]);
 				}				
             }
 				//print_r($update_array);exit;
-			$result = $this->mongo_db->Update(MDB_PASSENGERS,array('_id'=>(int)$passenger_id),
-											  array('$push'=>$update_array),
-											  array('upsert' => true));
+			$result = $this->mongo_db->Update(MDB_PASSENGERS,['_id'=>(int)$passenger_id],
+											  ['$push'=>$update_array],
+											  ['upsert' => true]);
 			 return 0;
         }
         catch (Kohana_Exception $e) {
@@ -3494,9 +3494,9 @@ activation_status,user_status,created_date,updated_date,passenger_cid)values('" 
     {
         $creditcard_no = encrypt_decrypt('encrypt', $creditcard_no);
         
-        $args = array(array('$unwind' => '$creditcard_details'),
-						  array('$sort' => array('creditcard_details.passenger_cardid' => -1)),
-						  array('$project' => array(
+        $args = [['$unwind' => '$creditcard_details'],
+						  ['$sort' => ['creditcard_details.passenger_cardid' => -1]],
+						  ['$project' => [
 						  'passenger_cardid' => '$creditcard_details.passenger_cardid',
 						  'passenger_id' => '$creditcard_details.passenger_id',
 						  'card_type' => '$creditcard_details.card_type',
@@ -3506,9 +3506,9 @@ activation_status,user_status,created_date,updated_date,passenger_cid)values('" 
 						  'creditcard_no' => '$creditcard_details.creditcard_no',
 						  'creditcard_cvv' => '$creditcard_details.creditcard_cvv'
 						  
-						  )),
-						  array('$match' => array('_id' => (int)$passenger_id,'creditcard_no' => $creditcard_no)),
-						  );
+						  ]],
+						  ['$match' => ['_id' => (int)$passenger_id,'creditcard_no' => $creditcard_no]],
+						  ];
 			$get_id = $this->mongo_db->aggregate(MDB_PASSENGERS,$args);
 			//echo '<pre>'; print_r($get_id);exit;
 			return (!empty($get_id['result'])) ? 1 : 0;
@@ -3517,25 +3517,25 @@ activation_status,user_status,created_date,updated_date,passenger_cid)values('" 
     
     }
     public function delete_carddata($card_id,$userid){
-		$args = array(array('$unwind' => '$creditcard_details'),
-					  array('$match' => array('_id' => (int)$userid)),
-					  array('$project' => array('card_id' => '$creditcard_details.passenger_cardid',
-												'default' => '$creditcard_details.default_card'))
-					);
+		$args = [['$unwind' => '$creditcard_details'],
+					  ['$match' => ['_id' => (int)$userid]],
+					  ['$project' => ['card_id' => '$creditcard_details.passenger_cardid',
+												'default' => '$creditcard_details.default_card']]
+					];
 		$keys = $this->mongo_db->aggregate(MDB_PASSENGERS,$args);
 		//echo '<pre>'; print_r($keys);exit;
-		$result = isset($keys['result']) ? $keys['result'] : array();
+		$result = isset($keys['result']) ? $keys['result'] : [];
 		if(count($result) > 0){
-			$i =0;$update_array = array();$default=0;
+			$i =0;$update_array = [];$default=0;
 			//echo '<pre>';;print_r($keys['result']);exit;
 			foreach($keys['result'] as $k => $v ){
 				if($v['card_id'] == $card_id){
 					$val["creditcard_details.".$k.".status"] = 2;
 					$val["creditcard_details.".$k.".default_card"] = 0;
 					$def_update          = $val;
-					$delete = $this->mongo_db->Update(MDB_PASSENGERS,array('_id'=>(int)$userid),
-										array('$set'=>$def_update),
-										array('upsert' => true));
+					$delete = $this->mongo_db->Update(MDB_PASSENGERS,['_id'=>(int)$userid],
+										['$set'=>$def_update],
+										['upsert' => true]);
 				}
 				
 				$i++;
@@ -3550,9 +3550,9 @@ activation_status,user_status,created_date,updated_date,passenger_cid)values('" 
     // Get the card details
     public function get_card_details($id = "",$userid="")
     {
-		 $args = array(array('$unwind' => '$creditcard_details'),
-						  array('$sort' => array('creditcard_details.passenger_cardid' => -1)),
-						  array('$project' => array(
+		 $args = [['$unwind' => '$creditcard_details'],
+						  ['$sort' => ['creditcard_details.passenger_cardid' => -1]],
+						  ['$project' => [
 						  'passenger_cardid' => '$creditcard_details.passenger_cardid',
 						  'passenger_id' => '$creditcard_details.passenger_id',
 						  'card_type' => '$creditcard_details.card_type',
@@ -3562,9 +3562,9 @@ activation_status,user_status,created_date,updated_date,passenger_cid)values('" 
 						  'creditcard_no' => '$creditcard_details.creditcard_no',
 						  'creditcard_cvv' => '$creditcard_details.creditcard_cvv'
 						  
-						  )),
-						  array('$match' => array('_id' => (int)$userid,'passenger_cardid' => (int)$id)),
-						  );
+						  ]],
+						  ['$match' => ['_id' => (int)$userid,'passenger_cardid' => (int)$id]],
+						  ];
 			$get_id = $this->mongo_db->aggregate(MDB_PASSENGERS,$args);
 			return (!empty($get_id['result'])) ? $get_id['result'] : 0;
     }
@@ -3605,31 +3605,31 @@ activation_status,user_status,created_date,updated_date,passenger_cid)values('" 
             $expdatemonth     = $array['expdatemonth'];
             $expdateyear      = $array['expdateyear'];
             $card_type        = $array['card_type'];
-			$match = array('_id'=>(int)$passenger_id);
-			$args = array(array('$unwind' => '$creditcard_details'),
-					  array('$match' => array('_id' => (int)$passenger_id)),
-					  array('$project' => array('card_id' => '$creditcard_details.passenger_cardid'))
-					);
+			$match = ['_id'=>(int)$passenger_id];
+			$args = [['$unwind' => '$creditcard_details'],
+					  ['$match' => ['_id' => (int)$passenger_id]],
+					  ['$project' => ['card_id' => '$creditcard_details.passenger_cardid']]
+					];
 			$keys = $this->mongo_db->aggregate(MDB_PASSENGERS,$args);			
-			$i =0;$val = array();
+			$i =0;$val = [];
 			foreach($keys['result'] as $k => $v ){
 				if($v['card_id'] == $passenger_cardid){
 					$i = $k;
 				}
 				$val["creditcard_details.$k.default_card"] = 0;
 			}
-			$update_array = array(
+			$update_array = [
 								"creditcard_details.$i.card_type" => $card_type,
 								"creditcard_details.$i.creditcard_no" => $creditcard_no,
 								"creditcard_details.$i.creditcard_cvv" => $creditcard_cvv,
 								"creditcard_details.$i.expdatemonth" => $expdatemonth,
 								"creditcard_details.$i.expdateyear" => $expdateyear
-							);
+							];
 						//	print_r($update_array);exit;
            
-			$result = $this->mongo_db->Update(MDB_PASSENGERS,array('_id'=>(int)$passenger_id),
-											array('$set'=>$update_array),
-											array('upsert' => true));
+			$result = $this->mongo_db->Update(MDB_PASSENGERS,['_id'=>(int)$passenger_id],
+											['$set'=>$update_array],
+											['upsert' => true]);
 			return 0;	
         }
        catch (Kohana_Exception $e) {
@@ -3642,8 +3642,8 @@ activation_status,user_status,created_date,updated_date,passenger_cid)values('" 
     }
      public function get_favourite_list($passenger_id="",$start = 0, $limit = 0)
     {	
-		$match = array('passenger_id' => (int)$passenger_id,'status' => 'A');
-		$project = array('p_favourite_id' => '$_id',
+		$match = ['passenger_id' => (int)$passenger_id,'status' => 'A'];
+		$project = ['p_favourite_id' => '$_id',
 						 'passenger_id' => '$passenger_id',
 						 'p_favourite_place' => '$p_favourite_place',
 						 'p_fav_latitude' => '$p_fav_latitude',
@@ -3654,47 +3654,47 @@ activation_status,user_status,created_date,updated_date,passenger_cid)values('" 
 						 'fav_comments' => '$fav_comments',
                          'fav_icon' => '$fav_icon',
 						 'notes' => '$notes',
-						 'fav_loction_type' => '$fav_loction_type');	
+						 'fav_loction_type' => '$fav_loction_type'];	
 		 if($start == 0 && $limit == 0){				 	
-		$args = array(array('$match' => $match),
-					  array('$project' => $project) );
+		$args = [['$match' => $match],
+					  ['$project' => $project] ];
 		}else{
 			
-			$args = array(array('$match' => $match),
-					  array('$project' => $project),array('$skip' => (int)$start),array('$limit' => (int)$limit) );
+			$args = [['$match' => $match],
+					  ['$project' => $project],['$skip' => (int)$start],['$limit' => (int)$limit] ];
 		}			 
 		//echo '<pre>';print_r($args);//exit;			  
 		$res = $this->mongo_db->aggregate(MDB_PASSENGERS_FAVOURITES,$args);
 		//echo count($res['result']);exit;
 		//echo '<pre>';print_r($res);exit;
-		return (isset($res['result'])) ? $res['result'] : array();
+		return (isset($res['result'])) ? $res['result'] : [];
     }
     public function get_passenger_childlist_count($id,$account_type){
-		$array = array(
-				'$match' => array('parent_id' => (int)$id,				
+		$array = [
+				'$match' => ['parent_id' => (int)$id,				
 				'user_status' => "A"				
-		));
+		]];
 		if(!empty($account_type)) {
-			$array = array(
-				'$match' => array('parent_id' => (int)$id,
+			$array = [
+				'$match' => ['parent_id' => (int)$id,
 				'account_type' => (int)$account_type,
 				'user_status' => "A"				
-			));
+			]];
 		}
-		$arguments = array(
+		$arguments = [
              
-                array(
-				'$lookup' => array(
+                [
+				'$lookup' => [
 					'from' => MDB_CHILD_ACCOUNT_TYPE,
 					'localField' => 'account_type',
 					'foreignField' => '_id',
 					'as' => 'account'
-				)
-				),
-				array('$unwind' => '$account'),
+				]
+				],
+				['$unwind' => '$account'],
 				
-                array(
-                    '$project' => array(
+                [
+                    '$project' => [
 						'_id' => '$_id',
 						'name' => '$name',
 						'email' => '$email',
@@ -3706,51 +3706,51 @@ activation_status,user_status,created_date,updated_date,passenger_cid)values('" 
 						'parent_id' => '$parent_id',
 						'account_type' => '$account_type',
 						'account_type_name' => '$account.account_type',
-                    )
-                ),
+                    ]
+                ],
                 $array
-		);
+		];
 		$result    = $this->mongo_db->aggregate(MDB_PASSENGERS, $arguments);
 		//echo '<pre>'; print_r($result['result']);exit;
         return (count($result['result'])> 0)?count($result['result']):'0';		
 	}
     public function get_passenger_childlist($id,$account_type,$offset,$limit,$flag=1){
 	
-        $array = array(
-				'$match' => array('parent_id' => (int)$id,				
+        $array = [
+				'$match' => ['parent_id' => (int)$id,				
 				'user_status' => "A"				
-		));
+		]];
 		if(!empty($account_type)) {
-			$array = array(
-				'$match' => array('parent_id' => (int)$id,
+			$array = [
+				'$match' => ['parent_id' => (int)$id,
 				'account_type' => (int)$account_type,
 				'user_status' => "A"				
-			));
+			]];
 		}
 		if($flag == 1) {
-		$arguments = array(
+		$arguments = [
              
-                array(
-				'$lookup' => array(
+                [
+				'$lookup' => [
 					'from' => MDB_CHILD_ACCOUNT_TYPE,
 					'localField' => 'account_type',
 					'foreignField' => '_id',
 					'as' => 'account'
-				)
-				),
-				array('$unwind' => '$account'),
-				array(
-				'$lookup' => array(
+				]
+				],
+				['$unwind' => '$account'],
+				[
+				'$lookup' => [
 					'from' => MDB_CHILD_REQUEST_TYPE,
 					'localField' => 'phone',
 					'foreignField' => 'phone',
 					'as' => 'request'
-				)
-				),
-				array('$unwind' => '$request'),
+				]
+				],
+				['$unwind' => '$request'],
 				$array,
-                array(
-                    '$project' => array(
+                [
+                    '$project' => [
 						'_id' => '$_id',
 						'name' => '$name',
 						'email' => '$email',
@@ -3763,37 +3763,37 @@ activation_status,user_status,created_date,updated_date,passenger_cid)values('" 
 						'account_type' => '$account_type',
 						'allow_creditcard'=> '$allow_creditcard',
 						'account_type_name' => '$account.account_type',
-                    )
-                ),
-                array('$skip'=>(int)$offset),
-                array('$limit'=>(int)$limit)
+                    ]
+                ],
+                ['$skip'=>(int)$offset],
+                ['$limit'=>(int)$limit]
                
-		);
+		];
 	} else {
 		
-		$arguments = array(
+		$arguments = [
              
-                array(
-				'$lookup' => array(
+                [
+				'$lookup' => [
 					'from' => MDB_CHILD_ACCOUNT_TYPE,
 					'localField' => 'account_type',
 					'foreignField' => '_id',
 					'as' => 'account'
-				)
-				),
-				array('$unwind' => '$account'),
-				array(
-				'$lookup' => array(
+				]
+				],
+				['$unwind' => '$account'],
+				[
+				'$lookup' => [
 					'from' => MDB_CHILD_REQUEST_TYPE,
 					'localField' => 'phone',
 					'foreignField' => 'phone',
 					'as' => 'request'
-				)
-				),
-				array('$unwind' => '$request'),
+				]
+				],
+				['$unwind' => '$request'],
 				$array,
-                array(
-                    '$project' => array(
+                [
+                    '$project' => [
 						'_id' => '$_id',
 						'name' => '$name',
 						'email' => '$email',
@@ -3807,73 +3807,73 @@ activation_status,user_status,created_date,updated_date,passenger_cid)values('" 
 						'request_id' => '$request._id',
 						'allow_creditcard'=> '$allow_creditcard',
 						'account_type_name' => '$account.account_type',
-                    )
-                )
+                    ]
+                ]
               
                
-		);
+		];
 		
 		}
 		//echo '<pre>'; print_r($arguments);echo '</pre>';exit;
 		$result    = $this->mongo_db->aggregate(MDB_PASSENGERS, $arguments);
 		//echo '<pre>'; print_r($result['result']);echo '</pre>';exit;
-		return (!empty($result['result']))?$result['result']:array();
+		return (!empty($result['result']))?$result['result']:[];
 	}
     public function getChildAccounts($lang) {
-		$ops = array(
-					array(
-						'$project' => array(
+		$ops = [
+					[
+						'$project' => [
 						'_id' => '$_id',
 						'account_type' => ($lang == 'en') ? '$account_type' : '$account_type_arabic',
 						'status' => '$status',
-						)
-					),
-                    array(
-						'$match' => array("status"=>"A")
-					),
-					array(
-						'$sort' => array("_id"=>1)
-					)
-			);
+						]
+					],
+                    [
+						'$match' => ["status"=>"A"]
+					],
+					[
+						'$sort' => ["_id"=>1]
+					]
+			];
 		$result = $this->mongo_db->aggregate(MDB_CHILD_ACCOUNT_TYPE,$ops);
 		//echo '<pre>';print_r($result);exit;
-		return (!empty($result['result']))?$result['result']:array();	
+		return (!empty($result['result']))?$result['result']:[];	
 	}
 	
 	public function get_member_types($userid){
 		
        // echo $userid;exit;
-		$ops = array(
-					 array(
-				'$lookup' => array(
+		$ops = [
+					 [
+				'$lookup' => [
 					'from' => MDB_CHILD_ACCOUNT_TYPE,
 					'localField' => 'account_type',
 					'foreignField' => '_id',
 					'as' => 'account'
-				)
-				),
-				array('$unwind' => '$account'),
-					array(
-						'$project' => array(
+				]
+				],
+				['$unwind' => '$account'],
+					[
+						'$project' => [
 						'_id' => '$account._id',
 						'parent_id' =>'$parent_id',
 						'account_type' => '$account.account_type',
 						'user_status' => '$user_status',
-						)
-					),
-					array(
-						'$match' => array("user_status"=>"A",'parent_id' =>(int)$userid) //"user_status"=>"A",
-					),
-					array(
-						'$sort' => array("_id"=>1)
-					),
+						]
+					],
+					[
+						'$match' => ["user_status"=>"A",'parent_id' =>(int)$userid] //"user_status"=>"A",
+					],
+					[
+						'$sort' => ["_id"=>1]
+					],
 					
-			);
+			];
 		$result = $this->mongo_db->aggregate(MDB_PASSENGERS,$ops);
 		if(!empty($result['result'])){
 		$result = $result['result'];
 		$result = array_map("unserialize", array_unique(array_map("serialize", $result)));
-		return $result; } else { return array(); };
+		return $result; } else { return []; };
   
 	}
     
@@ -3886,7 +3886,7 @@ activation_status,user_status,created_date,updated_date,passenger_cid)values('" 
 				$start_time   = date('Y-m-d') . ' 00:00:01';
 				$end_time     = date('Y-m-d') . ' 23:59:59';
 			} else {
-				$query = $this->mongo_db->find(MDB_COMPANY,array('_id'=>(int)$company_id),array('companydetails.time_zone'));
+				$query = $this->mongo_db->find(MDB_COMPANY,['_id'=>(int)$company_id],['companydetails.time_zone']);
 			$result = iterator_to_array($query);
 			if(!empty($result)){
 				$time_zone = isset($result[ $company_id ]['companydetails'][ 'time_zone' ])?$result[ $company_id ]['companydetails'][ 'time_zone' ]:"";
@@ -3907,27 +3907,27 @@ activation_status,user_status,created_date,updated_date,passenger_cid)values('" 
 			}
           
         if($status == '2'){ //Upcoming
-			$status_array = array('$in' => array(9,3,0));
-			$dateQry = array('$gte' => new \MongoDB\BSON\UTCDateTime(strtotime($current_time) * 1000));
+			$status_array = ['$in' => [9,3,0]];
+			$dateQry = ['$gte' => new \MongoDB\BSON\UTCDateTime(strtotime($current_time) * 1000)];
 			
 			
 		}else if($status == '1'){ //Ongoing
 			//echo "HELLO";exit;
-			$status_array = array('$in' => array(2,5));
-            $dateQry = array('$gte' => new \MongoDB\BSON\UTCDateTime(strtotime($start_time) * 1000), '$lte' => new \MongoDB\BSON\UTCDateTime(strtotime($end_time) * 1000));
+			$status_array = ['$in' => [2,5]];
+            $dateQry = ['$gte' => new \MongoDB\BSON\UTCDateTime(strtotime($start_time) * 1000), '$lte' => new \MongoDB\BSON\UTCDateTime(strtotime($end_time) * 1000)];
 		}else{ //Completed
 			$status_array = 1;
-			$dateQry = array('$lte' => new \MongoDB\BSON\UTCDateTime(strtotime($end_time) * 1000));
+			$dateQry = ['$lte' => new \MongoDB\BSON\UTCDateTime(strtotime($end_time) * 1000)];
 		}
        
         /* MONGO CONVERSION */
-         $arguments = array(array('$lookup'=>array(
+         $arguments = [['$lookup'=>[
 							'from'=>MDB_PASSENGERS,
 							'localField'=>"passengers_id",
 							'foreignField'=>"_id",
 							 'as'=>"passengers"        
-						)),
-						array('$unwind'=>'$passengers'),
+						]],
+						['$unwind'=>'$passengers'],
 						/*array('$lookup'=>array(
 							'from'=>MDB_PEOPLE,
 							'localField'=>"driver_id",
@@ -3935,30 +3935,30 @@ activation_status,user_status,created_date,updated_date,passenger_cid)values('" 
 							 'as'=>"people"        
 						)),
 						array('$unwind'=>'$people'),*/
-						array('$lookup'=>array(
+						['$lookup'=>[
 							'from'=>MDB_TRANSACTION,
 							'localField'=>"_id",
 							'foreignField'=>"passengers_log_id",
 							 'as'=>"trans"        
-						)),
+						]],
 						//	array('$unwind'=>'$trans'),
 						
-						array('$lookup'=>array(
+						['$lookup'=>[
 							'from'=>MDB_MOTOR_MODEL,
 							'localField'=>"taxi_modelid",
 							'foreignField'=>"_id",
 							 'as'=>"model"        
-						)),
-						array('$unwind'=>'$model'),
-						array('$lookup'=>array(
+						]],
+						['$unwind'=>'$model'],
+						['$lookup'=>[
 							'from'=>MDB_COMPANY,
 							'localField'=>"company_id",
 							'foreignField'=>"_id",
 							 'as'=>"company"        
-						)),
-						array('$unwind'=>'$company'),
-						array('$unwind'=>'$company.companyinfo'),
-						array('$project' => array(
+						]],
+						['$unwind'=>'$company'],
+						['$unwind'=>'$company.companyinfo'],
+						['$project' => [
                             '_id' => '$_id',
                             'passengers_id' => '$passengers_id',
                             'company_id' => '$company_id',
@@ -3974,35 +3974,35 @@ activation_status,user_status,created_date,updated_date,passenger_cid)values('" 
 							'model_name' => '$model.model_name',
 							'payment_type' => '$payment_type',
 							
-						)),
-						array('$match'=>array(
+						]],
+						['$match'=>[
 							'company_id'=>(int)$company_id,
 							'passengers_id'=>(int)$userid,
 							'travel_status'=>$status_array,
 							//'driver_reply'=> $driver_reply,
 							'pickup_time'=> $dateQry
 							
-						)),	
-						array('$sort' => array('_id' => -1)),
+						]],	
+						['$sort' => ['_id' => -1]],
 								
-					);
+					];
 					
         $result = $this->mongo_db->aggregate(MDB_PASSENGERS_LOGS,$arguments);
         //echo '<pre>'; print_r($arguments);exit;
-        return (!empty($result['result'])?$result['result']:array());
+        return (!empty($result['result'])?$result['result']:[]);
     
 }
     /*** MEMBERS TRIP ***/
     public function check_modeldetails($model='',$no_passengers='',$max_luggage='')
     {	
-		$match_query = array('model_status'=>array('$eq'=>"A"),'model_size' => array('$gte' => (int)$no_passengers),'max_luggage' => array('$gte' => (int)$max_luggage),'_id' => (int)$model);
-		$ops = array(				
-			array('$match' => $match_query),
-			array(
-				'$project' => array('model_name' => '$model_name','cancellation_fare' => '$cancellation_fare','evening_fare' => '$evening_fare', 'evening_timing_from' => '$evening_timing_from', 'evening_timing_to' => '$evening_timing_to', 'night_fare' => '$night_fare', 'night_timing_from' => '$night_timing_from', 'night_timing_to' => '$night_timing_to', 'max_luggage' => '$max_luggage','model_size'=>'$model_size'
-				)
-			),
-		);
+		$match_query = ['model_status'=>['$eq'=>"A"],'model_size' => ['$gte' => (int)$no_passengers],'max_luggage' => ['$gte' => (int)$max_luggage],'_id' => (int)$model];
+		$ops = [				
+			['$match' => $match_query],
+			[
+				'$project' => ['model_name' => '$model_name','cancellation_fare' => '$cancellation_fare','evening_fare' => '$evening_fare', 'evening_timing_from' => '$evening_timing_from', 'evening_timing_to' => '$evening_timing_to', 'night_fare' => '$night_fare', 'night_timing_from' => '$night_timing_from', 'night_timing_to' => '$night_timing_to', 'max_luggage' => '$max_luggage','model_size'=>'$model_size'
+				]
+			],
+		];
 		$result = $this->mongo_db->aggregate(MDB_MOTOR_MODEL,$ops);	
 		return (!empty($result['result']))?$result['result'][0]['model_size'].'||'.$result['result'][0]['max_luggage']:0;
 		
@@ -4013,14 +4013,14 @@ activation_status,user_status,created_date,updated_date,passenger_cid)values('" 
 	 public function modeldetails($model='',$no_passengers='',$max_luggage='')
     {	
 		
-		$match_query = array('_id' => (int)$model);
-		$ops = array(				
-			array('$match' => $match_query),
-			array(
-				'$project' => array('model_name' => '$model_name','cancellation_fare' => '$cancellation_fare','evening_fare' => '$evening_fare', 'evening_timing_from' => '$evening_timing_from', 'evening_timing_to' => '$evening_timing_to', 'night_fare' => '$night_fare', 'night_timing_from' => '$night_timing_from', 'night_timing_to' => '$night_timing_to', 'max_luggage' => '$max_luggage','model_size'=>'$model_size'
-				)
-			),
-		);
+		$match_query = ['_id' => (int)$model];
+		$ops = [				
+			['$match' => $match_query],
+			[
+				'$project' => ['model_name' => '$model_name','cancellation_fare' => '$cancellation_fare','evening_fare' => '$evening_fare', 'evening_timing_from' => '$evening_timing_from', 'evening_timing_to' => '$evening_timing_to', 'night_fare' => '$night_fare', 'night_timing_from' => '$night_timing_from', 'night_timing_to' => '$night_timing_to', 'max_luggage' => '$max_luggage','model_size'=>'$model_size'
+				]
+			],
+		];
 		$result = $this->mongo_db->aggregate(MDB_MOTOR_MODEL,$ops);	
 		return (!empty($result['result']))?$result['result'][0]['model_size'].'||'.$result['result'][0]['max_luggage']:0;
 		
@@ -4032,7 +4032,7 @@ activation_status,user_status,created_date,updated_date,passenger_cid)values('" 
 public function update_passengercivil($image, $userid,$type)
     {
        
-        $result = $this->mongo_db->find_one(MDB_PASSENGERS,array('_id' => (int)$userid), array($type) );
+        $result = $this->mongo_db->find_one(MDB_PASSENGERS,['_id' => (int)$userid], [$type] );
         
         if (!empty($result[$type])) {
             $id1 = PASS_CIVIL_IMGPATH . $result[$type];
@@ -4049,38 +4049,38 @@ public function update_passengercivil($image, $userid,$type)
             }
         }
         $mdate     = $this->currentdate;
-        $sql_query = (array(
+        $sql_query = ([
             'updated_date' => $mdate
-        ));
+        ]);
         if (isset($image)) {
             $sql_query[$type] = $image;
         }
-        $update_result     = $this->mongo_db->update(MDB_PASSENGERS,array('_id'=>(int)$userid),array('$set'=>array(
+        $update_result     = $this->mongo_db->update(MDB_PASSENGERS,['_id'=>(int)$userid],['$set'=>[
             'updated_date' => $mdate,$type => $image, $type.'_thumb' => 'thumb_'.$image
-        )),array('upsert'=>true));
+        ]],['upsert'=>true]);
         
       
     }
     
     public function logout_pass($id) {
-        $query    = array(
+        $query    = [
             'login_status' => 'D'
-        );
-        $result = $this->mongo_db->update(MDB_PASSENGERS,array('_id'=>(int)$id),array('$set'=>$query),array('upsert'=>true));
+        ];
+        $result = $this->mongo_db->update(MDB_PASSENGERS,['_id'=>(int)$id],['$set'=>$query],['upsert'=>true]);
         return (empty($result['err']))?1:$result['err'];
     }
     public function check_fav_based_search($passenger_id='',$d_fav_latitude='',$d_fav_longtitute='',$type=""){
 		
-		if($type == 1){$match_query = array('passenger_id' => (int)$passenger_id,'p_fav_latitude' =>$d_fav_latitude,'p_fav_longtitute' =>$d_fav_longtitute );}
+		if($type == 1){$match_query = ['passenger_id' => (int)$passenger_id,'p_fav_latitude' =>$d_fav_latitude,'p_fav_longtitute' =>$d_fav_longtitute ];}
 		else{
-		$match_query = array('passenger_id' => (int)$passenger_id,'d_fav_latitude' =>$d_fav_latitude,'d_fav_longtitute' =>$d_fav_longtitute );}
-		$ops = array(				
-			array('$match' => $match_query),
-			array(
-				'$project' => array('d_favourite_place' => '$d_favourite_place'
-				)
-			),
-		);
+		$match_query = ['passenger_id' => (int)$passenger_id,'d_fav_latitude' =>$d_fav_latitude,'d_fav_longtitute' =>$d_fav_longtitute ];}
+		$ops = [				
+			['$match' => $match_query],
+			[
+				'$project' => ['d_favourite_place' => '$d_favourite_place'
+				]
+			],
+		];
 		$result = $this->mongo_db->aggregate(MDB_PASSENGERS_FAVOURITES,$ops);	
 		//echo '<pre>'; print_r($result);exit;
 		return (empty($result['result']))?1:0;
@@ -4091,23 +4091,23 @@ public function update_passengercivil($image, $userid,$type)
      public function get_passenger_log_detail_forcancel($passengerlog_id = "")
     {
 		
-		$arguments = array(array('$lookup'=>array(
+		$arguments = [['$lookup'=>[
 							'from'=>MDB_PASSENGERS,
 							'localField'=>"passengers_id",
 							'foreignField'=>"_id",
 							 'as'=>"passengers"        
-						)),
-						array('$unwind'=>'$passengers'),
+						]],
+						['$unwind'=>'$passengers'],
 						
-						array('$lookup'=>array(
+						['$lookup'=>[
 							'from'=>MDB_COMPANY,
 							'localField'=>"company_id",
 							'foreignField'=>"_id",
 							 'as'=>"company"        
-						)),
-						array('$unwind'=>'$company'),
-						array('$unwind'=>'$company.companyinfo'),
-						array('$project' => array(
+						]],
+						['$unwind'=>'$company'],
+						['$unwind'=>'$company.companyinfo'],
+						['$project' => [
 						
 							'_id' => '$_id',
 							
@@ -4170,37 +4170,37 @@ public function update_passengercivil($image, $userid,$type)
 							"passenger_trip_alert"=>'$passengers.trip_alert',
 							"cancellation_nfree"=>'$company.companyinfo.cancellation_fare',
 							"company_tax"=>'$company.companyinfo.company_tax',
-							'droplocation' => array('$ifNull'=>array('$drop_location',0)) 
-						)),
-						array('$match'=>array(
+							'droplocation' => ['$ifNull'=>['$drop_location',0]] 
+						]],
+						['$match'=>[
 							'_id'=>(int)$passengerlog_id
-						)),					
-					);
+						]],					
+					];
 					
         $result = $this->mongo_db->aggregate(MDB_PASSENGERS_LOGS,$arguments);
         //print_r($result);exit;
-        return (!empty($result['result'])?$result['result']:array());
+        return (!empty($result['result'])?$result['result']:[]);
     }
     
       public function cancel_triptransact_details_ct($details, $cancellation_nfree, $payment_types)
     {
-		$update_array = array(
+		$update_array = [
 			"travel_status" => 4
-		);
-		$res = $this->mongo_db->update(MDB_PASSENGERSLOGS_CANCELLED,array('_id'=>(int)$details['value']),array('$set'=>$update_array),array('upsert'=>true));
+		];
+		$res = $this->mongo_db->update(MDB_PASSENGERSLOGS_CANCELLED,['_id'=>(int)$details['value']],['$set'=>$update_array],['upsert'=>true]);
 		return (empty($res['err']))?1:$res['err_msg'];
     }
     /* For Cancellation */
     
     public function get_member_trip_details_view($log_id){
 		
-		$arguments = array(array('$lookup'=>array(
+		$arguments = [['$lookup'=>[
 							'from'=>MDB_PASSENGERS,
 							'localField'=>"passengers_id",
 							'foreignField'=>"_id",
 							 'as'=>"passengers"        
-						)),
-						array('$unwind'=>'$passengers'),
+						]],
+						['$unwind'=>'$passengers'],
 						/*array('$lookup'=>array(
 							'from'=>MDB_PEOPLE,
 							'localField'=>"driver_id",
@@ -4208,22 +4208,22 @@ public function update_passengercivil($image, $userid,$type)
 							 'as'=>"people"        
 						)),
 						array('$unwind'=>'$people'),*/
-						array('$lookup'=>array(
+						['$lookup'=>[
 							'from'=>MDB_MOTOR_MODEL,
 							'localField'=>"taxi_modelid",
 							'foreignField'=>"_id",
 							 'as'=>"model"        
-						)),
-						array('$unwind'=>'$model'),
-						array('$lookup'=>array(
+						]],
+						['$unwind'=>'$model'],
+						['$lookup'=>[
 							'from'=>MDB_COMPANY,
 							'localField'=>"company_id",
 							'foreignField'=>"_id",
 							 'as'=>"company"        
-						)),
-						array('$unwind'=>'$company'),
-						array('$unwind'=>'$company.companyinfo'),
-						array('$project' => array(
+						]],
+						['$unwind'=>'$company'],
+						['$unwind'=>'$company.companyinfo'],
+						['$project' => [
                             '_id' => '$_id',
                             'passengers_id' => '$passengers_id',
                             'company_id' => '$company_id',
@@ -4242,18 +4242,18 @@ public function update_passengercivil($image, $userid,$type)
 							'max_luggage' => '$max_luggage',
 							'airport_pickup' => '$airport_pickup',
 							
-						)),
-						array('$match'=>array(
+						]],
+						['$match'=>[
 							'_id'=>(int)$log_id,
 						
-						)),	
-						array('$sort' => array('_id' => -1)),
+						]],	
+						['$sort' => ['_id' => -1]],
 								
-					);
+					];
 					
         $result = $this->mongo_db->aggregate(MDB_PASSENGERS_LOGS,$arguments);
         //print_r($result);exit;
-        return (!empty($result['result'])?$result['result']:array());
+        return (!empty($result['result'])?$result['result']:[]);
 	}
 
     public function passenger_validation($formvalues)
@@ -4276,11 +4276,11 @@ public function update_passengercivil($image, $userid,$type)
                 ->rule('expdateyear','not_empty')
 
                 ->rule('creditcard_no','numeric')
-                ->rule('creditcard_no','min_length', array(':value', '9'))  
-                ->rule('creditcard_no','max_length', array(':value', '16')) 
+                ->rule('creditcard_no','min_length', [':value', '9'])  
+                ->rule('creditcard_no','max_length', [':value', '16']) 
                
-                ->rule('creditcard_cvv','min_length', array(':value', '3'))  
-                ->rule('creditcard_cvv','max_length', array(':value', '4'))  
+                ->rule('creditcard_cvv','min_length', [':value', '3'])  
+                ->rule('creditcard_cvv','max_length', [':value', '4'])  
                 ->rule('creditcard_cvv','numeric')
 
                 ->rule('expdatemonth','not_empty')

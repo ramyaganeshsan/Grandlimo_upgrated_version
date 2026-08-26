@@ -18,10 +18,10 @@ class Model_Managemodel extends Model
     }
     public function addcountry_validate($arr)
     {
-        $validate = Validation::factory($arr)->rule('country', 'not_empty', array(
+        $validate = Validation::factory($arr)->rule('country', 'not_empty', [
             ':value',
             'Country'
-        ));
+        ]);
         return $validate;
     }
     public function update($table, $arr, $cond1, $cond2)
@@ -55,19 +55,19 @@ class Model_Managemodel extends Model
     }
     public function select_city($id = "", $countryid = "", $status = ACTIVE, $limit = "", $offset = "")
     {
-        $query = DB::select(array(
+        $query = DB::select([
             CITY . '.id',
             'cityid'
-        ), CITY . '.city_name', CITY . '.countryid', array(
+        ], CITY . '.city_name', CITY . '.countryid', [
             CITY . '.status',
             'citystatus'
-        ), array(
+        ], [
             COUNTRY . '.id',
             'countryid'
-        ), COUNTRY . '.country', COUNTRY . '.country_url', array(
+        ], COUNTRY . '.country', COUNTRY . '.country_url', [
             COUNTRY . '.status',
             'countrystatus'
-        ))->from(CITY)->join(COUNTRY, 'left')->on(COUNTRY . '.id', '=', CITY . '.countryid');
+        ])->from(CITY)->join(COUNTRY, 'left')->on(COUNTRY . '.id', '=', CITY . '.countryid');
         if (isset($countryid) && $countryid != "") {
             if ($limit != "" || $offset != "") {
                 $result = $query->where(CITY . '.countryid', '=', $countryid);
@@ -130,10 +130,10 @@ class Model_Managemodel extends Model
      */
     public static function unique_city($city, $countryid, $cityid)
     {
-        $query = DB::select(array(
+        $query = DB::select([
             DB::expr('COUNT(city_name)'),
             'total'
-        ))->from(CITY)->where('city_name', '=', $city);
+        ])->from(CITY)->where('city_name', '=', $city);
         if ($cityid) {
             $result = $query->and_where('id', '!=', $cityid);
         }
@@ -142,17 +142,17 @@ class Model_Managemodel extends Model
     }
     public function city_validate($arr, $cityid = "")
     {
-        $validate = Validation::factory($arr)->rule('country', 'not_empty', array(
+        $validate = Validation::factory($arr)->rule('country', 'not_empty', [
             ':value',
             'Country'
-        ))->rule('city', 'not_empty', array(
+        ])->rule('city', 'not_empty', [
             ':value',
             'City'
-        ))->rule('city', 'Model_Managemodel::unique_city', array(
+        ])->rule('city', 'Model_Managemodel::unique_city', [
             ":value",
             $arr['country'],
             $cityid
-        ));
+        ]);
         return $validate;
     }
     /**
@@ -161,10 +161,10 @@ class Model_Managemodel extends Model
      */
     public static function unique_category($category, $catid)
     {
-        $query = DB::select(array(
+        $query = DB::select([
             DB::expr('COUNT(category_name)'),
             'total'
-        ))->from(CATEGORY);
+        ])->from(CATEGORY);
         if ($catid != "") {
             $result = $query->where('category_id', '!=', $catid);
         }
@@ -173,13 +173,13 @@ class Model_Managemodel extends Model
     }
     public function category_validate($arr, $catid = "")
     {
-        $validate = Validation::factory($arr)->rule('category', 'not_empty', array(
+        $validate = Validation::factory($arr)->rule('category', 'not_empty', [
             ':value',
             'Category'
-        ))->rule('category', 'Model_Managemodel::unique_category', array(
+        ])->rule('category', 'Model_Managemodel::unique_category', [
             ":value",
             $catid
-        ));
+        ]);
         return $validate;
     }
     /**
@@ -188,10 +188,10 @@ class Model_Managemodel extends Model
      */
     public static function unique_country($country, $cid)
     {
-        $query = DB::select(array(
+        $query = DB::select([
             DB::expr('COUNT(country)'),
             'total'
-        ))->from(COUNTRY);
+        ])->from(COUNTRY);
         if ($cid != "") {
             $result = $query->where('id', '!=', $cid);
         }
@@ -200,13 +200,13 @@ class Model_Managemodel extends Model
     }
     public function country_validate($arr, $cid = "")
     {
-        $validate = Validation::factory($arr)->rule('country', 'not_empty', array(
+        $validate = Validation::factory($arr)->rule('country', 'not_empty', [
             ':value',
             'Country'
-        ))->rule('country', 'Model_Managemodel::unique_country', array(
+        ])->rule('country', 'Model_Managemodel::unique_country', [
             ":value",
             $cid
-        ));
+        ]);
         return $validate;
     }
     public function userslist($search = "", $limit = "", $offset = "")
@@ -243,56 +243,56 @@ class Model_Managemodel extends Model
      */
     public static function unique_email($email)
     {
-        return !DB::select(array(
+        return !DB::select([
             DB::expr('COUNT(email)'),
             'total'
-        ))->from(USERS)->where('email', '=', $email)->and_where('email', '!=', DELETED)->execute()->get('total');
+        ])->from(USERS)->where('email', '=', $email)->and_where('email', '!=', DELETED)->execute()->get('total');
     }
     public function users_validate($arr, $checkemail = 0)
     {
-        $validate = Validation::factory($arr)->rule('firstname', 'not_empty', array(
+        $validate = Validation::factory($arr)->rule('firstname', 'not_empty', [
             ':value',
             'First Name'
-        ))->rule('firstname', 'alpha_dash', array(
+        ])->rule('firstname', 'alpha_dash', [
             ':value',
             'First Name'
-        ))->rule('firstname', 'min_length', array(
+        ])->rule('firstname', 'min_length', [
             ':value',
             '4',
             'Firstname'
-        ))->rule('lastname', 'min_length', array(
+        ])->rule('lastname', 'min_length', [
             ':value',
             '3',
             'Last Name'
-        ))->rule('email', 'not_empty', array(
+        ])->rule('email', 'not_empty', [
             ':value',
             'Email'
-        ))->rule('email', 'email_domain', array(
+        ])->rule('email', 'email_domain', [
             ':value',
             'Email'
-        ))->rule('usertype', 'not_empty', array(
+        ])->rule('usertype', 'not_empty', [
             ':value',
             'User Type'
-        ))->rule('mobile', 'numeric', array(
+        ])->rule('mobile', 'numeric', [
             ':value',
             'Mobile'
-        ));
+        ]);
         if ($checkemail == 1) {
-            $validate->rule('email', 'Model_Managemodel::unique_email', array(
+            $validate->rule('email', 'Model_Managemodel::unique_email', [
                 ":value"
-            ))->rule('password', 'not_empty', array(
+            ])->rule('password', 'not_empty', [
                 ':value',
                 'Password'
-            ))->rule('repassword', 'not_empty', array(
+            ])->rule('repassword', 'not_empty', [
                 ':value',
                 'Confirm Password'
-            ))->rule('repassword', 'matches', array(
+            ])->rule('repassword', 'matches', [
                 ':validation',
                 'password',
                 'repassword',
                 'Confirm Password',
                 'above Password'
-            ));
+            ]);
         }
         return $validate;
     }
@@ -301,8 +301,8 @@ class Model_Managemodel extends Model
         /*$query = DB::select()->from(SITEINFO)->limit(1)->execute()->as_array();
         return $query;*/
         
-        $result = $this->mongo_db->find_one(MDB_SITEINFO,array('_id'=>1));
-		return (!empty($result))?$result:array();
+        $result = $this->mongo_db->find_one(MDB_SITEINFO,['_id'=>1]);
+		return (!empty($result))?$result:[];
     }
     
     public function select_site_settings_old()
@@ -310,45 +310,45 @@ class Model_Managemodel extends Model
         /*$query = DB::select()->from(SITEINFO)->limit(1)->execute()->as_array();
         return $query;*/
         
-        $result = $this->mongo_db->find_one(MDB_SITEINFO,array('_id'=>1));
-		return (!empty($result))?$result:array();
+        $result = $this->mongo_db->find_one(MDB_SITEINFO,['_id'=>1]);
+		return (!empty($result))?$result:[];
     }
     public function site_settings_validate($arr)
     {
-        $validate = Validation::factory($arr)->rule('appname', 'not_empty', array(
+        $validate = Validation::factory($arr)->rule('appname', 'not_empty', [
             ':value',
             'App Name'
-        ))->rule('appdescription', 'not_empty', array(
+        ])->rule('appdescription', 'not_empty', [
             ':value',
             'App Description'
-        ))->rule('currencyformat', 'not_empty', array(
+        ])->rule('currencyformat', 'not_empty', [
             ':value',
             'Currency Format'
-        ))->rule('currency_symbol', 'not_empty', array(
+        ])->rule('currency_symbol', 'not_empty', [
             ':value',
             'Currency Symbol'
-        ))->rule('metakeyword', 'not_empty', array(
+        ])->rule('metakeyword', 'not_empty', [
             ':value',
             'Meta Keyword'
-        ))->rule('metadescription', 'not_empty', array(
+        ])->rule('metadescription', 'not_empty', [
             ':value',
             'Meta Description'
-        ))->rule('paypalusername', 'not_empty', array(
+        ])->rule('paypalusername', 'not_empty', [
             ':value',
             'Paypal Username'
-        ))->rule('twitterurl', 'url', array(
+        ])->rule('twitterurl', 'url', [
             ':value',
             'Field'
-        ))->rule('facebookurl', 'url', array(
+        ])->rule('facebookurl', 'url', [
             ':value',
             'Field'
-        ))->rule('email', 'not_empty', array(
+        ])->rule('email', 'not_empty', [
             ':value',
             'Email'
-        ))->rule('email', 'email_domain', array(
+        ])->rule('email', 'email_domain', [
             ':value',
             'Email'
-        ));
+        ]);
         return $validate;
     }
     public function select_all_users()
@@ -377,16 +377,16 @@ class Model_Managemodel extends Model
     }
     public function newsletter_validate($arr)
     {
-        $validate = Validation::factory($arr)->rule('option', 'not_empty', array(
+        $validate = Validation::factory($arr)->rule('option', 'not_empty', [
             ':value',
             'Option'
-        ))->rule('subject', 'not_empty', array(
+        ])->rule('subject', 'not_empty', [
             ':value',
             'Subject'
-        ))->rule('message', 'not_empty', array(
+        ])->rule('message', 'not_empty', [
             ':value',
             'Message'
-        ));
+        ]);
         return $validate;
     }
     public function select_productorder_list($orderid)

@@ -275,7 +275,7 @@ class Braintree_WebhookTesting
     {
         $originalZone = date_default_timezone_get();
         date_default_timezone_set('UTC');
-        $timestamp = strftime('%Y-%m-%dT%TZ');
+        $timestamp = date('Y-m-d\TH:i:s\Z');
         date_default_timezone_set($originalZone);
 
         return $timestamp;

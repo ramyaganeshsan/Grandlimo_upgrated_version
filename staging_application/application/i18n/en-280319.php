@@ -1,6 +1,6 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 
-return array(
+return [
 'button_login' => 'Log In',
 'button_signup' => 'Sign Up',
 'button_update' => 'Update',
@@ -3141,4 +3141,4 @@ provided by its licensed drivers who undergo rigorous training and screening to 
 
 'fare_per_min_km'=>'Minimum fare %min% KM',
 'manage_website_certificate'=>'Manage website certificate',
-); 
+]; 

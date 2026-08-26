@@ -65,15 +65,15 @@ class Controller_Manage extends Controller_Siteadmin
         if ($page_no == 0 || $page_no == 'index')
             $page_no = PAGE_NO;
         $offset                     = REC_PER_PAGE * ($page_no - 1);
-        $pag_data                   = Pagination::factory(array(
-            'current_page' => array(
+        $pag_data                   = Pagination::factory([
+            'current_page' => [
                 'source' => 'query_string',
                 'key' => 'page'
-            ),
+            ],
             'items_per_page' => REC_PER_PAGE,
             'total_items' => $count_company_list,
             'view' => 'pagination/punbb'
-        ));
+        ]);
         $all_company_list = $this->manage_model->all_company_list($offset, REC_PER_PAGE);
         //****pagination ends here***//
         //send data to view file 
@@ -109,15 +109,15 @@ class Controller_Manage extends Controller_Siteadmin
 				if ($page_no == 0 || $page_no == 'index')
 					$page_no = PAGE_NO;
 				$offset      = REC_PER_PAGE * ($page_no - 1);
-				$pag_data    = Pagination::factory(array(
-					'current_page' => array(
+				$pag_data    = Pagination::factory([
+					'current_page' => [
 						'source' => 'query_string',
 						'key' => 'page'
-					),
+					],
 					'items_per_page' => REC_PER_PAGE,
 					'total_items' => $count_company_list,
 					'view' => 'pagination/punbb'
-				));
+				]);
 			
 				$all_company_list = $this->manage_model->all_company_searchlist($keyword, $status, $offset, REC_PER_PAGE);
 			} else {
@@ -285,15 +285,15 @@ class Controller_Manage extends Controller_Siteadmin
         if ($page_no == 0 || $page_no == 'index')
             $page_no = PAGE_NO;
         $offset                     = REC_PER_PAGE * ($page_no - 1);
-        $pag_data                   = Pagination::factory(array(
-            'current_page' => array(
+        $pag_data                   = Pagination::factory([
+            'current_page' => [
                 'source' => 'query_string',
                 'key' => 'page'
-            ),
+            ],
             'items_per_page' => REC_PER_PAGE,
             'total_items' => $count_company_list,
             'view' => 'pagination/punbb'
-        ));
+        ]);
         $all_company_list           = $this->manage_model->all_motor_list($offset, REC_PER_PAGE);
         //****pagination ends here***//
         //$details = $siteusers->get_favorite_people($usrid);
@@ -328,15 +328,15 @@ class Controller_Manage extends Controller_Siteadmin
         if ($page_no == 0 || $page_no == 'index')
             $page_no = PAGE_NO;
         $offset      = REC_PER_PAGE * ($page_no - 1);
-        $pag_data    = Pagination::factory(array(
-            'current_page' => array(
+        $pag_data    = Pagination::factory([
+            'current_page' => [
                 'source' => 'query_string',
                 'key' => 'page'
-            ),
+            ],
             'items_per_page' => REC_PER_PAGE,
             'total_items' => $count_company_list,
             'view' => 'pagination/punbb'
-        ));
+        ]);
         //get form submit request
         $search_post = arr::get($_REQUEST, 'search_user');
         //Post results for search 
@@ -400,15 +400,15 @@ class Controller_Manage extends Controller_Siteadmin
         if ($page_no == 0 || $page_no == 'index')
             $page_no = PAGE_NO;
         $offset                     = REC_PER_PAGE * ($page_no - 1);
-        $pag_data                   = Pagination::factory(array(
-            'current_page' => array(
+        $pag_data                   = Pagination::factory([
+            'current_page' => [
                 'source' => 'query_string',
                 'key' => 'page'
-            ),
+            ],
             'items_per_page' => REC_PER_PAGE,
             'total_items' => $count_model_list,
             'view' => 'pagination/punbb'
-        ));
+        ]);
         $all_model_list           = $this->manage_model->all_model_list($offset, REC_PER_PAGE);
         //****pagination ends here***//
         //$details = $siteusers->get_favorite_people($usrid);
@@ -450,15 +450,15 @@ class Controller_Manage extends Controller_Siteadmin
 				if ($page_no == 0 || $page_no == 'index')
 					$page_no = PAGE_NO;
 				$offset      = REC_PER_PAGE * ($page_no - 1);
-				$pag_data    = Pagination::factory(array(
-					'current_page' => array(
+				$pag_data    = Pagination::factory([
+					'current_page' => [
 						'source' => 'query_string',
 						'key' => 'page'
-					),
+					],
 					'items_per_page' => REC_PER_PAGE,
 					'total_items' => $count_model_list,
 					'view' => 'pagination/punbb'
-				));
+				]);
 			
 				$all_model_list = $this->manage_model->get_all_model_searchlist($keyword, $status, $offset, REC_PER_PAGE);
 			} else {
@@ -569,15 +569,15 @@ class Controller_Manage extends Controller_Siteadmin
         if ($page_no == 0 || $page_no == 'index')
             $page_no = PAGE_NO;
         $offset                     = REC_PER_PAGE * ($page_no - 1);
-        $pag_data                   = Pagination::factory(array(
-            'current_page' => array(
+        $pag_data                   = Pagination::factory([
+            'current_page' => [
                 'source' => 'query_string',
                 'key' => 'page'
-            ),
+            ],
             'items_per_page' => REC_PER_PAGE,
             'total_items' => $count_fare_list,
             'view' => 'pagination/punbb'
-        ));
+        ]);
         $all_fare_list              = $this->manage_model->all_fare_list($company_id, $offset, REC_PER_PAGE);
         //****pagination ends here***//
         //$details = $siteusers->get_favorite_people($usrid);
@@ -612,15 +612,15 @@ class Controller_Manage extends Controller_Siteadmin
         if ($page_no == 0 || $page_no == 'index')
             $page_no = PAGE_NO;
         $offset      = REC_PER_PAGE * ($page_no - 1);
-        $pag_data    = Pagination::factory(array(
-            'current_page' => array(
+        $pag_data    = Pagination::factory([
+            'current_page' => [
                 'source' => 'query_string',
                 'key' => 'page'
-            ),
+            ],
             'items_per_page' => REC_PER_PAGE,
             'total_items' => $count_fare_list,
             'view' => 'pagination/punbb'
-        ));
+        ]);
         //get form submit request
         $search_post = arr::get($_REQUEST, 'search_user');
         //Post results for search 
@@ -710,15 +710,15 @@ class Controller_Manage extends Controller_Siteadmin
         if ($page_no == 0 || $page_no == 'index')
             $page_no = PAGE_NO;
         $offset                     = REC_PER_PAGE * ($page_no - 1);
-        $pag_data                   = Pagination::factory(array(
-            'current_page' => array(
+        $pag_data                   = Pagination::factory([
+            'current_page' => [
                 'source' => 'query_string',
                 'key' => 'page'
-            ),
+            ],
             'items_per_page' => REC_PER_PAGE,
             'total_items' => $count_company_list,
             'view' => 'pagination/punbb'
-        ));
+        ]);
         $all_company_list           = $this->manage_model->all_driver_list($offset, REC_PER_PAGE);
         //****pagination ends here***//
         $get_allcompany             = $this->manage_model->get_allcompany('A');
@@ -761,15 +761,15 @@ class Controller_Manage extends Controller_Siteadmin
 			if ($page_no == 0 || $page_no == 'index')
 				$page_no = PAGE_NO;
 			$offset      = REC_PER_PAGE * ($page_no - 1);
-			$pag_data    = Pagination::factory(array(
-				'current_page' => array(
+			$pag_data    = Pagination::factory([
+				'current_page' => [
 					'source' => 'query_string',
 					'key' => 'page'
-				),
+				],
 				'items_per_page' => REC_PER_PAGE,
 				'total_items' => $count_company_list,
 				'view' => 'pagination/punbb'
-			));
+			]);
 			$all_company_list = $this->manage_model->get_all_driver_searchlist(trim(Html::chars($_REQUEST['keyword'])), trim(Html::chars($_REQUEST['status'])), $company, $offset, REC_PER_PAGE);
         }
         $get_allcompany          = $this->manage_model->get_allcompany();
@@ -853,15 +853,15 @@ class Controller_Manage extends Controller_Siteadmin
         if ($page_no == 0 || $page_no == 'index')
             $page_no = PAGE_NO;
         $offset                     = REC_PER_PAGE * ($page_no - 1);
-        $pag_data                   = Pagination::factory(array(
-            'current_page' => array(
+        $pag_data                   = Pagination::factory([
+            'current_page' => [
                 'source' => 'query_string',
                 'key' => 'page'
-            ),
+            ],
             'items_per_page' => REC_PER_PAGE,
             'total_items' => $count_company_list,
             'view' => 'pagination/punbb'
-        ));
+        ]);
         $all_company_list           = $this->manage_model->all_field_list($offset, REC_PER_PAGE);
         //****pagination ends here***//
         //$details = $siteusers->get_favorite_people($usrid);
@@ -896,15 +896,15 @@ class Controller_Manage extends Controller_Siteadmin
         if ($page_no == 0 || $page_no == 'index')
             $page_no = PAGE_NO;
         $offset      = REC_PER_PAGE * ($page_no - 1);
-        $pag_data    = Pagination::factory(array(
-            'current_page' => array(
+        $pag_data    = Pagination::factory([
+            'current_page' => [
                 'source' => 'query_string',
                 'key' => 'page'
-            ),
+            ],
             'items_per_page' => REC_PER_PAGE,
             'total_items' => $count_company_list,
             'view' => 'pagination/punbb'
-        ));
+        ]);
         //get form submit request
         $search_post = arr::get($_REQUEST, 'search_user');
         //Post results for search 
@@ -986,15 +986,15 @@ class Controller_Manage extends Controller_Siteadmin
         if ($page_no == 0 || $page_no == 'index')
             $page_no = PAGE_NO;
         $offset                     = REC_PER_PAGE * ($page_no - 1);
-        $pag_data                   = Pagination::factory(array(
-            'current_page' => array(
+        $pag_data                   = Pagination::factory([
+            'current_page' => [
                 'source' => 'query_string',
                 'key' => 'page'
-            ),
+            ],
             'items_per_page' => REC_PER_PAGE,
             'total_items' => $count_taxi_list,
             'view' => 'pagination/punbb'
-        ));
+        ]);
         $all_taxi_list           = $this->manage_model->all_taxi_list($offset, REC_PER_PAGE);
 		//print_r($all_taxi_list);exit;
         //****pagination ends here***//
@@ -1037,15 +1037,15 @@ class Controller_Manage extends Controller_Siteadmin
 				if ($page_no == 0 || $page_no == 'index')
 					$page_no = PAGE_NO;
 				$offset      = REC_PER_PAGE * ($page_no - 1);
-				$pag_data    = Pagination::factory(array(
-					'current_page' => array(
+				$pag_data    = Pagination::factory([
+					'current_page' => [
 						'source' => 'query_string',
 						'key' => 'page'
-					),
+					],
 					'items_per_page' => REC_PER_PAGE,
 					'total_items' => $count_taxi_list,
 					'view' => 'pagination/punbb'
-				));
+				]);
 				if ($usertype != 'A') {
 					$all_taxi_list = $this->manage_model->get_all_taxi_searchlist($keyword, $status, $companyid, $offset, REC_PER_PAGE);
 				} else {
@@ -1206,15 +1206,15 @@ class Controller_Manage extends Controller_Siteadmin
         if ($page_no == 0 || $page_no == 'index')
             $page_no = PAGE_NO;
         $offset                     = REC_PER_PAGE * ($page_no - 1);
-        $pag_data                   = Pagination::factory(array(
-            'current_page' => array(
+        $pag_data                   = Pagination::factory([
+            'current_page' => [
                 'source' => 'query_string',
                 'key' => 'page'
-            ),
+            ],
             'items_per_page' => REC_PER_PAGE,
             'total_items' => $count_company_list,
             'view' => 'pagination/punbb'
-        ));
+        ]);
         $all_company_list           = $this->manage_model->all_package_list($offset, REC_PER_PAGE);
         //****pagination ends here***//
         //send data to view file 
@@ -1247,15 +1247,15 @@ class Controller_Manage extends Controller_Siteadmin
         if ($page_no == 0 || $page_no == 'index')
             $page_no = PAGE_NO;
         $offset      = REC_PER_PAGE * ($page_no - 1);
-        $pag_data    = Pagination::factory(array(
-            'current_page' => array(
+        $pag_data    = Pagination::factory([
+            'current_page' => [
                 'source' => 'query_string',
                 'key' => 'page'
-            ),
+            ],
             'items_per_page' => REC_PER_PAGE,
             'total_items' => $count_company_list,
             'view' => 'pagination/punbb'
-        ));
+        ]);
         //get form submit request
         $search_post = arr::get($_REQUEST, 'search_user');
         //Post results for search 
@@ -1320,21 +1320,21 @@ class Controller_Manage extends Controller_Siteadmin
         if ($page_no == 0 || $page_no == 'index')
             $page_no = PAGE_NO;
         $offset           = REC_PER_PAGE * ($page_no - 1);
-        $pag_data         = Pagination::factory(array(
-            'current_page' => array(
+        $pag_data         = Pagination::factory([
+            'current_page' => [
                 'source' => 'query_string',
                 'key' => 'page'
-            ),
+            ],
             'items_per_page' => REC_PER_PAGE,
             'total_items' => $count_countries,
             'view' => 'pagination/punbb'
-        ));
+        ]);
         $all_countries_list = $this->manage_model->all_country_list($offset, REC_PER_PAGE);
 		
         //****pagination ends here***//
         //get form submit request update default country
         $update_post      = arr::get($_REQUEST, 'update');
-        $post             = array();
+        $post             = [];
         if ($update_post) {
             $post = $_REQUEST;
             if (isset($post['default_country'])) {
@@ -1391,15 +1391,15 @@ class Controller_Manage extends Controller_Siteadmin
 				if ($page_no == 0 || $page_no == 'index')
 					$page_no = PAGE_NO;
 				$offset      = REC_PER_PAGE * ($page_no - 1);
-				$pag_data    = Pagination::factory(array(
-					'current_page' => array(
+				$pag_data    = Pagination::factory([
+					'current_page' => [
 						'source' => 'query_string',
 						'key' => 'page'
-					),
+					],
 					'items_per_page' => REC_PER_PAGE,
 					'total_items' => $count_countries_list,
 					'view' => 'pagination/punbb'
-				));
+				]);
 				$all_countries_list = $this->manage_model->get_all_country_searchlist($keyword, $status, $offset, REC_PER_PAGE,false);
 			} else {
 				Message::error(__('Your search keyword must not be empty'));
@@ -1408,7 +1408,7 @@ class Controller_Manage extends Controller_Siteadmin
         }
 		//get form submit request update default country
         $update_post      = arr::get($_REQUEST, 'update');
-        $updatepost             = array();
+        $updatepost             = [];
         if ($update_post) {
             $updatepost = $_REQUEST;
             if (isset($updatepost['default_country'])) {
@@ -1590,20 +1590,20 @@ class Controller_Manage extends Controller_Siteadmin
         if ($page_no == 0 || $page_no == 'index')
             $page_no = PAGE_NO;
         $offset           = REC_PER_PAGE * ($page_no - 1);
-        $pag_data         = Pagination::factory(array(
-            'current_page' => array(
+        $pag_data         = Pagination::factory([
+            'current_page' => [
                 'source' => 'query_string',
                 'key' => 'page'
-            ),
+            ],
             'items_per_page' => REC_PER_PAGE,
             'total_items' => $count_city_list,
             'view' => 'pagination/punbb'
-        ));
+        ]);
         $all_cities_list = $this->manage_model->all_city_list($offset, REC_PER_PAGE);
         
         //get form submit request
         $update_post      = arr::get($_REQUEST, 'update');
-        $post             = array();
+        $post             = [];
         if ($update_post) {
             if (isset($_REQUEST['default_city'])) {
 				$post = $_REQUEST;
@@ -1662,16 +1662,16 @@ class Controller_Manage extends Controller_Siteadmin
 				if ($page_no == 0 || $page_no == 'index')
 					$page_no = PAGE_NO;
 				$offset      = REC_PER_PAGE * ($page_no - 1);
-				$pag_data    = Pagination::factory(array(
-					'current_page' => array(
+				$pag_data    = Pagination::factory([
+					'current_page' => [
 						'source' => 'query_string',
 						'key' => 'page'
-					),
+					],
 					'items_per_page' => REC_PER_PAGE,
 					'total_items' => $count_cities_list,
 					'view' => 'pagination/punbb',
 					'uri_segment' => 'page'
-				));
+				]);
 				$all_cities_list = $this->manage_model->get_all_city_searchlist(trim(Html::chars($_REQUEST['keyword'])), trim(Html::chars($_REQUEST['status'])), $offset, REC_PER_PAGE,false);
 			} else {
 				Message::error(__('Your search keyword must not be empty'));
@@ -1680,7 +1680,7 @@ class Controller_Manage extends Controller_Siteadmin
 		}
 		//get form submit request
         $update_post      = arr::get($_REQUEST, 'update');
-        $post             = array();
+        $post             = [];
         if ($update_post) {
             if (isset($_REQUEST['default_city'])) {
 				$post = $_REQUEST;
@@ -1726,22 +1726,22 @@ class Controller_Manage extends Controller_Siteadmin
         if ($page_no == 0 || $page_no == 'index')
             $page_no = PAGE_NO;
         $offset         = REC_PER_PAGE * ($page_no - 1);
-        $pag_data       = Pagination::factory(array(
-            'current_page' => array(
+        $pag_data       = Pagination::factory([
+            'current_page' => [
                 'source' => 'query_string',
                 'key' => 'page'
-            ),
+            ],
             'items_per_page' => REC_PER_PAGE,
             'total_items' => $count_state_list,
             'view' => 'pagination/punbb'
-        ));
+        ]);
         $all_state_list = $this->manage_model->all_state_list($offset, REC_PER_PAGE);
         //****pagination ends here***//
         //Find page action in view
         $action         = $this->request->action();
         //get form submit request
         $update_post    = arr::get($_REQUEST, 'update');
-        $post           = array();
+        $post           = [];
         if ($update_post) {
             if (isset($_REQUEST['default_state'])) {
                 $post                   = $_REQUEST;
@@ -1797,15 +1797,15 @@ class Controller_Manage extends Controller_Siteadmin
 				if ($page_no == 0 || $page_no == 'index')
 					$page_no = PAGE_NO;
 				$offset      = REC_PER_PAGE * ($page_no - 1);
-				$pag_data    = Pagination::factory(array(
-					'current_page' => array(
+				$pag_data    = Pagination::factory([
+					'current_page' => [
 						'source' => 'query_string',
 						'key' => 'page'
-					),
+					],
 					'items_per_page' => REC_PER_PAGE,
 					'total_items' => $count_state_list,
 					'view' => 'pagination/punbb'
-				));
+				]);
 				
 				$all_state_list = $this->manage_model->get_all_state_searchlist($keyword, $status, $offset, REC_PER_PAGE,false);
 			} else {
@@ -1815,7 +1815,7 @@ class Controller_Manage extends Controller_Siteadmin
         }
 		//get form submit request
         $update_post    = arr::get($_REQUEST, 'update');
-        $post           = array();
+        $post           = [];
         if ($update_post) {
             if (isset($_REQUEST['default_state'])) {
                 $post                   = $_REQUEST;
@@ -1979,15 +1979,15 @@ class Controller_Manage extends Controller_Siteadmin
         if ($page_no == 0 || $page_no == 'index')
             $page_no = PAGE_NO;
         $offset                     = REC_PER_PAGE * ($page_no - 1);
-        $pag_data                   = Pagination::factory(array(
-            'current_page' => array(
+        $pag_data                   = Pagination::factory([
+            'current_page' => [
                 'source' => 'query_string',
                 'key' => 'page'
-            ),
+            ],
             'items_per_page' => REC_PER_PAGE,
             'total_items' => $count_manager_list,
             'view' => 'pagination/punbb'
-        ));
+        ]);
         $all_manager_list           = $this->manage_model->all_manager_list($offset, REC_PER_PAGE);
         $all_companies             = $this->manage_model->get_allcompany();
 		//echo "<pre>"; print_r($all_manager_list); exit;
@@ -2034,15 +2034,15 @@ class Controller_Manage extends Controller_Siteadmin
 				if ($page_no == 0 || $page_no == 'index')
 					$page_no = PAGE_NO;
 				$offset      = REC_PER_PAGE * ($page_no - 1);
-				$pag_data    = Pagination::factory(array(
-					'current_page' => array(
+				$pag_data    = Pagination::factory([
+					'current_page' => [
 						'source' => 'query_string',
 						'key' => 'page'
-					),
+					],
 					'items_per_page' => REC_PER_PAGE,
 					'total_items' => $count_manager_list,
 					'view' => 'pagination/punbb'
-				));
+				]);
 				$all_manager_list = $this->manage_model->all_manager_searchlist($keyword, $status, $company, $offset, REC_PER_PAGE);
 			} else {
 				Message::error(__('Your search keyword must not be empty'));
@@ -2117,15 +2117,15 @@ class Controller_Manage extends Controller_Siteadmin
         if ($page_no == 0 || $page_no == 'index')
             $page_no = PAGE_NO;
         $offset                     = REC_PER_PAGE * ($page_no - 1);
-        $pag_data                   = Pagination::factory(array(
-            'current_page' => array(
+        $pag_data                   = Pagination::factory([
+            'current_page' => [
                 'source' => 'query_string',
                 'key' => 'page'
-            ),
+            ],
             'items_per_page' => REC_PER_PAGE,
             'total_items' => $count_admin_list,
             'view' => 'pagination/punbb'
-        ));
+        ]);
         $all_admin_list             = $this->manage_model->all_admin_list($offset, REC_PER_PAGE,false);
         //****pagination ends here***//
         //send data to view file 
@@ -2156,15 +2156,15 @@ class Controller_Manage extends Controller_Siteadmin
 				if ($page_no == 0 || $page_no == 'index')
 					$page_no = PAGE_NO;
 				$offset                  = REC_PER_PAGE * ($page_no - 1);
-				$pag_data                = Pagination::factory(array(
-					'current_page' => array(
+				$pag_data                = Pagination::factory([
+					'current_page' => [
 						'source' => 'query_string',
 						'key' => 'page'
-					),
+					],
 					'items_per_page' => REC_PER_PAGE,
 					'total_items' => $count_admin_list,
 					'view' => 'pagination/punbb'
-				));
+				]);
 				$all_admin_list          = $this->manage_model->all_admin_searchlist($keyword, $status, $offset, REC_PER_PAGE,false);
 			} else {
 				Message::error(__('Your search keyword must not be empty'));
@@ -2257,15 +2257,15 @@ class Controller_Manage extends Controller_Siteadmin
         if ($page_no == 0 || $page_no == 'index')
             $page_no = PAGE_NO;
         $offset                     = REC_PER_PAGE * ($page_no - 1);
-        $pag_data                   = Pagination::factory(array(
-            'current_page' => array(
+        $pag_data                   = Pagination::factory([
+            'current_page' => [
                 'source' => 'query_string',
                 'key' => 'page'
-            ),
+            ],
             'items_per_page' => REC_PER_PAGE,
             'total_items' => $count_company_list,
             'view' => 'pagination/punbb'
-        ));
+        ]);
         $all_company_list           = $this->manage_model->all_assigntaxi_list($offset, REC_PER_PAGE);
         //****pagination ends here***//
         $get_allcompany             = $this->manage_model->get_allcompany('A');
@@ -2338,15 +2338,15 @@ class Controller_Manage extends Controller_Siteadmin
 			if ($page_no == 0 || $page_no == 'index')
 				$page_no = PAGE_NO;
 			$offset           = REC_PER_PAGE * ($page_no - 1);
-			$pag_data         = Pagination::factory(array(
-				'current_page' => array(
+			$pag_data         = Pagination::factory([
+				'current_page' => [
 					'source' => 'query_string',
 					'key' => 'page'
-				),
+				],
 				'items_per_page' => REC_PER_PAGE,
 				'total_items' => $count_company_list,
 				'view' => 'pagination/punbb'
-			));
+			]);
 			//get form submit request
 			$search_post      = arr::get($_REQUEST, 'search_user');
 			//Post results for search 
@@ -2362,7 +2362,7 @@ class Controller_Manage extends Controller_Siteadmin
         $this->is_login();
         $assignCnt   = 0;
         $drhastaxi   = 0;
-        $driveridArr = array();
+        $driveridArr = [];
         foreach ($_REQUEST['uniqueId'] as $key => $assignId) {
             $assignedDets = $this->manage_model->get_assigned_details($assignId);
             if (count($assignedDets) > 0) {
@@ -2428,15 +2428,15 @@ class Controller_Manage extends Controller_Siteadmin
         if ($page_no == 0 || $page_no == 'index')
             $page_no = PAGE_NO;
         $offset                     = REC_PER_PAGE * ($page_no - 1);
-        $pag_data                   = Pagination::factory(array(
-            'current_page' => array(
+        $pag_data                   = Pagination::factory([
+            'current_page' => [
                 'source' => 'query_string',
                 'key' => 'page'
-            ),
+            ],
             'items_per_page' => REC_PER_PAGE,
             'total_items' => $count_rating_companies,
             'view' => 'pagination/punbb'
-        ));
+        ]);
         $all_rating_companies       = $this->manage_model->all_rating_companies($offset, REC_PER_PAGE);
         //****pagination ends here***//
         //send data to view file 
@@ -2490,15 +2490,15 @@ class Controller_Manage extends Controller_Siteadmin
         if ($page_no == 0 || $page_no == 'index')
             $page_no = PAGE_NO;
         $offset                     = REC_PER_PAGE * ($page_no - 1);
-        $pag_data                   = Pagination::factory(array(
-            'current_page' => array(
+        $pag_data                   = Pagination::factory([
+            'current_page' => [
                 'source' => 'query_string',
                 'key' => 'page'
-            ),
+            ],
             'items_per_page' => REC_PER_PAGE,
             'total_items' => $count_rating_drivers,
             'view' => 'pagination/punbb'
-        ));
+        ]);
         $all_rating_drivers         = $this->manage_model->all_rating_drivers($offset, REC_PER_PAGE);
 		
         $get_rate_company           = $this->manage_model->get_rating_company();
@@ -2532,15 +2532,15 @@ class Controller_Manage extends Controller_Siteadmin
 				$count_rating_drivers      = $this->manage_model->get_all_ratingdrivers_searchlist($keyword, $company_id,null,null,true);
 				//get form submit request
 				$search_post               = arr::get($_REQUEST, 'search_user');
-				$pag_data                  = Pagination::factory(array(
-					'current_page' => array(
+				$pag_data                  = Pagination::factory([
+					'current_page' => [
 						'source' => 'query_string',
 						'key' => 'page'
-					),
+					],
 					'items_per_page' => REC_PER_PAGE,
 					'total_items' => $count_rating_drivers,
 					'view' => 'pagination/punbb'
-				));
+				]);
 			
 				$all_rating_drivers = $this->manage_model->get_all_ratingdrivers_searchlist($keyword, $company_id,$offset,REC_PER_PAGE);
 			} else {
@@ -2571,15 +2571,15 @@ class Controller_Manage extends Controller_Siteadmin
         if ($page_no == 0 || $page_no == 'index')
             $page_no = PAGE_NO;
         $offset                     = REC_PER_PAGE * ($page_no - 1);
-        $pag_data                   = Pagination::factory(array(
-            'current_page' => array(
+        $pag_data                   = Pagination::factory([
+            'current_page' => [
                 'source' => 'query_string',
                 'key' => 'page'
-            ),
+            ],
             'items_per_page' => REC_PER_PAGE,
             'total_items' => $count_rating_drivers,
             'view' => 'pagination/punbb'
-        ));
+        ]);
         $all_rating_drivers         = $this->driver_model->get_driver_logs1($uid, 'R', 'A', '1', $offset,REC_PER_PAGE );
         //send data to view file 
         $view                       = View::factory('admin/managerating_driversview')->bind('all_rating_drivers', $all_rating_drivers)->bind('pag_data', $pag_data)->bind('driver_profile', $driver_profile)->bind('ListCount', $count_rating_drivers)->bind('pag_data', $pag_data)->bind('driver_profile', $driver_profile)->bind('Offset', $offset)->bind('driver_id', $uid);
@@ -2609,15 +2609,15 @@ class Controller_Manage extends Controller_Siteadmin
         if ($page_no == 0 || $page_no == 'index')
             $page_no = PAGE_NO;
         $offset                     = REC_PER_PAGE * ($page_no - 1);
-        $pag_data                   = Pagination::factory(array(
-            'current_page' => array(
+        $pag_data                   = Pagination::factory([
+            'current_page' => [
                 'source' => 'query_string',
                 'key' => 'page'
-            ),
+            ],
             'items_per_page' => REC_PER_PAGE,
             'total_items' => $count_rating_drivers,
             'view' => 'pagination/punbb'
-        ));
+        ]);
         $all_rating_drivers         = $this->manage_model->all_rating_passengers('',$offset, REC_PER_PAGE);
         
         $get_rate_company           = $this->manage_model->get_rating_company();
@@ -2652,15 +2652,15 @@ class Controller_Manage extends Controller_Siteadmin
                 $count_rating_drivers      = $this->manage_model->all_rating_passengers($keyword,null,null,true);
                 //get form submit request
                 $search_post               = arr::get($_REQUEST, 'search_user');
-                $pag_data                  = Pagination::factory(array(
-                    'current_page' => array(
+                $pag_data                  = Pagination::factory([
+                    'current_page' => [
                         'source' => 'query_string',
                         'key' => 'page'
-                    ),
+                    ],
                     'items_per_page' => REC_PER_PAGE,
                     'total_items' => $count_rating_drivers,
                     'view' => 'pagination/punbb'
-                ));
+                ]);
             
                 $all_rating_drivers = $this->manage_model->all_rating_passengers($keyword,$offset,REC_PER_PAGE);
             } else {
@@ -2691,15 +2691,15 @@ class Controller_Manage extends Controller_Siteadmin
         if ($page_no == 0 || $page_no == 'index')
             $page_no = PAGE_NO;
         $offset                     = REC_PER_PAGE * ($page_no - 1);
-        $pag_data                   = Pagination::factory(array(
-            'current_page' => array(
+        $pag_data                   = Pagination::factory([
+            'current_page' => [
                 'source' => 'query_string',
                 'key' => 'page'
-            ),
+            ],
             'items_per_page' => REC_PER_PAGE,
             'total_items' => $count_rating_drivers,
             'view' => 'pagination/punbb'
-        ));
+        ]);
         $all_rating_drivers         = $this->passenger_model->get_passenger_logs1($uid, 'R', 'A', '1', $offset,REC_PER_PAGE );
         //send data to view file 
         $view                       = View::factory('admin/managerating_passengersview')->bind('all_rating_drivers', $all_rating_drivers)->bind('pag_data', $pag_data)->bind('driver_profile', $driver_profile)->bind('ListCount', $count_rating_drivers)->bind('pag_data', $pag_data)->bind('driver_profile', $driver_profile)->bind('Offset', $offset)->bind('driver_id', $uid);
@@ -2726,15 +2726,15 @@ class Controller_Manage extends Controller_Siteadmin
         if ($page_no == 0 || $page_no == 'index')
             $page_no = PAGE_NO;
         $offset                     = REC_PER_PAGE * ($page_no - 1);
-        $pag_data                   = Pagination::factory(array(
-            'current_page' => array(
+        $pag_data                   = Pagination::factory([
+            'current_page' => [
                 'source' => 'query_string',
                 'key' => 'page'
-            ),
+            ],
             'items_per_page' => REC_PER_PAGE,
             'total_items' => $count_report_list,
             'view' => 'pagination/punbb'
-        ));
+        ]);
         
         $all_report_list           = $this->manage_model->all_packagereport_list($company_val, $offset, REC_PER_PAGE);
         //****pagination ends here***//
@@ -2761,15 +2761,15 @@ class Controller_Manage extends Controller_Siteadmin
         if ($page_no == 0 || $page_no == 'index')
             $page_no = PAGE_NO;
         $offset                     = REC_PER_PAGE * ($page_no - 1);
-        $pag_data                   = Pagination::factory(array(
-            'current_page' => array(
+        $pag_data                   = Pagination::factory([
+            'current_page' => [
                 'source' => 'query_string',
                 'key' => 'page'
-            ),
+            ],
             'items_per_page' => REC_PER_PAGE,
             'total_items' => $count_company_list,
             'view' => 'pagination/punbb'
-        ));
+        ]);
         $all_company_list           = $this->manage_model->all_packagereport_list($offset, REC_PER_PAGE);
         //****pagination ends here***//
         //$details = $siteusers->get_favorite_people($usrid);
@@ -2933,15 +2933,15 @@ class Controller_Manage extends Controller_Siteadmin
 				if ($page_no == 0 || $page_no == 'index')
 					$page_no = PAGE_NO;
 					$offset   = REC_PER_PAGE * ($page_no - 1);
-					$pag_data = Pagination::factory(array(
-						'current_page' => array(
+					$pag_data = Pagination::factory([
+						'current_page' => [
 							'source' => 'query_string',
 							'key' => 'page'
-						),
+						],
 						'items_per_page' => REC_PER_PAGE,
 						'total_items' => $count_contacts_list,
 						'view' => 'pagination/punbb'
-					));
+					]);
 			
 				if ($usertype != 'C'):
 					$all_contacts_list = $this->manage_model->get_all_contact_searchlist($offset, REC_PER_PAGE,trim(Html::chars($_REQUEST['keyword'])));
@@ -2983,15 +2983,15 @@ class Controller_Manage extends Controller_Siteadmin
         if ($page_no == 0 || $page_no == 'index')
             $page_no = PAGE_NO;
         $offset   = REC_PER_PAGE * ($page_no - 1);
-        $pag_data = Pagination::factory(array(
-            'current_page' => array(
+        $pag_data = Pagination::factory([
+            'current_page' => [
                 'source' => 'query_string',
                 'key' => 'page'
-            ),
+            ],
             'items_per_page' => REC_PER_PAGE,
             'total_items' => $count_contacts_list,
             'view' => 'pagination/punbb'
-        ));
+        ]);
         if ($usertype != 'C')
             $all_contacts_list = $this->manage_model->all_contact_list($offset, REC_PER_PAGE);
         else
@@ -3027,15 +3027,15 @@ class Controller_Manage extends Controller_Siteadmin
         if ($page_no == 0 || $page_no == 'index')
             $page_no = PAGE_NO;
         $offset   = REC_PER_PAGE * ($page_no - 1);
-        $pag_data = Pagination::factory(array(
-            'current_page' => array(
+        $pag_data = Pagination::factory([
+            'current_page' => [
                 'source' => 'query_string',
                 'key' => 'page'
-            ),
+            ],
             'items_per_page' => REC_PER_PAGE,
             'total_items' => $count_contacts_list,
             'view' => 'pagination/punbb'
-        ));
+        ]);
         if ($usertype != 'C')
             $all_contacts_list = $this->manage_model->all_contacts_list($offset, REC_PER_PAGE);
         else
@@ -3103,15 +3103,15 @@ class Controller_Manage extends Controller_Siteadmin
         if ($page_no == 0 || $page_no == 'index')
             $page_no = PAGE_NO;
         $offset   = REC_PER_PAGE * ($page_no - 1);
-        $pag_data = Pagination::factory(array(
-            'current_page' => array(
+        $pag_data = Pagination::factory([
+            'current_page' => [
                 'source' => 'query_string',
                 'key' => 'page'
-            ),
+            ],
             'items_per_page' => REC_PER_PAGE,
             'total_items' => $count_free_quotes_list,
             'view' => 'pagination/punbb'
-        ));
+        ]);
         //Post results for search 
         if (isset($search_post) && $_REQUEST) {
             if ($usertype != 'C')
@@ -3145,15 +3145,15 @@ class Controller_Manage extends Controller_Siteadmin
         if ($page_no == 0 || $page_no == 'index')
             $page_no = PAGE_NO;
         $offset   = REC_PER_PAGE * ($page_no - 1);
-        $pag_data = Pagination::factory(array(
-            'current_page' => array(
+        $pag_data = Pagination::factory([
+            'current_page' => [
                 'source' => 'query_string',
                 'key' => 'page'
-            ),
+            ],
             'items_per_page' => REC_PER_PAGE,
             'total_items' => $count_free_quotes_list,
             'view' => 'pagination/punbb'
-        ));
+        ]);
         if ($usertype != 'C')
             $all_free_quotes_list = $this->manage_model->all_free_quotes_list($offset, REC_PER_PAGE);
         //****pagination ends here***//
@@ -3520,7 +3520,7 @@ class Controller_Manage extends Controller_Siteadmin
             $generate_pdf = $this->manage_model->send_pdf($html, $driver_name, $email, $filepath);
             if ($generate_pdf == 1) {
                 $mail              = "";
-                $replace_variables = array(
+                $replace_variables = [
                     REPLACE_LOGO => EMAILTEMPLATELOGO,
                     REPLACE_SITENAME => $this->app_name,
                     REPLACE_USERNAME => $driver_name,
@@ -3529,7 +3529,7 @@ class Controller_Manage extends Controller_Siteadmin
                     REPLACE_SITEURL => URL_BASE,
                     REPLACE_COPYRIGHTS => SITE_COPYRIGHT,
                     REPLACE_COPYRIGHTYEAR => COPYRIGHT_YEAR
-                );
+                ];
                 //$message           = $this->emailtemplate->emailtemplate(DOCROOT . TEMPLATEPATH . 'driver_invoice.html', $replace_variables);
 				if ($this->lang != 'en') {
 					if (file_exists(DOCROOT . TEMPLATEPATH . $this->lang . '/driver_invoice-' . $this->lang . '.html')) {
@@ -3590,15 +3590,15 @@ class Controller_Manage extends Controller_Siteadmin
         if ($page_no == 0 || $page_no == 'index')
             $page_no = PAGE_NO;
         $offset                     = REC_PER_PAGE * ($page_no - 1);
-        $pag_data                   = Pagination::factory(array(
-            'current_page' => array(
+        $pag_data                   = Pagination::factory([
+            'current_page' => [
                 'source' => 'query_string',
                 'key' => 'page'
-            ),
+            ],
             'items_per_page' => REC_PER_PAGE,
             'total_items' => $count_driver_logs,
             'view' => 'pagination/punbb'
-        ));
+        ]);
         $driver_logs_service        = $this->driver_model->get_driver_logs_service($id, REC_PER_PAGE, $offset);
         $view                       = View::factory('admin/driverlogs')->bind('pag_data', $pag_data)->bind('driver_logs_service', $driver_logs_service);
         $this->page_title           = __('service_time');
@@ -3616,15 +3616,15 @@ class Controller_Manage extends Controller_Siteadmin
         if ($page_no == 0 || $page_no == 'index')
             $page_no = PAGE_NO;
         $offset                     = REC_PER_PAGE * ($page_no - 1);
-        $pag_data                   = Pagination::factory(array(
-            'current_page' => array(
+        $pag_data                   = Pagination::factory([
+            'current_page' => [
                 'source' => 'query_string',
                 'key' => 'page'
-            ),
+            ],
             'items_per_page' => REC_PER_PAGE,
             'total_items' => $count_get_driver_shift_logs,
             'view' => 'pagination/punbb'
-        ));
+        ]);
         $_POST['desc'] = true;
         $driver_shift_logs          = $this->driver_model->get_driver_shift_logs($id, REC_PER_PAGE, $offset);
         
@@ -3644,15 +3644,15 @@ class Controller_Manage extends Controller_Siteadmin
         if ($page_no == 0 || $page_no == 'index')
             $page_no = PAGE_NO;
         $offset                     = REC_PER_PAGE * ($page_no - 1);
-        $pag_data                   = Pagination::factory(array(
-            'current_page' => array(
+        $pag_data                   = Pagination::factory([
+            'current_page' => [
                 'source' => 'query_string',
                 'key' => 'page'
-            ),
+            ],
             'items_per_page' => REC_PER_PAGE,
             'total_items' => $count_driver_logs,
             'view' => 'pagination/punbb'
-        ));
+        ]);
         $taxi_logs_service          = $this->driver_model->get_taxi_logs_service($id, REC_PER_PAGE, $offset);
         $view                       = View::factory('admin/taxilogs')->bind('pag_data', $pag_data)->bind('taxi_logs_service', $taxi_logs_service);
         $this->page_title           = __('service_time');
@@ -3680,15 +3680,15 @@ class Controller_Manage extends Controller_Siteadmin
         if ($page_no == 0 || $page_no == 'index')
             $page_no = PAGE_NO;
         $offset                     = REC_PER_PAGE * ($page_no - 1);
-        $pag_data                   = Pagination::factory(array(
-            'current_page' => array(
+        $pag_data                   = Pagination::factory([
+            'current_page' => [
                 'source' => 'query_string',
                 'key' => 'page'
-            ),
+            ],
             'items_per_page' => REC_PER_PAGE,
             'total_items' => $count_content_list,
             'view' => 'pagination/punbb'
-        ));
+        ]);
         $all_content_list           = $this->manage_model->all_content_list($offset, REC_PER_PAGE);
         //****pagination ends here***//
         //send data to view file 
@@ -3716,15 +3716,15 @@ class Controller_Manage extends Controller_Siteadmin
         if ($page_no == 0 || $page_no == 'index')
             $page_no = PAGE_NO;
         $offset                     = REC_PER_PAGE * ($page_no - 1);
-        $pag_data                   = Pagination::factory(array(
-            'current_page' => array(
+        $pag_data                   = Pagination::factory([
+            'current_page' => [
                 'source' => 'query_string',
                 'key' => 'page'
-            ),
+            ],
             'items_per_page' => REC_PER_PAGE,
             'total_items' => $count_content_list,
             'view' => 'pagination/punbb'
-        ));
+        ]);
         $all_content_list           = $this->manage_model->all_company_content_list($offset, REC_PER_PAGE, $cid);
         //****pagination ends here***//
         //send data to view file 
@@ -3799,17 +3799,17 @@ class Controller_Manage extends Controller_Siteadmin
         if (count($ContactsList) == 0) {
             $this->request->redirect("manage/contents");
         }
-        $errors     = array();
-        $postvalues = array();
+        $errors     = [];
+        $postvalues = [];
         if ($signup_submit && Validation::factory($_POST)) {
             $postvalues = $_POST;
             $post       = Arr::map('trim', $this->request->post());
-            $validator  = $this->manage_model->validate_editview(arr::extract($post, array(
+            $validator  = $this->manage_model->validate_editview(arr::extract($post, [
                 'menu_name',
                 'meta_title',
                 'meta_keyword',
                 'meta_description'
-            )));
+            ]));
             if ($validator->check()) {
                 $menu_name_exits = $this->manage_model->menu_name_exits($post, $id);
                 if ($menu_name_exits == 1) {
@@ -3855,16 +3855,16 @@ class Controller_Manage extends Controller_Siteadmin
         /** Select menus **/
         $menu_details  = $this->manage_model->get_menus();
         $signup_submit = arr::get($_REQUEST, 'submit_addcompany');
-        $errors        = array();
-        $postvalues    = array();
+        $errors        = [];
+        $postvalues    = [];
         if ($signup_submit && Validation::factory($_POST)) {
             $postvalues = $_POST;
             $post       = Arr::map('trim', $this->request->post());
-            $validator  = $this->manage_model->validate_companyeditview(arr::extract($post, array(
+            $validator  = $this->manage_model->validate_companyeditview(arr::extract($post, [
                 'menu_name',
                 'page_title',
                 'page_url'
-            )), $cid, $id);
+            ]), $cid, $id);
             if ($validator->check()) {
                 $signup_id = $this->manage_model->update_edit_company_content($post, $id);
                 Message::success(__('profile_updated_successfully'));
@@ -3919,15 +3919,15 @@ class Controller_Manage extends Controller_Siteadmin
         $count_details = $this->manage_model->get_companymanagerlist($company_id,'','',true);
         if ($page_no)
             $offset = REC_PER_PAGE * ($page_no - 1);
-        $pag_data         = Pagination::factory(array(
-            'current_page' => array(
+        $pag_data         = Pagination::factory([
+            'current_page' => [
                 'source' => 'query_string',
                 'key' => 'page'
-            ),
+            ],
             'items_per_page' => REC_PER_PAGE,
             'total_items' => $count_details,
             'view' => 'pagination/puncm'
-        ));
+        ]);
         $getmodel_details = $this->manage_model->get_companymanagerlist($company_id, $offset, REC_PER_PAGE);
         $count            = count($getmodel_details);
         $output .= '<div class="widget">
@@ -4019,15 +4019,15 @@ class Controller_Manage extends Controller_Siteadmin
         $count_details = $this->manage_model->get_companydriverlist($company_id,'','',true);
         if ($page_no)
             $offset = REC_PER_PAGE * ($page_no - 1);
-        $pag_data         = Pagination::factory(array(
-            'current_page' => array(
+        $pag_data         = Pagination::factory([
+            'current_page' => [
                 'source' => 'query_string',
                 'key' => 'page'
-            ),
+            ],
             'items_per_page' => REC_PER_PAGE,
             'total_items' => $count_details,
             'view' => 'pagination/puncd'
-        ));
+        ]);
         $getmodel_details = $this->manage_model->get_companydriverlist($company_id, $offset, REC_PER_PAGE);
         $count            = count($getmodel_details);
         $output .= '<div class="widget">
@@ -4119,15 +4119,15 @@ class Controller_Manage extends Controller_Siteadmin
         $count_details = $this->manage_model->get_companytaxilist($company_id,'','',true);
         if ($page_no)
             $offset = REC_PER_PAGE * ($page_no - 1);
-        $pag_data         = Pagination::factory(array(
-            'current_page' => array(
+        $pag_data         = Pagination::factory([
+            'current_page' => [
                 'source' => 'query_string',
                 'key' => 'page'
-            ),
+            ],
             'items_per_page' => REC_PER_PAGE,
             'total_items' => $count_details,
             'view' => 'pagination/punct'
-        ));
+        ]);
         $getmodel_details = $this->manage_model->get_companytaxilist($company_id, $offset, REC_PER_PAGE);
         $count            = count($getmodel_details);
         $output .= '<div class="widget">
@@ -4219,15 +4219,15 @@ class Controller_Manage extends Controller_Siteadmin
         $count_details = $this->manage_model->getuserratinglist($driver_id);
         if ($page_no)
             $offset = REC_PER_PAGE * ($page_no - 1);
-        $pag_data         = Pagination::factory(array(
-            'current_page' => array(
+        $pag_data         = Pagination::factory([
+            'current_page' => [
                 'source' => 'query_string',
                 'key' => 'page'
-            ),
+            ],
             'items_per_page' => REC_PER_PAGE,
             'total_items' => $count_details,
             'view' => 'pagination/punrtu'
-        ));
+        ]);
         $getmodel_details = $this->manage_model->get_userratinglist($driver_id, $offset, REC_PER_PAGE);
         $count            = count($getmodel_details);
         //<div class="button greyish"><a href="'.URL_BASE.'manageusers/passengers">View All</a></div>
@@ -4327,15 +4327,15 @@ class Controller_Manage extends Controller_Siteadmin
         $count_details = $this->manage_model->getdriverratinglist($driver_id);
         if ($page_no)
             $offset = REC_PER_PAGE * ($page_no - 1);
-        $pag_data         = Pagination::factory(array(
-            'current_page' => array(
+        $pag_data         = Pagination::factory([
+            'current_page' => [
                 'source' => 'query_string',
                 'key' => 'page'
-            ),
+            ],
             'items_per_page' => REC_PER_PAGE,
             'total_items' => $count_details,
             'view' => 'pagination/punrtd'
-        ));
+        ]);
         $getmodel_details = $this->manage_model->get_driverratinglist($driver_id, $offset, REC_PER_PAGE);
         $count            = count($getmodel_details);
         $output .= '<div class="widget">
@@ -4430,15 +4430,15 @@ class Controller_Manage extends Controller_Siteadmin
         $count_details = $this->manage_model->getmanagerdriverlist($manager_id,'','',true);
         if ($page_no)
             $offset = REC_PER_PAGE * ($page_no - 1);
-        $pag_data         = Pagination::factory(array(
-            'current_page' => array(
+        $pag_data         = Pagination::factory([
+            'current_page' => [
                 'source' => 'query_string',
                 'key' => 'page'
-            ),
+            ],
             'items_per_page' => REC_PER_PAGE,
             'total_items' => $count_details,
             'view' => 'pagination/punmd'
-        ));
+        ]);
 		if($count_details>0){
 			$driver_details = $this->manage_model->getmanagerdriverlist($manager_id, $offset, REC_PER_PAGE);
 			//echo '<pre>';print_r($driver_details);exit;
@@ -4532,15 +4532,15 @@ class Controller_Manage extends Controller_Siteadmin
         $count_details = $this->manage_model->get_managertaxilist($manager_id,'','',true);
         if ($page_no)
             $offset = REC_PER_PAGE * ($page_no - 1);
-        $pag_data         = Pagination::factory(array(
-            'current_page' => array(
+        $pag_data         = Pagination::factory([
+            'current_page' => [
                 'source' => 'query_string',
                 'key' => 'page'
-            ),
+            ],
             'items_per_page' => REC_PER_PAGE,
             'total_items' => $count_details,
             'view' => 'pagination/punmt'
-        ));
+        ]);
 		if($count_details>0){
 			$taxi_details = $this->manage_model->get_managertaxilist($manager_id, $offset, REC_PER_PAGE);
 			//echo '<pre>';print_r($taxi_details);exit;
@@ -4639,15 +4639,15 @@ class Controller_Manage extends Controller_Siteadmin
         if ($page_no == 0 || $page_no == 'index')
             $page_no = PAGE_NO;
         $offset                     = REC_PER_PAGE * ($page_no - 1);
-        $pag_data                   = Pagination::factory(array(
-            'current_page' => array(
+        $pag_data                   = Pagination::factory([
+            'current_page' => [
                 'source' => 'query_string',
                 'key' => 'page'
-            ),
+            ],
             'items_per_page' => REC_PER_PAGE,
             'total_items' => $count_transaction_list,
             'view' => 'pagination/punbb'
-        ));
+        ]);
         $all_transaction_list       = $this->manage_model->transaction_details('', '', '', $offset, REC_PER_PAGE);
         //****pagination ends here***//
         //send data to view file 
@@ -4672,15 +4672,15 @@ class Controller_Manage extends Controller_Siteadmin
         if ($page_no == 0 || $page_no == 'index')
             $page_no = PAGE_NO;
         $offset                     = REC_PER_PAGE * ($page_no - 1);
-        $pag_data                   = Pagination::factory(array(
-            'current_page' => array(
+        $pag_data                   = Pagination::factory([
+            'current_page' => [
                 'source' => 'query_string',
                 'key' => 'page'
-            ),
+            ],
             'items_per_page' => REC_PER_PAGE,
             'total_items' => $count_transaction_list,
             'view' => 'pagination/punbb'
-        ));
+        ]);
         $all_transaction_list       = $this->manage_model->transaction_details($company, $startdate, $enddate, $offset, REC_PER_PAGE);
         //****pagination ends here***//
         //send data to view file 
@@ -4700,15 +4700,15 @@ class Controller_Manage extends Controller_Siteadmin
         $count_details = $this->manage_model->getcompanytranslist($company_id);
         if ($page_no)
             $offset = REC_PER_PAGE * ($page_no - 1);
-        $pag_data         = Pagination::factory(array(
-            'current_page' => array(
+        $pag_data         = Pagination::factory([
+            'current_page' => [
                 'source' => 'query_string',
                 'key' => 'page'
-            ),
+            ],
             'items_per_page' => REC_PER_PAGE,
             'total_items' => $count_details,
             'view' => 'pagination/punctl'
-        ));
+        ]);
         $getmodel_details = $this->manage_model->get_translist($company_id, $offset, REC_PER_PAGE);
         $count            = count($getmodel_details);
         $output .= '<div class="widget">
@@ -4805,12 +4805,12 @@ class Controller_Manage extends Controller_Siteadmin
         if ($signup_submit && Validation::factory($_POST)) {
             $post_values = $_POST;
             $post        = Arr::map('trim', $this->request->post());
-            $validator   = $this->manage_model->validate_unavailabledriver(arr::extract($post, array(
+            $validator   = $this->manage_model->validate_unavailabledriver(arr::extract($post, [
                 'driver_id',
                 'reason',
                 'startdate',
                 'enddate'
-            )));
+            ]));
             if ($validator->check()) {
                 $update = $this->manage_model->add_unavailabledriver($post);
                 Message::success(__('profile_updated_successfully'));
@@ -4835,15 +4835,15 @@ class Controller_Manage extends Controller_Siteadmin
         $count_details = $this->manage_model->getunavailabledriverlist($driver_id);
         if ($page_no)
             $offset = REC_PER_PAGE * ($page_no - 1);
-        $pag_data          = Pagination::factory(array(
-            'current_page' => array(
+        $pag_data          = Pagination::factory([
+            'current_page' => [
                 'source' => 'query_string',
                 'key' => 'page'
-            ),
+            ],
             'items_per_page' => REC_PER_PAGE,
             'total_items' => $count_details,
             'view' => 'pagination/puncmal'
-        ));
+        ]);
         $getdriver_details = $this->manage_model->get_unavailabledriverlist($driver_id, $offset, REC_PER_PAGE);
         $count             = count($getdriver_details);
         $output .= '<div class="widget">
@@ -4920,15 +4920,15 @@ class Controller_Manage extends Controller_Siteadmin
         if ($page_no == 0 || $page_no == 'index')
             $page_no = PAGE_NO;
         $offset                     = REC_PER_PAGE * ($page_no - 1);
-        $pag_data                   = Pagination::factory(array(
-            'current_page' => array(
+        $pag_data                   = Pagination::factory([
+            'current_page' => [
                 'source' => 'query_string',
                 'key' => 'page'
-            ),
+            ],
             'items_per_page' => REC_PER_PAGE,
             'total_items' => $count_transaction_list,
             'view' => 'pagination/punbb'
-        ));
+        ]);
         $all_unavailablity_list     = $this->manage_model->unavailability_details($offset, REC_PER_PAGE);
         //****pagination ends here***//
         //send data to view file 
@@ -4962,15 +4962,15 @@ class Controller_Manage extends Controller_Siteadmin
         if ($page_no == 0 || $page_no == 'index')
             $page_no = PAGE_NO;
         $offset      = REC_PER_PAGE * ($page_no - 1);
-        $pag_data    = Pagination::factory(array(
-            'current_page' => array(
+        $pag_data    = Pagination::factory([
+            'current_page' => [
                 'source' => 'query_string',
                 'key' => 'page'
-            ),
+            ],
             'items_per_page' => REC_PER_PAGE,
             'total_items' => $count_company_list,
             'view' => 'pagination/punbb'
-        ));
+        ]);
         //get form submit request
         $search_post = arr::get($_REQUEST, 'search_user');
         //Post results for search 
@@ -4995,15 +4995,15 @@ class Controller_Manage extends Controller_Siteadmin
         if ($page_no == 0 || $page_no == 'index')
             $page_no = PAGE_NO;
         $offset                     = REC_PER_PAGE * ($page_no - 1);
-        $pag_data                   = Pagination::factory(array(
-            'current_page' => array(
+        $pag_data                   = Pagination::factory([
+            'current_page' => [
                 'source' => 'query_string',
                 'key' => 'page'
-            ),
+            ],
             'items_per_page' => REC_PER_PAGE,
             'total_items' => $count_company_list,
             'view' => 'pagination/punbb'
-        ));
+        ]);
         $all_company_list           = $this->manage_model->all_taxi_list($offset, REC_PER_PAGE);
         //****pagination ends here***//
         $get_allcompany             = $this->manage_model->get_allcompany();
@@ -5049,15 +5049,15 @@ class Controller_Manage extends Controller_Siteadmin
 				if ($page_no == 0 || $page_no == 'index')
 					$page_no = PAGE_NO;
 				$offset      = REC_PER_PAGE * ($page_no - 1);
-				$pag_data    = Pagination::factory(array(
-					'current_page' => array(
+				$pag_data    = Pagination::factory([
+					'current_page' => [
 						'source' => 'query_string',
 						'key' => 'page'
-					),
+					],
 					'items_per_page' => REC_PER_PAGE,
 					'total_items' => $count_company_list,
 					'view' => 'pagination/punbb'
-				));
+				]);
 			
 				if ($usertype != 'A') {
 					$all_company_list = $this->manage_model->get_all_untaxi_searchlist($keyword, $status, $companyid, $offset, REC_PER_PAGE);
@@ -5125,15 +5125,15 @@ class Controller_Manage extends Controller_Siteadmin
         if ($page_no == 0 || $page_no == 'index')
             $page_no = PAGE_NO;
         $offset                     = REC_PER_PAGE * ($page_no - 1);
-        $pag_data                   = Pagination::factory(array(
-            'current_page' => array(
+        $pag_data                   = Pagination::factory([
+            'current_page' => [
                 'source' => 'query_string',
                 'key' => 'page'
-            ),
+            ],
             'items_per_page' => REC_PER_PAGE,
             'total_items' => $count_company_list,
             'view' => 'pagination/punbb'
-        ));
+        ]);
         $all_company_list           = $this->manage_model->all_driver_list($offset, REC_PER_PAGE);
         //****pagination ends here***//
         $get_allcompany             = $this->manage_model->get_allcompany();
@@ -5173,15 +5173,15 @@ class Controller_Manage extends Controller_Siteadmin
         if ($page_no == 0 || $page_no == 'index')
             $page_no = PAGE_NO;
         $offset      = REC_PER_PAGE * ($page_no - 1);
-        $pag_data    = Pagination::factory(array(
-            'current_page' => array(
+        $pag_data    = Pagination::factory([
+            'current_page' => [
                 'source' => 'query_string',
                 'key' => 'page'
-            ),
+            ],
             'items_per_page' => REC_PER_PAGE,
             'total_items' => $count_company_list,
             'view' => 'pagination/punbb'
-        ));
+        ]);
         //get form submit request
         $search_post = arr::get($_REQUEST, 'search_user');
         //Post results for search 
@@ -5241,15 +5241,15 @@ class Controller_Manage extends Controller_Siteadmin
         if ($page_no == 0 || $page_no == 'index')
             $page_no = PAGE_NO;
 			$offset                     = REC_PER_PAGE * ($page_no - 1);
-			$pag_data                   = Pagination::factory(array(
-            'current_page' => array(
+			$pag_data                   = Pagination::factory([
+            'current_page' => [
                 'source' => 'query_string',
                 'key' => 'page'
-            ),
+            ],
             'items_per_page' => REC_PER_PAGE,
             'total_items' => $count_menu_list,
             'view' => 'pagination/punbb'
-        ));
+        ]);
         $all_menu_list              = $this->manage_model->all_menu_list($offset, REC_PER_PAGE);
         //****pagination ends here***//
         //Find page action in view
@@ -5288,15 +5288,15 @@ class Controller_Manage extends Controller_Siteadmin
         if ($page_no == 0 || $page_no == 'index')
             $page_no = PAGE_NO;
         $offset                     = REC_PER_PAGE * ($page_no - 1);
-        $pag_data                   = Pagination::factory(array(
-            'current_page' => array(
+        $pag_data                   = Pagination::factory([
+            'current_page' => [
                 'source' => 'query_string',
                 'key' => 'page'
-            ),
+            ],
             'items_per_page' => REC_PER_PAGE,
             'total_items' => $count_mile_list,
             'view' => 'pagination/punbb'
-        ));
+        ]);
         $all_mile_list              = $this->manage_model->all_mile_list($offset, REC_PER_PAGE);
         //****pagination ends here***//
         //Find page action in view
@@ -5400,15 +5400,15 @@ class Controller_Manage extends Controller_Siteadmin
         if ($page_no == 0 || $page_no == 'index')
             $page_no = PAGE_NO;
         $offset                     = REC_PER_PAGE * ($page_no - 1);
-        $pag_data                   = Pagination::factory(array(
-            'current_page' => array(
+        $pag_data                   = Pagination::factory([
+            'current_page' => [
                 'source' => 'query_string',
                 'key' => 'page'
-            ),
+            ],
             'items_per_page' => REC_PER_PAGE,
             'total_items' => $count_company_list,
             'view' => 'pagination/punbb'
-        ));
+        ]);
         $all_company_list           = $this->admin_model->free_taxi_list_all_pag($offset, REC_PER_PAGE, $cid);
         //****pagination ends here***//
         $get_allcompany             = $this->manage_model->get_allcompany();
@@ -5442,15 +5442,15 @@ class Controller_Manage extends Controller_Siteadmin
         if ($page_no == 0 || $page_no == 'index')
             $page_no = PAGE_NO;
         $offset      = REC_PER_PAGE * ($page_no - 1);
-        $pag_data    = Pagination::factory(array(
-            'current_page' => array(
+        $pag_data    = Pagination::factory([
+            'current_page' => [
                 'source' => 'query_string',
                 'key' => 'page'
-            ),
+            ],
             'items_per_page' => REC_PER_PAGE,
             'total_items' => $count_company_list,
             'view' => 'pagination/punbb'
-        ));
+        ]);
         //get form submit request
         $search_post = arr::get($_REQUEST, 'search_user');
         //Post results for search 
@@ -5511,15 +5511,15 @@ class Controller_Manage extends Controller_Siteadmin
         if ($page_no == 0 || $page_no == 'index')
             $page_no = PAGE_NO;
         $offset                     = REC_PER_PAGE * ($page_no - 1);
-        $pag_data                   = Pagination::factory(array(
-            'current_page' => array(
+        $pag_data                   = Pagination::factory([
+            'current_page' => [
                 'source' => 'query_string',
                 'key' => 'page'
-            ),
+            ],
             'items_per_page' => REC_PER_PAGE,
             'total_items' => $count_company_list,
             'view' => 'pagination/punbb'
-        ));
+        ]);
         //$all_company_list = $this->manage_model->all_assigntaxi_list($offset, REC_PER_PAGE);
         $all_company_list           = $this->manage_model->all_freetaxi_list($offset, REC_PER_PAGE, $cid);
         //****pagination ends here***//
@@ -5593,15 +5593,15 @@ class Controller_Manage extends Controller_Siteadmin
         if ($page_no == 0 || $page_no == 'index')
             $page_no = PAGE_NO;
         $offset      = REC_PER_PAGE * ($page_no - 1);
-        $pag_data    = Pagination::factory(array(
-            'current_page' => array(
+        $pag_data    = Pagination::factory([
+            'current_page' => [
                 'source' => 'query_string',
                 'key' => 'page'
-            ),
+            ],
             'items_per_page' => REC_PER_PAGE,
             'total_items' => $count_company_list,
             'view' => 'pagination/punbb'
-        ));
+        ]);
         //get form submit request
         $search_post = arr::get($_REQUEST, 'search_user');
         //Post results for search 
@@ -5633,15 +5633,15 @@ class Controller_Manage extends Controller_Siteadmin
         if ($page_no == 0 || $page_no == 'index')
             $page_no = PAGE_NO;
         $offset                     = REC_PER_PAGE * ($page_no - 1);
-        $pag_data                   = Pagination::factory(array(
-            'current_page' => array(
+        $pag_data                   = Pagination::factory([
+            'current_page' => [
                 'source' => 'query_string',
                 'key' => 'page'
-            ),
+            ],
             'items_per_page' => REC_PER_PAGE,
             'total_items' => $count_company_list,
             'view' => 'pagination/punbb'
-        ));
+        ]);
         $all_company_list           = $this->manage_model->all_free_driver_list($offset, REC_PER_PAGE, $cid);
         //****pagination ends here***//
         $get_allcompany             = $this->manage_model->get_allcompany();
@@ -5681,15 +5681,15 @@ class Controller_Manage extends Controller_Siteadmin
         if ($page_no == 0 || $page_no == 'index')
             $page_no = PAGE_NO;
         $offset      = REC_PER_PAGE * ($page_no - 1);
-        $pag_data    = Pagination::factory(array(
-            'current_page' => array(
+        $pag_data    = Pagination::factory([
+            'current_page' => [
                 'source' => 'query_string',
                 'key' => 'page'
-            ),
+            ],
             'items_per_page' => REC_PER_PAGE,
             'total_items' => $count_company_list,
             'view' => 'pagination/punbb'
-        ));
+        ]);
         //get form submit request
         $search_post = arr::get($_REQUEST, 'search_user');
         //Post results for search 
@@ -5738,15 +5738,15 @@ class Controller_Manage extends Controller_Siteadmin
         if ($page_no == 0 || $page_no == 'index')
             $page_no = PAGE_NO;
         $offset                     = REC_PER_PAGE * ($page_no - 1);
-        $pag_data                   = Pagination::factory(array(
-            'current_page' => array(
+        $pag_data                   = Pagination::factory([
+            'current_page' => [
                 'source' => 'query_string',
                 'key' => 'page'
-            ),
+            ],
             'items_per_page' => REC_PER_PAGE,
             'total_items' => $count_banner_list,
             'view' => 'pagination/punbb'
-        ));
+        ]);
         $all_banner_list            = $this->manage_model->all_banner_list($company_id, $offset, REC_PER_PAGE);
         //****pagination ends here***//
         //$details = $siteusers->get_favorite_people($usrid);
@@ -5781,15 +5781,15 @@ class Controller_Manage extends Controller_Siteadmin
         if ($page_no == 0 || $page_no == 'index')
             $page_no = PAGE_NO;
         $offset      = REC_PER_PAGE * ($page_no - 1);
-        $pag_data    = Pagination::factory(array(
-            'current_page' => array(
+        $pag_data    = Pagination::factory([
+            'current_page' => [
                 'source' => 'query_string',
                 'key' => 'page'
-            ),
+            ],
             'items_per_page' => REC_PER_PAGE,
             'total_items' => $count_banner_list,
             'view' => 'pagination/punbb'
-        ));
+        ]);
         //get form submit request
         $search_post = arr::get($_REQUEST, 'search_user');
         //Post results for search 
@@ -5981,8 +5981,8 @@ class Controller_Manage extends Controller_Siteadmin
             $output          = "";
             $get_transaction = $this->driver_model->get_trans_of_driver($driver_id, REC_PER_PAGE, $start_date, $end_date);
             if (!empty($get_transaction)) {
-                $fare  = array();
-                $month = array();
+                $fare  = [];
+                $month = [];
                 foreach ($get_transaction as $vl) {
                     if ($vl['fare'] != NULL) {
                         $fare[]  = $vl['fare'];
@@ -6068,11 +6068,11 @@ class Controller_Manage extends Controller_Siteadmin
             $output             = "";
             $get_trip_statitics = $this->driver_model->get_trip_statitics($driver_id, REC_PER_PAGE, $start_date, $end_date);
             if ((!empty($get_trip_statitics['completed_trips'])) || (!empty($get_trip_statitics['rejected_trips'])) || (!empty($get_trip_statitics['cancelled_trips']))) {
-                $createdate      = array();
-                $resdate         = array();
-                $reject_trips    = array();
-                $cancelled_trips = array();
-                $completed_trips = array();
+                $createdate      = [];
+                $resdate         = [];
+                $reject_trips    = [];
+                $cancelled_trips = [];
+                $completed_trips = [];
                 $display_trip    = '';
                 $a               = 0;
                 $b               = 0;
@@ -6235,7 +6235,7 @@ class Controller_Manage extends Controller_Siteadmin
             $totTransCount   = $this->driver_model->get_total_trans_taxi($driver_id);
           // echo '<pre>';print_r($get_transaction);//exit;
             if (!empty($get_transaction)) {
-                $fare  = $trips  = $month = array();
+                $fare  = $trips  = $month = [];
                 foreach ($get_transaction as $key=>$val) {
                    // if ($val['fare'] != NULL) {
                         $trips[] = $val['trips'];
@@ -6369,7 +6369,7 @@ class Controller_Manage extends Controller_Siteadmin
         $all_company_map_list = $this->manage_model->all_driver_map_list();
         $a                    = 0;
         $b                    = 5;
-        $markers              = array();
+        $markers              = [];
         if (count($all_company_map_list) > 0) {
             foreach ($all_company_map_list as $v) {
                 for ($b = 0; $b < 6; $b++) {
@@ -6414,7 +6414,7 @@ class Controller_Manage extends Controller_Siteadmin
         $all_company_map_list = $this->manage_model->all_driver_map_list_company($company);
         $a                    = 0;
         $b                    = 5;
-        $markers              = array();
+        $markers              = [];
         if (count($all_company_map_list) > 0) {
             foreach ($all_company_map_list as $v) {
                 for ($b = 0; $b < 6; $b++) {
@@ -6484,15 +6484,15 @@ class Controller_Manage extends Controller_Siteadmin
         if ($page_no == 0 || $page_no == 'index')
             $page_no = PAGE_NO;
         $offset                     = REC_PER_PAGE * ($page_no - 1);
-        $pag_data                   = Pagination::factory(array(
-            'current_page' => array(
+        $pag_data                   = Pagination::factory([
+            'current_page' => [
                 'source' => 'query_string',
                 'key' => 'page'
-            ),
+            ],
             'items_per_page' => REC_PER_PAGE,
             'total_items' => $count_promocode_list,
             'view' => 'pagination/punbb'
-        ));
+        ]);
         //	echo $offset;
 		//echo REC_PER_PAGE;exit;
         $promocode_list             = $this->manage_model->promocode_list($offset, REC_PER_PAGE, $search, $company_id,$corporate_id,'');
@@ -6526,22 +6526,22 @@ class Controller_Manage extends Controller_Siteadmin
         $get_driver_log_details = $this->manage_model->get_driver_current_status($driver_id, $company_id);
         
         if (count($get_driver_log_details) == 0) {
-            $update_array        = array(
+            $update_array        = [
                 "login_from" => "",
                 "login_status" => "N",
                 "device_id" => "",
                 "device_token" => "",
                 "device_type" => "",
                 "notification_setting" => "0"
-            );
+            ];
             $login_status_update = $this->commonmodel->update(MDB_PEOPLE, $update_array, '_id', $driver_id);
             /** GET Shift ID **/
             $driver_shift        = $this->driver_model->get_shift_status($driver_id);
             if (count($driver_shift) > 0) {
                 $this->currentdate  = Commonfunction::getCurrentTimeStamp();
-                $shiftupdate_arrary = array(
+                $shiftupdate_arrary = [
                     "shift_end" => new \MongoDB\BSON\UTCDateTime(strtotime($this->currentdate) * 1000)
-                );
+                ];
                 $driver_shift_id    = isset($driver_shift[0]['driver_shift_id']) ? $driver_shift[0]['driver_shift_id'] : '';
                 $transaction        = $this->commonmodel->update(MDB_SHIFT_HISTORY, $shiftupdate_arrary, 'driver_shift_id', $driver_shift_id);
             }
@@ -6572,15 +6572,15 @@ class Controller_Manage extends Controller_Siteadmin
         if ($page_no == 0 || $page_no == 'index')
             $page_no = PAGE_NO;
 			$offset                     = REC_PER_PAGE * ($page_no - 1);
-			$pag_data                   = Pagination::factory(array(
-            'current_page' => array(
+			$pag_data                   = Pagination::factory([
+            'current_page' => [
                 'source' => 'query_string',
                 'key' => 'page'
-            ),
+            ],
             'items_per_page' => REC_PER_PAGE,
             'total_items' => $count_account_list,
             'view' => 'pagination/punbb'
-        ));
+        ]);
         $all_account_list              = $this->manage_model->all_account_list($offset, REC_PER_PAGE);
 		
         //****pagination ends here***//
@@ -6630,15 +6630,15 @@ class Controller_Manage extends Controller_Siteadmin
         if ($page_no == 0 || $page_no == 'index')
             $page_no = PAGE_NO;
         $offset                     = REC_PER_PAGE * ($page_no - 1);
-        $pag_data                   = Pagination::factory(array(
-            'current_page' => array(
+        $pag_data                   = Pagination::factory([
+            'current_page' => [
                 'source' => 'query_string',
                 'key' => 'page'
-            ),
+            ],
             'items_per_page' => REC_PER_PAGE,
             'total_items' => $count_company_list,
             'view' => 'pagination/punbb'
-        ));
+        ]);
         $all_company_list           = $this->manage_model->all_coupon_package_list($offset, REC_PER_PAGE);
         //****pagination ends here***//
         //send data to view file 
@@ -6671,15 +6671,15 @@ class Controller_Manage extends Controller_Siteadmin
         if ($page_no == 0 || $page_no == 'index')
             $page_no = PAGE_NO;
         $offset      = REC_PER_PAGE * ($page_no - 1);
-        $pag_data    = Pagination::factory(array(
-            'current_page' => array(
+        $pag_data    = Pagination::factory([
+            'current_page' => [
                 'source' => 'query_string',
                 'key' => 'page'
-            ),
+            ],
             'items_per_page' => REC_PER_PAGE,
             'total_items' => $count_company_list,
             'view' => 'pagination/punbb'
-        ));
+        ]);
         //get form submit request
         $search_post = arr::get($_REQUEST, 'search_user');
         //Post results for search 
@@ -6767,15 +6767,15 @@ class Controller_Manage extends Controller_Siteadmin
         if ($page_no == 0 || $page_no == 'index')
             $page_no = PAGE_NO;
         $offset                     = REC_PER_PAGE * ($page_no - 1);
-        $pag_data                   = Pagination::factory(array(
-            'current_page' => array(
+        $pag_data                   = Pagination::factory([
+            'current_page' => [
                 'source' => 'query_string',
                 'key' => 'page'
-            ),
+            ],
             'items_per_page' => REC_PER_PAGE,
             'total_items' => $count_company_list,
             'view' => 'pagination/punbb'
-        ));
+        ]);
         $all_company_list           = $this->manage_model->all_corporate_list($offset, REC_PER_PAGE);
         //****pagination ends here***//
         $get_allcompany             = $this->manage_model->get_allcompany('A');
@@ -6818,15 +6818,15 @@ class Controller_Manage extends Controller_Siteadmin
 			if ($page_no == 0 || $page_no == 'index')
 				$page_no = PAGE_NO;
 			$offset      = REC_PER_PAGE * ($page_no - 1);
-			$pag_data    = Pagination::factory(array(
-				'current_page' => array(
+			$pag_data    = Pagination::factory([
+				'current_page' => [
 					'source' => 'query_string',
 					'key' => 'page'
-				),
+				],
 				'items_per_page' => REC_PER_PAGE,
 				'total_items' => $count_company_list,
 				'view' => 'pagination/punbb'
-			));
+			]);
 			$all_company_list = $this->manage_model->get_all_corporate_searchlist(trim(Html::chars($_REQUEST['keyword'])), trim(Html::chars($_REQUEST['status'])), $company, $offset, REC_PER_PAGE);
         }
         $get_allcompany          = $this->manage_model->get_allcompany();
@@ -6933,15 +6933,15 @@ class Controller_Manage extends Controller_Siteadmin
         if ($page_no == 0 || $page_no == 'index')
             $page_no = PAGE_NO;
         $offset                     = REC_PER_PAGE * ($page_no - 1);
-        $pag_data                   = Pagination::factory(array(
-            'current_page' => array(
+        $pag_data                   = Pagination::factory([
+            'current_page' => [
                 'source' => 'query_string',
                 'key' => 'page'
-            ),
+            ],
             'items_per_page' => REC_PER_PAGE,
             'total_items' => $count_promocode_list,
             'view' => 'pagination/punbb'
-        ));
+        ]);
         //echo $offset;exit;
         
 		
@@ -7012,15 +7012,15 @@ class Controller_Manage extends Controller_Siteadmin
         if ($page_no == 0 || $page_no == 'index')
             $page_no = PAGE_NO;
         $offset   = REC_PER_PAGE * ($page_no - 1);
-        $pag_data = Pagination::factory(array(
-            'current_page' => array(
+        $pag_data = Pagination::factory([
+            'current_page' => [
                 'source' => 'query_string',
                 'key' => 'page'
-            ),
+            ],
             'items_per_page' => REC_PER_PAGE,
             'total_items' => $count_ratings_list,
             'view' => 'pagination/punbb'
-        ));
+        ]);
         
         $total_flag = 0;
         $all_ratings_list = $this->manage_model->ratings_management_list($total_flag,$search,$offset, REC_PER_PAGE);
@@ -7063,15 +7063,15 @@ class Controller_Manage extends Controller_Siteadmin
         if ($page_no == 0 || $page_no == 'index')
             $page_no = PAGE_NO;
         $offset                     = REC_PER_PAGE * ($page_no - 1);
-        $pag_data                   = Pagination::factory(array(
-            'current_page' => array(
+        $pag_data                   = Pagination::factory([
+            'current_page' => [
                 'source' => 'query_string',
                 'key' => 'page'
-            ),
+            ],
             'items_per_page' => REC_PER_PAGE,
             'total_items' => $count_push_list,
             'view' => 'pagination/punbb'
-        ));
+        ]);
 
         $push_list             = $this->manage_model->pushnotification_list($offset, REC_PER_PAGE,FALSE);
 
@@ -7101,15 +7101,15 @@ class Controller_Manage extends Controller_Siteadmin
         if ($page_no == 0 || $page_no == 'index')
             $page_no = PAGE_NO;
         $offset                     = REC_PER_PAGE * ($page_no - 1);
-        $pag_data                   = Pagination::factory(array(
-            'current_page' => array(
+        $pag_data                   = Pagination::factory([
+            'current_page' => [
                 'source' => 'query_string',
                 'key' => 'page'
-            ),
+            ],
             'items_per_page' => REC_PER_PAGE,
             'total_items' => $count_taxi_list,
             'view' => 'pagination/punbb'
-        ));
+        ]);
         $all_taxi_service_list           = $this->manage_model->all_taxi_service_list($offset, REC_PER_PAGE);
 		
 		//~ print "<pre>";
@@ -7165,12 +7165,12 @@ class Controller_Manage extends Controller_Siteadmin
         $company = (isset($_GET['company']))?$_GET['company']:0;
         $startdate = (isset($_GET['start']))?$_GET['start']:0;
         $enddate = (isset($_GET['end']))?$_GET['end']:0;
-        $startdate = Commonfunction::MongoDate(strtotime($startdate));
-        $enddate = Commonfunction::MongoDate(strtotime($enddate));
+        $startdate = new \MongoDB\BSON\UTCDateTime(strtotime($startdate) * 1000);
+        $enddate = new \MongoDB\BSON\UTCDateTime(strtotime($enddate) * 1000);
 
         $manage = Model::factory( 'manage' );
 
-        $driver_match=array('_id'=> array('$gt'=> (int)$start_driver), 'user_type' => 'D', 'company_id' => (int)$company);
+        $driver_match=['_id'=> ['$gt'=> (int)$start_driver], 'user_type' => 'D', 'company_id' => (int)$company];
         
         $options=[
             'projection'=>[
@@ -7186,7 +7186,7 @@ class Controller_Manage extends Controller_Siteadmin
             }
         }
 
-        $taxi_match=array('_id'=> array('$gt'=> (int)$start_taxi), 'taxi_company' => (int)$company);
+        $taxi_match=['_id'=> ['$gt'=> (int)$start_taxi], 'taxi_company' => (int)$company];
         
         $options=[
             'projection'=>[
@@ -7211,7 +7211,7 @@ class Controller_Manage extends Controller_Siteadmin
                 'limit'=>1
             ];
             $rs = $mongo_db->find(MDB_TAXI_DRIVER_MAPPING,[],$options);
-            $res = (!empty($rs))?array($rs[0]['_id']=>0):array(1);
+            $res = (!empty($rs))?[$rs[0]['_id']=>0]:[1];
             reset($res);
             $first_key = key($res);
             
@@ -7221,7 +7221,7 @@ class Controller_Manage extends Controller_Siteadmin
                 $first_key++;
                 if(isset($drivers[$k]) && $drivers[$k] != '')
                 {
-                    $taxi_data = array('_id' => (int)$first_key,
+                    $taxi_data = ['_id' => (int)$first_key,
                         'mapping_driverid' => (int)$drivers[$k],
                         'mapping_taxiid' => (int)$taxis[$k],
                         'mapping_companyid' => 1,
@@ -7232,7 +7232,7 @@ class Controller_Manage extends Controller_Siteadmin
                         'mapping_enddate' => $enddate,
                         'mapping_status' => ACTIVE,
                         'mapping_createdby' => 1
-                    );
+                    ];
                     $result = $mongo_db->insertOne(MDB_TAXI_DRIVER_MAPPING,$taxi_data);
                 }
                 echo 'Success--'.$first_key.'<br>';
@@ -7253,10 +7253,10 @@ class Controller_Manage extends Controller_Siteadmin
 
         $manage = Model::factory( 'manage' );
 
-        $driver_match=array('_id'=> array('$gt'=> (int)$start_driver), 'user_type' => 'D');
+        $driver_match=['_id'=> ['$gt'=> (int)$start_driver], 'user_type' => 'D'];
         
         
-        $driver_list = $mongo_db->find(MDB_PEOPLE,$driver_match,array('_id'));
+        $driver_list = $mongo_db->find(MDB_PEOPLE,$driver_match,['_id']);
 
         if(count($driver_list) > 0){
             foreach($driver_list as $val){
@@ -7264,9 +7264,9 @@ class Controller_Manage extends Controller_Siteadmin
             }
         }
 
-        $taxi_match=array('_id'=> array('$gt'=> (int)$start_taxi));
+        $taxi_match=['_id'=> ['$gt'=> (int)$start_taxi]];
         
-        $taxi_list = $mongo_db->find(MDB_TAXI,$taxi_match,array('_id'));
+        $taxi_list = $mongo_db->find(MDB_TAXI,$taxi_match,['_id']);
 
         if(count($taxi_list) > 0){
             foreach($taxi_list as $val){
@@ -7288,7 +7288,7 @@ class Controller_Manage extends Controller_Siteadmin
                 if(isset($drivers[$k]) && $drivers[$k] != '')
                 {
 
-                    $driver_request = array("_id"=>(int)$inc_id,
+                    $driver_request = ["_id"=>(int)$inc_id,
                                             "available_drivers"=>$drivers[$k],
                                             "total_drivers"=>$drivers[$k],
                                             "selected_driver"=>$drivers[$k],
@@ -7297,17 +7297,17 @@ class Controller_Manage extends Controller_Siteadmin
                                             "rejected_timeout_drivers"=>"",
                                             "createdate"=>Commonfunction::getCurrentTimeStamp(),
                                             "driver_limit"=>5,
-                                            "actual_limit"=>0);
+                                            "actual_limit"=>0];
                     $result = $mongo_db->insert(MDB_REQUEST_HISTORY,$driver_request);
 
-                    $passenger_logs = array("_id"=>(int)$inc_id,
+                    $passenger_logs = ["_id"=>(int)$inc_id,
                                             "passengers_id"=>2,
                                             "driver_id"=>(int)$drivers[$k],
                                             "company_id"=>2,
                                             "current_location"=>"53, Coimbatore IT Park Road, B.R. Puram Industrial Estate, Peelamedu, Coimbatore, Tamil Nadu 641004",
                                             "pickup_latitude"=>11.0318555,
                                             "pickup_longitude"=>77.020215,
-                                            'loc' => array("type" => "Point","coordinates" => array((double)77.020215,(double)11.0318555)),
+                                            'loc' => ["type" => "Point","coordinates" => [(double)77.020215,(double)11.0318555]],
                                             "drop_location"=>"",
                                             "drop_latitude"=>0,
                                             "drop_longitude"=>0,
@@ -7356,7 +7356,7 @@ class Controller_Manage extends Controller_Siteadmin
                                             "driver_reply"=>"A",
                                             "msg_status"=>"R",
                                             "actual_pickup_time"=>Commonfunction::getCurrentTimeStamp(),
-                                            "distance"=>0);
+                                            "distance"=>0];
                     $result = $mongo_db->insert(MDB_PASSENGERS_LOGS,$passenger_logs);
                     echo 'Success--'.$inc_id.'<br>';
                 }
@@ -7374,13 +7374,13 @@ class Controller_Manage extends Controller_Siteadmin
         $mongo_db = MangoDB::instance('default');
         $total_count = 20;
         
-        $passenger = array();
+        $passenger = [];
         for($i=1;$i<=$total_count;$i++)
         {
            $inc_id = Commonfunction::get_auto_id(MDB_PASSENGERS);
            $promo_prefix = '';
            $auto_referral_code = $promo_prefix.commonfunction::randomkey_generator('6');
-           $passenger = array( "_id"=>(int)$inc_id,
+           $passenger = [ "_id"=>(int)$inc_id,
                                "name"=>"testpassenger".($inc_id),
                                "lastname"=>"Ndot".($inc_id),
                                "email"=>"testpassenger".($inc_id)."@mailinator.com",
@@ -7401,7 +7401,7 @@ class Controller_Manage extends Controller_Siteadmin
                                "device_token"=>"",
                                "device_id"=>"",
                                "device_type"=>0,
-                               "login_status"=>'S' );
+                               "login_status"=>'S' ];
           
            $insert = $mongo_db->insert(MDB_PASSENGERS,$passenger);
            //echo '<pre>'; print_r($passenger);
@@ -7420,7 +7420,7 @@ class Controller_Manage extends Controller_Siteadmin
 
         $manage = Model::factory( 'manage' );
 
-        $passenger_match=array('_id'=> array('$gt'=> (int)$p_start));
+        $passenger_match=['_id'=> ['$gt'=> (int)$p_start]];
         
         $options=[
             'projection'=>[
@@ -7436,7 +7436,7 @@ class Controller_Manage extends Controller_Siteadmin
             }
         }
 
-        $taxi_match=array('_id'=> array('$gt'=> (int)$m_start));
+        $taxi_match=['_id'=> ['$gt'=> (int)$m_start]];
         
         $options=[
             'projection'=>[
@@ -7451,19 +7451,19 @@ class Controller_Manage extends Controller_Siteadmin
         
         if(count($taxi_list) > 0){
             foreach($taxi_list as $val){
-                $mapped[] = array(
+                $mapped[] = [
                     '_id' => $val['_id'],
                     'driver' => $val['mapping_driverid'],
                     'taxi' => $val['mapping_taxiid'],
                     'company' => $val['mapping_companyid']
-                );
+                ];
             }
         }
 
         //echo '<pre>';print_r($mapped); exit;  print_r($mapped); exit;
 
-        $locations = array(
-            array(
+        $locations = [
+            [
                 'c_latitute' => 10.9902127,
                 'c_longitude' => 76.96286580000003,
                 'c_location' => 'Ukkadam, Coimbatore, Tamil Nadu, India',
@@ -7471,8 +7471,8 @@ class Controller_Manage extends Controller_Siteadmin
                 'd_longitude' => 77.01853919999996,
                 'd_location' => 'Tidel Park, B.R. Puram Industrial Estate, Coimbatore, Tamil Nadu, India',
                 'taximodel' => 10
-            ),
-            array(
+            ],
+            [
                 'c_latitute' => 11.0315610523748,
                 'c_longitude' => 77.0187812671065,
                 'c_location' => '53, Coimbatore IT Park Road, B.R. Puram Industrial Estate, Peelamedu, Coimbatore, Tamil Nadu 641004',
@@ -7480,8 +7480,8 @@ class Controller_Manage extends Controller_Siteadmin
                 'd_longitude' => 77.08505,
                 'd_location' => '1/504, Avinashi Road, Cexus Nagar, Neelambur, Coimbatore, Tamil Nadu 641062',
                 'taximodel' => 10
-            ),
-            array(
+            ],
+            [
                 'c_latitute' => 11.0532039,
                 'c_longitude' => 77.07515379999995,
                 'c_location' => 'Venkitapuram, Coimbatore, Tamil Nadu, India',
@@ -7489,8 +7489,8 @@ class Controller_Manage extends Controller_Siteadmin
                 'd_longitude' => 76.96633440000005,
                 'd_location' => 'Gandhipuram, Coimbatore, India',
                 'taximodel' => 10
-            ),
-            array(
+            ],
+            [
                 'c_latitute' => 11.0317782,
                 'c_longitude' => 77.01853919999996,
                 'c_location' => 'Tidel Park, B.R. Puram Industrial Estate, Coimbatore, Tamil Nadu, India',
@@ -7498,8 +7498,8 @@ class Controller_Manage extends Controller_Siteadmin
                 'd_longitude' => 76.96633440000005,
                 'd_location' => 'Gandhipuram, Coimbatore, India',
                 'taximodel' => 10
-            ),
-            array(
+            ],
+            [
                 'c_latitute' => 11.0104033,
                 'c_longitude' => 76.94990280000002,
                 'c_location' => 'R.S. Puram, Coimbatore, Tamil Nadu, India',
@@ -7507,8 +7507,8 @@ class Controller_Manage extends Controller_Siteadmin
                 'd_longitude' => 76.95566429999997,
                 'd_location' => 'Town Hall, Coimbatore, Tamil Nadu, India',
                 'taximodel' => 10
-            ),
-            array(
+            ],
+            [
                 'c_latitute' => 11.0315610523748,
                 'c_longitude' => 77.0187812671065,
                 'c_location' => '53, Coimbatore IT Park Road, B.R. Puram Industrial Estate, Peelamedu, Coimbatore, Tamil Nadu 641004',
@@ -7516,21 +7516,21 @@ class Controller_Manage extends Controller_Siteadmin
                 'd_longitude' => 76.95566429999997,
                 'd_location' => 'Town Hall, Coimbatore, Tamil Nadu, India',
                 'taximodel' => 10
-            ),
-        );
+            ],
+        ];
 
         
 
         if(!empty($passengers) && !empty($mapped))
         {
-            $currentdate = Commonfunction::MongoDate(strtotime("2017-11-07T11:10:27.000Z"));
+            $currentdate = new \MongoDB\BSON\UTCDateTime(strtotime("2017-11-07T11:10:27.000Z") * 1000);
             $options=[
                 'projection'=>[ '_id'=>1 ],
                 'sort'=>[ '_id'=>-1 ],
                 'limit'=>1
             ];
             $rs = $mongo_db->find(MDB_REQUEST_HISTORY,[],$options);
-            $res = (!empty($rs))?array($rs[0]['_id']=>0):array(1);
+            $res = (!empty($rs))?[$rs[0]['_id']=>0]:[1];
             reset($res);
             $first_key = key($res);
             $inc_id = $first_key;
@@ -7545,7 +7545,7 @@ class Controller_Manage extends Controller_Siteadmin
                 $first_key++; $inc_id++;
                 if(isset($passengers[$k]) && $passengers[$k] != '')
                 {
-                    $driver_request = array("_id"=>(int)$inc_id,
+                    $driver_request = ["_id"=>(int)$inc_id,
                                             "available_drivers"=>(string)$mapped[$k]['driver'],
                                             "total_drivers"=>(string)$mapped[$k]['driver'],
                                             "selected_driver"=>$mapped[$k]['driver'],
@@ -7555,10 +7555,10 @@ class Controller_Manage extends Controller_Siteadmin
                                             "createdate"=>$currentdate,
                                             "driver_limit"=>5,
                                             "actual_limit"=>0
-                                    );
+                                    ];
                     $result = $mongo_db->insertOne(MDB_REQUEST_HISTORY,$driver_request);
 
-                    $passenger_logs = array(
+                    $passenger_logs = [
                                 "_id" => (int)$inc_id,
                                 "passengers_id" => $passengers[$k],
                                 "driver_id" => $mapped[$k]['driver'],
@@ -7598,7 +7598,7 @@ class Controller_Manage extends Controller_Siteadmin
                                 "travel_status" => 2,
                                 "taxi_modelid" => $locations[$l]['taximodel'],
                                 "sub_log_id" => 25,
-                                "split_details" => array( 
+                                "split_details" => [ 
                                         "split_id" => 1,
                                         "trip_id" => (int)$inc_id,
                                         "friends_p_id" => $passengers[$k],
@@ -7607,19 +7607,19 @@ class Controller_Manage extends Controller_Siteadmin
                                         "approve_status" => "A",
                                         "appx_amount" => 0,
                                         "passenger_payment_option" => 0
-                                ),
+                                ],
                                 "driver_reply" => "A",
                                 "msg_status" => "R"
-                    );
+                    ];
                     $result = $mongo_db->insertOne(MDB_PASSENGERS_LOGS,$passenger_logs);
 
-                    $update_array = array(
+                    $update_array = [
                         "status" => 'A',
                         "shift_status" => 'IN',
                         "update_date" => $currentdate
-                    );
+                    ];
                     $match['_id'] = $mapped[$k]['driver'];
-                    $update_device_token_result = $mongo_db->updateOne(MDB_DRIVER_INFO,$match,array('$set'=>$update_array),array('upsert'=>false));
+                    $update_device_token_result = $mongo_db->updateOne(MDB_DRIVER_INFO,$match,['$set'=>$update_array],['upsert'=>false]);
                     $reject++;
                     echo 'Success--'.$inc_id.'-'.$mapped[$k]['driver'].'<br>';
                     
@@ -7640,7 +7640,7 @@ class Controller_Manage extends Controller_Siteadmin
 
         $manage = Model::factory( 'manage' );
 
-        $passenger_match=array('_id'=> array('$gt'=> (int)$start_passenger, '$lte'=> (int)$end_passenger));
+        $passenger_match=['_id'=> ['$gt'=> (int)$start_passenger, '$lte'=> (int)$end_passenger]];
         
         $options=[
             'projection'=>[
@@ -7656,8 +7656,8 @@ class Controller_Manage extends Controller_Siteadmin
             }
         }
 
-        $locations = array(
-            array(
+        $locations = [
+            [
                 'c_latitute' => 10.9902127,
                 'c_longitude' => 76.96286580000003,
                 'c_location' => 'Ukkadam, Coimbatore, Tamil Nadu, India',
@@ -7665,8 +7665,8 @@ class Controller_Manage extends Controller_Siteadmin
                 'd_longitude' => 77.01853919999996,
                 'd_location' => 'Tidel Park, B.R. Puram Industrial Estate, Coimbatore, Tamil Nadu, India',
                 'taximodel' => 1
-            ),
-            array(
+            ],
+            [
                 'c_latitute' => 11.0315610523748,
                 'c_longitude' => 77.0187812671065,
                 'c_location' => '53, Coimbatore IT Park Road, B.R. Puram Industrial Estate, Peelamedu, Coimbatore, Tamil Nadu 641004',
@@ -7674,8 +7674,8 @@ class Controller_Manage extends Controller_Siteadmin
                 'd_longitude' => 77.08505,
                 'd_location' => '1/504, Avinashi Road, Cexus Nagar, Neelambur, Coimbatore, Tamil Nadu 641062',
                 'taximodel' => 3
-            ),
-            array(
+            ],
+            [
                 'c_latitute' => 11.0532039,
                 'c_longitude' => 77.07515379999995,
                 'c_location' => 'Venkitapuram, Coimbatore, Tamil Nadu, India',
@@ -7683,8 +7683,8 @@ class Controller_Manage extends Controller_Siteadmin
                 'd_longitude' => 76.96633440000005,
                 'd_location' => 'Gandhipuram, Coimbatore, India',
                 'taximodel' => 10
-            ),
-            array(
+            ],
+            [
                 'c_latitute' => 11.0317782,
                 'c_longitude' => 77.01853919999996,
                 'c_location' => 'Tidel Park, B.R. Puram Industrial Estate, Coimbatore, Tamil Nadu, India',
@@ -7692,8 +7692,8 @@ class Controller_Manage extends Controller_Siteadmin
                 'd_longitude' => 76.96633440000005,
                 'd_location' => 'Gandhipuram, Coimbatore, India',
                 'taximodel' => 1
-            ),
-            array(
+            ],
+            [
                 'c_latitute' => 11.0104033,
                 'c_longitude' => 76.94990280000002,
                 'c_location' => 'R.S. Puram, Coimbatore, Tamil Nadu, India',
@@ -7701,8 +7701,8 @@ class Controller_Manage extends Controller_Siteadmin
                 'd_longitude' => 76.95566429999997,
                 'd_location' => 'Town Hall, Coimbatore, Tamil Nadu, India',
                 'taximodel' => 3
-            ),
-            array(
+            ],
+            [
                 'c_latitute' => 11.0315610523748,
                 'c_longitude' => 77.0187812671065,
                 'c_location' => '53, Coimbatore IT Park Road, B.R. Puram Industrial Estate, Peelamedu, Coimbatore, Tamil Nadu 641004',
@@ -7710,8 +7710,8 @@ class Controller_Manage extends Controller_Siteadmin
                 'd_longitude' => 76.95566429999997,
                 'd_location' => 'Town Hall, Coimbatore, Tamil Nadu, India',
                 'taximodel' => 10
-            ),
-        );
+            ],
+        ];
 
         //echo '<pre>'; print_r($locations[0]); exit;
 
@@ -7723,7 +7723,7 @@ class Controller_Manage extends Controller_Siteadmin
                 'limit'=>1
             ];
             $rs = $mongo_db->find(MDB_PASSENGERS_LOGS,[],$options);
-            $res = (!empty($rs))?array($rs[0]['_id']=>0):array(1);
+            $res = (!empty($rs))?[$rs[0]['_id']=>0]:[1];
             reset($res);
             $first_key = key($res);
             $inc_id = $first_key+1;
@@ -7732,7 +7732,7 @@ class Controller_Manage extends Controller_Siteadmin
                 $l = rand(1, 6);
                 $first_key++; $inc_id++;
                 $booking_key  = commonfunction::randomkey_generator();
-                $passenger_logs = array("_id"=>(int)$inc_id,
+                $passenger_logs = ["_id"=>(int)$inc_id,
                                         "booking_key" => $booking_key,
                                         "passengers_id"=>(int)$passengers[$k],
                                         "driver_id"=>0,
@@ -7747,10 +7747,10 @@ class Controller_Manage extends Controller_Siteadmin
                                         "approx_distance"=>0,
                                         "approx_fare"=>0,
                                         "time_to_reach_passen"=>0,
-                                        "pickup_time"=>Commonfunction::MongoDate(strtotime("2017-10-05T22:00:00.000Z")),
+                                        "pickup_time"=>new \MongoDB\BSON\UTCDateTime(strtotime("2017-10-05T22:00:00.000Z") * 1000),
                                         "pickupdrop"=>0,
                                         "waitingtime"=>"",
-                                        "createdate"=>Commonfunction::MongoDate(strtotime("2017-10-05T14:00:27.000Z")),
+                                        "createdate"=>new \MongoDB\BSON\UTCDateTime(strtotime("2017-10-05T14:00:27.000Z") * 1000),
                                         "taxi_id"=>0,
                                         "booking_from"=>3,
                                         "search_city"=>0,
@@ -7778,7 +7778,7 @@ class Controller_Manage extends Controller_Siteadmin
                                                 "trip_id"=>(int)$inc_id,
                                                 "friends_p_id"=>2,
                                                 "fare_percentage"=>100,
-                                                "createdate"=>Commonfunction::MongoDate(strtotime("2017-09-21T11:00:27.000Z")),
+                                                "createdate"=>new \MongoDB\BSON\UTCDateTime(strtotime("2017-09-21T11:00:27.000Z") * 1000),
                                                 "approve_status"=>"A",
                                                 "appx_amount"=>0,
                                                 "passenger_payment_option"=>0,
@@ -7787,8 +7787,8 @@ class Controller_Manage extends Controller_Siteadmin
                                         ],
                                         "driver_reply"=>"A",
                                         "msg_status"=>"R",
-                                        "actual_pickup_time"=>Commonfunction::MongoDate(strtotime("2017-09-21T11:00:54.000Z")),
-                                        "distance"=>0);
+                                        "actual_pickup_time"=>new \MongoDB\BSON\UTCDateTime(strtotime("2017-09-21T11:00:54.000Z") * 1000),
+                                        "distance"=>0];
                 $result = $mongo_db->insertOne(MDB_PASSENGERS_LOGS,$passenger_logs);
                 echo 'Success--'.$first_key.'<br>';
             }
@@ -7846,15 +7846,15 @@ class Controller_Manage extends Controller_Siteadmin
             if ($page_no == 0 || $page_no == 'index')
                 $page_no = PAGE_NO;
             $offset      = REC_PER_PAGE * ($page_no - 1);
-            $pag_data    = Pagination::factory(array(
-                'current_page' => array(
+            $pag_data    = Pagination::factory([
+                'current_page' => [
                     'source' => 'query_string',
                     'key' => 'page'
-                ),
+                ],
                 'items_per_page' => REC_PER_PAGE,
                 'total_items' => $count_company_list,
                 'view' => 'pagination/punbb'
-            ));
+            ]);
         // if (isset($_REQUEST['keyword']))
         // {
             $keyword = isset($_REQUEST['keyword'])?$_REQUEST['keyword']:'';
@@ -7937,8 +7937,8 @@ class Controller_Manage extends Controller_Siteadmin
                     $xls_output[$key]['created_date'] = Commonfunction::convertphpdate('Y-m-d h:i:s A',$val['created_date']);
                 }
 
-                $export_table_header = array(__('passenger_name'),__('passenger_phone'),__('current_wallet_amt'),__('amount_credit'),__('amount_debit'),__('recharge_type'),'Trip fare',__('trip_id'),__('notes'),__('created_date'));
-                $export_table_field_select = array('passenger_name','passenger_phone','wallet_amount','amount_credit','amount_debit','recharge_type','trip_fare','trip_id','notes','created_date');
+                $export_table_header = [__('passenger_name'),__('passenger_phone'),__('current_wallet_amt'),__('amount_credit'),__('amount_debit'),__('recharge_type'),'Trip fare',__('trip_id'),__('notes'),__('created_date')];
+                $export_table_field_select = ['passenger_name','passenger_phone','wallet_amount','amount_credit','amount_debit','recharge_type','trip_fare','trip_id','notes','created_date'];
 
                 $heading = __('passenger_wallet_logs');
 
@@ -7960,21 +7960,21 @@ class Controller_Manage extends Controller_Siteadmin
     public function action_update_passenger_wallet()
     {
         $data =  $_REQUEST;
-        $validator   = $this->manage_model->validate_update_wallet(arr::extract($data, array(
+        $validator   = $this->manage_model->validate_update_wallet(arr::extract($data, [
                 'passenger','amount',''
-            )));
+            ]));
         if ($validator->check()) {
             $negative = isset($data['negative'])?$data['negative']:0;
             $notes = isset($data['notes'])?$data['notes']:'-';
             $update_wallet = $this->manage_model->update_wallet_amount($data['passenger'],$data['amount'],$negative,$notes);
             if($update_wallet > 0)
             {
-                $response =  array('message'=>__('wallet_update_successfully'),'status'=>1);
+                $response =  ['message'=>__('wallet_update_successfully'),'status'=>1];
                 echo json_encode($response);exit;
             }
         } else {
             $errors = $validator->errors('errors');
-            $response =  array('message'=>__('wallet_missing_fields'),'errors'=>$errors,'status'=>0);
+            $response =  ['message'=>__('wallet_missing_fields'),'errors'=>$errors,'status'=>0];
             echo json_encode($response);exit;
         }
     }
@@ -7982,27 +7982,27 @@ class Controller_Manage extends Controller_Siteadmin
     public function action_passenger_payout()
     {
         $data =  $_REQUEST;
-        $validator   = $this->manage_model->validate_passenger_payout(arr::extract($data, array(
+        $validator   = $this->manage_model->validate_passenger_payout(arr::extract($data, [
                 'passenger','amount',''
-            )));
+            ]));
         if ($validator->check()) {
 
             $update_wallet = $this->manage_model->update_payout($data['passenger'],$data['amount']);
             if($update_wallet > 0)
             {
-                $response =  array('message'=>__('payout_update_successfully'),'status'=>1);
+                $response =  ['message'=>__('payout_update_successfully'),'status'=>1];
                 echo json_encode($response);exit;
             }
         } else {
             $errors = $validator->errors('errors');
-            $response =  array('message'=>__('wallet_missing_fields'),'errors'=>$errors,'status'=>0);
+            $response =  ['message'=>__('wallet_missing_fields'),'errors'=>$errors,'status'=>0];
             echo json_encode($response);exit;
         }
     }
 
     public function action_firstname_load_new()
     {
-        $name             = array();
+        $name             = [];
         $like_q           = arr::get($_REQUEST, 'query');
         $type            = arr::get($_REQUEST, 'search_by');
         $like_q           = urlencode($like_q);
@@ -8094,15 +8094,15 @@ class Controller_Manage extends Controller_Siteadmin
             if ($page_no == 0 || $page_no == 'index')
                 $page_no = PAGE_NO;
             $offset      = REC_PER_PAGE * ($page_no - 1);
-            $pag_data    = Pagination::factory(array(
-                'current_page' => array(
+            $pag_data    = Pagination::factory([
+                'current_page' => [
                     'source' => 'query_string',
                     'key' => 'page'
-                ),
+                ],
                 'items_per_page' => REC_PER_PAGE,
                 'total_items' => $count_company_list,
                 'view' => 'pagination/punbb'
-            ));
+            ]);
         // if (isset($_REQUEST['keyword']))
         // {
             $all_company_list = $this->manage_model->vip_pending_payments(trim(Html::chars($keyword)), trim(Html::chars($status)), $company,$offset, REC_PER_PAGE);
@@ -8131,8 +8131,8 @@ class Controller_Manage extends Controller_Siteadmin
                     $xls_output[$key]['expiry_pay_date'] = Commonfunction::convertphpdate('Y-m-d h:i:s A',$val['lateral_end_date']);
                 }
 
-                $export_table_header = array(__('passenger_name'),__('passenger_phone'),__('pending_amt'),__('last_payment_date'),__('pay_type'),__('expiry_pay_date'));
-                $export_table_field_select = array('passenger_name','passenger_phone','wallet_amount','last_payment_date','pay_by','expiry_pay_date');
+                $export_table_header = [__('passenger_name'),__('passenger_phone'),__('pending_amt'),__('last_payment_date'),__('pay_type'),__('expiry_pay_date')];
+                $export_table_field_select = ['passenger_name','passenger_phone','wallet_amount','last_payment_date','pay_by','expiry_pay_date'];
 
                 $heading = __('vip_payment_invoice');
 
@@ -8191,15 +8191,15 @@ class Controller_Manage extends Controller_Siteadmin
             if ($page_no == 0 || $page_no == 'index')
                 $page_no = PAGE_NO;
             $offset      = REC_PER_PAGE * ($page_no - 1);
-            $pag_data    = Pagination::factory(array(
-                'current_page' => array(
+            $pag_data    = Pagination::factory([
+                'current_page' => [
                     'source' => 'query_string',
                     'key' => 'page'
-                ),
+                ],
                 'items_per_page' => REC_PER_PAGE,
                 'total_items' => $count_company_list,
                 'view' => 'pagination/punbb'
-            ));
+            ]);
         //if (isset($_REQUEST['keyword']))
         //{
             $all_company_list = $this->manage_model->normal_pending_payments(trim(Html::chars($keyword)), trim(Html::chars($status)), $company, $offset, REC_PER_PAGE);
@@ -8228,8 +8228,8 @@ class Controller_Manage extends Controller_Siteadmin
                     $xls_output[$key]['expiry_pay_date'] = Commonfunction::convertphpdate('Y-m-d h:i:s A',$val['lateral_end_date']);
                 }
 
-                $export_table_header = array(__('passenger_name'),__('passenger_phone'),__('pending_amt'),__('last_payment_date'),__('pay_type'),__('expiry_pay_date'));
-                $export_table_field_select = array('passenger_name','passenger_phone','wallet_amount','last_payment_date','pay_by','expiry_pay_date');
+                $export_table_header = [__('passenger_name'),__('passenger_phone'),__('pending_amt'),__('last_payment_date'),__('pay_type'),__('expiry_pay_date')];
+                $export_table_field_select = ['passenger_name','passenger_phone','wallet_amount','last_payment_date','pay_by','expiry_pay_date'];
 
                 $heading = __('normal_payment_invoice');
 
@@ -8321,15 +8321,15 @@ class Controller_Manage extends Controller_Siteadmin
             if ($page_no == 0 || $page_no == 'index')
                 $page_no = PAGE_NO;
             $offset      = REC_PER_PAGE * ($page_no - 1);
-            $pag_data    = Pagination::factory(array(
-                'current_page' => array(
+            $pag_data    = Pagination::factory([
+                'current_page' => [
                     'source' => 'query_string',
                     'key' => 'page'
-                ),
+                ],
                 'items_per_page' => 10000,
                 'total_items' => $count_company_list,
                 'view' => 'pagination/punbb'
-            ));
+            ]);
         if (isset($_REQUEST['keyword']))
         {
             $all_company_list = $this->manage_model->driver_shift_logs(trim(Html::chars($_REQUEST['keyword'])), trim(Html::chars($_REQUEST['status'])),$start_date,$end_date,$search_date, $company, $offset, REC_PER_PAGE);
@@ -8355,7 +8355,7 @@ class Controller_Manage extends Controller_Siteadmin
         // }
 
         //$get_allcompany          = $this->manage_model->get_allcompany();
-        $get_allcompany=array();
+        $get_allcompany=[];
         //set data to view file 
         $view                    = View::factory('admin/driver_shift_logs')->bind('title', $title)->bind('Offset', $offset)->bind('action', $action)->bind('srch', $_REQUEST)->bind('pag_data', $pag_data)->bind('CompanyList', $CompanyList)->bind('availabilitycount', $availabilitycount)->bind('get_allcompany', $get_allcompany)->bind('all_company_list', $all_company_list);    
         $this->template->content = $view;
@@ -8393,15 +8393,15 @@ class Controller_Manage extends Controller_Siteadmin
         if ($page_no == 0 || $page_no == 'index')
             $page_no = PAGE_NO;
         $offset                     = REC_PER_PAGE * ($page_no - 1);
-        $pag_data                   = Pagination::factory(array(
-            'current_page' => array(
+        $pag_data                   = Pagination::factory([
+            'current_page' => [
                 'source' => 'query_string',
                 'key' => 'page'
-            ),
+            ],
             'items_per_page' => REC_PER_PAGE,
             'total_items' => $count_careers_list,
             'view' => 'pagination/punbb'
-        ));
+        ]);
 
         $careers_list             = $this->manage_model->careers_list($keyword,$status,$offset, REC_PER_PAGE,FALSE);
 
@@ -8428,20 +8428,20 @@ class Controller_Manage extends Controller_Siteadmin
         
        
         $signup_submit = arr::get($_REQUEST, 'submit_addcareer');
-        $errors        = array();
-        $post   = array();
+        $errors        = [];
+        $post   = [];
         
         if ($signup_submit && Validation::factory($_POST)) {
 
             $post = $_POST;
 
-            $validator = $this->manage_model->validate_add_career(arr::extract($post, array(
+            $validator = $this->manage_model->validate_add_career(arr::extract($post, [
                 'title',
                 'title_ar',
                 'description',
                 'description_ar'
                 
-            )));
+            ]));
             if ($validator->check()) {
                 $signup_id = $this->manage_model->add_career($post);
                 
@@ -8472,8 +8472,8 @@ class Controller_Manage extends Controller_Siteadmin
       
         $uid             = $this->request->param('id');        
         $signup_submit = arr::get($_REQUEST, 'submit_editcareer');
-        $errors        = array();
-        $post   = array();
+        $errors        = [];
+        $post   = [];
         
         $careers_list             = $this->manage_model->get_careers($uid);
         //print_r($careers_list);exit;
@@ -8485,13 +8485,13 @@ class Controller_Manage extends Controller_Siteadmin
 
             $post = $_POST;
 
-            $validator = $this->manage_model->validate_add_career(arr::extract($post, array(
+            $validator = $this->manage_model->validate_add_career(arr::extract($post, [
                 'title',
                 'title_ar',
                 'description',
                 'description_ar'
                 
-            )));
+            ]));
             if ($validator->check()) {
                 $signup_id = $this->manage_model->update_career($post,$uid);
                 
@@ -8563,15 +8563,15 @@ class Controller_Manage extends Controller_Siteadmin
         if ($page_no == 0 || $page_no == 'index')
             $page_no = PAGE_NO;
         $offset                     = REC_PER_PAGE * ($page_no - 1);
-        $pag_data                   = Pagination::factory(array(
-            'current_page' => array(
+        $pag_data                   = Pagination::factory([
+            'current_page' => [
                 'source' => 'query_string',
                 'key' => 'page'
-            ),
+            ],
             'items_per_page' => REC_PER_PAGE,
             'total_items' => $count_careers_list,
             'view' => 'pagination/punbb'
-        ));
+        ]);
 
         $careers_list             = $this->manage_model->careers_request_list($keyword,$status,$offset, REC_PER_PAGE,FALSE);
 
@@ -8627,15 +8627,15 @@ class Controller_Manage extends Controller_Siteadmin
         if ($page_no == 0 || $page_no == 'index')
             $page_no = PAGE_NO;
         $offset   = REC_PER_PAGE * ($page_no - 1);
-        $pag_data = Pagination::factory(array(
-            'current_page' => array(
+        $pag_data = Pagination::factory([
+            'current_page' => [
                 'source' => 'query_string',
                 'key' => 'page'
-            ),
+            ],
             'items_per_page' => REC_PER_PAGE,
             'total_items' => $count_testimonial,
             'view' => 'pagination/punbb'
-        ));
+        ]);
         
         $total_flag = 0;
         
@@ -8680,15 +8680,15 @@ class Controller_Manage extends Controller_Siteadmin
         if ($page_no == 0 || $page_no == 'index')
             $page_no = PAGE_NO;
             $offset                     = REC_PER_PAGE * ($page_no - 1);
-            $pag_data                   = Pagination::factory(array(
-            'current_page' => array(
+            $pag_data                   = Pagination::factory([
+            'current_page' => [
                 'source' => 'query_string',
                 'key' => 'page'
-            ),
+            ],
             'items_per_page' => REC_PER_PAGE,
             'total_items' => $count_menu_list,
             'view' => 'pagination/punbb'
-        ));
+        ]);
         $all_menu_list              = $this->manage_model->all_menu_list($offset, REC_PER_PAGE);
         //****pagination ends here***//
         //Find page action in view
@@ -8703,12 +8703,12 @@ class Controller_Manage extends Controller_Siteadmin
 
     public function action_website_home_content(){
 
-        $postvalue = $errors= array();
+        $postvalue = $errors= [];
         
 
         $signup_submit = arr::get($_REQUEST, 'editsettings_submit');
-        $errors        = array();
-        $post_values   = array();
+        $errors        = [];
+        $post_values   = [];
         
         if ($signup_submit && Validation::factory($_POST, $_FILES)) {
             $post_values = Arr::map('trim', $this->request->post());
@@ -8738,11 +8738,11 @@ class Controller_Manage extends Controller_Siteadmin
 
     public function action_website_features_content(){
 
-        $postvalue = $errors= array();
+        $postvalue = $errors= [];
 
         $signup_submit = arr::get($_REQUEST, 'editsettings_submit');
-        $errors        = array();
-        $post_values   = array();
+        $errors        = [];
+        $post_values   = [];
         
         if ($signup_submit && Validation::factory($_POST, $_FILES)) {
             $post_values = Arr::map('trim', $this->request->post());
@@ -8773,11 +8773,11 @@ class Controller_Manage extends Controller_Siteadmin
 
     public function action_website_how_works_content(){
 
-        $postvalue = $errors= array();
+        $postvalue = $errors= [];
 
         $signup_submit = arr::get($_REQUEST, 'editsettings_submit');
-        $errors        = array();
-        $post_values   = array();
+        $errors        = [];
+        $post_values   = [];
         
         if ($signup_submit && Validation::factory($_POST, $_FILES)) {
             $post_values = Arr::map('trim', $this->request->post());
@@ -8808,11 +8808,11 @@ class Controller_Manage extends Controller_Siteadmin
 
     public function action_website_pricing_content(){
 
-        $postvalue = $errors= array();
+        $postvalue = $errors= [];
 
         $signup_submit = arr::get($_REQUEST, 'editsettings_submit');
-        $errors        = array();
-        $post_values   = array();
+        $errors        = [];
+        $post_values   = [];
         
         if ($signup_submit && Validation::factory($_POST, $_FILES)) {
             $post_values = Arr::map('trim', $this->request->post());
@@ -8842,11 +8842,11 @@ class Controller_Manage extends Controller_Siteadmin
 
     public function action_website_careers_content(){
 
-        $postvalue = $errors= array();
+        $postvalue = $errors= [];
 
         $signup_submit = arr::get($_REQUEST, 'editsettings_submit');
-        $errors        = array();
-        $post_values   = array();
+        $errors        = [];
+        $post_values   = [];
         
         if ($signup_submit && Validation::factory($_POST, $_FILES)) {
             $post_values = Arr::map('trim', $this->request->post());
@@ -8876,11 +8876,11 @@ class Controller_Manage extends Controller_Siteadmin
 
     public function action_manage_website_cms_content(){
 
-        $postvalue = $errors= array();
+        $postvalue = $errors= [];
 
         $signup_submit = arr::get($_REQUEST, 'editsettings_submit');
-        $errors        = array();
-        $post_values   = array();
+        $errors        = [];
+        $post_values   = [];
         
         if ($signup_submit && Validation::factory($_POST, $_FILES)) {
             $post_values = Arr::map('trim', $this->request->post());
@@ -8952,15 +8952,15 @@ class Controller_Manage extends Controller_Siteadmin
             if ($page_no == 0 || $page_no == 'index')
                 $page_no = PAGE_NO;
             $offset      = REC_PER_PAGE * ($page_no - 1);
-            $pag_data    = Pagination::factory(array(
-                'current_page' => array(
+            $pag_data    = Pagination::factory([
+                'current_page' => [
                     'source' => 'query_string',
                     'key' => 'page'
-                ),
+                ],
                 'items_per_page' => REC_PER_PAGE,
                 'total_items' => $count_company_list,
                 'view' => 'pagination/punbb'
-            ));
+            ]);
         
             $keyword = isset($_REQUEST['keyword'])?$_REQUEST['keyword']:'';
             $status = isset($_REQUEST['status'])?$_REQUEST['status']:'';
@@ -9034,8 +9034,8 @@ class Controller_Manage extends Controller_Siteadmin
                     $xls_output[$key]['created_date'] = Commonfunction::convertphpdate('Y-m-d h:i:s A',$val['created_date']);
                 }
 
-                $export_table_header = array(__('passenger_name'),__('passenger_phone'),__('current_wallet_amt'),__('amount_credit'),__('amount_debit'),__('recharge_type'),'Trip fare',__('trip_trans_id'),__('notes'),__('created_date'));
-                $export_table_field_select = array('passenger_name','passenger_phone','wallet_amount','amount_credit','amount_debit','recharge_type','trip_fare','trip_id','notes','created_date');
+                $export_table_header = [__('passenger_name'),__('passenger_phone'),__('current_wallet_amt'),__('amount_credit'),__('amount_debit'),__('recharge_type'),'Trip fare',__('trip_trans_id'),__('notes'),__('created_date')];
+                $export_table_field_select = ['passenger_name','passenger_phone','wallet_amount','amount_credit','amount_debit','recharge_type','trip_fare','trip_id','notes','created_date'];
 
                 $heading = __('passenger_wallet_transactions');
 
@@ -9098,15 +9098,15 @@ class Controller_Manage extends Controller_Siteadmin
             if ($page_no == 0 || $page_no == 'index')
                 $page_no = PAGE_NO;
             $offset      = REC_PER_PAGE * ($page_no - 1);
-            $pag_data    = Pagination::factory(array(
-                'current_page' => array(
+            $pag_data    = Pagination::factory([
+                'current_page' => [
                     'source' => 'query_string',
                     'key' => 'page'
-                ),
+                ],
                 'items_per_page' => REC_PER_PAGE,
                 'total_items' => $count_company_list,
                 'view' => 'pagination/punbb'
-            ));
+            ]);
         
             $keyword = isset($_REQUEST['keyword'])?$_REQUEST['keyword']:'';
             $status = isset($_REQUEST['status'])?$_REQUEST['status']:'';
@@ -9123,8 +9123,8 @@ class Controller_Manage extends Controller_Siteadmin
                     $xls_output[$key]['total_debit'] = round($val['total_debit'],3);                    
                 }
 
-                $export_table_header = array(__('passenger_name'),__('passenger_email'),__('passenger_phone'),__('available_wallet'),__('Credit'),__('Debit'));
-                $export_table_field_select = array('passenger_name','passenger_email','passenger_phone','balance_wallet_amount','total_credit','total_debit');
+                $export_table_header = [__('passenger_name'),__('passenger_email'),__('passenger_phone'),__('available_wallet'),__('Credit'),__('Debit')];
+                $export_table_field_select = ['passenger_name','passenger_email','passenger_phone','balance_wallet_amount','total_credit','total_debit'];
 
                 $heading = __('passenger_wallet_report');
 
@@ -9186,15 +9186,15 @@ class Controller_Manage extends Controller_Siteadmin
             if ($page_no == 0 || $page_no == 'index')
                 $page_no = PAGE_NO;
             $offset      = REC_PER_PAGE * ($page_no - 1);
-            $pag_data    = Pagination::factory(array(
-                'current_page' => array(
+            $pag_data    = Pagination::factory([
+                'current_page' => [
                     'source' => 'query_string',
                     'key' => 'page'
-                ),
+                ],
                 'items_per_page' => REC_PER_PAGE,
                 'total_items' => $count_company_list,
                 'view' => 'pagination/punbb'
-            ));
+            ]);
         
             $keyword = isset($_REQUEST['keyword'])?$_REQUEST['keyword']:'';
             $status = isset($_REQUEST['status'])?$_REQUEST['status']:'';
@@ -9211,8 +9211,8 @@ class Controller_Manage extends Controller_Siteadmin
                     $xls_output[$key]['total_debit'] = round($val['total_debit'],3);                    
                 }
 
-                $export_table_header = array(__('passenger_name'),__('passenger_email'),__('passenger_phone'),__('available_wallet'),__('Credit'),__('Debit'));
-                $export_table_field_select = array('passenger_name','passenger_email','passenger_phone','balance_wallet_amount','total_credit','total_debit');
+                $export_table_header = [__('passenger_name'),__('passenger_email'),__('passenger_phone'),__('available_wallet'),__('Credit'),__('Debit')];
+                $export_table_field_select = ['passenger_name','passenger_email','passenger_phone','balance_wallet_amount','total_credit','total_debit'];
 
                 $heading = __('pending_customers_report');
 
@@ -9275,15 +9275,15 @@ class Controller_Manage extends Controller_Siteadmin
             if ($page_no == 0 || $page_no == 'index')
                 $page_no = PAGE_NO;
             $offset      = REC_PER_PAGE * ($page_no - 1);
-            $pag_data    = Pagination::factory(array(
-                'current_page' => array(
+            $pag_data    = Pagination::factory([
+                'current_page' => [
                     'source' => 'query_string',
                     'key' => 'page'
-                ),
+                ],
                 'items_per_page' => REC_PER_PAGE,
                 'total_items' => $count_company_list,
                 'view' => 'pagination/punbb'
-            ));
+            ]);
         
             $keyword = isset($_REQUEST['keyword'])?$_REQUEST['keyword']:'';
             $status = isset($_REQUEST['status'])?$_REQUEST['status']:'';
@@ -9304,7 +9304,7 @@ class Controller_Manage extends Controller_Siteadmin
                      $xls_output[$key]['pending_amount'] = $pending_amount; 
                      $xls_output[$key]['trip_date'] = $trip_date;        
                     
-                     $payment_data = isset($listings['payment_data'])? $listings['payment_data']:array();
+                     $payment_data = isset($listings['payment_data'])? $listings['payment_data']:[];
                      $clear_pending = isset($listings['clear_pending'])? $listings['clear_pending']:'';
 
                      $cash = $knet =$online = $wallet = $paid_date = '';
@@ -9337,9 +9337,9 @@ class Controller_Manage extends Controller_Siteadmin
                     $xls_output[$key]['paid_date'] = $paid_date;                    
                 }
 
-                $export_table_header = array(__('trip_date'),__('trip_id'),__('passenger_name'),__('phone_number'),__('amount'),__('cash'),__('knet'),__('online'),__('wallet'),__('paid_date'));
+                $export_table_header = [__('trip_date'),__('trip_id'),__('passenger_name'),__('phone_number'),__('amount'),__('cash'),__('knet'),__('online'),__('wallet'),__('paid_date')];
 
-                $export_table_field_select = array('trip_date','trip_id','passenger_name','passenger_phone','pending_amount','cash','knet','online','wallet','paid_date');
+                $export_table_field_select = ['trip_date','trip_id','passenger_name','passenger_phone','pending_amount','cash','knet','online','wallet','paid_date'];
 
                 $heading = __('pending_customers_trip_report');
 
@@ -9402,15 +9402,15 @@ class Controller_Manage extends Controller_Siteadmin
             if ($page_no == 0 || $page_no == 'index')
                 $page_no = PAGE_NO;
             $offset      = REC_PER_PAGE * ($page_no - 1);
-            $pag_data    = Pagination::factory(array(
-                'current_page' => array(
+            $pag_data    = Pagination::factory([
+                'current_page' => [
                     'source' => 'query_string',
                     'key' => 'page'
-                ),
+                ],
                 'items_per_page' => REC_PER_PAGE,
                 'total_items' => $count_company_list,
                 'view' => 'pagination/punbb'
-            ));
+            ]);
         // if (isset($_REQUEST['keyword']))
         // {
             $keyword = isset($_REQUEST['keyword'])?$_REQUEST['keyword']:'';
@@ -9489,8 +9489,8 @@ class Controller_Manage extends Controller_Siteadmin
                     $xls_output[$key]['created_date'] = Commonfunction::convertphpdate('Y-m-d h:i:s A',$val['created_date']);
                 }
 
-                $export_table_header = array(__('passenger_name'),__('passenger_phone'),__('current_wallet_amt'),__('amount_credit'),__('amount_debit'),__('recharge_type'),'Trip fare',__('trip_id'),__('notes'),__('created_date'));
-                $export_table_field_select = array('passenger_name','passenger_phone','wallet_amount','amount_credit','amount_debit','recharge_type','trip_fare','trip_id','notes','created_date');
+                $export_table_header = [__('passenger_name'),__('passenger_phone'),__('current_wallet_amt'),__('amount_credit'),__('amount_debit'),__('recharge_type'),'Trip fare',__('trip_id'),__('notes'),__('created_date')];
+                $export_table_field_select = ['passenger_name','passenger_phone','wallet_amount','amount_credit','amount_debit','recharge_type','trip_fare','trip_id','notes','created_date'];
 
                 $heading = __('passenger_wallet_logs');
 
@@ -9554,15 +9554,15 @@ class Controller_Manage extends Controller_Siteadmin
             if ($page_no == 0 || $page_no == 'index')
                 $page_no = PAGE_NO;
             $offset      = REC_PER_PAGE * ($page_no - 1);
-            $pag_data    = Pagination::factory(array(
-                'current_page' => array(
+            $pag_data    = Pagination::factory([
+                'current_page' => [
                     'source' => 'query_string',
                     'key' => 'page'
-                ),
+                ],
                 'items_per_page' => REC_PER_PAGE,
                 'total_items' => $count_company_list,
                 'view' => 'pagination/punbb'
-            ));           
+            ]);           
 
 
         if (isset($_REQUEST['keyword']))
@@ -9630,15 +9630,15 @@ class Controller_Manage extends Controller_Siteadmin
             if ($page_no == 0 || $page_no == 'index')
                 $page_no = PAGE_NO;
             $offset      = REC_PER_PAGE * ($page_no - 1);
-            $pag_data    = Pagination::factory(array(
-                'current_page' => array(
+            $pag_data    = Pagination::factory([
+                'current_page' => [
                     'source' => 'query_string',
                     'key' => 'page'
-                ),
+                ],
                 'items_per_page' => REC_PER_PAGE,
                 'total_items' => $count_company_list,
                 'view' => 'pagination/punbb'
-            ));           
+            ]);           
 
 
         if (isset($_REQUEST['keyword']))
@@ -9653,8 +9653,8 @@ class Controller_Manage extends Controller_Siteadmin
         if(isset($_SESSION['download_set']))
         {
             $xls_output = $all_company_list;
-            $export_table_header = array(__('trip_id'),__('passenger_name'),__('mobile'),__('pickupplace'),__('payment_type'),__('fare'),__('pending_amt'),__('fare_notes'));
-            $export_table_field_select = array('trip_id','pass_name','phone','pickup','payment_type','fare','pending_amt','fare_notes');
+            $export_table_header = [__('trip_id'),__('passenger_name'),__('mobile'),__('pickupplace'),__('payment_type'),__('fare'),__('pending_amt'),__('fare_notes')];
+            $export_table_field_select = ['trip_id','pass_name','phone','pickup','payment_type','fare','pending_amt','fare_notes'];
 
             $heading = 'Grand Limo Dispatcher Performance';
 
@@ -9705,14 +9705,14 @@ class Controller_Manage extends Controller_Siteadmin
                                 </soapenv:Body>
                             </soapenv:Envelope>';
 
-        $headers = array(
+        $headers = [
                         "Content-type: text/xml;charset=\"utf-8\"",
                         "Accept: text/xml",
                         "Cache-Control: no-cache",
                         "Pragma: no-cache",
                         "SOAPAction: ".$soapUrl, 
                         "Content-length: ".strlen($xml_post_string),
-                    ); //SOAPAction: your op URL
+                    ]; //SOAPAction: your op URL
 
             $url = $soapUrl;
 

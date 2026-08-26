@@ -1,6 +1,6 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 
-return array(
+return [
 'button_login' => 'Giriş',
 'button_signup' => 'Sign Up',
 'button_update' => 'Update',
@@ -2157,4 +2157,4 @@ provided by its licensed drivers who undergo rigorous training and screening to 
 'taxi_assign_period_end' => 'Taksi atanan süresi doldu edilmiş',
 'no_completed_data_month' => 'Bu ayda hayır tamamlanmış yolculuk yoktur',
 'referral_code_info_details'=>'Ücretsiz binmek kupon kazanmak için buraya sevk kodunu girin . Not : Sevk şeması rezervasyonu asla kullanıcılar için geçerlidir '.SITE_NAME.' önce.',
-); 
+]; 

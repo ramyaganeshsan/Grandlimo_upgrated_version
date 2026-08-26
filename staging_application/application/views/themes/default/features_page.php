@@ -1,6 +1,6 @@
 <?php  defined('SYSPATH') OR die("No direct access allowed."); 
 
-$features_page_contents = isset($features_page_content[0])?$features_page_content[0]:array();
+$features_page_contents = isset($features_page_content[0])?$features_page_content[0]:[];
 
 ?>
 <div class="inner_page_container">

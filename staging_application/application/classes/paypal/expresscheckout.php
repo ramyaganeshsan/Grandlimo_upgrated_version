@@ -12,13 +12,13 @@
 class PayPal_ExpressCheckout extends PayPal {
 
 	// Default parameters
-	protected $_default = array(
+	protected $_default = [
 		'PAYMENTACTION' => 'Sale',
-	);
+	];
 
     public function DoExpressCheckoutPayment(array $params)
     {
-        $required = array('PAYERID','TOKEN','AMT');
+        $required = ['PAYERID','TOKEN','AMT'];
         
         $params += $this->_default;
         
@@ -28,7 +28,7 @@ class PayPal_ExpressCheckout extends PayPal {
                /* throw new Kohana_Exception('You must provide a :param parameter for :method',
                     array(':param' => $key, ':method' => __METHOD__));*/
 			Message::error('Paypal Error : You must provide a :param parameter for :method',
-                    array(':param' => $key, ':method' => __METHOD__));
+                    [':param' => $key, ':method' => __METHOD__]);
 
 		/* $this->session->set('paypal_error','Paypal Error : You must provide a :param parameter for :method',
                     array(':param' => $key, ':method' => __METHOD__)); */
@@ -41,7 +41,7 @@ class PayPal_ExpressCheckout extends PayPal {
     
     public function GetExpressCheckoutDetails(array $params)
     {
-        $required = array('TOKEN');
+        $required = ['TOKEN'];
         
         $params += $this->_default;
         
@@ -54,7 +54,7 @@ class PayPal_ExpressCheckout extends PayPal {
 		/* $this->session->set('paypal_error','Paypal Error : You must provide a :param parameter for :method',
                     array(':param' => $key, ':method' => __METHOD__)); */
 					Message::error('Paypal Error : You must provide a :param parameter for :method',
-                    array(':param' => $key, ':method' => __METHOD__));
+                    [':param' => $key, ':method' => __METHOD__]);
 
 		return 0;
             }
@@ -90,7 +90,7 @@ class PayPal_ExpressCheckout extends PayPal {
 			/* $this->session->set('paypal_error','Paypal Error : You must provide a :param parameter for :method',
                     array(':param' => $key, ':method' => __METHOD__)); */
 				Message::error('Paypal Error : You must provide a :param parameter for :method',
-                    array(':param' => $key, ':method' => __METHOD__));
+                    [':param' => $key, ':method' => __METHOD__]);
 
 			return 0;
 		}

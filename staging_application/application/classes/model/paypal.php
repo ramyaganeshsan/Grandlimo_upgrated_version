@@ -60,7 +60,7 @@ class Model_Paypal extends Model
         {
 
                 $mdate = $this->currentdate;
-                $sql_query = array('pay_status'=>$status,'status' => '2','updated_date'=>$mdate);
+                $sql_query = ['pay_status'=>$status,'status' => '2','updated_date'=>$mdate];
 
 		$result =  DB::update(REQUEST_FUND)->set($sql_query)
 			->where('requested_id', 'IN' , $params )
@@ -97,8 +97,8 @@ class Model_Paypal extends Model
 
         public function addwithdraw_transaction_details($transactionfields)
         {
-                $transactionkeys=array();
-                $transactionvalues=array();
+                $transactionkeys=[];
+                $transactionvalues=[];
                 foreach($transactionfields as $key => $value){
                         array_push($transactionkeys,$key);     
                         array_push($transactionvalues,$value);
@@ -165,18 +165,18 @@ class Model_Paypal extends Model
 		if($transactionfields['UPGRADE_TYPE'] == 1)
 		{
 			
-			$result = DB::insert(PACKAGE_REPORT, array('upgrade_companyid','upgrade_packageid','upgrade_packagename','upgrade_no_taxi','upgrade_no_driver','upgrade_startdate','upgrade_expirydate','upgrade_invoiceid','upgrade_transactionid','upgrade_correlationid','upgrade_ack','upgrade_pendingreason','upgrade_reasoncode',
-			'upgrade_currencycode','upgrade_capture','upgrade_amount','upgrade_type','upgrade_countrycode','upgrade_by','check_package_type'))
-			->values(array($transactionfields['COMPANY_ID'],$transactionfields['PACKAGE_ID'],$package_name,$no_of_taxi,$no_of_driver,$current_datetime,$transactionfields['EXPIRY_DATE'],$transactionfields['INVOICEID'],$transactionfields['TRANSACTIONID'],$transactionfields['CORRELATIONID'],$transactionfields['ACK'],$transactionfields['PENDINGREASON'],$transactionfields['REASONCODE'],$transactionfields['CURRENCYCODE'],'1',$transactionfields['AMT'],'1',$transactionfields['COUNTRYCODE'],$transactionfields['USERID'],$check_package_type))
+			$result = DB::insert(PACKAGE_REPORT, ['upgrade_companyid','upgrade_packageid','upgrade_packagename','upgrade_no_taxi','upgrade_no_driver','upgrade_startdate','upgrade_expirydate','upgrade_invoiceid','upgrade_transactionid','upgrade_correlationid','upgrade_ack','upgrade_pendingreason','upgrade_reasoncode',
+			'upgrade_currencycode','upgrade_capture','upgrade_amount','upgrade_type','upgrade_countrycode','upgrade_by','check_package_type'])
+			->values([$transactionfields['COMPANY_ID'],$transactionfields['PACKAGE_ID'],$package_name,$no_of_taxi,$no_of_driver,$current_datetime,$transactionfields['EXPIRY_DATE'],$transactionfields['INVOICEID'],$transactionfields['TRANSACTIONID'],$transactionfields['CORRELATIONID'],$transactionfields['ACK'],$transactionfields['PENDINGREASON'],$transactionfields['REASONCODE'],$transactionfields['CURRENCYCODE'],'1',$transactionfields['AMT'],'1',$transactionfields['COUNTRYCODE'],$transactionfields['USERID'],$check_package_type])
 			->execute();
 
 		}
 		else
 		{
 			
-			$result = DB::insert(PACKAGE_REPORT, array('upgrade_companyid','upgrade_packageid','upgrade_packagename','upgrade_no_taxi','upgrade_no_driver','upgrade_startdate','upgrade_expirydate','upgrade_invoiceid','upgrade_transactionid','upgrade_correlationid','upgrade_ack','upgrade_pendingreason','upgrade_reasoncode',
-			'upgrade_currencycode','upgrade_capture','upgrade_amount','upgrade_type','upgrade_countrycode','upgrade_by','check_package_type'))
-			->values(array($transactionfields['COMPANY_ID'],$transactionfields['PACKAGE_ID'],$package_name,$no_of_taxi,$no_of_driver,$transactionfields['LAST_DATE'],$transactionfields['EXPIRY_DATE'],$transactionfields['INVOICEID'],$transactionfields['TRANSACTIONID'],$transactionfields['CORRELATIONID'],$transactionfields['ACK'],$transactionfields['PENDINGREASON'],$transactionfields['REASONCODE'],$transactionfields['CURRENCYCODE'],'1',$transactionfields['AMT'],'1',$transactionfields['COUNTRYCODE'],$transactionfields['USERID'],$check_package_type))
+			$result = DB::insert(PACKAGE_REPORT, ['upgrade_companyid','upgrade_packageid','upgrade_packagename','upgrade_no_taxi','upgrade_no_driver','upgrade_startdate','upgrade_expirydate','upgrade_invoiceid','upgrade_transactionid','upgrade_correlationid','upgrade_ack','upgrade_pendingreason','upgrade_reasoncode',
+			'upgrade_currencycode','upgrade_capture','upgrade_amount','upgrade_type','upgrade_countrycode','upgrade_by','check_package_type'])
+			->values([$transactionfields['COMPANY_ID'],$transactionfields['PACKAGE_ID'],$package_name,$no_of_taxi,$no_of_driver,$transactionfields['LAST_DATE'],$transactionfields['EXPIRY_DATE'],$transactionfields['INVOICEID'],$transactionfields['TRANSACTIONID'],$transactionfields['CORRELATIONID'],$transactionfields['ACK'],$transactionfields['PENDINGREASON'],$transactionfields['REASONCODE'],$transactionfields['CURRENCYCODE'],'1',$transactionfields['AMT'],'1',$transactionfields['COUNTRYCODE'],$transactionfields['USERID'],$check_package_type])
 			->execute();
 							
 		}	

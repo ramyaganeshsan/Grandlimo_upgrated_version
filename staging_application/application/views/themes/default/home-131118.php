@@ -5,9 +5,9 @@
 	$play_store = COMMON_ANDROID_PASSENGER_APP;
 	$app_store = COMMON_IOS_PASSENGER_APP; 
 	
-	$home_page_contents = isset($home_page_content[0])?$home_page_content[0]:array();
+	$home_page_contents = isset($home_page_content[0])?$home_page_content[0]:[];
 	/////// Slider /////////
-	$home_slider = $mobile_slider = $slider = array(); 
+	$home_slider = $mobile_slider = $slider = []; 
 	$home_interval = $mobile_interval = $slide_interval =0;
 	/*foreach($slider_settings[0] as $key => $value) { 
 		if (preg_match('/^home_/', $key)) {

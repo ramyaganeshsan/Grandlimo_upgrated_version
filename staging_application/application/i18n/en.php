@@ -1,6 +1,6 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 
-return array(
+return [
 'button_login' => 'Log In',
 'button_signup' => 'Sign Up',
 'button_update' => 'Update',
@@ -3358,4 +3358,4 @@ provided by its licensed drivers who undergo rigorous training and screening to 
 "promocode_usage_report" => "Promocode usage report",
 /* July 19 2023 */
 "canceled_at" => "Canceled At",
-); 
+]; 

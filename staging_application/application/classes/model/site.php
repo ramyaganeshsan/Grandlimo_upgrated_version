@@ -34,17 +34,17 @@ class Model_Site extends Model
         //MongoDB
         //Here changing array values with string to integers values
         $active_ids = Commonfunction::mongo_format_array($activeids);
-        $result     = $this->mongo_db->update(MDB_PEOPLE, array(
-            '_id' => array(
+        $result     = $this->mongo_db->update(MDB_PEOPLE, [
+            '_id' => [
                 '$in' => $active_ids
-            )
-        ), array(
-            '$set' => array(
+            ]
+        ], [
+            '$set' => [
                 'status' => 'D'
-            )
-        ), array(
+            ]
+        ], [
             'multiple' => true
-        ));
+        ]);
         //echo '<pre>';print_r($result);exit;
         return (empty($result['err'])) ? 1 : $result['errmsg'];
     }
@@ -60,17 +60,17 @@ class Model_Site extends Model
 		//MongoDB
         //Here changing array values with string to integers values
         $active_ids = Commonfunction::mongo_format_array($activeids);
-        $result     = $this->mongo_db->update(MDB_PEOPLE, array(
-            '_id' => array(
+        $result     = $this->mongo_db->update(MDB_PEOPLE, [
+            '_id' => [
                 '$in' => $active_ids
-            )
-        ), array(
-            '$set' => array(
+            ]
+        ], [
+            '$set' => [
                 'status' => 'A'
-            )
-        ), array(
+            ]
+        ], [
             'multiple' => true
-        ));
+        ]);
         //echo '<pre>';print_r($result);exit;
         return (empty($result['err'])) ? 1 : $result['errmsg'];
     }
@@ -86,17 +86,17 @@ class Model_Site extends Model
 		//MongoDB
         //Here changing array values with string to integers values
         $active_ids = Commonfunction::mongo_format_array($activeids);
-        $result     = $this->mongo_db->update(MDB_PEOPLE, array(
-            '_id' => array(
+        $result     = $this->mongo_db->update(MDB_PEOPLE, [
+            '_id' => [
                 '$in' => $active_ids
-            )
-        ), array(
-            '$set' => array(
+            ]
+        ], [
+            '$set' => [
                 'status' => 'T'
-            )
-        ), array(
+            ]
+        ], [
             'multiple' => true
-        ));
+        ]);
         //echo '<pre>';print_r($result);exit;
         return (empty($result['err'])) ? 1 : $result['errmsg'];
     }
@@ -112,11 +112,11 @@ class Model_Site extends Model
 		//MongoDB
         //Here changing array values with string to integers values
         $active_ids = Commonfunction::mongo_format_array($activeids);
-        $result     = $this->mongo_db->remove(MDB_PEOPLE, array(
-            '_id' => array(
+        $result     = $this->mongo_db->remove(MDB_PEOPLE, [
+            '_id' => [
                 '$in' => $active_ids
-            )
-        ));
+            ]
+        ]);
         //echo '<pre>';print_r($result);exit;
         return (empty($result['err'])) ? 1 : $result['errmsg'];
     }
@@ -131,18 +131,18 @@ class Model_Site extends Model
         //MongoDB
         //Here changing array values with string to integers values
         $ids = Commonfunction::mongo_format_array($blockids);
-        $set_array = array(
+        $set_array = [
             'user_status' => 'D'
-        );
-        $result    = $this->mongo_db->update(MDB_PASSENGERS, array(
-            '_id' => array(
+        ];
+        $result    = $this->mongo_db->update(MDB_PASSENGERS, [
+            '_id' => [
                 '$in' => $ids
-            )
-        ), array(
+            ]
+        ], [
             '$set' => $set_array
-        ), array(
+        ], [
             'multiple' => true
-        ));
+        ]);
         //print_r($result); exit;
         return (empty($result['err'])) ? 1 : $result['errmsg'];
     }
@@ -158,18 +158,18 @@ class Model_Site extends Model
         //MongoDB
         //Here changing array values with string to integers values
         $ids = Commonfunction::mongo_format_array($blockids);
-        $set_array = array(
+        $set_array = [
             'user_status' => 'PB'
-        );
-        $result    = $this->mongo_db->update(MDB_PASSENGERS, array(
-            '_id' => array(
+        ];
+        $result    = $this->mongo_db->update(MDB_PASSENGERS, [
+            '_id' => [
                 '$in' => $ids
-            )
-        ), array(
+            ]
+        ], [
             '$set' => $set_array
-        ), array(
+        ], [
             'multiple' => true
-        ));
+        ]);
         //print_r($result); exit;
         return (empty($result['err'])) ? 1 : $result['errmsg'];
     }
@@ -184,18 +184,18 @@ class Model_Site extends Model
         ->execute();
         return count($result);*/
         $ids = Commonfunction::mongo_format_array($activeids);
-        $set_array = array(
+        $set_array = [
             'user_status' => 'A'
-        );
-        $result    = $this->mongo_db->update(MDB_PASSENGERS, array(
-            '_id' => array(
+        ];
+        $result    = $this->mongo_db->update(MDB_PASSENGERS, [
+            '_id' => [
                 '$in' => $ids
-            )
-        ), array(
+            ]
+        ], [
             '$set' => $set_array
-        ), array(
+        ], [
             'multiple' => true
-        ));
+        ]);
         //print_r($result); exit;
         return (empty($result['err'])) ? 1 : $result['errmsg'];
     }
@@ -209,18 +209,18 @@ class Model_Site extends Model
         ->execute();
         return count($result); */
         $ids = Commonfunction::mongo_format_array($trashids);
-        $set_array = array(
+        $set_array = [
             'user_status' => 'T'
-        );
-        $result    = $this->mongo_db->update(MDB_PASSENGERS, array(
-            '_id' => array(
+        ];
+        $result    = $this->mongo_db->update(MDB_PASSENGERS, [
+            '_id' => [
                 '$in' => $ids
-            )
-        ), array(
+            ]
+        ], [
             '$set' => $set_array
-        ), array(
+        ], [
             'multiple' => true
-        ));
+        ]);
         //print_r($result); exit;
         return (empty($result['err'])) ? 1 : $result['errmsg'];
     }
@@ -236,11 +236,11 @@ class Model_Site extends Model
 		//MongoDB
         //Here changing array values with string to integers values
         $active_ids = Commonfunction::mongo_format_array($deleteids);
-        $result     = $this->mongo_db->remove(MDB_PASSENGERS, array(
-            '_id' => array(
+        $result     = $this->mongo_db->remove(MDB_PASSENGERS, [
+            '_id' => [
                 '$in' => $active_ids
-            )
-        ));
+            ]
+        ]);
         //echo '<pre>';print_r($result);exit;
         return (empty($result['err'])) ? 1 : $result['errmsg'];
     }

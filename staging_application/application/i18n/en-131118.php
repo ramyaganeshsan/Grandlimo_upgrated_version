@@ -1,6 +1,6 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 
-return array(
+return [
 'button_login' => 'Log In',
 'button_signup' => 'Sign Up',
 'button_update' => 'Update',
@@ -3137,4 +3137,4 @@ provided by its licensed drivers who undergo rigorous training and screening to 
 'waiting_time_start'=>'Waiting Time (Start - End Trip)',
 'airport_pickup_fare'=>'Airport Pickup Fare',
 'airport_drop_fare'=>'Airport Drop Fare'
-); 
+]; 

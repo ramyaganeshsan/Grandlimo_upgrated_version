@@ -69,9 +69,9 @@ define("MDB_CORPORATE_GROUP",TABLE_PREFIX."corporate_group");
 
 
 //MongoDB Collection Names
-//$mongodb = new MongoClient("mongodb://104.197.36.40:27017"); //local mongo db config
+//$mongodb = new \MongoDB\Client("mongodb://104.197.36.40:27017"); //local mongo db config
 
-/*$mongodb = new MongoClient("mongodb://10.128.0.3:27020"); //local mongo db config
+/*$mongodb = new \MongoDB\Client("mongodb://10.128.0.3:27020"); //local mongo db config
 $taxi_db = $mongodb->selectDB('GrandLimoDemo');
 
 define("MDB_CONNECTION",$mongodb);

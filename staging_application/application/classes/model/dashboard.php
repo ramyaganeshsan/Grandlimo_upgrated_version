@@ -195,39 +195,39 @@ class Model_Dashboard extends Model
 		
 		$match_query['travel_status'] = 1;
 		
-		$match_query['pickup_time'] = array('$gte'=>new \MongoDB\BSON\UTCDateTime(strtotime($start) * 1000),'$lte'=>new \MongoDB\BSON\UTCDateTime(strtotime($end) * 1000));
+		$match_query['pickup_time'] = ['$gte'=>new \MongoDB\BSON\UTCDateTime(strtotime($start) * 1000),'$lte'=>new \MongoDB\BSON\UTCDateTime(strtotime($end) * 1000)];
 		if($company_id != 0 && $company_id!=""){
 			$match_query['company_id'] = (int)$company_id;
 		}
 		//echo "<pre>"; print_r($match_query); exit;
-        $arguments = array(
-			array('$lookup' 		=> array(
+        $arguments = [
+			['$lookup' 		=> [
                     'from'			=>	MDB_TRANSACTION,
                     'localField'	=> '_id',
                     'foreignField'	=> "passengers_log_id",
                     'as'			=> "trans"
-                )
-            ),
-            array('$unwind' => '$trans'),
-            array('$match'	=> $match_query),
-			array(
-                '$project' => array(
-					'year' => array( '$substr' => array( '$pickup_time', 0, 4 ) ),
-                    'month' => array( '$substr' => array( '$pickup_time', 5, 2 ) ),
-                    'day' => array( '$substr'=> array( '$pickup_time', 8, 2 ) ),
+                ]
+            ],
+            ['$unwind' => '$trans'],
+            ['$match'	=> $match_query],
+			[
+                '$project' => [
+					'year' => [ '$substr' => [ '$pickup_time', 0, 4 ] ],
+                    'month' => [ '$substr' => [ '$pickup_time', 5, 2 ] ],
+                    'day' => [ '$substr'=> [ '$pickup_time', 8, 2 ] ],
 					'fare' => '$trans.fare',
-                )
-            ),
-            array('$group' => array('_id' => array( 'date' => '$day','month' => '$month'),
-                'fare' => array('$sum' => '$fare'),
-                'trips' => array( '$sum' => 1 ),
-                )
-            )
-        );
+                ]
+            ],
+            ['$group' => ['_id' => [ 'date' => '$day','month' => '$month'],
+                'fare' => ['$sum' => '$fare'],
+                'trips' => [ '$sum' => 1 ],
+                ]
+            ]
+        ];
          
         $result = $this->mongo_db->aggregate(MDB_PASSENGERSLOGS_COMPLETED,$arguments);
 		//echo "<pre>"; print_r($result); exit;
-		return (!empty($result) && $result['result'])?$result['result']:array();
+		return (!empty($result) && $result['result'])?$result['result']:[];
 	}
 	
 	
@@ -452,76 +452,76 @@ class Model_Dashboard extends Model
 	/** to get company details and Driver, Taxi and passengers details for that particular company **/
 	public function getCompanyUsersTaxi($company_id)
 	{	
-		$match_query = array();
+		$match_query = [];
 		$match_query['user_type'] = 'D';
 		$match_query['status'] = 'A';
 		if($company_id!="" && $company_id!=0){
 			$match_query['company_id'] = (int)$company_id;	
 		}
-		$arguments = array(
-			array(
-				'$lookup' => array(
+		$arguments = [
+			[
+				'$lookup' => [
 					'from' => MDB_COMPANY,
 					'localField' => 'company_id',
 					'foreignField' => '_id',
 					'as' => 'company'
-				)
-			),
-			array(
+				]
+			],
+			[
 				'$unwind' => '$company'
-			),
-			array(
+			],
+			[
 				'$match' => $match_query
-			),
-			array(
-				'$group' => array(
-					'_id' => array('company_id' => '$company_id','company_name' => '$company.companydetails.company_name'),
-					'totaldrivers' => array('$sum' => 1)
-				)
-			),
-			array(
-				'$lookup' => array(
+			],
+			[
+				'$group' => [
+					'_id' => ['company_id' => '$company_id','company_name' => '$company.companydetails.company_name'],
+					'totaldrivers' => ['$sum' => 1]
+				]
+			],
+			[
+				'$lookup' => [
 					'from' => MDB_TAXI,
 					'localField' => '_id.company_id',
 					'foreignField' => 'taxi_company',
 					'as' => 'taxi'
-				)
-			),
-			array(
+				]
+			],
+			[
 				'$unwind' => '$taxi'
-			),
-			array(
-				'$group' => array(
-					'_id' => array('taxi' => '_id','company_id' => '$_id.company_id','company_name' => '$_id.company_name','totaldrivers' => '$totaldrivers'),
-					'totaltaxis' => array('$sum' => 1)
-				)
-			),
-			array(
-				'$lookup' => array(
+			],
+			[
+				'$group' => [
+					'_id' => ['taxi' => '_id','company_id' => '$_id.company_id','company_name' => '$_id.company_name','totaldrivers' => '$totaldrivers'],
+					'totaltaxis' => ['$sum' => 1]
+				]
+			],
+			[
+				'$lookup' => [
 					'from' => MDB_PASSENGERS,
 					'localField' => '_id.company_id',
 					'foreignField' => 'passenger_cid',
 					'as' => 'passenger'
-				)
-			),
-			array(
+				]
+			],
+			[
 				'$unwind' => '$passenger'
-			),
-			array(
-				'$group' => array(
-					'_id' => array('taxi' => '_id','company_name' => '$_id.company_name','totaldrivers' => '$_id.totaldrivers','totaltaxis' => '$totaltaxis'),
-					'totalpassengers' => array('$sum' => 1)
-				)
-			),
-			array(
-				'$group' => array(
-					'_id' => array('company_name' => '$_id.company_name','totaldrivers' => '$_id.totaldrivers','totaltaxis' => '$_id.totaltaxis','totalpassengers' => '$totalpassengers')
-				)
-			),
-		);
+			],
+			[
+				'$group' => [
+					'_id' => ['taxi' => '_id','company_name' => '$_id.company_name','totaldrivers' => '$_id.totaldrivers','totaltaxis' => '$totaltaxis'],
+					'totalpassengers' => ['$sum' => 1]
+				]
+			],
+			[
+				'$group' => [
+					'_id' => ['company_name' => '$_id.company_name','totaldrivers' => '$_id.totaldrivers','totaltaxis' => '$_id.totaltaxis','totalpassengers' => '$totalpassengers']
+				]
+			],
+		];
 		$result = $this->mongo_db->aggregate(MDB_PEOPLE, $arguments);
 		//echo "<pre>";print_r($result['result']);exit;
-		return (!empty($result['result']) && isset($result['result'])) ? $result['result']:array();
+		return (!empty($result['result']) && isset($result['result'])) ? $result['result']:[];
 	}
 	
 	/** to get the trip counts in both mobile app and webapp, total trip counts and total trip revenues **/
@@ -546,56 +546,56 @@ class Model_Dashboard extends Model
 	
 	public function appwise_trips($month, $year)
 	{
-		$arguments = array(
-			array(
-				'$lookup' => array(
+		$arguments = [
+			[
+				'$lookup' => [
 					'from' => MDB_PASSENGERSLOGS_COMPLETED,
 					'localField' => '_id',
 					'foreignField' => 'company_id',
 					'as' => 'passenger'
-				)
-			),
-			array(
+				]
+			],
+			[
 				'$unwind' => '$passenger'
-			),
-			array(
-				'$lookup' => array(
+			],
+			[
+				'$lookup' => [
 					'from' => MDB_TRANSACTION,
 					'localField' => 'passenger._id',
 					'foreignField' => 'passengers_log_id',
 					'as' => 'trans'
-				)
-			),
-			array(
+				]
+			],
+			[
 				'$unwind' => '$trans'
-			),			
-			array(
-				'$project' => array(
-					'month' => array( '$substr' => array( '$trans.current_date', 5, 2 ) ),
-					'year' => array( '$substr' => array( '$trans.current_date', 0, 4 ) ),
+			],			
+			[
+				'$project' => [
+					'month' => [ '$substr' => [ '$trans.current_date', 5, 2 ] ],
+					'year' => [ '$substr' => [ '$trans.current_date', 0, 4 ] ],
 					'travel_status'=>'$passenger.travel_status',
 					'fare'=>'$trans.fare',
 					'trips'=>'$_id',
 					'admin_amount'=>'$trans.admin_amount',
 					'bookby'=>'$passenger.bookby',
-				)
-			),
-			array(
-				'$match' => array('month' =>(string)$month,'year'=>(string)$year,'travel_status'=>1)
-			),
-			array(
-				'$group' => array(
-					'_id' => array('month' => '$month','year'=>'$year'),
-					'total_trips' => array('$sum' => 1),
-					'revenues' => array('$sum' => '$fare'),
-					'admincommission' => array('$sum' => '$admin_amount'),
-					'webtrips' => array('$sum' => array('$cond' => array(array('$eq' => array('$bookby',2)),1,0))),
-					'mobiletrips' => array('$sum' =>array('$cond' => array(array('$eq' => array('$bookby',1)),1,0)))
-				)
-			),
-		);
+				]
+			],
+			[
+				'$match' => ['month' =>(string)$month,'year'=>(string)$year,'travel_status'=>1]
+			],
+			[
+				'$group' => [
+					'_id' => ['month' => '$month','year'=>'$year'],
+					'total_trips' => ['$sum' => 1],
+					'revenues' => ['$sum' => '$fare'],
+					'admincommission' => ['$sum' => '$admin_amount'],
+					'webtrips' => ['$sum' => ['$cond' => [['$eq' => ['$bookby',2]],1,0]]],
+					'mobiletrips' => ['$sum' =>['$cond' => [['$eq' => ['$bookby',1]],1,0]]]
+				]
+			],
+		];
 		$result = $this->mongo_db->aggregate(MDB_COMPANY, $arguments);
-		return (!empty($result['result']) && isset($result['result'])) ? $result['result']:array();
+		return (!empty($result['result']) && isset($result['result'])) ? $result['result']:[];
 	}	
 	
 }

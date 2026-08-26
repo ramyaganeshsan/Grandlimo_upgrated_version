@@ -167,7 +167,9 @@ class Braintree_Util
         // every time this function is called.
         static $callback = null;
         if ($callback === null) {
-            $callback = create_function('$matches', 'return strtoupper($matches[1]);');
+            $callback = function ($matches) {
+                return strtoupper($matches[1]);
+            };
         }
 
         return preg_replace_callback('/' . $delimiter . '(\w)/', $callback, $string);
@@ -200,7 +202,9 @@ class Braintree_Util
         // every time this function is called.
         static $callbacks = array();
         if (!isset($callbacks[$delimiter])) {
-            $callbacks[$delimiter] = create_function('$matches', "return '$delimiter' . strtolower(\$matches[1]);");
+            $callbacks[$delimiter] = function ($matches) use ($delimiter) {
+                return $delimiter . strtolower($matches[1]);
+            };
         }
 
         return preg_replace_callback('/([A-Z])/', $callbacks[$delimiter], $string);

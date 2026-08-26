@@ -14,7 +14,7 @@ abstract class PayPal {
 	/**
 	 * @var  array  instances
 	 */
-	public static $instances = array();
+	public static $instances = [];
 	
 	
 
@@ -132,7 +132,7 @@ abstract class PayPal {
 		}
 
 		// Add the command to the parameters
-		$params = array('cmd' => '_'.$command) + $params;
+		$params = ['cmd' => '_'.$command] + $params;
 
 		return 'https://www.'.$env.'paypal.com/webscr?'.http_build_query($params, NULL, '&');
 	}
@@ -150,26 +150,26 @@ abstract class PayPal {
 	protected function _post($method, array $params)
 	{
 		// Create POST data
-		$post = array(
+		$post = [
 			'METHOD'    => $method,
 			'VERSION'   => 65.0,
 			'USER'      => $this->_username,
 			'PWD'       => $this->_password,
 			'SIGNATURE' => $this->_signature,
-		) + $params;
+		] + $params;
                
 		// Create a new curl instance
 		$curl = curl_init();
 
 		// Set curl options
-		curl_setopt_array($curl, array(
+		curl_setopt_array($curl, [
 			CURLOPT_URL            => $this->api_url(),
 			CURLOPT_POST           => TRUE,
 			CURLOPT_POSTFIELDS     => http_build_query($post, NULL, '&'),
 			CURLOPT_SSL_VERIFYPEER => FALSE,
 			CURLOPT_SSL_VERIFYHOST => FALSE,
 			CURLOPT_RETURNTRANSFER => TRUE,
-		));
+		]);
 
 		if (($response = curl_exec($curl)) === FALSE)
 		{

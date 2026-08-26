@@ -1,6 +1,6 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 
-return array(
+return [
 'button_login' => 'تسجيل الدخول',
 'button_signup' => 'سجل',
 'button_update' => 'تحديث',
@@ -2188,4 +2188,4 @@ return array(
 'view_trip' => 'عرض تفاصيل رحلة',
 'model_image_hint' => 'يرجى تحميل صورة عالية الدقة لتحسين الجودة' ,
 'request_sent_from_contact_popup2' => '%s phone number are Grandlimo child accounts',
-); 
+]; 

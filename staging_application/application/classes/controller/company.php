@@ -54,10 +54,10 @@ class Controller_Company extends Controller_Siteadmin
             $this->urlredirect->redirect('company/login');
         }
         $submit      = $this->request->post('admin_login');
-        $form_values = Arr::extract($_REQUEST, array(
+        $form_values = Arr::extract($_REQUEST, [
             'email',
             'password'
-        ));
+        ]);
         $validate    = $this->authorize->login_validate($form_values);
          
         if (isset($submit)) {			
@@ -130,7 +130,7 @@ class Controller_Company extends Controller_Siteadmin
         } else {
             $this->urlredirect->redirect('company/login');
         }
-        $post_values              = array();
+        $post_values              = [];
         $post_values              = $_REQUEST;
         
         $company_id               = $_SESSION['company_id'];
@@ -195,12 +195,12 @@ class Controller_Company extends Controller_Siteadmin
         $state_details   = $this->add_model->state_details();
         $currencysymbol  = $this->currencysymbol;
         $signup_submit   = arr::get($_REQUEST, 'submit_addcompany');
-        $errors          = array();
-        $post_values     = array();
+        $errors          = [];
+        $post_values     = [];
         if ($signup_submit && Validation::factory($_POST)) {
             $post_values = $_POST;
             $post        = Arr::map('trim', $this->request->post());
-            $validator   = $this->edit_model->validate_editcompany(arr::extract($post, array(
+            $validator   = $this->edit_model->validate_editcompany(arr::extract($post, [
                 'firstname',
                 'lastname',
                 'email',
@@ -215,7 +215,7 @@ class Controller_Company extends Controller_Siteadmin
                 'currency_code',
                 'currency_symbol',
                 'time_zone'
-            )), $uid);
+            ]), $uid);
             if ($validator->check()) {
                 $status = $this->edit_model->editcompany($uid, $post, $_FILES);
                 if ($status == 1) {
@@ -250,21 +250,21 @@ class Controller_Company extends Controller_Siteadmin
         if ($usertype == 'M') {
             $this->urlredirect->redirect('manager/dashboard');
         }
-        $errors         = array();
+        $errors         = [];
         $changepassword = arr::get($_REQUEST, 'submit_changepassword');
         if (isset($changepassword) && Validation::factory($_POST)) {
             $postvalue = $_POST;
             $post      = Arr::map('trim', $this->request->post());
-            $validator = $this->authorize->changepassword_validate(arr::extract($post, array(
+            $validator = $this->authorize->changepassword_validate(arr::extract($post, [
                 'oldpassword',
                 'password',
                 'repassword'
-            )), $this->userid);
+            ]), $this->userid);
             if ($validator->check()) {
                 $update_status            = $this->authorize->changepassword($post['password'], $this->userid);
                 $update = $this->authorize->select_user_details_by_id($this->userid);
                 $mail              = "";
-                $replace_variables = array(
+                $replace_variables = [
                     REPLACE_LOGO => EMAILTEMPLATELOGO,
                     REPLACE_SITENAME => $this->app_name,
                     REPLACE_USERNAME => ucfirst($update['name']),
@@ -275,7 +275,7 @@ class Controller_Company extends Controller_Siteadmin
                     REPLACE_SITEURL => URL_BASE,
                     REPLACE_COPYRIGHTS => SITE_COPYRIGHT,
                     REPLACE_COPYRIGHTYEAR => COPYRIGHT_YEAR
-                );
+                ];
                 //$message           = $this->emailtemplate->emailtemplate(DOCROOT . TEMPLATEPATH . 'changepassword.html', $replace_variables);
 				if ($this->lang != 'en') {
 					if (file_exists(DOCROOT . TEMPLATEPATH . $this->lang . '/changepassword-' . $this->lang . '.html')) {
@@ -333,19 +333,19 @@ class Controller_Company extends Controller_Siteadmin
     }
     public function action_forgot_password()
     {
-        $errors         = array();
+        $errors         = [];
         $forgotpassword = arr::get($_REQUEST, 'submit_forgot_password_admin');
         if (isset($forgotpassword) && Validation::factory($_POST)) {
             $postvalue      = Arr::map('trim', $this->request->post());
-            $validator = $this->authorize->forgotpassword_companyvalidate(arr::extract($postvalue, array(
+            $validator = $this->authorize->forgotpassword_companyvalidate(arr::extract($postvalue, [
                 'email'
-            )));
+            ]));
             if ($validator->check()) {
                 $user_detail = $this->authorize->select_users_byemail($postvalue['email']);
                 $password    = Text::random();
                 $result = $this->authorize->changepassword($password, $user_detail['_id']);
                 $mail              = "";
-                $replace_variables = array(
+                $replace_variables = [
                     REPLACE_LOGO => EMAILTEMPLATELOGO,
                     REPLACE_SITENAME => $this->app_name,
                     REPLACE_USERNAME => ucfirst($user_detail['name']),
@@ -356,7 +356,7 @@ class Controller_Company extends Controller_Siteadmin
                     REPLACE_SITEURL => URL_BASE,
                     REPLACE_COPYRIGHTS => SITE_COPYRIGHT,
                     REPLACE_COPYRIGHTYEAR => COPYRIGHT_YEAR
-                );
+                ];
                 //$message           = $this->emailtemplate->emailtemplate(DOCROOT . TEMPLATEPATH . 'forgotpassword.html', $replace_variables);
 				if ($this->lang != 'en') {
 					if (file_exists(DOCROOT . TEMPLATEPATH . $this->lang . '/forgotpassword-' . $this->lang . '.html')) {
@@ -404,13 +404,13 @@ class Controller_Company extends Controller_Siteadmin
             $this->request->redirect("company/login");
         }
         $fundrequest_submit = arr::get($_REQUEST, 'fundrequest_submit');
-        $errors             = array();
-        $post_values        = array();
+        $errors             = [];
+        $post_values        = [];
         if ($fundrequest_submit && Validation::factory($_POST)) {
             $post_values = $_POST;
-            $validator   = $this->company_model->validate_fundrequest_amount(arr::extract($post_values, array(
+            $validator   = $this->company_model->validate_fundrequest_amount(arr::extract($post_values, [
                 'amount'
-            )));
+            ]));
             if ($validator->check()) {
                 $status = $this->company_model->insert_fundrequest_amount($post_values);
                 if ($status == 1) {
@@ -446,15 +446,15 @@ class Controller_Company extends Controller_Siteadmin
         if ($page_no == 0 || $page_no == 'index')
             $page_no = PAGE_NO;
         $offset                     = REC_PER_PAGE * ($page_no - 1);
-        $pag_data                   = Pagination::factory(array(
-            'current_page' => array(
+        $pag_data                   = Pagination::factory([
+            'current_page' => [
                 'source' => 'query_string',
                 'key' => 'page'
-            ),
+            ],
             'items_per_page' => REC_PER_PAGE,
             'total_items' => $count_fundrequest_list,
             'view' => 'pagination/punbb'
-        ));
+        ]);
         $all_fundrequest_list       = $this->company_model->all_fundreuest_list($offset, REC_PER_PAGE);
         //****pagination ends here***//
         //send data to view file 
@@ -474,26 +474,26 @@ class Controller_Company extends Controller_Siteadmin
             $this->request->redirect("company/login");
         }
         $cid           = $_SESSION['company_id'];
-        $errors        = array();
+        $errors        = [];
         $signup_submit = arr::get($_REQUEST, 'editsettings_submit');
-        $errors        = array();
-        $post_values   = array();
+        $errors        = [];
+        $post_values   = [];
         if ($signup_submit && Validation::factory($_POST, $_FILES)) {
             $post_values = $_POST;
             $post        = Arr::map('trim', $this->request->post());
-            $form_values = Arr::extract($post, array(
+            $form_values = Arr::extract($post, [
                 'company_copyrights',
                 'fare_calculation',
                 'default_unit',
                 'skip_credit_card',
                 'cancellation_fare',
                 'company_tax'
-            ));
-            $file_values = Arr::extract($_FILES, array(
+            ]);
+            $file_values = Arr::extract($_FILES, [
                 'company_logo',
                 'email_site_logo',
                 'company_favicon'
-            ));
+            ]);
             $values      = Arr::merge($form_values, $file_values);
             $validator   = $this->company_model->validate_updatesiteinfo($values);
             if ($validator->check()) {
@@ -577,20 +577,20 @@ class Controller_Company extends Controller_Siteadmin
             $this->request->redirect("company/login");
         }
         $cid                   = $_SESSION['company_id'];
-        $errors                = array();
+        $errors                = [];
         $socialsettings_submit = arr::get($_REQUEST, 'editsocialsettings_submit');
-        $errors                = array();
-        $post_values           = array();
+        $errors                = [];
+        $post_values           = [];
         if ($socialsettings_submit && Validation::factory($_POST)) {
             $post_values = $_POST;
-            $validator   = $this->company_model->validate_update_socialinfo(arr::extract($_POST, array(
+            $validator   = $this->company_model->validate_update_socialinfo(arr::extract($_POST, [
                 'facebook_key',
                 'facebook_secretkey',
                 'facebook_share',
                 'twitter_share',
                 'google_share',
                 'linkedin_share'
-            )));
+            ]));
             //'site_city';
             if ($validator->check()) {
                 $status = $this->company_model->update_socialinfo($_POST, $cid);
@@ -623,17 +623,17 @@ class Controller_Company extends Controller_Siteadmin
             $this->request->redirect("company/login");
         }
         $cid                   = $_SESSION['company_id'];
-        $errors                = array();
+        $errors                = [];
         $socialsettings_submit = arr::get($_REQUEST, 'layoutsettings_submit');
-        $errors                = array();
-        $post_values           = array();
+        $errors                = [];
+        $post_values           = [];
         if ($socialsettings_submit && Validation::factory($_POST)) {
             $post_values = $_POST;
-            $validator   = $this->company_model->validate_update_layoutinfo(arr::extract($_POST, array(
+            $validator   = $this->company_model->validate_update_layoutinfo(arr::extract($_POST, [
                 'header_bg',
                 'menu_bg',
                 'mover_bg'
-            )));
+            ]));
             //'site_city';
             if ($validator->check()) {
                 $status = $this->company_model->update_layoutinfo($_POST, $cid);
@@ -665,20 +665,20 @@ class Controller_Company extends Controller_Siteadmin
             $this->request->redirect("company/login");
         }
         $cid           = $_SESSION['company_id'];
-        $errors        = array();
+        $errors        = [];
         $signup_submit = arr::get($_REQUEST, 'submit_modules');
-        $errors        = array();
-        $post_values   = array();
+        $errors        = [];
+        $post_values   = [];
         if ($signup_submit && Validation::factory($_POST, $_FILES)) {
             $post_values = $_POST;
             $post        = Arr::map('trim', $this->request->post());
-            $validator   = $this->company_model->validate_update_module(arr::extract($post, array(
+            $validator   = $this->company_model->validate_update_module(arr::extract($post, [
                 'banner_image1',
                 'banner_image2',
                 'banner_image3',
                 'banner_image4',
                 'banner_image5'
-            )), $_FILES);
+            ]), $_FILES);
             if ($validator->check()) {
                 $image_updated_status = '';
                 $site_settings        = $this->company_model->site_module_settings($cid);
@@ -741,15 +741,15 @@ class Controller_Company extends Controller_Siteadmin
         if ($page_no == 0 || $page_no == 'index')
             $page_no = PAGE_NO;
         $offset                     = REC_PER_PAGE * ($page_no - 1);
-        $pag_data                   = Pagination::factory(array(
-            'current_page' => array(
+        $pag_data                   = Pagination::factory([
+            'current_page' => [
                 'source' => 'query_string',
                 'key' => 'page'
-            ),
+            ],
             'items_per_page' => REC_PER_PAGE,
             'total_items' => $count_user_list,
             'view' => 'pagination/punbb'
-        ));
+        ]);
         $all_user_list              = $this->company_model->all_passenger_list_history($cid, $offset, REC_PER_PAGE);
         //echo "<pre>"; print_r($all_user_list); exit;
         $get_allcompany             = $this->manage_model->get_allcompany();
@@ -782,15 +782,15 @@ class Controller_Company extends Controller_Siteadmin
         if ($page_no == 0 || $page_no == 'index')
             $page_no = PAGE_NO;
         $offset      = REC_PER_PAGE * ($page_no - 1);
-        $pag_data    = Pagination::factory(array(
-            'current_page' => array(
+        $pag_data    = Pagination::factory([
+            'current_page' => [
                 'source' => 'query_string',
                 'key' => 'page'
-            ),
+            ],
             'items_per_page' => REC_PER_PAGE,
             'total_items' => $count_user_list,
             'view' => 'pagination/punbb'
-        ));
+        ]);
         //get form submit request
         $search_post = arr::get($_REQUEST, 'search_user');
         //Post results for search 
@@ -816,20 +816,20 @@ class Controller_Company extends Controller_Siteadmin
         //check current action
         $action   = $this->request->action();
         $action .= "/" . $userid;
-        $postvalue   = array();
+        $postvalue   = [];
         //getting request for form submit
         $editprofile = arr::get($_REQUEST, 'submit_editprofile');
-        $errors      = array();
+        $errors      = [];
         if (isset($editprofile) && Validation::factory($_POST)) {
             $postvalue = $_POST;
             $post      = Arr::map('trim', $this->request->post());
-            $validator = $this->authorize->editpassenger_validate(arr::extract($post, array(
+            $validator = $this->authorize->editpassenger_validate(arr::extract($post, [
                 'name',
                 'email',
                 'phone',
                 'address',
                 'discount'
-            )), $userid);
+            ]), $userid);
             if ($validator->check()) {
                 /*
                 $image_name = "";
@@ -996,7 +996,7 @@ class Controller_Company extends Controller_Siteadmin
         $save_free_trial = $this->company_model->save_free_trial($post);
         if (count($save_free_trial) > 0) {
             $mail              = "";
-            $replace_variables = array(
+            $replace_variables = [
                 REPLACE_LOGO => EMAILTEMPLATELOGO,
                 REPLACE_SITENAME => $this->app_name,
                 REPLACE_EMAIL => $post['g_email'],
@@ -1012,7 +1012,7 @@ class Controller_Company extends Controller_Siteadmin
                 REPLACE_SITEURL => URL_BASE,
                 REPLACE_COPYRIGHTS => SITE_COPYRIGHT,
                 REPLACE_COPYRIGHTYEAR => COPYRIGHT_YEAR
-            );
+            ];
             $message           = $this->emailtemplate->emailtemplate(DOCROOT . TEMPLATEPATH . 'get_free_quotes.html', $replace_variables);
             $to                = 'maheswaran.r@ndot.in,venkatesan@ndot.in';
             //$to = 'senthilkumar.a@ndot.in';
@@ -1097,7 +1097,7 @@ class Controller_Company extends Controller_Siteadmin
                 }
                 $passengerdriver_details .= '</table>';
                 $passengerdriver_details .= '<img src="##SITEURL##public/images/email_temp_spacer-header.jpg" width="520px" height="20px" alt="##SITENAME##"/>';
-                $replace_variables = array(
+                $replace_variables = [
                     REPLACE_LOGO => EMAILTEMPLATELOGO,
                     REPLACE_SITENAME => $this->app_name,
                     REPLACE_USERNAME => $_POST['g_name'],
@@ -1110,7 +1110,7 @@ class Controller_Company extends Controller_Siteadmin
                     REPLACE_COMPANYDOMAIN => $domain,
                     REPLACE_COPYRIGHTS => SITE_COPYRIGHT,
                     REPLACE_COPYRIGHTYEAR => COPYRIGHT_YEAR
-                );
+                ];
                 // Place the content to Email templete 
                 //$message           = $this->emailtemplate->emailtemplate(DOCROOT . TEMPLATEPATH . 'autotrail_company_registration.html', $replace_variables);
 				if ($this->lang != 'en') {
@@ -1152,10 +1152,10 @@ class Controller_Company extends Controller_Siteadmin
         if ($usertype != 'C') {
             $this->request->redirect("admin/login");
         }
-        $errors                = array();
+        $errors                = [];
         $socialsettings_submit = arr::get($_REQUEST, 'editsms_settings_submit');
-        $errors                = array();
-        $post_values           = array();
+        $errors                = [];
+        $post_values           = [];
         $company_id            = $_SESSION['company_id'];
         $sms_id                = '';
         $smssettings           = $this->company_model->sms_settings($company_id);
@@ -1168,11 +1168,11 @@ class Controller_Company extends Controller_Siteadmin
         $sms_id = $smssettings[0]['sms_id'];
         if ($socialsettings_submit && Validation::factory($_POST)) {
             $post_values = $_POST;
-            $validator   = $this->company_model->validate_update_smssettings(arr::extract($_POST, array(
+            $validator   = $this->company_model->validate_update_smssettings(arr::extract($_POST, [
                 'sms_account_id',
                 'sms_auth_token',
                 'sms_from_number'
-            )));
+            ]));
             //'site_city';
             if ($validator->check()) {
                 $status = $this->company_model->update_sms_settings($_POST, $company_id, $sms_id);
@@ -1239,13 +1239,13 @@ class Controller_Company extends Controller_Siteadmin
             } else {
                 $average = "0";
             }
-            $data['trips'][] = array(
+            $data['trips'][] = [
                 'trips' => $count,
                 'revenues' => $revenues,
                 'average' => round($average, 3)
-            );
+            ];
         }
-        $json            = array();
+        $json            = [];
         $json['success'] = $data;
         echo json_encode($json);
     }
@@ -1341,14 +1341,14 @@ class Controller_Company extends Controller_Siteadmin
         $company_id    = $_SESSION['company_id'];
         $page_title    = __("payment_module_settings");
         $signup_submit = arr::get($_REQUEST, 'submit_addcompany');
-        $errors        = array();
-        $post_values   = array();
+        $errors        = [];
+        $post_values   = [];
         if ($signup_submit && Validation::factory($_POST)) {
             $post_values = $_POST;
             $post        = Arr::map('trim', $this->request->post());
-            $validator   = $this->company_model->validate_payment_settings(arr::extract($post, array(
+            $validator   = $this->company_model->validate_payment_settings(arr::extract($post, [
                 'paymodstatus'
-            )), $user_id);
+            ]), $user_id);
             if (!isset($_POST['paymodstatus'])) {
                 $check_paystatus = 0;
             } else {
@@ -1386,7 +1386,7 @@ class Controller_Company extends Controller_Siteadmin
         $this->request->redirect("admin/login");
         } */
         $update_post = arr::get($_REQUEST, 'update');
-        $post        = array();
+        $post        = [];
         if ($update_post) {
             $post = $_REQUEST;
             if (isset($post['default_payment'])) {

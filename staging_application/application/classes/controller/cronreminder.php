@@ -21,7 +21,7 @@ class Controller_Cronreminder extends Controller_Siteadmin
 		
 		if($remainder_status !=0)
 		{
-			$r_array = array();
+			$r_array = [];
 			foreach($remainder_status as $rs)
 			{
 				if($rs['timezone'] !=""){
@@ -67,14 +67,14 @@ class Controller_Cronreminder extends Controller_Siteadmin
 								$remind_msg=__('reminder_message_before_5_days');
 							}
 							
-							$r_array=array(
+							$r_array=[
 								'r_company_email'=>$r_company_email,
 								'r_upgrade_packagename'=>$r_upgrade_packagename,
 								'r_upgrade_no_taxi'=>$r_upgrade_no_taxi,
 								'r_upgrade_expirydate'=>$r_upgrade_expirydate,
 								'r_company_name'=>$r_company_name,
 								'r_company_client_name'=>$r_company_client_name
-							);
+							];
 								//Send Reminder mail to company owners
 
 							$validator = $this->feedback_validation($r_array);
@@ -92,7 +92,7 @@ class Controller_Cronreminder extends Controller_Siteadmin
 
 								$subject = SITE_NAME.__('package_renewal');
 								$message = $remind_msg;
-								$replace_variables=array(
+								$replace_variables=[
 									REPLACE_LOGO=>EMAILTEMPLATELOGO,
 									REPLACE_SITENAME=>$this->app_name,
 									REPLACE_COMPANY=>ucfirst($company_name),
@@ -109,7 +109,7 @@ class Controller_Cronreminder extends Controller_Siteadmin
 									REPLACE_COMPANYDOMAIN=>$this->domain_name,
 									REPLACE_COPYRIGHTS=>SITE_COPYRIGHT,
 									REPLACE_COPYRIGHTYEAR=>COPYRIGHT_YEAR
-								);
+								];
 												
 								$message=$this->emailtemplate->emailtemplate(DOCROOT.TEMPLATEPATH.'package_renewal.html',$replace_variables);
 								//echo $message;exit;
@@ -138,7 +138,7 @@ class Controller_Cronreminder extends Controller_Siteadmin
 							else
 							{
 								$detail = $validator->errors('errors');
-								$message = array("detail"=>$detail,"message"=>__('validation_error'));
+								$message = ["detail"=>$detail,"message"=>__('validation_error')];
 								echo 'No data found';//exit;
 								//print_r($detail);exit;
 							}
@@ -166,7 +166,7 @@ class Controller_Cronreminder extends Controller_Siteadmin
 		//print_r($remainder_status);exit;
 		if($remainder_status !=0)
 		{
-			$r_array = array();
+			$r_array = [];
 			foreach($remainder_status as $rs)
 			{
 				if($rs['timezone'] !=""){
@@ -212,14 +212,14 @@ class Controller_Cronreminder extends Controller_Siteadmin
 								$remind_msg=__('reminder_message_before_1_day');
 							}
 							
-							$r_array=array(
+							$r_array=[
 								'r_company_email'=>$r_company_email,
 								'r_upgrade_packagename'=>$r_upgrade_packagename,
 								'r_upgrade_no_taxi'=>$r_upgrade_no_taxi,
 								'r_upgrade_expirydate'=>$r_upgrade_expirydate,
 								'r_company_name'=>$r_company_name,
 								'r_company_client_name'=>$r_company_client_name
-							);
+							];
 							//Send Reminder mail to company owners
 							$validator = $this->feedback_validation($r_array);
 							if($validator->check())
@@ -235,7 +235,7 @@ class Controller_Cronreminder extends Controller_Siteadmin
 
 								$subject = SITE_NAME.__('package_renewal');
 								$message = $remind_msg;
-								$replace_variables=array(
+								$replace_variables=[
 									REPLACE_LOGO=>EMAILTEMPLATELOGO,
 									REPLACE_SITENAME=>$this->app_name,
 									REPLACE_COMPANY=>ucfirst($company_name),
@@ -252,7 +252,7 @@ class Controller_Cronreminder extends Controller_Siteadmin
 									REPLACE_COMPANYDOMAIN=>$this->domain_name,
 									REPLACE_COPYRIGHTS=>SITE_COPYRIGHT,
 									REPLACE_COPYRIGHTYEAR=>COPYRIGHT_YEAR
-								);
+								];
 												
 								$message=$this->emailtemplate->emailtemplate(DOCROOT.TEMPLATEPATH.'package_renewal.html',$replace_variables);
 								//echo $message;exit;
@@ -281,7 +281,7 @@ class Controller_Cronreminder extends Controller_Siteadmin
 							{
 								$detail = $validator->errors('errors');
 								//print_r($detail);exit;
-								$message = array("detail"=>$detail,"message"=>__('validation_error'));
+								$message = ["detail"=>$detail,"message"=>__('validation_error')];
 								echo 'No Email-id found';
 							}
 						}
@@ -310,7 +310,7 @@ class Controller_Cronreminder extends Controller_Siteadmin
 
 		if($remainder_status !=0)
 		{
-			$r_array=array();
+			$r_array=[];
 			foreach($remainder_status as $rs)
 			{
 				//print_r($rs);exit;
@@ -358,7 +358,7 @@ class Controller_Cronreminder extends Controller_Siteadmin
 						
 						//echo $this->date."--".$r_company_name;
 						//echo '<br>';
-						$r_array=array(
+						$r_array=[
 							
 							'r_company_email'=>$r_company_email,
 							'r_upgrade_packagename'=>$r_upgrade_packagename,
@@ -366,7 +366,7 @@ class Controller_Cronreminder extends Controller_Siteadmin
 							'r_upgrade_expirydate'=>$r_upgrade_expirydate,
 							'r_company_name'=>$r_company_name,
 							'r_company_client_name'=>$r_company_client_name
-						);
+						];
 						$deactive_company = $cronremainder_model->cron_deactive_company($company_cid);
 						echo "<br>".$r_company_name.' company deactivated'."<br>";
 
@@ -384,7 +384,7 @@ class Controller_Cronreminder extends Controller_Siteadmin
 							
 							$subject = SITE_NAME.__('package_expired');
 							$message = __('reminder_message');
-							$replace_variables=array(
+							$replace_variables=[
 								REPLACE_LOGO=>EMAILTEMPLATELOGO,
 								REPLACE_SITENAME=>$this->app_name,
 								REPLACE_COMPANY=>ucfirst($company_name),
@@ -400,7 +400,7 @@ class Controller_Cronreminder extends Controller_Siteadmin
 								REPLACE_SITEURL=>URL_BASE,
 								REPLACE_COPYRIGHTS=>SITE_COPYRIGHT,
 								REPLACE_COPYRIGHTYEAR=>COPYRIGHT_YEAR
-							);
+							];
 							$message=$this->emailtemplate->emailtemplate(DOCROOT.TEMPLATEPATH.'package_renewal.html',$replace_variables);
 							//echo $message;exit;
 
@@ -429,7 +429,7 @@ class Controller_Cronreminder extends Controller_Siteadmin
 						else
 						{
 							$detail = $validator->errors('errors');
-							$message = array("detail"=>$detail,"message"=>__('validation_error'));
+							$message = ["detail"=>$detail,"message"=>__('validation_error')];
 							//print_r($message);
 							echo 'No company found';
 						}
@@ -508,11 +508,11 @@ class Controller_Cronreminder extends Controller_Siteadmin
 
                 //echo 555;exit;
 
-                $android_ids = $ios_ids = array();
+                $android_ids = $ios_ids = [];
 
-                $AndroidPushMessage  = array("message"=> $message,"title"=> $title,"image"=>$android_image,"status" => "38");
+                $AndroidPushMessage  = ["message"=> $message,"title"=> $title,"image"=>$android_image,"status" => "38"];
 
-                $IosPushMessage  = array("message"=> $message,"title"=> $title,"image"=>$ios_image);               
+                $IosPushMessage  = ["message"=> $message,"title"=> $title,"image"=>$ios_image];               
 
 
                 if(count($passengers)){
@@ -608,7 +608,7 @@ class Controller_Cronreminder extends Controller_Siteadmin
 		$random = str_pad(rand(0, pow(10, $digits)-1), $digits, '0', STR_PAD_LEFT);		
 		$promocode = $promocode_prefix.$str;
 		$promocode_array = $promocode;
-		$ins_array      	  = array(
+		$ins_array      	  = [
 					"company_id" => 1,
 					"promocode" => $promocode,
 					"package" => 7,
@@ -619,7 +619,7 @@ class Controller_Cronreminder extends Controller_Siteadmin
 					"promo_limit" => 1,
 					"auto_generated_promocode" => (int)$digits,
 					"createdate" => $currenttime
-				);
+				];
 		$p_insert  = $cronremainder_model->insert_promocode($ins_array);		
 		return $p_insert;		
 	}

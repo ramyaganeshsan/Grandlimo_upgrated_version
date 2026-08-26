@@ -12,15 +12,15 @@
 class PayPal_MassPay extends PayPal {
 
 	// Default parameters
-	protected $_default = array(
+	protected $_default = [
 		'RECEIVERTYPE' => 'EmailAddress',
-	);
+	];
 
    
         public function DoMassPayPayment(array $params , array $emailids)
         {
                
-                $required = array('RECEIVERTYPE','CURRENCYCODE');
+                $required = ['RECEIVERTYPE','CURRENCYCODE'];
                 $emailcount = 0;
                 
                 
@@ -41,7 +41,7 @@ class PayPal_MassPay extends PayPal {
                 foreach ($required as $key) {
                     if ( ! isset($params[$key])) {
                         throw new Kohana_Exception('You must provide a :param parameter for :method',
-                            array(':param' => $key, ':method' => 'MassPay'));
+                            [':param' => $key, ':method' => 'MassPay']);
                     }
                 }
         

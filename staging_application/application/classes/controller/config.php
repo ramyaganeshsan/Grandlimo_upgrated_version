@@ -236,18 +236,18 @@ abstract class Controller_Config extends Controller_Template
 	
 			
 		if(!isset($usrid) && $action != 'signup' && $action != 'forgotpassword' && $action!='foursquare_connect' && $action!='twittersignin' && $action!='linkdin_signin'){
-			$userstyles = array(CSSPATH.'layout_home.css' =>'screen',
-							CSSPATH.'mobile_slider/skin.css' =>'screen');
+			$userstyles = [CSSPATH.'layout_home.css' =>'screen',
+							CSSPATH.'mobile_slider/skin.css' =>'screen'];
 		}else{
-			$userstyles = array(CSSPATH.'layout.css' =>'screen',
-							CSSPATH.'mobile_slider/skin.css' =>'screen');		
+			$userstyles = [CSSPATH.'layout.css' =>'screen',
+							CSSPATH.'mobile_slider/skin.css' =>'screen'];		
 		
 		}
 							
-		$userscripts = array(SCRIPTPATH.'jquery-1.4.2.min.js',
+		$userscripts = [SCRIPTPATH.'jquery-1.4.2.min.js',
 							SCRIPTPATH.'lightbox-form.js',
 							SCRIPTPATH.'rating.min.js',
-							SCRIPTPATH.'text_sahdow.js');	
+							SCRIPTPATH.'text_sahdow.js'];	
 							
 		$this->app_name=$this->commonmodel->select_site_settings('app_name',SITEINFO);		
 		$this->app_description=$this->commonmodel->select_site_settings('app_description',SITEINFO);		
@@ -272,21 +272,21 @@ abstract class Controller_Config extends Controller_Template
 			foreach($company_content as $cc)
 			{
 				Route::set($cc['page_url'], $cc['page_url'].'.html')
-					->defaults(array(
+					->defaults([
 						'controller' => 'page',
 						'action'     => 'companycms'
-					));	
+					]);	
 			}
 			//print_r($company_content);
 		}
 		
 
-        $waitingtime = array(
+        $waitingtime = [
 					"15" => "15 Mins",
 					"30" => "30 Mins",
 					"45" => "45 Mins",
 					"60" => "60 Mins"
-				 );
+				 ];
 				 
     	$this->session->set("miles",5);
     

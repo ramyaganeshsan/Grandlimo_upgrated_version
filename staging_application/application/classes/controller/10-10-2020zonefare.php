@@ -54,19 +54,19 @@ class Controller_Zonefare extends Controller_Siteadmin
 
         /**To get the form submit button name**/
         $signup_submit       = arr::get($_REQUEST, 'submit_zone');
-        $errors              = array();
-        $post_values         = array();
+        $errors              = [];
+        $post_values         = [];
 
         if ($signup_submit && Validation::factory($_POST)) {
 
             $post_values = Arr::map('trim', $this->request->post());
 
-            $form_values = Arr::extract($post_values, array(
+            $form_values = Arr::extract($post_values, [
                 'zone_id',
                 'model_id',
                 'zone_fixed_fare'
 
-            ));
+            ]);
             $validator   = $this->zonefare_model->validate_add_zone_fare($form_values);
 
             if ($validator->check()) {
@@ -105,8 +105,8 @@ class Controller_Zonefare extends Controller_Siteadmin
         $model_details = $this->zonefare_model->all_model_details();
 
         $zone_submit = arr::get($_REQUEST, 'submit_editzone');
-        $errors        = array();
-        $post_values   = array();
+        $errors        = [];
+        $post_values   = [];
 
         if ($zone_submit && Validation::factory($_POST)) {
 
@@ -116,9 +116,9 @@ class Controller_Zonefare extends Controller_Siteadmin
 			$zone_id = $values['zone_id'];
 
 			//echo '<pre>'; print_r($values); exit();
-            $validator = $this->zonefare_model->validate_edit_zone_fare(arr::extract($values, array(
+            $validator = $this->zonefare_model->validate_edit_zone_fare(arr::extract($values, [
                 'zone_fixed_fare',
-            )),$zone_id);
+            ]),$zone_id);
             if ($validator->check()) {
                  $signup_id = $this->zonefare_model->edit_zone_fare($post_values,$zone_id);
                 if ($signup_id == 1) {
@@ -161,15 +161,15 @@ class Controller_Zonefare extends Controller_Siteadmin
         if ( $page_no == 0 || $page_no == 'index' )
             $page_no = PAGE_NO;
         $offset                     = REC_PER_PAGE * ( $page_no - 1 );
-        $pag_data                   = Pagination::factory( array(
-             'current_page' => array(
+        $pag_data                   = Pagination::factory( [
+             'current_page' => [
                  'source' => 'query_string',
                 'key' => 'page' 
-            ),
+            ],
             'items_per_page' => REC_PER_PAGE,
             'total_items' => count($zone_details),
             'view' => 'pagination/punbb' 
-        ) );
+        ] );
 		$detail_zone = $this->zonefare_model->manage_zone_fare_search($keyword,$status,$offset, REC_PER_PAGE);
         //****pagination ends here***//
 

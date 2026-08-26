@@ -43,15 +43,15 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
             //$this->google_geocode_api = $this->commonmodel->select_site_settings('google_geocode_api',SITEINFO);		
             $this->continuous_request_time = CONTINOUS_REQUEST_TIME;
             $this->currentdate             = Commonfunction::getCurrentTimeStamp();
-			$this->favarray                = array("airport","bank","college","home","hospital","office","park","restaurant","school","store","others");
+			$this->favarray                = ["airport","bank","college","home","hospital","office","park","restaurant","school","store","others"];
         }
         catch (Database_Exception $e) {
             // Insert failed. Rolling back changes...
             // print_r($e);
-            $message = array(
+            $message = [
                 "message" => __('Database Connection Failed'),
                 "status" => 2
-            );
+            ];
             echo json_encode($message);
             exit;
         }
@@ -83,10 +83,10 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
 		$company_split       = explode('_', $company_api_decrypt);
 		
 		if(!isset($company_split[1])) {
-			$message = array(
+			$message = [
                 "message" => __('invalid_company'),
                 "status" => -8
-            );
+            ];
             echo json_encode($message);
             exit;
 		}
@@ -97,22 +97,22 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
         $mobile_encodeddata  = file_get_contents('php://input');
         // Here we are decode the url encoded values and conver the values in to array
         $mobiledata          = (array) json_decode($mobile_encodeddata, true);
-        $errors              = array();
+        $errors              = [];
         $method              = $_REQUEST["type"];
-        $apikey_result       = array();
+        $apikey_result       = [];
         //CHECK FOR VALID API KEY
 		if ($company_api_key != 'all') {
-			$arguments = array(
-				array('$match'=>array(
+			$arguments = [
+				['$match'=>[
 					'companyinfo.company_api_key'=> $company_api_key,					
 					'companydetails.company_status'=>'A'
-				)),
-				array('$project'=>array(
+				]],
+				['$project'=>[
 					'company_cid'=>'$_id',
 					'company_currency'=>'$companyinfo.company_currency',
 					'company_app_description'=>'$companyinfo.company_app_description'
-				)),
-			);
+				]],
+			];
 			$result = $this->mongo_db->aggregate(MDB_COMPANY,$arguments);
 			$apikey_result = $result['result'];		        
         }
@@ -133,7 +133,7 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                 //Company URL : http://192.168.1.88:1000/api/index/dGF4aV9YRlJJb1p0NjdxYTU5ZmlIRFl1OGJPQ0J2elRHQVYxZmY=?type=getcoreconfig
                 //All Company URL : http://192.168.1.88:1000/api/index/dGF4aV9hbGw=/?type=getcoreconfig
                 case 'getcoreconfig':
-					$config_array = array();
+					$config_array = [];
 					$config_array['app_name']               = $this->app_name;
 					$config_array['site_country']           = DEFAULT_COUNTRY;
 					$config_array['site_currency_symbol']          = CURRENCY;
@@ -199,30 +199,30 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
 						$config_array['model_details'] = "model details not found";
 					}
 					/***Get Company car model details end***/
-					$message = array(
+					$message = [
 						"message" => __('success'),
-						"detail" => array($config_array),
+						"detail" => [$config_array],
 						"status" => 1
-					);
+					];
 					echo json_encode($message);
                     break;
                 case 'getmodel_fare_details':
                 
                     $company_model_details = $api->company_model_details($default_companyid);
                     if (count($company_model_details) > 0) {
-                        $details = array(
+                        $details = [
                             "model_details" => $company_model_details
-                        );
-                        $message = array(
+                        ];
+                        $message = [
                             "message" => __('success'),
                             "detail" => $details,
                             "status" => 1
-                        );
+                        ];
                     } else {
-                        $message = array(
+                        $message = [
                             "message" => __('model_detail_not_found'),
                             "status" => 2
-                        );
+                        ];
                     }
                     echo json_encode($message);
                     break;
@@ -275,13 +275,13 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                                     $driver_request_details = $api->get_passenger_cancel_request_data($location_array['driver_id'], $company_id);
 									//print_r($driver_request_details);exit;
                                     if (count($driver_request_details) > 0) {
-                                        $msg                         = array(
+                                        $msg                         = [
                                             "message" => __('passenger_trip_cancelled'),
                                             "status" => 10
-                                        );
-                                        $update_driver_request_array = array(
+                                        ];
+                                        $update_driver_request_array = [
                                             "notification_status" => 5
-                                        ); // Passenger Cancelled
+                                        ]; // Passenger Cancelled
 										if(isset($driver_request_details[0]['trip_id'])){
 											$result                      = $api->update_table(MDB_PASSENGERS_LOGS, $update_driver_request_array, '_id', $driver_request_details[0]['trip_id']);											
 										}                                        
@@ -292,14 +292,14 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                                     $driver_request_details = $api->get_dispatcher_cancel_data($driver_id, $default_companyid);
 									//print_r($driver_request_details);exit;
                                     if (count($driver_request_details)>0) {
-                                        $msg = array(
+                                        $msg = [
                                             "message" => __('dispatcher_trip_cancelled'),
                                             "device_id" => $device_token,
                                             "status" => 10
-                                        );
-                                        $update_driver_array   = array(
+                                        ];
+                                        $update_driver_array   = [
                                             "notification_status" => 5
-                                        );
+                                        ];
 										if(isset($driver_request_details[0]['trip_id'])){
                                         $update_current_result = $api->update_table(MDB_PASSENGERS_LOGS, $update_driver_array, '_id', $driver_request_details[0]['trip_id']);
 										}
@@ -314,19 +314,19 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                                     if (count($coordinates) > 0) {
                                         if (($latitude != 0) && ($longitude != 0)) {											
                                             if (($location_array['trip_id'] == 0) || ($location_array['trip_id'] == "")) {
-                                                $update_driver_array = array(
-													'loc' => array('type' => 'Point',
-																   'coordinates' => array((double)$longitude,(double)$latitude)),
+                                                $update_driver_array = [
+													'loc' => ['type' => 'Point',
+																   'coordinates' => [(double)$longitude,(double)$latitude]],
                                                     'status' => 'F',
                                                     'update_date' => new \MongoDB\BSON\UTCDateTime(strtotime($company_all_currenttimestamp) * 1000)
-                                                );
+                                                ];
                                             } else {
-                                                $update_driver_array = array(
-													"loc" => array("type" => "Point",
-																   "coordinates" => array((double)$longitude,(double)$latitude)),
+                                                $update_driver_array = [
+													"loc" => ["type" => "Point",
+																   "coordinates" => [(double)$longitude,(double)$latitude]],
                                                     "status" => strtoupper($driver_status),
                                                     "update_date" => new \MongoDB\BSON\UTCDateTime(strtotime($company_all_currenttimestamp) * 1000)
-                                                );
+                                                ];
                                             }											
                                             if ($trip_id > 0) {
                                                 $get_passenger_log_details = $api->get_passenger_log_detail($trip_id);
@@ -335,11 +335,11 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                                                     $driver_reply  = (isset($get_passenger_log_details[0]['driver_reply'])) ? $get_passenger_log_details[0]['driver_reply'] : '';
                                                     $travel_status = (isset($get_passenger_log_details[0]['travel_status'])) ? $get_passenger_log_details[0]['travel_status'] : '';
                                                     if (($driver_reply == 'A') && ($travel_status == 4)) {
-                                                        $msg = array(
+                                                        $msg = [
                                                             "message" => __("trip_cancelled_passenger"),
                                                             "detail" => "",
                                                             "status" => 7
-                                                        );
+                                                        ];
                                                         echo json_encode($msg);
                                                         break;
                                                     }
@@ -398,11 +398,11 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
 									}
 									$notification_seconds  = ($notification_seconds < 10) ? '0' . $notification_seconds : $notification_seconds;
                                                     $total_timeout         = $notification_minutes . " : " . $notification_seconds;
-                                                    $trip_details          = array(
+                                                    $trip_details          = [
                                                         "message" => __('api_request_confirmed_passenger'),
                                                         "status" => "1",
                                                         "passengers_log_id" => $check_new_request,
-                                                        "booking_details" => array(
+                                                        "booking_details" => [
                                                             "pickupplace" => $pickupplace,
                                                             "dropplace" => $dropplace,
                                                             "pickup_time" => $pickup_time,
@@ -424,44 +424,44 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                                                             "passenger_name" => $passenger_name,
                                                             "profile_image" => "",
                                                             "drop" => $dropplace
-                                                        ),
+                                                        ],
                                                         "estimated_time" => $time_to_reach_passen,
                                                         "notification_time" => $timeoutseconds,
                                                         "notification_minutes" => $notification_minutes,
                                                         "notification_seconds" => $notification_seconds,
                                                         "notes" => $notes_driver,
                                                         "belowspeed_mins" => $belowspeed_mins
-                                                    );
-                                                    $msg                   = array(
+                                                    ];
+                                                    $msg                   = [
                                                         "message" => __('driver_history_updated'),
                                                         "trip_details" => $trip_details,
                                                         "status" => 5
-                                                    );
+                                                    ];
                                                     $check_another_request = $api->check_new_request_bydriver($driver_id, $company_all_currenttimestamp, $check_new_request);
                                                     if (count($check_another_request) > 0) {
                                                         foreach ($check_another_request as $cns) {
                                                             $api->change_driver_reqflow($cns['trip_id'], $cns['available_drivers'], $cns['rejected_timeout_drivers']);
                                                         }
                                                     }
-                                                    $update_trip_array   = array(
+                                                    $update_trip_array   = [
                                                         "status" => 1
-                                                    );
+                                                    ];
                                                     $result              = $api->update_table(MDB_REQUEST_HISTORY, $update_trip_array, 'trip_id', (int)$check_new_request);
-                                                    $update_driver_array = array(
+                                                    $update_driver_array = [
                                                         "status" => 'B'
-                                                    );
+                                                    ];
                                                     $result              = $api->update_table(MDB_DRIVER_INFO, $update_driver_array, '_id', (int)$driver_id);
                                                 } else {
-                                                    $msg = array(
+                                                    $msg = [
                                                         "message" => __('driver_history_updated'),
                                                         "status" => 1
-                                                    );
+                                                    ];
                                                 }
                                             } else {
-                                                $msg = array(
+                                                $msg = [
                                                     "message" => __('driver_history_updated'),
                                                     "status" => 1
-                                                );
+                                                ];
                                             }
                                         }
                                         /********* Update driver device token every specified seconds *************
@@ -620,12 +620,12 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
 									
                                     /***** Update Driver Current Location ******************************************/
                                     
-									$update_driver_array   = array(
-											"loc" => array("type" => "Point",
-														   "coordinates" => array((double)$longitude,(double)$latitude)),
+									$update_driver_array   = [
+											"loc" => ["type" => "Point",
+														   "coordinates" => [(double)$longitude,(double)$latitude]],
                                             "status" => strtoupper($driver_status),
                                             "update_date" => new \MongoDB\BSON\UTCDateTime(strtotime($this->currentdate) * 1000)
-                                        );
+                                        ];
                                     $update_current_result = $api->update_table(MDB_DRIVER_INFO, $update_driver_array, '_id', (int)$driver_id);
                                     /*******************************************************************************/
                                     $result                = $api->save_driver_location_history($location_array, $default_companyid);
@@ -659,40 +659,40 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                                     /** UPDATE DRIVER IF PASSENGER CONFIRM HIS PAYMENT TYPE **/
                                     $distance              = isset($result[1]) ? $result[1] : 0;
                                     if ($result[0] == 1) {
-                                        $msg = array(
+                                        $msg = [
                                             "message" => __('driver_history_updated'),
                                             "status" => 1,
                                             "distance" => $distance,
                                             "runningtime" => $runningtime,
                                             "payment_type" => $payment_type,
                                             "payment_chosen_flag" => $payment_chosen_flag
-                                        );
+                                        ];
                                     } else if ($result == -1) {
-                                        $msg = array(
+                                        $msg = [
                                             "message" => __('driver_history_already'),
                                             "status" => -1
-                                        );
+                                        ];
                                     } else if ($result == 2) {
-                                        $msg = array(
+                                        $msg = [
                                             "message" => __('invalid_user'),
                                             "status" => 2
-                                        );
+                                        ];
                                     } else if ($result == 3) {
-                                        $msg = array(
+                                        $msg = [
                                             "message" => __('no_access'),
                                             "status" => 3
-                                        );
+                                        ];
                                     } else if ($result == 5) {
-                                        $msg = array(
+                                        $msg = [
                                             "message" => __('driver_history_not_updated'),
                                             "status" => 1,
                                             "distance" => $distance
-                                        );
+                                        ];
                                     } else {
-                                        $msg = array(
+                                        $msg = [
                                             "message" => __('invalid_user'),
                                             "status" => -1
-                                        );
+                                        ];
                                     }
                                 } elseif ($driver_status == 'B') {
 									/* MULTIPLE TRIP FLOW 1 */
@@ -833,12 +833,12 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
 									
                                     /***** Update Driver Current Location *********************************************************/
                                     if (($latitude != 0) && ($longitude != 0)) {
-                                        $update_driver_array   = array(
-											"loc" => array("type" => "Point",
-														   "coordinates" => array((double)$longitude,(double)$latitude)),
+                                        $update_driver_array   = [
+											"loc" => ["type" => "Point",
+														   "coordinates" => [(double)$longitude,(double)$latitude]],
                                             "status" => strtoupper($driver_status),
                                             "update_date" => new \MongoDB\BSON\UTCDateTime(strtotime($company_all_currenttimestamp) * 1000)
-                                        );
+                                        ];
                                         $update_current_result = $api->update_table(MDB_DRIVER_INFO, $update_driver_array, '_id', (int)$driver_id);
                                     }
                                     /**********************************************************************************************/
@@ -846,22 +846,22 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                                     if (count($get_passenger_log_details) > 0) {
                                         $driver_reply  = $get_passenger_log_details[0]['driver_reply'];
                                         $travel_status = $get_passenger_log_details[0]['travel_status'];
-                                        $msg           = array(
+                                        $msg           = [
                                             "message" => __('driver_history_updated'),
                                             "status" => 1
-                                        );
+                                        ];
                                         if (($driver_reply == 'A') && ($travel_status == 4)) {
-                                            $msg = array(
+                                            $msg = [
                                                 "message" => __("trip_cancelled_passenger"),
                                                 "detail" => "",
                                                 "status" => 7
-                                            );
+                                            ];
                                         }
                                     } else {
-                                        $msg = array(
+                                        $msg = [
                                             "message" => __('driver_history_updated'),
                                             "status" => 1
-                                        );
+                                        ];
                                     }
                                     $check_new_request_trip   = $api->check_new_request_bydriver($driver_id, $company_all_currenttimestamp, $trip_id);
                                     $check_driver_status_free = $api->check_driver_status_free($driver_id);
@@ -873,31 +873,31 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                                         }
                                     }
                                 } else {
-                                    $msg = array(
+                                    $msg = [
                                         "message" => __('validation_error'),
                                         "detail" => "",
                                         "status" => -3
-                                    );
+                                    ];
                                 }
                             } else {
                                 $errors = $history_validator->errors('errors');
-                                $msg    = array(
+                                $msg    = [
                                     "message" => __('validation_error'),
                                     "detail" => $errors,
                                     "status" => -3
-                                );
+                                ];
                                 //echo json_encode($msg);
                             }
                         } else {
                             if ($logout_notification == 1 && $logout_status == "N" && $admin_logout_status == 0) {
-                                $msg                        = array(
+                                $msg                        = [
                                     "message" => __('driver_logout_via_admin'),
                                     "status" => 15,
                                     "display" => 1
-                                );
-                                $update_notification_status = array(
+                                ];
+                                $update_notification_status = [
                                     "notification_status" => 0
-                                );
+                                ];
                                 $api->update_table(MDB_PEOPLE, $update_notification_status, '_id', (int)$location_array['driver_id']);
                             } /*else if ($logout_notification == 1 && $logout_status == "N" && $admin_logout_status == '1') {
                                 $msg                        = array(
@@ -910,18 +910,18 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                                 );
                                 $api->update_table(MDB_PEOPLE, $update_notification_status, '_id', (int)$location_array['driver_id']);
                             } */else {
-                                $msg = array(
+                                $msg = [
                                     "message" => __('driver_not_login'),
                                     "status" => 15,
                                     "display" => 0
-                                );
+                                ];
                             }
                         }
                     } else {
-                        $msg = array(
+                        $msg = [
                             "message" => __('invalid_request'),
                             "status" => -4
-                        );
+                        ];
                     }
                     echo json_encode($msg);
                     //unset(Database::$instances['default']);
@@ -951,22 +951,22 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                         $phone_exist        = $api->check_phone_passengers($p_phone, $default_companyid, $country_code);
                         $referralcode_exist = $api->check_referral_code_exist($referral_code, $default_companyid);
                         if ($email_exist > 0) {
-                            $message = array(
+                            $message = [
                                 "message" => __('email_exists'),
                                 "status" => 2
-                            );
+                            ];
                             echo json_encode($message);
                         } else if ($phone_exist > 0) {
-                            $message = array(
+                            $message = [
                                 "message" => __('phone_exists'),
                                 "status" => 3
-                            );
+                            ];
                             echo json_encode($message);
                         } else if (!empty($referral_code) && $referralcode_exist == 0) {
-                            $message = array(
+                            $message = [
                                 "message" => __('referral_code_not_exists'),
                                 "status" => 5
-                            );
+                            ];
                             echo json_encode($message);
                         } else {
                             $image_name = '';
@@ -1007,7 +1007,7 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                             $acc_details_result = $api->passenger_signup_with_referral($mobiledata, $otp, $referral_code, $devicetoken, $device_id, $devicetype, $default_companyid, $accessToken, $uid, $image_name);
                             if ($acc_details_result == 1) {
                                 $mail              = "";
-                                $replace_variables = array(
+                                $replace_variables = [
                                     REPLACE_LOGO => URL_BASE . PUBLIC_FOLDER_IMGPATH . '/logo.png',
                                     REPLACE_SITENAME => $this->app_name,
                                     REPLACE_USERNAME => '',
@@ -1018,7 +1018,7 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                                     REPLACE_COMPANYDOMAIN => $this->domain_name,
                                     REPLACE_COPYRIGHTS => SITE_COPYRIGHT,
                                     REPLACE_COPYRIGHTYEAR => COPYRIGHT_YEAR
-                                );
+                                ];
                                 //$message=$this->emailtemplate->emailtemplate(DOCROOT.TEMPLATEPATH.'otp.html',$replace_variables);
                                 if ($this->lang != 'en') {
                                     if (file_exists(DOCROOT . TEMPLATEPATH . $this->lang . '/otp-' . $this->lang . '.html')) {
@@ -1065,30 +1065,30 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                                     $api->sendSMS($to, $message);
                                     //$result = file_get_contents("http://s1.freesmsapi.com/messages/send?skey=b5cedd7a407366c4b4459d3509d4cebf&message=".urlencode($message)."&senderid=NAJIK&recipient=$to");
                                 }
-                                $detail  = array(
+                                $detail  = [
                                     "email" => $p_email,
                                     "phone" => $p_phone,
                                     "skip_credit" => SKIP_CREDIT_CARD
-                                );
-                                $message = array(
+                                ];
+                                $message = [
                                     "message" => __('account_save_otp'),
                                     "detail" => $detail,
                                     "status" => 1
-                                );
+                                ];
                             } else {
-                                $message = array(
+                                $message = [
                                     "message" => __('try_again'),
                                     "status" => 4
-                                );
+                                ];
                             }
                             echo json_encode($message);
                         }
                     } else {
                         $errors = $p_acc_validator->errors('errors');
-                        $result = array(
+                        $result = [
                             "message" => $errors,
                             "status" => -1
-                        );
+                        ];
                         echo json_encode($result);
                         exit;
                     }
@@ -1102,36 +1102,36 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                     if (!empty($otp)) {
                         $otp_verification = $api->otp_verification($otp, $email);
                         if ($otp_verification > 0) {
-                            $update_passenger_array = array(
+                            $update_passenger_array = [
                                 "user_status" => "A"
-                            ); // activate user if the otp is valid
+                            ]; // activate user if the otp is valid
                             $result                 = $api->update_table(MDB_PASSENGERS, $update_passenger_array, 'email', $email);
-                            $detail                 = array(
+                            $detail                 = [
                                 "email" => $email,
                                 "skip_credit" => SKIP_CREDIT_CARD
-                            );
-                            $msg                    = array(
+                            ];
+                            $msg                    = [
                                 "message" => __('signup_success'),
                                 "detail" => $detail,
                                 "status" => 1
-                            );
+                            ];
                         } else {
 							if($otp_verification == '-2'){
-								$msg = array(
+								$msg = [
                                 "message" => __('otp_expire'),
                                 "status" => 2
-								);
+								];
 							}
-                            $msg = array(
+                            $msg = [
                                 "message" => __('invalid_otp'),
                                 "status" => -2
-                            );
+                            ];
                         }
                     } else {
-                        $msg = array(
+                        $msg = [
                             "message" => __('invalid_request'),
                             "status" => -1
-                        );
+                        ];
                     }
                     echo json_encode($msg);
                     exit;
@@ -1144,29 +1144,29 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                     if (!empty($passenger_id)) {
                         $passenger_wallet = $api->get_passenger_wallet_amount($passenger_id);
                         $siteInfo         = $api->siteinfo_details();
-                        $amount_details   = array(
+                        $amount_details   = [
                             "wallet_amount1" => $siteInfo[0]['wallet_amount1'],
                             "wallet_amount2" => $siteInfo[0]['wallet_amount2'],
                             "wallet_amount3" => $siteInfo[0]['wallet_amount3'],
                             "wallet_amount_range" => $siteInfo[0]['wallet_amount_range']
-                        );
+                        ];
                         if (count($passenger_wallet) > 0) {
-                            $msg = array(
+                            $msg = [
                                 "wallet_amount" => $passenger_wallet[0]['wallet_amount'],
                                 "amount_details" => $amount_details,
                                 "status" => 1
-                            );
+                            ];
                         } else {
-                            $msg = array(
+                            $msg = [
                                 "message" => __('invalid_user'),
                                 "status" => -2
-                            );
+                            ];
                         }
                     } else {
-                        $msg = array(
+                        $msg = [
                             "message" => __('invalid_request'),
                             "status" => -1
-                        );
+                        ];
                     }
                     echo json_encode($msg);
                     exit;
@@ -1196,32 +1196,32 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                         }
                         $credit_card_sts = ($wallAmount >= $cancelFare) ? 0 : SKIP_CREDIT_CARD;
                         if ($passenger_wallet == 1) {
-                            $msg = array(
+                            $msg = [
                                 "message" => __('amount_added_wallet'),
                                 "credit_card_status" => $credit_card_sts,
                                 "status" => 1
-                            );
+                            ];
                         } else if ($passenger_wallet == 0) {
                             $gateway_response = isset($_SESSION['paymentresponse']['L_LONGMESSAGE0']) ? $_SESSION['paymentresponse']['L_LONGMESSAGE0'] : 'Payment Failed';
-                            $msg              = array(
+                            $msg              = [
                                 "message" => $gateway_response,
                                 "gateway_response" => $gateway_response,
                                 "status" => 0
-                            );
+                            ];
                         } else {
-                            $msg = array(
+                            $msg = [
                                 "message" => __('no_payment_gateway'),
                                 "status" => -1
-                            );
+                            ];
                         }
                     } else {
                         //$msg = array("message" => __('invalid_request'),"status"=>-1);
                         $errors = $p_validator->errors('errors');
-                        $msg    = array(
+                        $msg    = [
                             "message" => __('validation_error'),
                             "detail" => $errors,
                             "status" => -1
-                        );
+                        ];
                     }
                     echo json_encode($msg);
                     exit;
@@ -1231,26 +1231,26 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                     if (!empty($passenger_id)) {
                         $passengerReferral = $api->get_passenger_wallet_amount($passenger_id);
                         if (count($passengerReferral) > 0) {
-                            $detail = array(
+                            $detail = [
                                 "referral_code" => $passengerReferral[0]['referral_code'],
                                 "referral_amount" => $passengerReferral[0]['referral_code_amount']
-                            );
-                            $msg    = array(
+                            ];
+                            $msg    = [
                                 "message" => __('referral_amount'),
                                 "detail" => $detail,
                                 "status" => 1
-                            );
+                            ];
                         } else {
-                            $msg = array(
+                            $msg = [
                                 "message" => __('invalid_user'),
                                 "status" => -2
-                            );
+                            ];
                         }
                     } else {
-                        $msg = array(
+                        $msg = [
                             "message" => __('invalid_request'),
                             "status" => -1
-                        );
+                        ];
                     }
                     echo json_encode($msg);
                     break;
@@ -1263,36 +1263,36 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                         //echo $check_promo;
                         //exit;
                         if ($check_promo == 0) {
-                            $msg = array(
+                            $msg = [
                                 "message" => __('invalid_promocode_wallet'),
                                 "status" => 3
-                            );
+                            ];
                         } else if ($check_promo == 3) {
-                            $msg = array(
+                            $msg = [
                                 "message" => __('promo_code_startdate'),
                                 "status" => 3
-                            );
+                            ];
                         } else if ($check_promo == 4) {
-                            $msg = array(
+                            $msg = [
                                 "message" => __('promo_code_expired'),
                                 "status" => 3
-                            );
+                            ];
                         } else if ($check_promo == 2) {
-                            $msg = array(
+                            $msg = [
                                 "message" => __('promo_code_limit_exceed'),
                                 "status" => 3
-                            );
+                            ];
                         } else {
-                            $msg = array(
+                            $msg = [
                                 "message" => __('promocode_valid'),
                                 "status" => 1
-                            );
+                            ];
                         }
                     } else {
-                        $msg = array(
+                        $msg = [
                             "message" => __('invalid_request'),
                             "status" => -1
-                        );
+                        ];
                     }
                     echo json_encode($msg);
                     exit;
@@ -1394,7 +1394,7 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
 				*/
 				case 'passenger_account_registration_step1':
 					$fromIndex = array_keys($mobiledata);
-					$requireIndex = array('phone','devicetoken','deviceid','devicetype');
+					$requireIndex = ['phone','devicetoken','deviceid','devicetype'];
 					sort($fromIndex);
 					sort($requireIndex);
 					
@@ -1417,10 +1417,10 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
 										$message         = str_replace("##VERIFY_CODE##", $verification_code, $message);
 										$message         = str_replace("##SITE_NAME##", SITE_NAME, $message);
 										$send            = $api->sendSMS($to, $message);
-										$result = array(
+										$result = [
 											"message" => __('verification_code_sent'),										
 											"status" => 3
-										);										
+										];										
 										echo json_encode($result);
 										exit;
 								}								
@@ -1435,45 +1435,45 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
 										$message         = str_replace("##VERIFY_CODE##", $verification_code, $message);
 										$message         = str_replace("##SITE_NAME##", SITE_NAME, $message);
 										$api->sendSMS($to, $message);
-										$result = array(
+										$result = [
 											"message" => __('verification_code_sent'),										
 											"status" => 1
-										);										
+										];										
 										echo json_encode($result);
 										exit;
 									}
 								} else {
-									$result = array(
+									$result = [
 										"message" => __('verification_code_already_sent'),										
 										"status" => 2
-									);										
+									];										
 									echo json_encode($result);
 									exit;
 								}
 							}
 						}  else {
 							$errors = $p_acc_validator->errors('errors');
-							$result = array(
+							$result = [
 								"message" => $errors,
 								"status" => -1
-							);
+							];
 							echo json_encode($result);
 							exit;
 						}							
 					} else {
 						$diffIndex = array_diff($requireIndex,$fromIndex);
 						$errors = 'Missing following params '.implode(',',$diffIndex);
-                        $result = array(
+                        $result = [
                             "message" => $errors,
                             "status" => -1
-                        );
+                        ];
                         echo json_encode($result);
                         exit;
 					}					
 				break;
 				case 'passenger_account_registration_step2':
 					$fromIndex = array_keys($mobiledata);
-					$requireIndex = array('phone','verification_code');
+					$requireIndex = ['phone','verification_code'];
 					sort($fromIndex);
 					sort($requireIndex);
 					if($fromIndex == $requireIndex) {
@@ -1493,49 +1493,49 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
 									$updatestatus = $api->update_passenger_status($p_phone);
 									$infoDetails = $api->passenger_login_details_with_phone($p_phone);
 									if(!empty($infoDetails)) {
-										$result = array(
+										$result = [
 											"message" => __('valid_verification_code'),
 											"details" => $infoDetails,
 											"status" => 1
-										);
+										];
 									} else {
-										$result = array(
+										$result = [
 											"message" => __('valid_verification_code'),
 											"status" => 1
-										);
+										];
 									}
 								} else {
-									$result = array(
+									$result = [
 										"message" => __('valid_verification_code'),
 										"status" => 1
-									);
+									];
 								}
 								echo json_encode($result);
 								exit;
 							} else {
-								$result = array(
+								$result = [
 									"message" => __('invalid_verification_code'),
 									"status" => -1
-								);
+								];
 								echo json_encode($result);
 								exit;
 							}							
 						} else {
 							$errors = $p_acc_validator->errors('errors');
-							$result = array(
+							$result = [
 								"message" => $errors,
 								"status" => -1
-							);
+							];
 							echo json_encode($result);
 							exit;
 						}
 					} else {
 						$diffIndex = array_diff($requireIndex,$fromIndex);
 						$errors = 'Missing following params '.implode(',',$diffIndex);
-                        $result = array(
+                        $result = [
                             "message" => $errors,
                             "status" => -1
-                        );
+                        ];
                         echo json_encode($result);
                         exit;
 					}
@@ -1544,7 +1544,7 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
 					//$mobiledata = array_merge($_POST);
 					$fromIndex = array_keys($mobiledata);
 					
-					$requireIndex = array('phone','firstname','lastname','email','civilid','creditcard_no','expdatemonth','expdateyear','creditcard_cvv','cardholder_name','civilid_front','civilid_back');
+					$requireIndex = ['phone','firstname','lastname','email','civilid','creditcard_no','expdatemonth','expdateyear','creditcard_cvv','cardholder_name','civilid_front','civilid_back'];
 					sort($fromIndex);
 					sort($requireIndex);
 					
@@ -1557,10 +1557,10 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
 							$email_exist = $api->check_email_passengers($p_email, $default_companyid);
 							
 							if ($email_exist > 0) {
-								$message = array(
+								$message = [
 									"message" => __('email_exists'),
 									"status" => 2
-								);
+								];
 								echo json_encode($message);
 							} else {
 								$uploaddir = PASS_CIVIL_IMGPATH;
@@ -1663,7 +1663,7 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
 								
 								$mail="";
 								
-								$replace_variables=array(REPLACE_LOGO=>URL_BASE.PUBLIC_FOLDER_IMGPATH.'/logo.png',REPLACE_SITENAME=>$this->app_name,REPLACE_USERNAME=>$mobiledata['firstname'],REPLACE_SITELINK=>URL_BASE.'users/contactinfo/',REPLACE_SITEEMAIL=>$this->siteemail,REPLACE_SITEURL=>URL_BASE,REPLACE_MOBILE=>$p_phone,REPLACE_PASSWORD => $info[0]['org_password'],REPLACE_COPYRIGHTS=>SITE_COPYRIGHT,REPLACE_ANDROID_PASSENGER_APP => ANDROID_PASSENGER_APP,REPLACE_IOS_PASSENGER_APP => IOS_PASSENGER_APP);								
+								$replace_variables=[REPLACE_LOGO=>URL_BASE.PUBLIC_FOLDER_IMGPATH.'/logo.png',REPLACE_SITENAME=>$this->app_name,REPLACE_USERNAME=>$mobiledata['firstname'],REPLACE_SITELINK=>URL_BASE.'users/contactinfo/',REPLACE_SITEEMAIL=>$this->siteemail,REPLACE_SITEURL=>URL_BASE,REPLACE_MOBILE=>$p_phone,REPLACE_PASSWORD => $info[0]['org_password'],REPLACE_COPYRIGHTS=>SITE_COPYRIGHT,REPLACE_ANDROID_PASSENGER_APP => ANDROID_PASSENGER_APP,REPLACE_IOS_PASSENGER_APP => IOS_PASSENGER_APP];								
 								if ($this->lang != 'en') {
 									if (file_exists(DOCROOT . TEMPLATEPATH . $this->lang . '/passenger-register-' . $this->lang . '.html')) {
 										$message = $this->emailtemplate->emailtemplate(DOCROOT . TEMPLATEPATH . $this->lang . '/passenger-register-' . $this->lang . '.html', $replace_variables);
@@ -1677,7 +1677,7 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
 								
 								if(SMTP == 1) {
 									$notify = App::helper('notification');
-									$notify->setReceivers(array($p_email));
+									$notify->setReceivers([$p_email]);
 									$notify->setSubject($subject);
 									$notify->setContent($message);
 									$notify->sendNotification();
@@ -1698,22 +1698,22 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
 									$message         = str_replace("##SITE_NAME##", SITE_NAME, $message);
 									$api->sendSMS($to, $message);
 									$infoDetails = $api->passenger_login_details($info[0]['_id']);
-									$result = array(
+									$result = [
 										"message" => __('account_saved'),
 										"video_url" => VIDEO_URL,
 										"details" => $infoDetails,
 										"status" => 1
-									);
+									];
 									echo json_encode($result);
 									exit;
 								}
 							}
 						}  else {
 							$errors = $p_acc_validator->errors('errors');
-							$result = array(
+							$result = [
 								"message" => $errors,
 								"status" => -1
-							);
+							];
 							
 							echo json_encode($result);
 							exit;
@@ -1721,54 +1721,54 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
 					} else {
 						$diffIndex = array_diff($requireIndex,$fromIndex);
 						$errors = 'Missing following params '.implode(',',$diffIndex);
-                        $result = array(
+                        $result = [
                             "message" => $errors,
                             "status" => -1
-                        );
+                        ];
                         echo json_encode($result);
                         exit;
 					}					
 				break;
 				case 'child_account_types':
 					$details = $api->getChildAccounts($this->lang);
-					$result = array(
+					$result = [
                             "message" => __('child_account_details'),
 							"detail" => $details,
                             "status" => 1
-                        );
+                        ];
 					echo json_encode($result);
 					exit;
 				break;
 				case 'get_taxi_list':
 					$fromIndex = array_keys($mobiledata);
-					$requireIndex = array('taxi_model','taxi_no');
+					$requireIndex = ['taxi_model','taxi_no'];
 					sort($fromIndex);
 					sort($requireIndex);
 					
 					if($fromIndex == $requireIndex) {
-						$taxiModels = array(1,2,3,4);
+						$taxiModels = [1,2,3,4];
 						if(!in_array($mobiledata['taxi_model'], $taxiModels)) {
-							$result = array(
+							$result = [
 								"message" => __('invalid_model'),
 								"status" => -1
-							);
+							];
 							echo json_encode($result);
 							exit;
 						}
 						$details = $api->getTaxiList($mobiledata['taxi_model'],$mobiledata['taxi_no']);
 						if(!empty($details)){
-						$result = array(
+						$result = [
 								"message" => __('taxi_list'),
 								"detail" => $details,
 								"status" => 1
-							);
+							];
 						echo json_encode($result);
 						exit;
 					}else {
-						 $result = array(
+						 $result = [
                             "message" => __('no_vehicle_found'),
                             "status" => -1
-                        );
+                        ];
                         echo json_encode($result);
                         exit;
 						
@@ -1776,16 +1776,16 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
 					} else {
 						$diffIndex = array_diff($requireIndex,$fromIndex);
 						$errors = 'Missing following params '.implode(',',$diffIndex);
-                        $result = array(
+                        $result = [
                             "message" => $errors,
                             "status" => -1
-                        );
+                        ];
                         echo json_encode($result);
                         exit;
 					}
 				break;				
 				case 'child_passenger_account_details':
-					$requireIndex = array('parent_id','account_type','email','phone','name','lastname','allow_creditcard');
+					$requireIndex = ['parent_id','account_type','email','phone','name','lastname','allow_creditcard'];
 					$fromIndex = array_keys($mobiledata);
 					sort($fromIndex);
 					sort($requireIndex);
@@ -1803,16 +1803,16 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
 							$phone_exist = $api->check_phone_passengers_register($p_phone, $default_companyid);
 							
 							if ($email_exist > 0) {
-								$message = array(
+								$message = [
 									"message" => __('email_exists'),
 									"status" => 2
-								);
+								];
 								echo json_encode($message);
 							} else if ($phone_exist > 0) {
-								$message = array(
+								$message = [
 									"message" => __('phone_exists'),
 									"status" => 3
-								);
+								];
 								echo json_encode($message);
 							} else {
 								$otp                = text::random($type = 'numeric', $length = 4);
@@ -1825,13 +1825,13 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
 									$updateChild = $api->update_child($p_parent_id);
 									$requestDetails = $api->insert_child_request($p_account_type,$p_parent_id,$p_name,$p_phone,$p_email,$acc_details_result);
 									
-									$replace_variables=array(REPLACE_LOGO=>URL_BASE.PUBLIC_FOLDER_IMGPATH.'/logo.png',REPLACE_SITENAME=>'taxi',REPLACE_USERNAME=>'',REPLACE_OTP=>$otp,REPLACE_SITELINK=>URL_BASE.'users/contactinfo/',REPLACE_SITEEMAIL=>'taxi',REPLACE_SITEURL=>URL_BASE,REPLACE_PARENTID=>$username);									
+									$replace_variables=[REPLACE_LOGO=>URL_BASE.PUBLIC_FOLDER_IMGPATH.'/logo.png',REPLACE_SITENAME=>'taxi',REPLACE_USERNAME=>'',REPLACE_OTP=>$otp,REPLACE_SITELINK=>URL_BASE.'users/contactinfo/',REPLACE_SITEEMAIL=>'taxi',REPLACE_SITEURL=>URL_BASE,REPLACE_PARENTID=>$username];									
 									$message=$this->emailtemplate->emailtemplate(DOCROOT.TEMPLATEPATH.'child_registration.html',$replace_variables);
 									$subject = __('add_child_request')." - ".'taxi';;
 										
 									if(SMTP == 1) {
 										$notify = App::helper('notification');
-										$notify->setReceivers(array($p_email));
+										$notify->setReceivers([$p_email]);
 										$notify->setSubject($subject);
 										$notify->setContent($message);
 										$notify->sendNotification();
@@ -1857,40 +1857,40 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
 										$message         = str_replace("##IOS_PASSENGER_APP##", IOS_PASSENGER_APP, $message);
 										$api->sendSMS($to, $message);										
 									}
-									$detail  = array(
+									$detail  = [
 										"email" => $p_email,
 										"skip_credit" => SKIP_CREDIT_CARD
-									);
-									$message = array(
+									];
+									$message = [
 										"message" => __('account_saved'),
 										"detail" => $detail,
 										"status" => 1
-									);
+									];
 								} else {
-									$message = array(
+									$message = [
 										"message" => __('try_again'),
 										"status" => 4
-									);
+									];
 								}
 								echo json_encode($message);
 								exit;
 							}
 						} else {
 							$errors = $p_acc_validator->errors('errors');
-							$result = array(
+							$result = [
 								"message" => $errors,
 								"status" => -1
-							);
+							];
 							echo json_encode($result);
 							exit;
 						}
 					} else {
 						$diffIndex = array_diff($requireIndex,$fromIndex);
 						$errors = 'Missing following params '.implode(',',$diffIndex);
-                        $result = array(
+                        $result = [
                             "message" => $errors,
                             "status" => -1
-                        );
+                        ];
                         echo json_encode($result);
                         exit;						
 					}
@@ -1913,27 +1913,27 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                                 $message         = str_replace("##SITE_NAME##", SITE_NAME, $message);
                                 $api->sendSMS($to, $message);
                             }
-                            $detail  = array(
+                            $detail  = [
                                 "phone" => $phone
-                            );
-                            $message = array(
+                            ];
+                            $message = [
                                 "message" => __('resend_otp'),
                                 "detail" => $detail,
                                 "status" => 1
-                            );
+                            ];
                         } else {
-                            $message = array(
+                            $message = [
                                 "message" => __('try_again'),
                                 "status" => 4
-                            );
+                            ];
                         }
                         echo json_encode($message);
                         exit;
                     } else {
-                        $result = array(
+                        $result = [
                             "message" => __('missing_phone_number'),
                             "status" => -1
-                        );
+                        ];
                         echo json_encode($result);
                         exit;
                     }
@@ -1981,10 +1981,10 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                                     $referred_passenger_id = $validate_referral_code[0]['id'];
                                 } else {
                                     //$referred_passenger_id = '';
-                                    $message = array(
+                                    $message = [
                                         "message" => __('invalid_referral_code'),
                                         "status" => 3
-                                    );
+                                    ];
                                     echo json_encode($message);
                                     exit;
                                 }
@@ -2014,7 +2014,7 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                                     $path12 = $thumb_image_name;
                                     //Commonfunction::imageresize($d_image,PASS_THUMBIMG_WIDTH, PASS_THUMBIMG_HEIGHT,$path11,$thumb_image_name,90);
                                     Commonfunction::imageoriginalsize($d_image, $path11, $thumb_image_name, 90);
-                                    $update_array = array(
+                                    $update_array = [
                                         "salutation" => $p_personal_array['salutation'],
                                         "name" => $p_personal_array['firstname'],
                                         "lastname" => $p_personal_array['lastname'],
@@ -2022,24 +2022,24 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                                         "profile_image" => $image_name,
                                         "user_status" => 'A',
                                         "activation_status" => 1
-                                    );
+                                    ];
                                     $message      = $api->save_passenger_personaldata($update_array, $referred_passenger_id, $default_companyid);
                                     //chmod($image_path, 0777);                    
                                 } else {
-                                    $message = array(
+                                    $message = [
                                         "message" => __('image_not_upload'),
                                         "status" => 4
-                                    );
+                                    ];
                                 }
                             } else {
-                                $update_array = array(
+                                $update_array = [
                                     "salutation" => $p_personal_array['salutation'],
                                     "name" => $p_personal_array['firstname'],
                                     "lastname" => $p_personal_array['lastname'],
                                     "email" => $p_personal_array['email'],
                                     "user_status" => 'A',
                                     "activation_status" => 1
-                                );
+                                ];
                                 $message      = $api->save_passenger_personaldata($update_array, $referred_passenger_id, $default_companyid);
                             }
                             /*****************************************/
@@ -2050,21 +2050,21 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                                     $id    = $passenger_details[0]['id'];
                                     $email = $passenger_details[0]['email'];
                                 }
-                                $detail  = array(
+                                $detail  = [
                                     "passenger_id" => $id,
                                     "skip_credit" => SKIP_CREDIT_CARD
-                                );
-                                $message = array(
+                                ];
+                                $message = [
                                     "message" => __('personal_updated'),
                                     "detail" => $detail,
                                     "status" => 1
-                                );
+                                ];
                             }
                             if ($message == -1) {
-                                $message = array(
+                                $message = [
                                     "message" => __('try_again'),
                                     "status" => -1
-                                );
+                                ];
                             }
                             /*	}
                             else
@@ -2078,16 +2078,16 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                             }*/
                         } else {
                             $validation_error = $validator->errors('errors');
-                            $message          = array(
+                            $message          = [
                                 "message" => $validation_error,
                                 "status" => -3
-                            );
+                            ];
                         }
                     } else {
-                        $message = array(
+                        $message = [
                             "message" => __('invalid_email'),
                             "status" => -4
-                        );
+                        ];
                     }
                     echo json_encode($message);
                     break;
@@ -2107,10 +2107,10 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                             //print_r($authorize_status);
                             //exit;
                             if ($authorize_status == 0) {
-                                $message = array(
+                                $message = [
                                     "message" => __('invalid_card'),
                                     "status" => 2
-                                );
+                                ];
                                 echo json_encode($message);
                                 exit;
                             }
@@ -2118,7 +2118,7 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                             
                             if ($result == 2) {
                                 $passenger_details = $api->passenger_detailsbyemail($email, $default_companyid);
-                                $total_array       = array();
+                                $total_array       = [];
                                 if (count($result) > 0) {
                                     if ((!empty($passenger_details[0]['profile_image'])) && file_exists($_SERVER['DOCUMENT_ROOT'] . '/' . PASS_IMG_IMGPATH . 'thumb_' . $passenger_details[0]['profile_image'])) {
                                         $profile_image = URL_BASE . PASS_IMG_IMGPATH . 'thumb_' . $passenger_details[0]['profile_image'];
@@ -2176,7 +2176,7 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                                 $p_password        = isset($passenger_details[0]['org_password']) ? $passenger_details[0]['org_password'] : '';
                                 $mobile_no         = isset($passenger_details[0]['phone']) ? $passenger_details[0]['country_code'] . $passenger_details[0]['phone'] : '';
                                 $username          = isset($passenger_details[0]['name']) ? $passenger_details[0]['name'] : '';
-                                $replace_variables = array(
+                                $replace_variables = [
                                     REPLACE_LOGO => URL_BASE . PUBLIC_FOLDER_IMGPATH . '/logo.png',
                                     REPLACE_SITENAME => $this->app_name,
                                     REPLACE_USERNAME => $username,
@@ -2188,7 +2188,7 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                                     REPLACE_COMPANYDOMAIN => $this->domain_name,
                                     REPLACE_COPYRIGHTS => SITE_COPYRIGHT,
                                     REPLACE_COPYRIGHTYEAR => COPYRIGHT_YEAR
-                                );
+                                ];
                                 //$message=$this->emailtemplate->emailtemplate(DOCROOT.TEMPLATEPATH.'driver-register.html',$replace_variables);
                                 /* Added for language email template */
                                 if ($this->lang != 'en') {
@@ -2217,42 +2217,42 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                                     mail($to, $subject, $message, $headers);
                                 }
                                 /*** Update Pssenger password as empty ************/
-                                $update_passenger_array = array(
+                                $update_passenger_array = [
                                     "org_password" => ""
-                                ); // 
+                                ]; // 
                                 $result                 = $api->update_table(PASSENGERS, $update_passenger_array, 'id', $passenger_id);
                                 /***************************************************/
-                                $message                = array(
+                                $message                = [
                                     "message" => __('signup_success'),
                                     "detail" => $total_array,
                                     "status" => 1
-                                );
+                                ];
                             } elseif ($result == 2) {
-                                $message = array(
+                                $message = [
                                     "message" => __('you_have_detail'),
                                     "status" => 3
-                                );
+                                ];
                             } else {
-                                $message = array(
+                                $message = [
                                     "message" => __('try_again'),
                                     "status" => 1
-                                );
+                                ];
                             }
                         } else {
                             $validation_error = $card_validation->errors('errors');
-                            $message          = array(
+                            $message          = [
                                 "message" => __('validation_error'),
                                 "detail" => $validation_error,
                                 "status" => -3
-                            );
+                            ];
                         }
                     } else {
-                        $update_cred_sts       = array(
+                        $update_cred_sts       = [
                             "skip_credit_card" => '1'
-                        );
+                        ];
                         $update_current_result = $api->update_table(PASSENGERS, $update_cred_sts, 'email', $email);
                         $passenger_details     = $api->passenger_detailsbyemail($email, $default_companyid);
-                        $total_array           = array();
+                        $total_array           = [];
                         if (count($passenger_details) > 0) {
                             if ((!empty($passenger_details[0]['profile_image'])) && file_exists($_SERVER['DOCUMENT_ROOT'] . '/' . PASS_IMG_IMGPATH . 'thumb_' . $passenger_details[0]['profile_image'])) {
                                 $profile_image = URL_BASE . PASS_IMG_IMGPATH . 'thumb_' . $passenger_details[0]['profile_image'];
@@ -2308,7 +2308,7 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                         $p_password        = isset($passenger_details[0]['org_password']) ? $passenger_details[0]['org_password'] : '';
                         $mobile_no         = isset($passenger_details[0]['phone']) ? $passenger_details[0]['phone'] : '';
                         $username          = isset($passenger_details[0]['name']) ? $passenger_details[0]['name'] : '';
-                        $replace_variables = array(
+                        $replace_variables = [
                             REPLACE_LOGO => URL_BASE . PUBLIC_FOLDER_IMGPATH . '/logo.png',
                             REPLACE_SITENAME => $this->app_name,
                             REPLACE_USERNAME => $username,
@@ -2320,7 +2320,7 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                             REPLACE_COMPANYDOMAIN => $this->domain_name,
                             REPLACE_COPYRIGHTS => SITE_COPYRIGHT,
                             REPLACE_COPYRIGHTYEAR => COPYRIGHT_YEAR
-                        );
+                        ];
                         //$message=$this->emailtemplate->emailtemplate(DOCROOT.TEMPLATEPATH.'driver-register.html',$replace_variables);
                         /* Added for language email template */
                         if ($this->lang != 'en') {
@@ -2348,16 +2348,16 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                             mail($to, $subject, $message, $headers);
                         }
                         /*** Update Pssenger password as empty ************/
-                        $update_passenger_array = array(
+                        $update_passenger_array = [
                             "org_password" => ""
-                        ); // 
+                        ]; // 
                         $result                 = $api->update_table(PASSENGERS, $update_passenger_array, 'id', $passenger_id);
                         /***************************************************/
-                        $message                = array(
+                        $message                = [
                             "message" => __('signup_success'),
                             "detail" => $total_array,
                             "status" => 1
-                        );
+                        ];
                     }
                     echo json_encode($message);
                     break;
@@ -2376,39 +2376,39 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                                 if ($referral_used == 0) {
                                     $save_referral = $api->save_referral_code($passenger_details[0]['id'], $referral_code, $default_companyid, $passenger_details[0]['device_id'], $passenger_details[0]['device_token']);
                                     if ($save_referral == 1) {
-                                        $message = array(
+                                        $message = [
                                             "message" => __('referral_code_save_successful'),
                                             "status" => 1
-                                        );
+                                        ];
                                     } else {
-                                        $message = array(
+                                        $message = [
                                             "message" => __('try_again'),
                                             "status" => -1
-                                        );
+                                        ];
                                     }
                                 } else {
-                                    $message = array(
+                                    $message = [
                                         "message" => __('referral_code_already_used'),
                                         "status" => 4
-                                    );
+                                    ];
                                 }
                             } else {
-                                $message = array(
+                                $message = [
                                     "message" => __('invalid_user'),
                                     "status" => -1
-                                );
+                                ];
                             }
                         } else {
-                            $message = array(
+                            $message = [
                                 "message" => __('referral_code_not_exists'),
                                 "status" => -1
-                            );
+                            ];
                         }
                     } else {
-                        $message = array(
+                        $message = [
                             "message" => __('referral_code_not_empty'),
                             "status" => -1
-                        );
+                        ];
                     }
                     echo json_encode($message);
                     break;
@@ -2476,7 +2476,7 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                     $config_array                          = $api->select_site_settings($default_companyid);
                     //print_r($config_array);exit;
                     //echo 'as'.$status;exit;								
-                    $total_array                           = array();
+                    $total_array                           = [];
                     $result                                = $passenger_details;
                     $fbemail                               = '';
                     $skip_credit_card                      = 2;
@@ -2520,20 +2520,20 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                             $total_array['model_details'] = "model details not found";
                         }
                         /***Get Company car model details end***/
-                        $message = array(
+                        $message = [
                             "message" => __('succesful_login_flash'),
                             "detail" => $total_array,
                             "status" => 1
-                        ); //url::redirect(PATH);																
+                        ]; //url::redirect(PATH);																
                     } else if ($status == 2) {
-                        $detail  = array(
+                        $detail  = [
                             "email" => $fbemail
-                        );
-                        $message = array(
+                        ];
+                        $message = [
                             "message" => __('account_saved_withoutmobile'),
                             "detail" => $detail,
                             "status" => 2
-                        );
+                        ];
                         //$message = array("message"=>__('account_saved_withoutmobile'),"status"=>2);					 
                     }
                     /*else if($status==3)
@@ -2542,11 +2542,11 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                     } */
                     else if ($status == 4 || $status == 3) {
                         if (SKIP_CREDIT_CARD != 1 || $skip_credit_card != 1) {
-                            $message = array(
+                            $message = [
                                 "message" => __('p_card_data_not_filled'),
                                 "detail" => $total_array,
                                 "status" => 4
-                            );
+                            ];
                         } else {
                             /***Get Company car model details start***/
                             $company_model_details = $api->company_model_details($default_companyid);
@@ -2556,27 +2556,27 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                                 $total_array['model_details'] = "model details not found";
                             }
                             /***Get Company car model details end***/
-                            $message = array(
+                            $message = [
                                 "message" => __('succesful_login_flash'),
                                 "detail" => $total_array,
                                 "status" => 1
-                            );
+                            ];
                         }
                     } else if ($status == -2) {
                         //$message = array("message"=>__('email_exists'),"status"=>-2);		
-                        $detail  = array(
+                        $detail  = [
                             "email" => $email
-                        );
-                        $message = array(
+                        ];
+                        $message = [
                             "message" => __('account_not_activated'),
                             "detail" => $detail,
                             "status" => -2
-                        );
+                        ];
                     } else {
-                        $message = array(
+                        $message = [
                             "message" => __('facebook_error'),
                             "status" => -1
-                        );
+                        ];
                     }
                     echo json_encode($message);
                     break;
@@ -2588,10 +2588,10 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                     $country_code = isset($array['country_code']) ? $array['country_code'] : '';
                     $phone_exist  = $api->check_phone_bypassengers($mobile, $email, $default_companyid, $country_code);
                     if ($phone_exist != 0) {
-                        $message = array(
+                        $message = [
                             "message" => __('phone_exists'),
                             "status" => 4
-                        );
+                        ];
                     } else {
                         if ($email != null && $mobile != null) {
                             $status = $api->update_passenger_mobile($email, $mobile, '', '', '', '', $default_companyid, $country_code);
@@ -2629,7 +2629,7 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                                     $message         = str_replace("##SITE_NAME##", SITE_NAME, $message);
                                     $api->sendSMS($to, $message);
                                 }
-                                $total_array = array();
+                                $total_array = [];
                                 if (count($passenger_details) > 0) {
                                     $total_array['id']      = $passenger_details[0]['id'];
                                     $total_array['name']    = $passenger_details[0]['name'];
@@ -2637,25 +2637,25 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                                     $total_array['phone']   = $passenger_details[0]['phone'];
                                     $total_array['address'] = $passenger_details[0]['address'];
                                 }
-                                $detail  = array(
+                                $detail  = [
                                     "passenger_id" => $id
-                                );
-                                $message = array(
+                                ];
+                                $message = [
                                     "message" => __('account_saved'),
                                     "detail" => $total_array,
                                     "status" => 1
-                                );
+                                ];
                             } else {
-                                $message = array(
+                                $message = [
                                     "message" => __('try_again'),
                                     "status" => 2
-                                );
+                                ];
                             }
                         } else {
-                            $message = array(
+                            $message = [
                                 "message" => __('invalid_user'),
                                 "status" => 3
-                            );
+                            ];
                         }
                     }
                     echo json_encode($message);
@@ -2668,10 +2668,10 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                     if ($validator->check()) {
                         $phone_exist = $api->check_phone_passengers($p_login_array['phone'], $default_companyid, $p_login_array['country_code']);
                         if ($phone_exist == 0) {
-                            $message = array(
+                            $message = [
                                 "message" => __('phone_not_exists'),
                                 "status" => 2
-                            );
+                            ];
                             echo json_encode($message);
                             break;
                         } 
@@ -2686,22 +2686,22 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                                 $device_id       = $result[0]['device_token'];
                                 $login_status    = $result[0]['login_status'];
                                 if ($user_status == 'D' || $user_status == 'T') {
-                                    $message = array(
+                                    $message = [
                                         "message" => __('user_blocked'),
                                         "status" => 3
-                                    );
+                                    ];
                                 } else if ($user_status == 'I') {
-                                    $detail  = array(
+                                    $detail  = [
                                         "email" => $passenger_email,
                                         "phone" => $p_login_array['phone'],
                                         "passenger_id" => $passenger_id
-                                    );
+                                    ];
                                     //$message = array("message" => __('p_personal_data_not_filled'),"detail"=>$detail,"status"=> -2);								
-                                    $message = array(
+                                    $message = [
                                         "message" => __('account_not_activated'),
                                         "detail" => $detail,
                                         "status" => -2
-                                    );
+                                    ];
                                 } else {
                                     $device_token = isset($p_login_array['devicetoken']) ? $p_login_array['devicetoken'] : '';
                                     $device_id;
@@ -2711,29 +2711,29 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                                     //variable to know whether the passenger have credit card
                                     $credit_card_sts     = ($check_card_data == 0) ? 0 : 1;
                                     if ($check_personal_date == 1) {
-                                        $detail  = array(
+                                        $detail  = [
                                             "email" => $passenger_email,
                                             "phone" => $p_login_array['phone'],
                                             "passenger_id" => $passenger_id
-                                        );
-                                        $message = array(
+                                        ];
+                                        $message = [
                                             "message" => __('p_personal_data_not_filled'),
                                             "status" => -2,
                                             "detail" => $detail
-                                        );
+                                        ];
                                     }
                                     //else if(SKIP_CREDIT_CARD !=1 && $check_card_data == 0)
                                     else if ($result[0]['skip_credit_card'] != 1 && $check_card_data == 0) {
-                                        $detail  = array(
+                                        $detail  = [
                                             "email" => $passenger_email,
                                             "phone" => $p_login_array['phone'],
                                             "passenger_id" => $passenger_id
-                                        );
-                                        $message = array(
+                                        ];
+                                        $message = [
                                             "message" => __('p_card_data_not_filled'),
                                             "status" => -3,
                                             "detail" => $detail
-                                        );
+                                        ];
                                     }
                                     /*else if(($login_status == 'S')  && ($device_id != $device_token))
                                     {
@@ -2753,7 +2753,7 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                                             $profile_image = URL_BASE . "public/images/no_image109.png";
                                         }
                                         $config_array = $api->select_site_settings($default_companyid);
-                                        $total_array  = array();
+                                        $total_array  = [];
                                         if (count($result) > 0) {
                                             $total_array['id']                     = $result[0]['id'];
                                             $total_array['name']                   = $result[0]['name'];
@@ -2779,11 +2779,11 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                                             }
                                             $total_array['credit_card_status'] = $credit_card_sts;
                                             /***Get Company car model details end***/
-                                            $message                           = array(
+                                            $message                           = [
                                                 "message" => __('succesful_login_flash'),
                                                 "detail" => $total_array,
                                                 "status" => 1
-                                            );
+                                            ];
                                             echo json_encode($message);
                                             exit;
                                         }
@@ -2792,21 +2792,21 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                                 echo json_encode($message);
                                 exit;
                             } else {
-                                $message = array(
+                                $message = [
                                     "message" => __('password_failed'),
                                     "status" => 4
-                                );
+                                ];
                                 echo json_encode($message);
                                 exit;
                             }
                         }
                     } else {
                         $validation_error = $validator->errors('errors');
-                        $message          = array(
+                        $message          = [
                             "message" => __('validation_error'),
                             "detail" => $validation_error,
                             "status" => -5
-                        );
+                        ];
                         echo json_encode($message);
                         exit;
                     }
@@ -2862,22 +2862,22 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
 							$result['civilid_front_thumb'] = $civilid_front_thumb;
 							$result['civilid_back_thumb'] = $civilid_back_thumb;
 							
-                            $message                    = array(
+                            $message                    = [
                                 "message" => __('success'),
                                 "detail" => $result,
                                 "status" => 1
-                            );
+                            ];
                         } else {
-                            $message = array(
+                            $message = [
                                 "message" => __('invalid_passengerid'),
                                 "status" => 0
-                            );
+                            ];
                         }
                     } else {
-                        $message = array(
+                        $message = [
                             "message" => __('invalid_passengerid'),
                             "status" => -1
-                        );
+                        ];
                     }
                     echo json_encode($message);
                     break;                
@@ -2900,10 +2900,10 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
 							
 							
 							if($valid != true) {
-								$message = array(
+								$message = [
 									"message" => __('invalid_passengerid'),
 									"status" => 3
-								);
+								];
 								echo json_encode($message);
 								exit;
 							}
@@ -2913,15 +2913,15 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
 								
 								$phone_exist = $api->edit_check_phone_passengers($p_phone, $passenger_id, $default_companyid);
                                 if ($email_exist != 1) {
-                                    $message = array(
+                                    $message = [
                                         "message" => __('email_exists'),
                                         "status" => -1
-                                    );                                    
+                                    ];                                    
                                 } else if ($phone_exist != 1) {
-                                    $message = array(
+                                    $message = [
                                         "message" => __('phone_exists'),
                                         "status" => 2
-                                    );                                    
+                                    ];                                    
                                 } else {
 									if ($p_personal_array['profile_image'] != NULL) {
                                         /* Profile Update */
@@ -2961,7 +2961,7 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                                             Commonfunction::imageresize($d_image, PASS_THUMBIMG_WIDTH, PASS_THUMBIMG_HEIGHT, $path11, $thumb_image_name, 90);
                                             //Commonfunction::imageoriginalsize($d_image,$path11,$thumb_image_name,90);
 											$update_array["profile_picture"] = $image_name;
-											$update_array = array(
+											$update_array = [
 												"salutation" => $p_personal_array['salutation'],
 												"name" => $p_personal_array['firstname'],
 												"lastname" => $p_personal_array['lastname'],
@@ -2969,23 +2969,23 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
 												"phone" => $p_phone,
 												"profile_image" => $image_name,
 												"profile_thumb_image" => $thumb_image_name
-											);
+											];
                                             
                                             $message = $api->edit_passenger_personaldata($update_array, $passenger_id, $default_companyid);
                                         } else {
-                                            $message = array(
+                                            $message = [
                                                 "message" => __('image_not_upload'),
                                                 "status" => 4
-                                            );
+                                            ];
                                         }
                                     } else {                                       
-										$update_array = array(
+										$update_array = [
 											"salutation" => $p_personal_array['salutation'],
 											"name" => $p_personal_array['firstname'],
 											"lastname" => $p_personal_array['lastname'],
 											"email" => $p_email,											
 											"phone" => $p_phone
-										);                                        
+										];                                        
                                         $message = $api->edit_passenger_personaldata($update_array, $passenger_id, $default_companyid);
                                     }
                                     /*****************************************/
@@ -2996,38 +2996,38 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                                         } else {
                                             $profile_image = URL_BASE . "public/images/no_image109.png";
                                         }
-                                        $message = array(
+                                        $message = [
                                             "message" => __('personal_updated'),
                                             "profile_image" => $profile_image,
                                             "status" => 1
-                                        );
+                                        ];
                                     }
                                     if ($message == -1) {
-                                        $message = array(
+                                        $message = [
                                             "message" => __('try_again'),
                                             "status" => -1
-                                        );
+                                        ];
                                     }
                                 }
                             } else {
                                 $validation_error = $validator->errors('errors');
-                                $message          = array(
+                                $message          = [
                                     "message" => __('validation_error'),
                                     "detail" => $validation_error,
                                     "status" => -3
-                                );
+                                ];
                             }
                         } else {
-                            $message = array(
+                            $message = [
                                 "message" => __('invalid_email'),
                                 "status" => -4
-                            );
+                            ];
                         }
                     } else {
-                        $message = array(
+                        $message = [
                             "message" => __('try_again'),
                             "status" => -5
-                        );
+                        ];
                     }
                     echo json_encode($message);
 					exit;
@@ -3047,47 +3047,47 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                         //print_r($authorize_status);
                         //exit;
                         if ($authorize_status == 0) {
-                            $message = array(
+                            $message = [
                                 "message" => __('invalid_card'),
                                 "status" => 2
-                            );
+                            ];
                             echo json_encode($message);
                             exit;
                         }
                         $card_exist = $api->check_card_exist($creditcard_no, $creditcard_cvv, $expdatemonth, $expdateyear, $passenger_id);
                         if ($card_exist > 0) {
-                            $message = array(
+                            $message = [
                                 "message" => __('card_exist'),
                                 "status" => 3
-                            );
+                            ];
                             echo json_encode($message);
                             exit;
                         }
                         $result = $api->add_passenger_carddata($p_card_array);
                         //echo $result;	
                         if ($result == 1) {
-                            $message = array(
+                            $message = [
                                 "message" => __('card_success'),
                                 "status" => 1
-                            );
+                            ];
                         }else if($result == -1){
-								$message = array("message" => __('invalid_passengerid'),
+								$message = ["message" => __('invalid_passengerid'),
                                 "status" => -1
-                                  );
+                                  ];
 						}
                         else {
-                            $message = array(
+                            $message = [
                                 "message" => __('try_again'),
                                 "status" => -1
-                            );
+                            ];
                         }
                     } else {
                         $validation_error = $card_validation->errors('errors');
-                        $message          = array(
+                        $message          = [
                             "message" => __('validation_error'),
                             "detail" => $validation_error,
                             "status" => -3
-                        );
+                        ];
                     }
                     echo json_encode($message);
                     break;
@@ -3106,57 +3106,57 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                         if ($card_validation->check()) {
                             $authorize_status = $api->isVAlidCreditCard($creditcard_no, "", true);
                             if ($authorize_status == 0) {
-                                $message = array(
+                                $message = [
                                     "message" => __('invalid_card'),
                                     "status" => 2
-                                );
+                                ];
                                 echo json_encode($message);
                                 exit;
                             }
                            $card_exist = $api->edit_check_card_exist($passenger_cardid, $creditcard_no, $creditcard_cvv, $expdatemonth, $expdateyear, $passenger_id, $default);
                            if ($card_exist == 1) {
-                                $message = array(
+                                $message = [
                                     "message" => __('card_exist'),
                                     "status" => 3
-                                );						
+                                ];						
                             } else if ($card_exist == 2) {
-                                $message = array(
+                                $message = [
                                     "message" => __('one_card_exist'),
                                     "status" => 2
-                                );						
+                                ];						
                             } else {
                                 $result = $api->edit_passenger_carddata($p_card_array);
                                 if ($result == 1) {
-                                    $message = array(
+                                    $message = [
                                         "message" => __('edit_card_success'),
                                         "status" => 1
-                                    );
+                                    ];
                                 }
                                 else if($result == -1){
-								$message = array("message" => __('invalid_passengerid'),
+								$message = ["message" => __('invalid_passengerid'),
                                 "status" => -1
-                                  );
+                                  ];
 								}
                                 else {
-                                    $message = array(
+                                    $message = [
                                         "message" => __('try_again'),
                                         "status" => -1
-                                    );
+                                    ];
                                 }
                             }
                         } else {
                             $validation_error = $card_validation->errors('errors');
-                            $message          = array(
+                            $message          = [
                                 "message" => __('validation_error'),
                                 "detail" => $validation_error,
                                 "status" => -3
-                            );
+                            ];
                         }
                     } else {
-                        $message = array(
+                        $message = [
                             "message" => __('try_again'),
                             "status" => 1
-                        );
+                        ];
                     }
                     echo json_encode($message);
                     break;
@@ -3174,54 +3174,54 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                                 //{-1 : confirm password must be the same as new password , -2 : Old Password is In Correct: -3: Invalid User,1:Password Changed Successfully	}
                                 switch ($message) {
                                     case -1:
-                                        $message = array(
+                                        $message = [
                                             "message" => __('confirm_new_same'),
                                             "status" => -1
-                                        );
+                                        ];
                                         break;
                                     case -2:
-                                        $message = array(
+                                        $message = [
                                             "message" => __('old_pass_incorrect'),
                                             "status" => -2
-                                        );
+                                        ];
                                         break;
                                     case -3:
-                                        $message = array(
+                                        $message = [
                                             "message" => __('invalid_user'),
                                             "status" => -3
-                                        );
+                                        ];
                                         break;
                                     case 1:
-                                        $message = array(
+                                        $message = [
                                             "message" => __('password_changed'),
                                             "status" => 1
-                                        );
+                                        ];
                                         break;
                                     case -4:
-                                        $message = array(
+                                        $message = [
                                             "message" => __('old_new_pass_same'),
                                             "status" => -4
-                                        );
+                                        ];
                                         break;
                                 }
                             } else {
                                 $validation_error = $validator->errors('errors');
-                                $message          = array(
+                                $message          = [
                                     "message" => $validation_error,
                                     "status" => -3
-                                );
+                                ];
                             }
                         } else {
-                            $message = array(
+                            $message = [
                                 "message" => __('invalid_user'),
                                 "status" => 0
-                            );
+                            ];
                         }
                     } else {
-                        $message = array(
+                        $message = [
                             "message" => __('invalid_request'),
                             "status" => -6
-                        );
+                        ];
                         //	echo json_encode($message);	
                     }
                     echo json_encode($message);
@@ -3253,35 +3253,35 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                             //Set the Favourite Trips
                             $status = $api->save_favourite($passenger_id, $p_favourite_place, $p_fav_latitude, $p_fav_longtitute, $d_favourite_place, $d_fav_latitude, $d_fav_longtitute, $fav_comments, $notes, $p_fav_locationtype,$fav_icon);
                             if ($status) {
-                                $message = array(
+                                $message = [
                                     "message" => __('mark_fav'),
                                     "detail" => "",
                                     "status" => 1
-                                );
+                                ];
                             } else {
                                 $p_favourite_id = $check_fav_place['0']['p_favourite_id'];
-                                $message        = array(
+                                $message        = [
                                     "message" => __('try_again'),
                                     "status" => 0
-                                );
+                                ];
                             }
                         } else if ($check_fav_place == -1) {
-                            $message = array(
+                            $message = [
                                 "message" => __('fav_already_exist_type'),
                                 "status" => 3
-                            );
+                            ];
                         } else {
-                            $message = array(
+                            $message = [
                                 "message" => __('fav_already_exist'),
                                 "status" => 2
-                            );
+                            ];
                         }
                     } else {
                         $validation_error = $validator->errors('errors');
-                        $message          = array(
+                        $message          = [
                             "message" => __('validation_error'),
                             "status" => -3
-                        );
+                        ];
                     }
                     echo json_encode($message);
                     break;
@@ -3293,22 +3293,22 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
 						$passenger_id   = $mobiledata['passenger_id'];
                         $favourite_list = $api->get_favourite_list($passenger_id);
                         if (count($favourite_list) > 0) {
-                            $message = array(
+                            $message = [
                                 "message" => __('success'),
                                 "detail" => $favourite_list,
                                 "status" => 1
-                            );
+                            ];
                         } else {
-                            $message = array(
+                            $message = [
                                 "message" => __('no_favourite_trips'),
                                 "status" => 0
-                            );
+                            ];
                         }
                     } else {
-                        $message = array(
+                        $message = [
                             "message" => __('no_favourite_trips'),
                             "status" => -1
-                        );
+                        ];
                     }
                     echo json_encode($message);
                 break;
@@ -3318,7 +3318,7 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
 						$passenger_id   = $mobiledata['passenger_id'];
                         $favourite_list = $api->get_favourite_list($passenger_id);
                         //print_r($favourite_list);
-                        $new_fav = array();
+                        $new_fav = [];
                         foreach($favourite_list as $fav){
 							if($fav['p_fav_latitude'] != '' && $fav['d_fav_latitude'] != ''){
 								
@@ -3331,22 +3331,22 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                         //print_r($new_fav);
                        // exit;
                         if (count($favourite_list) > 0) {
-                            $message = array(
+                            $message = [
                                 "message" => __('success'),
                                 "detail" => $new_fav,
                                 "status" => 1
-                            );
+                            ];
                         } else {
-                            $message = array(
+                            $message = [
                                 "message" => __('no_favourite_trips'),
                                 "status" => 0
-                            );
+                            ];
                         }
                     } else {
-                        $message = array(
+                        $message = [
                             "message" => __('no_favourite_trips'),
                             "status" => -1
-                        );
+                        ];
                     }
                     echo json_encode($message);
                 break;
@@ -3359,19 +3359,19 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                     if ($validator->check()) {
 						$update_payment_type = $api->update_drop_location($trip_id,$latitude,$longitude,$drop_location);
 						if($update_payment_type){
-							$message      = array(
+							$message      = [
 										"message" => __('success'),
 										"status" => 1
-									);
+									];
 							echo json_encode($message);
 							exit;
 					    }		
 					} else {
                         $errors = $validator->errors('errors');
-                        $result = array(
+                        $result = [
                             "message" => $errors,
                             "status" => -1
-                        );
+                        ];
                         echo json_encode($result);
                         exit;
 				}
@@ -3385,15 +3385,15 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                     $p_fav_array = $mobiledata;
                     if ($p_fav_array['p_favourite_id'] != null) {
                         $favourite_details = $api->get_favourite_details($p_fav_array['p_favourite_id']);
-                        $message           = array(
+                        $message           = [
                             "message" => $favourite_details,
                             "status" => 1
-                        );
+                        ];
                     } else {
-                        $message = array(
+                        $message = [
                             "message" => __('no_favourite'),
                             "status" => -1
-                        );
+                        ];
                     }
                     echo json_encode($message);
                     break;
@@ -3406,21 +3406,21 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                     if ($p_fav_array['p_favourite_id'] != null && $p_fav_array['passenger_id'] != null) {
                         $favourite_details = $api->delete_favourite($p_fav_array['p_favourite_id'], $p_fav_array['passenger_id']);
 						if ($favourite_details) {
-                            $message = array(
+                            $message = [
                                 "message" => __('favourite_deleted'),
                                 "status" => 1
-                            );
+                            ];
                         } else {
-                            $message = array(
+                            $message = [
                                 "message" => __('no_favourite'),
                                 "status" => -1
-                            );
+                            ];
                         }
                     } else {
-                        $message = array(
+                        $message = [
                             "message" => __('no_favourite'),
                             "status" => -1
-                        );
+                        ];
                     }
                     echo json_encode($message);
                     break;
@@ -3453,41 +3453,41 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                             if ($check_fav_place_exist == 0) {
                                 $status = $api->edit_favourite($favourite_id, $p_favourite_place, $p_fav_latitude, $p_fav_longtitute, $d_favourite_place, $d_fav_latitude, $d_fav_longtitute, $fav_comments, $notes, $p_fav_locationtype,$fav_icon);
                                 if ($status == 1) {
-                                    $message = array(
+                                    $message = [
                                         "message" => __('edit_mark_fav'),
                                         "detail" => "",
                                         "status" => 1
-                                    );
+                                    ];
                                 } else {
-                                    $message = array(
+                                    $message = [
                                         "message" => __('no_chage_made'),
                                         "status" => 0
-                                    );
+                                    ];
                                 }
                             } else {
-                                $message = array(
+                                $message = [
                                     "message" => __('fav_already_exist'),
                                     "status" => 2
-                                );
+                                ];
                             }
                         } else if ($check_fav_place == -1) {
-                            $message = array(
+                            $message = [
                                 "message" => __('no_data'),
                                 "status" => -3
-                            );
+                            ];
                         } else {
-                            $message = array(
+                            $message = [
                                 "message" => __('fav_already_exist_type'),
                                 "status" => 3
-                            );
+                            ];
                         }
                     } else {
                         $validation_error = $validator->errors('errors');
-                        $message          = array(
+                        $message          = [
                             "message" => __('validation_error'),
 							//"message" => $edit_fav_array,
                             "status" => -3
-                        );
+                        ];
                     }
                     echo json_encode($message);
                 break;
@@ -3498,21 +3498,21 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                         $company_id       = ($passengerCompany != 0) ? $passengerCompany : $default_companyid;
                         $passengerInTrip  = $api->check_passenger_in_trip($passenger_id, $company_id);
                         if ($passengerInTrip > 0) {
-                            $message = array(
+                            $message = [
                                 "message" => __('passenger_in_journey'),
                                 "status" => 1
-                            );
+                            ];
                         } else {
-                            $message = array(
+                            $message = [
                                 "message" => __('invalid_trip'),
                                 "status" => 2
-                            );
+                            ];
                         }
                     } else {
-                        $message = array(
+                        $message = [
                             "message" => __('invalid_request'),
                             "status" => 0
-                        );
+                        ];
                     }
                     echo json_encode($message);
                     break;
@@ -3532,31 +3532,31 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                             //echo $check_promo;
                             //exit;
                             if ($check_promo == 0) {
-                                $msg = array(
+                                $msg = [
                                     "message" => __('invalid_promocode'),
                                     "status" => 3
-                                );
+                                ];
                                 echo json_encode($msg);
                                 break;
                             } else if ($check_promo == 3) {
-                                $msg = array(
+                                $msg = [
                                     "message" => __('promo_code_startdate'),
                                     "status" => 3
-                                );
+                                ];
                                 echo json_encode($msg);
                                 break;
                             } else if ($check_promo == 4) {
-                                $msg = array(
+                                $msg = [
                                     "message" => __('promo_code_expired'),
                                     "status" => 3
-                                );
+                                ];
                                 echo json_encode($msg);
                                 break;
                             } else if ($check_promo == 2) {
-                                $msg = array(
+                                $msg = [
                                     "message" => __('promo_code_limit_exceed'),
                                     "status" => 3
-                                );
+                                ];
                                 echo json_encode($msg);
                                 break;
                             } else {
@@ -3593,14 +3593,14 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                             $company_id       = ($passengerCompany != 0) ? $passengerCompany : $default_companyid;//exit;
                             $passengerInTrip  = $api->check_passenger_in_trip($passenger_id, $company_id);
                             if ($passengerInTrip > 0) {
-                                $msg = array(
+                                $msg = [
                                     "message" => __('passenger_in_journey'),
                                     "status" => 3
-                                );
+                                ];
                                 echo json_encode($msg);
                                 break;
                             }
-							$params = array();
+							$params = [];
 							$params['latitude'] = $latitude;
 							$params['longitude'] = $longitude;
 							$params['miles'] = $miles;
@@ -3644,7 +3644,7 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                                 $timeoutseconds = 15;
                             }
                             //Form Values//
-                            $formvalues = Arr::extract($mobiledata, array(
+                            $formvalues = Arr::extract($mobiledata, [
                                 'pickupplace',
                                 'dropplace',
                                 'pickup_time',
@@ -3671,7 +3671,7 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                                 'bookedby',//	
                                 
                                 
-                            ));
+                            ]);
                             if ($total_count > 0) {
                              $driver_id   = isset($driver_details[0]['_id']['driver_id']) ? $driver_details[0]['_id']['driver_id'] : "";
                             $taxi_id     = isset($driver_details[0]['_id']['taxi_id']) ? $driver_details[0]['_id']['taxi_id'] : "";
@@ -3732,7 +3732,7 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                                     /***** Insert the druiver details to driver request table ************/
                                     if (!empty($nearest_driver)) {
                                         if (count($avail_nearest_driver) > 0) {
-                                            $available_drivers_Arr = array();
+                                            $available_drivers_Arr = [];
                                             foreach ($avail_nearest_driver as $key => $driveridVal) {
                                                 $driver_has_request = $api->check_driver_has_trip_request($driveridVal, $company_all_currenttimestamp);
                                                 if ($driver_has_request == 0) {
@@ -3751,7 +3751,7 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                                     }
                                    
 								    $id = $api->get_insert_id(MDB_REQUEST_HISTORY);
-									$insert_array = array(
+									$insert_array = [
                                         "_id" => (int)$id,
                                         "trip_id" => (int)$result,
                                         "available_drivers" => $available_drivers,
@@ -3760,21 +3760,21 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                                         "status" => 0,
                                         "rejected_timeout_drivers" => null,
                                         "createdate" => new \MongoDB\BSON\UTCDateTime(strtotime($company_all_currenttimestamp) * 1000)
-                                    );
+                                    ];
                                     //Inserting to Transaction Table 
                                     $transaction  = $this->commonmodel->insert(MDB_REQUEST_HISTORY, $insert_array);
-                                    $detail       = array(
+                                    $detail       = [
                                         "passenger_tripid" => $result,
                                         "notification_time" => $notification_time,
                                         "total_request_time" => $total_request_time,
                                         "credit_card_status" => $credit_card_sts,
                                         "model_id" => $motor_model
-                                    );
-                                    $msg          = array(
+                                    ];
+                                    $msg          = [
                                         "message" => __('api_request_confirmed_passenger'),
                                         "status" => 1,
                                         "detail" => $detail
-                                    );
+                                    ];
                                     
                                 
                                     
@@ -3785,24 +3785,24 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                                 } else if (($result > 0) && ($formvalues['now_after'] == 1)) {
                                     //$driver_details['city_id'] = $city_id;
                                     /***** Insert the druiver details to driver request table ************/
-                                    $detail = array(
+                                    $detail = [
                                         "passenger_tripid" => $result,
                                         "notification_time" => $notification_time,
                                         "total_request_time" => $total_request_time,
                                         "credit_card_status" => $credit_card_sts
-                                    );
-                                    $msg    = array(
+                                    ];
+                                    $msg    = [
                                         "message" => __('api_request_disapatcher'),
                                         "status" => 1,
                                         "detail" => $detail
-                                    );
+                                    ];
                                     echo json_encode($msg);
                                     exit;
                                 } else {
-                                    $message = array(
+                                    $message = [
                                         "message" => __('try_again'),
                                         "status" => 2
-                                    );
+                                    ];
                                      echo json_encode($message);
                                      exit;
                                 }
@@ -3835,11 +3835,11 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
 											$parentInfo = $api->get_passenger_details_by_id($passenger_parent_id);
 											$parent_device_token = $parentInfo[0]['device_token'];
 											$parent_device_type = $parentInfo[0]['device_type'];
-											$parent_pushmessage           = array(
+											$parent_pushmessage           = [
 											"message" => str_replace("%s",$passeger_name,__('p_passenger_on_book')),
-											"detail" => array('name'=>$passenger_name,'image'=>$passenger_image,'phone'=>$passenger_phone),
+											"detail" => ['name'=>$passenger_name,'image'=>$passenger_image,'phone'=>$passenger_phone],
 											"status" => 10
-										);
+										];
 											$title =  __('p_passenger_on_book');
 											$p_send_notification = $api->send_passenger_mobile_pushnotification($parent_device_token,$parent_device_type,$parent_pushmessage,$this->customer_google_api,$title);
 										}
@@ -3893,54 +3893,54 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
 											$parentInfo = $api->get_passenger_details_by_id($passenger_parent_id);
 											$parent_device_token = $parentInfo[0]['device_token'];
 											$parent_device_type = $parentInfo[0]['device_type'];
-											$parent_pushmessage           = array(
+											$parent_pushmessage           = [
 											"message" => str_replace("%s",$passeger_name,__('p_passenger_on_book')),
-											"detail" => array('name'=>$passenger_name,'image'=>$passenger_image,'phone'=>$passenger_phone),
+											"detail" => ['name'=>$passenger_name,'image'=>$passenger_image,'phone'=>$passenger_phone],
 											"status" => 10
-										);
+										];
 											$title =  __('p_passenger_on_book');
 											$p_send_notification = $api->send_passenger_mobile_pushnotification($parent_device_token,$parent_device_type,$parent_pushmessage,$this->customer_google_api,$title);
 										}
                                     /* SEND PUSH TO IF PASS HAVE PARENT */
 								}
                                    
-                                    $detail                         = array(
+                                    $detail                         = [
                                         "passenger_tripid" => $result,
                                         "notification_time" => $notification_time,
                                         "total_request_time" => $notification_time,
                                       //  "credit_card_status" => $credit_card_sts
-                                    );
-                                    $msg                            = array(
+                                    ];
+                                    $msg                            = [
                                         "message" => __('api_request_disapatcher'),
                                         "status" => 1,
                                         "detail" => $detail
-                                    );
+                                    ];
                                     echo json_encode($msg);
                                     exit;
                                 } else {
-                                    $msg = array(
+                                    $msg = [
                                         "message" => $no_vehicle_msg,
                                         "status" => 3
-                                    );
+                                    ];
                                     echo json_encode($msg);
                                     exit;
                                 }
                             }
                         } else {
-                            $message = array(
+                            $message = [
                                 "message" => __('lat_not_zero'),
                                 "status" => -4
-                            );
+                            ];
                             echo json_encode($message);
                             exit;
                         }
                     } else {
                         $errors  = $validator->errors('errors');
-                        $message = array(
+                        $message = [
                             "message" => __('validation_error'),
                             "detail" => $errors,
                             "status" => -5
-                        );
+                        ];
                         echo json_encode($message);
                         exit;
                     }
@@ -3963,31 +3963,31 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                             //echo $check_promo;
                             //exit;
                             if ($check_promo == 0) {
-                                $msg = array(
+                                $msg = [
                                     "message" => __('invalid_promocode'),
                                     "status" => 3
-                                );
+                                ];
                                 echo json_encode($msg);
                                 break;
                             } else if ($check_promo == 3) {
-                                $msg = array(
+                                $msg = [
                                     "message" => __('promo_code_startdate'),
                                     "status" => 3
-                                );
+                                ];
                                 echo json_encode($msg);
                                 break;
                             } else if ($check_promo == 4) {
-                                $msg = array(
+                                $msg = [
                                     "message" => __('promo_code_expired'),
                                     "status" => 3
-                                );
+                                ];
                                 echo json_encode($msg);
                                 break;
                             } else if ($check_promo == 2) {
-                                $msg = array(
+                                $msg = [
                                     "message" => __('promo_code_limit_exceed'),
                                     "status" => 3
-                                );
+                                ];
                                 echo json_encode($msg);
                                 break;
                             } else {
@@ -4024,10 +4024,10 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                             $company_id       = ($passengerCompany != 0) ? $passengerCompany : $default_companyid;
                             $passengerInTrip  = $api->check_passenger_in_trip($passenger_id, $company_id);
                             if ($passengerInTrip > 0) {
-                                $msg = array(
+                                $msg = [
                                     "message" => __('passenger_in_journey'),
                                     "status" => 3
-                                );
+                                ];
                                 echo json_encode($msg);
                                 break;
                             }
@@ -4059,7 +4059,7 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                                 $timeoutseconds = 15;
                             }
                             //Form Values//
-                            $formvalues = Arr::extract($mobiledata, array(
+                            $formvalues = Arr::extract($mobiledata, [
                                 'pickupplace',
                                 'dropplace',
                                 'pickup_time',
@@ -4075,7 +4075,7 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                                 'promo_code',
                                 'now_after',
                                 'motor_model'
-                            ));
+                            ]);
                             if ($total_count > 0) {
                                 $driver_id   = isset($driver_details[0]['driver_id']) ? $driver_details[0]['driver_id'] : "";
                                 $taxi_id     = isset($driver_details[0]['taxi_id']) ? $driver_details[0]['taxi_id'] : "";
@@ -4122,7 +4122,7 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                                     /***** Insert the druiver details to driver request table ************/
                                     if (!empty($nearest_driver)) {
                                         if (count($avail_nearest_driver) > 0) {
-                                            $available_drivers_Arr = array();
+                                            $available_drivers_Arr = [];
                                             foreach ($avail_nearest_driver as $key => $driveridVal) {
                                                 $driver_has_request = $api->check_driver_has_trip_request($driveridVal, $company_all_currenttimestamp);
                                                 if ($driver_has_request == 0) {
@@ -4142,7 +4142,7 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                                     if (count($company_det) > 0) {
                                         $company_all_currenttimestamp = $this->commonmodel->getcompany_all_currenttimestamp($company_det[0]['company_id']);
                                     }
-                                    $insert_array = array(
+                                    $insert_array = [
                                         "trip_id" => $result,
                                         "available_drivers" => $available_drivers,
                                         "total_drivers" => $available_drivers,
@@ -4150,43 +4150,43 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                                         "status" => 0,
                                         "rejected_timeout_drivers" => "",
                                         "createdate" => $company_all_currenttimestamp
-                                    );
+                                    ];
                                     //Inserting to Transaction Table 
                                     $transaction  = $this->commonmodel->insert(DRIVER_REQUEST_DETAILS, $insert_array);
-                                    $detail       = array(
+                                    $detail       = [
                                         "passenger_tripid" => $result,
                                         "notification_time" => $notification_time,
                                         "total_request_time" => $total_request_time,
                                         "credit_card_status" => $credit_card_sts
-                                    );
-                                    $msg          = array(
+                                    ];
+                                    $msg          = [
                                         "message" => __('api_request_confirmed_passenger'),
                                         "status" => 1,
                                         "detail" => $detail
-                                    );
+                                    ];
                                     echo json_encode($msg);
                                     exit;
                                 } else if (($result > 0) && ($formvalues['now_after'] == 1)) {
                                     //$driver_details['city_id'] = $city_id;
                                     /***** Insert the druiver details to driver request table ************/
-                                    $detail = array(
+                                    $detail = [
                                         "passenger_tripid" => $result,
                                         "notification_time" => $notification_time,
                                         "total_request_time" => $total_request_time,
                                         "credit_card_status" => $credit_card_sts
-                                    );
-                                    $msg    = array(
+                                    ];
+                                    $msg    = [
                                         "message" => __('api_request_disapatcher'),
                                         "status" => 1,
                                         "detail" => $detail
-                                    );
+                                    ];
                                     echo json_encode($msg);
                                     exit;
                                 } else {
-                                    $message = array(
+                                    $message = [
                                         "message" => __('try_again'),
                                         "status" => 2
-                                    );
+                                    ];
                                 }
                             } else {
                                 if ($formvalues['now_after'] == 1) {
@@ -4196,43 +4196,43 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                                     $formvalues['driver_id']        = 0;
                                     $formvalues['notes']            = $notes;
                                     $result                         = $api->savebooking($formvalues, $default_companyid);
-                                    $detail                         = array(
+                                    $detail                         = [
                                         "passenger_tripid" => $result,
                                         "notification_time" => $notification_time,
                                         "total_request_time" => $notification_time,
                                         "credit_card_status" => $credit_card_sts
-                                    );
-                                    $msg                            = array(
+                                    ];
+                                    $msg                            = [
                                         "message" => __('api_request_disapatcher'),
                                         "status" => 1,
                                         "detail" => $detail
-                                    );
+                                    ];
                                     echo json_encode($msg);
                                     exit;
                                 } else {
-                                    $msg = array(
+                                    $msg = [
                                         "message" => $no_vehicle_msg,
                                         "status" => 3
-                                    );
+                                    ];
                                     echo json_encode($msg);
                                     exit;
                                 }
                             }
                         } else {
-                            $message = array(
+                            $message = [
                                 "message" => __('lat_not_zero'),
                                 "status" => -4
-                            );
+                            ];
                             echo json_encode($message);
                             exit;
                         }
                     } else {
                         $errors  = $validator->errors('errors');
-                        $message = array(
+                        $message = [
                             "message" => __('validation_error'),
                             "detail" => $errors,
                             "status" => -5
-                        );
+                        ];
                         echo json_encode($message);
                         exit;
                     }
@@ -4255,7 +4255,7 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                             $passengerCompany      = (!empty($passenger_id)) ? $api->get_passenger_company_id($passenger_id) : 0;
                             $company_id            = ($passengerCompany != 0) ? $passengerCompany : $default_companyid;
                             //$driver_details        = $find_model->nearestdrivers($latitude, $longitude, $taxi_model, $passenger_id, $miles, $company_id, $unit, $service_type);
-							$params = array();
+							$params = [];
 							$params['motor_company'] = $company_id;
 							$params['motor_model'] = $taxi_model;
 							$params['company_id'] = $company_id;
@@ -4285,7 +4285,7 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                             $no_vehicle_msg = __('no_vehicle_msg') . $company_contact_no;
                             //Get Fare details of the Taxi model_id Start
                             $fare_details   = __('no_fare_details_found');
-                            $fare_details   = array();
+                            $fare_details   = [];
                             if (!empty($get_modelfare_details)) {
                                 $fare_details = $get_modelfare_details;
 								$fare_details['model_id'] = $get_modelfare_details['_id'];
@@ -4298,7 +4298,7 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                                 $driver_id   = ""; //isset($driver_details[0]['driver_id'])?$driver_details[0]['driver_id']:"";
                                 $totalrating = 0;
 								//$new_detail = $driver_details['_id'];
-								$new_detail = array();
+								$new_detail = [];
 								//echo '<pre>'; 
 								$newcnt = count($driver_details);//exit;
 								for($newcnt1 = 0; $newcnt1 < $newcnt; $newcnt1++){
@@ -4321,49 +4321,49 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
 								//$estimated_time = $api->estimated_time($new_detail['distance'],$new_detail['taxi_speed']);
 								$child_trip_count = $api->get_child_trip_count($passenger_id);
                                 if (count($driver_details) > 0)
-                                    $message = array(
+                                    $message = [
                                         "detail" => $new_detail,
-                                        "fare_details" => array($fare_details),
+                                        "fare_details" => [$fare_details],
                                         "driver_around_miles" => DEFAULTMILE,
                                         "approx_duration" => $estimated_time,
                                         "status" => 1,
                                         "message" => 'success',
                                         "metric" => UNIT_NAME,
 										"chil_trip_count" => $child_trip_count
-                                    );
+                                    ];
                                 else
-                                    $message = array(
+                                    $message = [
                                         "message" => $no_vehicle_msg,
                                         "fare_details" => $fare_details,
                                         "driver_around_miles" => DEFAULTMILE,
                                         "status" => 0
-                                    );
+                                    ];
                                 echo json_encode($message);
                                 break;
                             } else {
-                                $msg = array(
+                                $msg = [
                                     "message" => $no_vehicle_msg,
                                     "fare_details" => $fare_details,
                                     "status" => 3
-                                );
+                                ];
                                 echo json_encode($msg);
                                 exit;
                             }
                         } else {
-                            $message = array(
+                            $message = [
                                 "message" => __('lat_not_zero'),
                                 "status" => -4
-                            );
+                            ];
                             echo json_encode($message);
                             exit;
                         }
                     } else {
                         $errors  = $validator->errors('errors');
-                        $message = array(
+                        $message = [
                             "message" => __('validation_error'),
                             "detail" => $errors,
                             "status" => -5
-                        );
+                        ];
                         echo json_encode($message);
                         exit;
                     }
@@ -4379,26 +4379,26 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                        $check_travelstatus = $api->check_travelstatus($trip_id);
                        
                         if ($check_travelstatus == -1) {
-                            $message = array(
+                            $message = [
                                 "message" => __('invalid_trip'),
                                 "status" => 2
-                            );
+                            ];
                             echo json_encode($message);
                             break;
                         }
                         if ($check_travelstatus == 4) {
-                            $message = array(
+                            $message = [
                                 "message" => __('trip_cancelled_passenger'),
                                 "status" => -1
-                            );
+                            ];
                             echo json_encode($message);
                             break;
                         }
                         if ($check_travelstatus != 9) {
-                            $message = array(
+                            $message = [
                                 "message" => __('passenger_in_journey'),
                                 "status" => -1
-                            );
+                            ];
                             echo json_encode($message);
                             break;
                         }
@@ -4414,28 +4414,28 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                         }
                         //if($driver_status == 'A' || $driver_status == 'B')
                         if ($driver_status == 'A') {
-                            $message = array(
+                            $message = [
                                 "message" => __('already_trip'),
                                 "status" => -1
-                            );
+                            ];
                             echo json_encode($message);
                             break;
                         }
                         /********** Update Driver Status after complete Payments *****************/
-                        $update_pass_array     = array(
+                        $update_pass_array     = [
                             "travel_status" => (int)3,
                             "arrived_time" => new \MongoDB\BSON\UTCDateTime(strtotime($company_all_currenttimestamp) * 1000)
-                        ); // Start to Pickup
+                        ]; // Start to Pickup
                         $result                = $api->update_table(MDB_PASSENGERS_LOGS, $update_pass_array, '_id', $trip_id);
                         /*************** Update arrival in driver request table ******************/
-                        $update_trip_array     = array(
+                        $update_trip_array     = [
                             "status" => 5
-                        );
+                        ];
                         $driver_request_result = $api->update_table(MDB_REQUEST_HISTORY, $update_trip_array, 'trip_id', $trip_id);
                         /**************************** Update status in driver table *********/
-                        $update_driver_arrary  = array(
+                        $update_driver_arrary  = [
                             "status" => 'B'
-                        );
+                        ];
                         $driver_result         = $api->update_table(MDB_DRIVER_INFO, $update_driver_arrary, '_id', $driver_id);
                         /*************************************************************************/
                         /** Send Trip fare details to Passenger ***/
@@ -4450,13 +4450,13 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                          $passenger_trip_alert        = (isset($get_passenger_log_details[0]['passenger_trip_alert']) ?$get_passenger_log_details[0]['passenger_trip_alert'] :0);
                         /** CHECK PASSNEGER'S PARENT **/
                         
-                        $pushmessage           = array(
+                        $pushmessage           = [
                             "message" => __('passenger_on_board'),
                             "trip_id" => $trip_id,
                             "driver_latitute" => $driver_latitute,
                             "driver_longtitute" => $driver_longtitute,
                             "status" => 2
-                        );
+                        ];
                         
                         if (SMS == 1) {
                             //$this->phone=$this->commonmodel->get_passengers_details($email,1);
@@ -4487,14 +4487,14 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
 									$parentInfo = $api->get_passenger_details_by_id($passenger_parent_id);
 									$parent_device_token = $parentInfo[0]['device_token'];
 									$parent_device_type = $parentInfo[0]['device_type'];
-									$parent_pushmessage           = array(
+									$parent_pushmessage           = [
 										"message" => str_replace("%s",$passeger_name,__('p_passenger_on_board')),
-										"detail" => array('name'=>$passenger_name,'image'=>$passenger_image,'phone'=>$passenger_phone),
+										"detail" => ['name'=>$passenger_name,'image'=>$passenger_image,'phone'=>$passenger_phone],
 										"trip_id" => $trip_id,
 										"driver_latitute" => $driver_latitute,
 										"driver_longtitute" => $driver_longtitute,
 										"status" => 2
-									);
+									];
 									$title =  __('passenger_on_board_child');
 									$p_send_notification = $api->send_passenger_mobile_pushnotification($parent_device_token,$parent_device_type,$parent_pushmessage,$this->customer_google_api,$title);
 								}	
@@ -4504,15 +4504,15 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
 						 /* Send Push notification to their passenger */
 						$title =  __('passenger_on_board');
                         //$p_send_notification = $api->send_passenger_mobile_pushnotification($p_device_token,$device_type,$pushmessage,$this->customer_google_api,$title);
-                        $message = array(
+                        $message = [
                             "message" => __('driver_arrival_send'),
                             "status" => 1
-                        );
+                        ];
                     } else {
-                        $message = array(
+                        $message = [
                             "message" => __('invalid_trip'),
                             "status" => -1
-                        );
+                        ];
                     }
                     echo json_encode($message);
                     break;
@@ -4534,10 +4534,10 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                         $update_id      = $driver_id;
                         $check_result   = $api->check_driver_companydetails($driver_id, $default_companyid);
                         if ($check_result == 0) {
-                            $message = array(
+                            $message = [
                                 "message" => __('invalid_user'),
                                 "status" => -1
-                            );
+                            ];
                             echo json_encode($message);
                             exit;
                         }
@@ -4555,7 +4555,7 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
 								
 								
 								
-                                $update_array        = array(
+                                $update_array        = [
                                     "login_from" => "",
                                     "login_status" => "N",
                                     "device_id" => "",
@@ -4563,49 +4563,49 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                                     "device_type" => "",
                                     "notification_setting" => "0",
                                     "notification_status" => "0"
-                                );
-								$mapping_array = array("mapping_status" => "D");
+                                ];
+								$mapping_array = ["mapping_status" => "D"];
                                 $login_status_update = $this->commonmodel->update(MDB_PEOPLE, $update_array, '_id', $update_id);
 								
 								$mapping_update = $this->commonmodel->update(MDB_TAXI_DRIVER_MAPPING, $mapping_array, 'mapping_driverid', $update_id);
                                 /*** Update in Driver table **/
                                 $driver_reply        = $driver_model->update_driver_shift_status($update_id, '0');
                                 /** Update in driver shift history table **/
-                                $shiftupdate_arrary  = array(
+                                $shiftupdate_arrary  = [
                                     "shift_end" => new \MongoDB\BSON\UTCDateTime(strtotime($this->currentdate) * 1000)
-                                );
+                                ];
                                 $shiftupdateid       = $shiftupdate_id;
                                 if ($shiftupdateid) {
                                     $transaction = $this->commonmodel->update(MDB_SHIFT_HISTORY, $shiftupdate_arrary, '_id', $shiftupdateid);
                                 }
-                                $message = array(
+                                $message = [
                                     "message" => __('logout_success'),
                                     "status" => 1
-                                );
+                                ];
                             } else {
-                                $message = array(
+                                $message = [
                                     "message" => __('trip_in_future'),
                                     "status" => -4
-                                );
+                                ];
                             }
                         } else {
-                            $message = array(
+                            $message = [
                                 "message" => __('driver_in_trip'),
                                 "status" => 0
-                            );
+                            ];
                         }
                     } else {
-                        $message = array(
+                        $message = [
                             "message" => __('invalid_user'),
                             "status" => -1
-                        );
+                        ];
                     }
                     } else {
                         $errors = $validator->errors('errors');
-                        $message = array(
+                        $message = [
                             "message" => $errors,
                             "status" => -1
-                        );
+                        ];
                       
 					}
                     echo json_encode($message);
@@ -4621,10 +4621,10 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                         $update_id      = $driver_id;
                         $check_result   = $api->check_driver_companydetails($driver_id, $default_companyid);
                         if ($check_result == 0) {
-                            $message = array(
+                            $message = [
                                 "message" => __('invalid_user'),
                                 "status" => -1
-                            );
+                            ];
                             echo json_encode($message);
                             exit;
                         }
@@ -4635,7 +4635,7 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                             //print_r($get_driver_log_details);
                             $driver_trip_count      = count($get_driver_log_details); //exit;
                             if ($driver_trip_count == 0) {
-                                $update_array        = array(
+                                $update_array        = [
                                     "login_from" => "",
                                     "login_status" => "N",
                                     "device_id" => "",
@@ -4643,42 +4643,42 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                                     "device_type" => "",
                                     "notification_setting" => "0",
                                     "notification_status" => "0"
-                                );
-								$mapping_array = array("mapping_status" => "D");
+                                ];
+								$mapping_array = ["mapping_status" => "D"];
                                 $login_status_update = $this->commonmodel->update(MDB_PEOPLE, $update_array, '_id', $update_id);
 								
 								$mapping_update = $this->commonmodel->update(MDB_TAXI_DRIVER_MAPPING, $mapping_array, 'mapping_driverid', $update_id);
                                 /*** Update in Driver table **/
                                 $driver_reply        = $driver_model->update_driver_shift_status($update_id, '0');
                                 /** Update in driver shift history table **/
-                                $shiftupdate_arrary  = array(
+                                $shiftupdate_arrary  = [
                                     "shift_end" => new \MongoDB\BSON\UTCDateTime(strtotime($this->currentdate) * 1000)
-                                );
+                                ];
                                 $shiftupdateid       = $shiftupdate_id;
                                 if ($shiftupdateid) {
                                     $transaction = $this->commonmodel->update(MDB_SHIFT_HISTORY, $shiftupdate_arrary, '_id', $shiftupdateid);
                                 }
-                                $message = array(
+                                $message = [
                                     "message" => __('logout_success'),
                                     "status" => 1
-                                );
+                                ];
                             } else {
-                                $message = array(
+                                $message = [
                                     "message" => __('trip_in_future'),
                                     "status" => -4
-                                );
+                                ];
                             }
                         } else {
-                            $message = array(
+                            $message = [
                                 "message" => __('driver_in_trip'),
                                 "status" => 0
-                            );
+                            ];
                         }
                     } else {
-                        $message = array(
+                        $message = [
                             "message" => __('invalid_user'),
                             "status" => -1
-                        );
+                        ];
                     }
                     echo json_encode($message);
                     break;
@@ -4824,11 +4824,11 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                             $trip_details['driver_rating'] = $totalrating;
                             //print_r($upcoming_journey);
                             if (count($get_passenger_log_details) == 0) {
-                                $message = array(
+                                $message = [
                                     "message" => __('try_again'),
                                     "status" => 0,
                                     "site_currency" => $this->site_currency
-                                );
+                                ];
                             } else {
                                 $mes = __('success');
                                 if ($trip_details['travel_status'] == 5) {
@@ -4836,26 +4836,26 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                                 } else if ($trip_details['travel_status'] == 4) {
                                     $mes = __('cancel_by_passenger');
                                 }
-                                $message = array(
+                                $message = [
                                     "message" => $mes,
                                     "detail" => $trip_details,
                                     "status" => 1,
                                     "site_currency" => $this->site_currency
-                                );
+                                ];
                             }
                         } else {
-                            $message = array(
+                            $message = [
                                 "message" => __('invalid_trip'),
                                 "status" => -1,
                                 "site_currency" => $this->site_currency
-                            );
+                            ];
                         }
                     } else {
-                        $message = array(
+                        $message = [
                             "message" => __('invalid_trip'),
                             "status" => -1,
                             "site_currency" => $this->site_currency
-                        );
+                        ];
                     }
                     echo json_encode($message);
                     break;
@@ -4868,38 +4868,38 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                         $update_id    = $passenger_log_array['id'];
                         $check_result = $api->check_passenger_companydetails($passenger_log_array['id'], $default_companyid);
                         if ($check_result == 0) {
-                            $message = array(
+                            $message = [
                                 "message" => __('invalid_user'),
                                 "status" => -1
-                            );
+                            ];
                             echo json_encode($message);
                             exit;
                         }
-                        $update_array          = array(
+                        $update_array          = [
                             "login_from" => "",
                             "login_status" => "N",
                             "device_id" => "",
                             "device_token" => "",
                             "device_type" => ""
-                        );
+                        ];
                         $logout_status_update  = $api_model->update_passengers($update_array, $update_id, $default_companyid);
                         $delete_rejected_trips = $api_model->delete_rejected_trips($update_id, $company_all_currenttimestamp);
                         if ($logout_status_update > 0) {
-                            $message = array(
+                            $message = [
                                 "message" => __('logout_success'),
                                 "status" => 1
-                            );
+                            ];
                         } else {
-                            $message = array(
+                            $message = [
                                 "message" => __('invalid_user'),
                                 "status" => -1
-                            );
+                            ];
                         }
                     } else {
-                        $message = array(
+                        $message = [
                             "message" => __('invalid_user'),
                             "status" => 0
-                        );
+                        ];
                     }
                     echo json_encode($message);
                     break;
@@ -4919,7 +4919,7 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                         $email_logo = "demo";
                     }
                     if ($device_type == 1) {
-                        $replace_variables = array(
+                        $replace_variables = [
                             REPLACE_LOGO => EMAILTEMPLATELOGO,
                             REPLACE_SITENAME => $this->app_name,
                             REPLACE_NAME => $name,
@@ -4930,9 +4930,9 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                             REPLACE_ANDROID_PASSENGER_APP => ANDROID_PASSENGER_APP,
                             REPLACE_IOS_PASSENGER_APP => IOS_PASSENGER_APP,
                             REPLACE_ANDROID_DRIVER_APP => ANDROID_DRIVER_APP
-                        );
+                        ];
                     } else {
-                        $replace_variables = array(
+                        $replace_variables = [
                             REPLACE_LOGO => EMAILTEMPLATELOGO,
                             REPLACE_SITENAME => $this->app_name,
                             REPLACE_NAME => $name,
@@ -4945,7 +4945,7 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                             REPLACE_ANDROID_DRIVER_APP => ANDROID_DRIVER_APP,
                             REPLACE_COPYRIGHTS => SITE_COPYRIGHT,
                             REPLACE_COPYRIGHTYEAR => COPYRIGHT_YEAR
-                        );
+                        ];
                     }
                     /* Added for language email template */
                     if ($this->lang != 'en') {
@@ -4968,21 +4968,21 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                                 $referral_code        = $driver_profile[0]['driver_referral_code'];
                                 $name                 = $passenger_profile[0]['name'];
                                 $telltofriend_message = DRIVER_TELL_TO_FRIEND_MESSAGE;
-                                $detail               = array(
+                                $detail               = [
                                     "tell_message" => $telltofriend_message,
                                     "message_template" => $message_template,
                                     "subject" => $subject
-                                );
-                                $message              = array(
+                                ];
+                                $message              = [
                                     "detail" => $detail,
                                     "status" => 1,
                                     "message" => __('success')
-                                );
+                                ];
                             } else {
-                                $message = array(
+                                $message = [
                                     "message" => __('invalid_user'),
                                     "status" => 0
-                                );
+                                ];
                             }
                         } else {
                             $passenger_profile = $api->passenger_profile($id);
@@ -4992,39 +4992,39 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                                 $ref_message          = TELL_TO_FRIEND_MESSAGE . '' . $referral_code;
                                 $ref_discount         = REFERRAL_DISCOUNT;
                                 $telltofriend_message = TELL_TO_FRIEND_MESSAGE; //str_replace("#REFDIS#",$ref_discount,$ref_message); 						
-                                $detail               = array(
+                                $detail               = [
                                     "tell_message" => $telltofriend_message,
                                     "message_template" => $message_template,
                                     "subject" => $subject
-                                );
-                                $message              = array(
+                                ];
+                                $message              = [
                                     "detail" => $detail,
                                     "status" => 1,
                                     "message" => __('success')
-                                );
+                                ];
                             } else {
-                                $message = array(
+                                $message = [
                                     "message" => __('invalid_user'),
                                     "status" => 0,
                                     "message" => __('failed')
-                                );
+                                ];
                             }
                         }
                         //$message = array("message" => $telltofriend_message,"status"=>1,"message"=>__('success'));								
                     } else {
-                        $message = array(
+                        $message = [
                             "message" => __('validation_error'),
                             "status" => -1,
                             "message" => __('failed')
-                        );
+                        ];
                     }
                     if ($device_type == 1) {
-                        $search  = array(
+                        $search  = [
                             '"'
-                        );
-                        $replace = array(
+                        ];
+                        $replace = [
                             "'"
-                        );
+                        ];
                         echo $str = str_ireplace($search, $replace, $message_temp);
                     } else {
                         echo json_encode($message);
@@ -5065,7 +5065,7 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                                         $email_logo = "demo";
                                     }
                                     $subject           = __('telltofrien_subject');
-                                    $replace_variables = array(
+                                    $replace_variables = [
                                         REPLACE_LOGO => EMAILTEMPLATELOGO,
                                         REPLACE_SITENAME => $this->app_name,
                                         REPLACE_NAME => $name,
@@ -5081,7 +5081,7 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                                         REPLACE_ANDROID_DRIVER_APP => ANDROID_DRIVER_APP,
                                         REPLACE_COPYRIGHTS => SITE_COPYRIGHT,
                                         REPLACE_COPYRIGHTYEAR => COPYRIGHT_YEAR
-                                    );
+                                    ];
                                     //print_r($replace_variables);exit;
                                     /* Added for language email template */
                                     if ($this->lang != 'en') {
@@ -5117,25 +5117,25 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                                 } else {
                                     $detail = __('invitation_send');
                                 }
-                                $message = array(
+                                $message = [
                                     "detail" => $detail,
                                     "status" => 1,
                                     "message" => __('success')
-                                );
+                                ];
                             }
                         } else {
                             $detail  = $check_validation->errors('errors');
-                            $message = array(
+                            $message = [
                                 "detail" => $detail,
                                 "status" => 2,
                                 "message" => __('validation_error')
-                            );
+                            ];
                         }
                     } else {
-                        $message = array(
+                        $message = [
                             "message" => __('invalid_request'),
                             "status" => 5
-                        );
+                        ];
                     }
                     echo json_encode($message);
                     break;
@@ -5162,26 +5162,26 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                                     echo __('page_not_found');
                                     break;
                                 } else if ($device_type == 2) {
-                                    $message = array(
+                                    $message = [
                                         "message" => __('page_not_found'),
                                         "status" => 2
-                                    );
+                                    ];
                                     echo $json_decode = json_encode($message);
                                     break;
                                 } else {
-                                    $message = array(
+                                    $message = [
                                         "message" => __('page_not_found'),
                                         "status" => 2
-                                    );
+                                    ];
                                     echo $json_decode = json_encode($message);
                                     break;
                                 }
                             }
                         } else {
-                            $message = array(
+                            $message = [
                                 "message" => __('invalid_page'),
                                 "status" => -1
-                            );
+                            ];
                             echo $json_decode = json_encode($message);
                             break;
                         }
@@ -5189,32 +5189,32 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                             echo $pagecontent;
                             break;
                         } else if ($device_type == 2) {
-                            $result  = array(
+                            $result  = [
                                 "content" => $content,
                                 "title" => $menu
-                            );
-                            $message = array(
+                            ];
+                            $message = [
                                 "message" => __('success'),
                                 "detail" => $result,
                                 "status" => 1
-                            );
+                            ];
                             echo $json_decode = json_encode($message);
                             break;
                         } else {
-                            $message = array(
+                            $message = [
                                 "message" => __('invalid_page'),
                                 "status" => -1
-                            );
+                            ];
                             echo $json_decode = json_encode($message);
                             break;
                         }
                     } else {
                         $detail  = $check_validation->errors('errors');
-                        $message = array(
+                        $message = [
                             "detail" => $detail,
                             "status" => -3,
                             "message" => __('validation_error')
-                        );
+                        ];
                         echo json_encode($message);
                     }
                     //echo $pagecontent;
@@ -5235,7 +5235,7 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                             $passengers   = Model::factory('passengers');
                             $booktype     = "2";
 							
-							$ids = array();
+							$ids = [];
 							if($array['child_id'] == "") {
 								$childs = $api->get_passenger_childlist($array['passenger_id'],'');
 								foreach($childs as $child) {
@@ -5247,13 +5247,13 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
 							
                             $fromdate     = $date . ' 00:00:01';
                             $todate       = $date . ' 23:59:59';
-                            $arraydetails = array();
-                            $alldetails   = array();
+                            $arraydetails = [];
+                            $alldetails   = [];
                             if ($device_type == 1)
                                 $pagination = 1;
                             else
                                 $pagination = 0;
-                            $total_array = array();
+                            $total_array = [];
                             for ($i = strtotime($fromdate); $i <= strtotime($todate); $i = strtotime('+1 Day', $i)) {
                                 $cdate                = date("Y-m-d", $i);
                                 $passengers_all_compl = $api->get_passenger_trips_bydate($pagination, $booktype, $ids, 1, 'A', '1', $start, $limit, $cdate);
@@ -5300,42 +5300,42 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                                         $date                             = $result['pickup_time'];
                                         $alldetails[]                     = $arraydetails;
                                     }
-                                    $total_array[] = array(
+                                    $total_array[] = [
                                         "trip_Date" => $cdate,
                                         "trip_details" => $alldetails
-                                    );
+                                    ];
                                 }
                             }
                             if (count($total_array) > 0) {
-                                $message = array(
+                                $message = [
                                     "message" => __('success'),
                                     "detail" => $total_array,
                                     "status" => 1,
                                     "site_currency" => $this->site_currency
-                                );
+                                ];
                                 //$message = $passengers_all_compl;
                             } else {
-                                $message = array(
+                                $message = [
                                     "message" => __('no_completed_data_date'),
                                     "status" => 0,
                                     "site_currency" => $this->site_currency
-                                );
+                                ];
                             }
                         } else {
                             $errors  = $validator->errors('errors');
-                            $message = array(
+                            $message = [
                                 "message" => __('validation_error'),
                                 "detail" => $errors,
                                 "status" => 2,
                                 "site_currency" => $this->site_currency
-                            );
+                            ];
                         }
                     } else {
-                        $message = array(
+                        $message = [
                             "message" => __('invalid_user'),
                             "status" => -1,
                             "site_currency" => $this->site_currency
-                        );
+                        ];
                     }
                     echo json_encode($message);
                     break;
@@ -5356,7 +5356,7 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                             // Booktype 0 -> Flagger Ride, 1-> Strret Ride, 2-> All
                             $booktype    = "2";
 							
-							$ids = array();
+							$ids = [];
 							if($array['child_id'] == "") {
 								$childs = $api->get_passenger_childlist($array['passenger_id'],'');
 								foreach($childs as $child) {
@@ -5377,9 +5377,9 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                                 $fromdate = $year . '-' . $month . '-' . '01';
                                 $todate   = date('Y-m-t', strtotime($fromdate));
                             }
-                            $arraydetails = array();
+                            $arraydetails = [];
                             //$alldetails = array();
-                            $perdayarray  = array();
+                            $perdayarray  = [];
                             $pagination   = 1;
                             $j            = $start;
 							
@@ -5389,7 +5389,7 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                                 
                                 
 							if (count($passengers_all_compl) > 0) {
-								$alldetails = array();
+								$alldetails = [];
 								foreach ($passengers_all_compl as $result) {
 									$arraydetails['trip_id']          = $result['trip_id'];
 									$arraydetails['pickup_location']            = $result['place'];
@@ -5437,42 +5437,42 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
 									$j++;
 								}
 								if (count($alldetails) > 0) {
-									$perdayarray[] = array(
+									$perdayarray[] = [
 										//"trip_Date" => $req_date,
 										"trip_details" => $alldetails
-									);
+									];
 								}
 							}
                             
                             if (count($perdayarray) > 0) {
-                                $message = array(
+                                $message = [
                                     "message" => __('success'),
                                     "detail" => $perdayarray,
                                     "status" => 1,
                                     "site_currency" => $this->site_currency
-                                );
+                                ];
                             } else {
-                                $message = array(
+                                $message = [
                                     "message" => __('no_completed_data_month'),
                                     "status" => 0,
                                     "site_currency" => $this->site_currency
-                                );
+                                ];
                             }
                         } else {
                             $errors  = $validator->errors('errors');
-                            $message = array(
+                            $message = [
                                 "message" => __('validation_error'),
                                 "detail" => $errors,
                                 "status" => 2,
                                 "site_currency" => $this->site_currency
-                            );
+                            ];
                         }
                     } else {
-                        $message = array(
+                        $message = [
                             "message" => __('invalid_user'),
                             "status" => -1,
                             "site_currency" => $this->site_currency
-                        );
+                        ];
                     }
                     echo json_encode($message);
                     break;
@@ -5486,11 +5486,11 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                         $limit        = $array['limit'];
                         $check_result = $api->check_passenger_companydetails($array['id'], $default_companyid);
                         if ($check_result == 0) {
-                            $message = array(
+                            $message = [
                                 "message" => __('invalid_user'),
                                 "status" => -1,
                                 "site_currency" => $this->site_currency
-                            );
+                            ];
                             echo json_encode($message);
                             exit;
                             ;
@@ -5500,24 +5500,24 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                         $passengers_all_compl = $api->get_passenger_log_detail($userid, 1, 'A', '1', $start, $limit, $default_companyid);
                         //print_r($passengers_all_compl);
                         if (count($passengers_all_compl) > 0) {
-                            $message = array(
+                            $message = [
                                 "message" => __('success'),
                                 "detail" => $passengers_all_compl,
                                 "currency" => $this->site_currency
-                            );
+                            ];
                         } else {
-                            $message = array(
+                            $message = [
                                 "message" => __('no_completed_data'),
                                 "status" => 0,
                                 "site_currency" => $this->site_currency
-                            );
+                            ];
                         }
                     } else {
-                        $message = array(
+                        $message = [
                             "message" => __('invalid_user'),
                             "status" => -1,
                             "site_currency" => $this->site_currency
-                        );
+                        ];
                     }
                     echo json_encode($message);
                     break;
@@ -5534,10 +5534,10 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                             $device_type  = $cancel_array['device_type'];
                             $check_result = $api->check_passenger_companydetails($userid, $default_companyid);
                             if ($check_result == 0) {
-                                $message = array(
+                                $message = [
                                     "message" => __('invalid_user'),
                                     "status" => -1
-                                );
+                                ];
                                 echo json_encode($message);
                                 exit;
                             }
@@ -5547,9 +5547,9 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                                 $pagination = 0;
                             $passengers_cancel = $api->get_passenger_cancelled_trip_details($default_companyid, $pagination, $userid, '', 'A', '', $start, $limit);
                             //print_r($passengers_cancel);	
-                            $trip_details      = array();
+                            $trip_details      = [];
                             $i                 = 0;
-                            $alldetails        = array();
+                            $alldetails        = [];
                             if (count($passengers_cancel) > 0) {
                                 foreach ($passengers_cancel as $journey) {
                                     $driver_id                            = $journey['driver_id'];
@@ -5601,30 +5601,30 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                                     //$result = file_get_contents("http://s1.freesmsapi.com/messages/send?skey=b5cedd7a407366c4b4459d3509d4cebf&message=".urlencode($message)."&senderid=NAJIK&recipient=$to");								
                                 }
                                 //$message = $passengers_cancel;
-                                $message = array(
+                                $message = [
                                     "message" => __('success'),
                                     "detail" => $alldetails,
                                     "status" => 1
-                                );
+                                ];
                             } else {
-                                $message = array(
+                                $message = [
                                     "message" => __('no_data'),
                                     "status" => 0
-                                );
+                                ];
                             }
                         } else {
                             $errors  = $validator->errors('errors');
-                            $message = array(
+                            $message = [
                                 "message" => __('validation_error'),
                                 "detail" => $errors,
                                 "status" => 2
-                            );
+                            ];
                         }
                     } else {
-                        $message = array(
+                        $message = [
                             "message" => __('invalid_user'),
                             "status" => -1
-                        );
+                        ];
                     }
                     echo json_encode($message);
                     break;
@@ -5641,10 +5641,10 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                             $device_type  = $passenger_list_array['device_type'];
                             $check_result = $api->check_passenger_companydetails($passenger_list_array['id'], $default_companyid);
                             if ($check_result == 0) {
-                                $message = array(
+                                $message = [
                                     "message" => __('invalid_user'),
                                     "status" => -1
-                                );
+                                ];
                                 echo json_encode($message);
                                 exit;
                             }
@@ -5655,30 +5655,30 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                             $passengers_current = $api->get_passenger_current_log_details($default_companyid, $pagination, $userid, '', 'A', '0', $start, $limit);
                             if (count($passengers_current) > 0) {
                                 //$message = $passengers_current;
-                                $message = array(
+                                $message = [
                                     "message" => __('success'),
                                     "detail" => $passengers_current,
                                     "status" => 1
-                                );
+                                ];
                             } else {
-                                $message = array(
+                                $message = [
                                     "message" => __('no_data'),
                                     "status" => 0
-                                );
+                                ];
                             }
                         } else {
                             $errors  = $validator->errors('errors');
-                            $message = array(
+                            $message = [
                                 "message" => __('validation_error'),
                                 "detail" => $errors,
                                 "status" => 2
-                            );
+                            ];
                         }
                     } else {
-                        $message = array(
+                        $message = [
                             "message" => __('invalid_user'),
                             "status" => -1
-                        );
+                        ];
                     }
                     echo json_encode($message);
                     break;
@@ -5686,7 +5686,7 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                     //Current Journey after driver confirmation //TN1013619352
                     $array = $mobiledata;
                     
-					$ids = array();
+					$ids = [];
 					if($array['child_id'] == "") {
 						$childs = $api->get_passenger_childlist($array['id'],'');
 						foreach($childs as $child) {
@@ -5705,10 +5705,10 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                             $device_type  = $array['device_type'];
                             $check_result = $api->check_passenger_companydetails($array['id'], $default_companyid);
                             if ($check_result == 0) {
-                                $message = array(
+                                $message = [
                                     "message" => __('invalid_user'),
                                     "status" => -1
-                                );
+                                ];
                                 echo json_encode($message);
                                 exit;
                             }
@@ -5716,7 +5716,7 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                                 $pagination = 1;
                             else
                                 $pagination = 0;
-                            $passengers_trips = array();
+                            $passengers_trips = [];
                             
                             $pending_bookings_zero = $api->get_pending_bookings_travel_statuszero($default_companyid, $pagination, $ids, '0', 'A', '0', $start, $limit);
                              foreach ($pending_bookings_zero as $key => $val) {
@@ -5788,30 +5788,30 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                             $passengers_trips['past_bookings']    = $past_bookings;
                             if (count($passengers_trips) > 0) {
                                 //$message = $passengers_current;
-                                $message = array(
+                                $message = [
                                     "message" => __('success'),
                                     "detail" => $passengers_trips,
                                     "status" => 1
-                                );
+                                ];
                             } else {
-                                $message = array(
+                                $message = [
                                     "message" => __('no_data'),
                                     "status" => 0
-                                );
+                                ];
                             }
                         } else {
                             $errors  = $validator->errors('errors');
-                            $message = array(
+                            $message = [
                                 "message" => __('validation_error'),
                                 "detail" => $errors,
                                 "status" => 2
-                            );
+                            ];
                         }
                     } else {
-                        $message = array(
+                        $message = [
                             "message" => __('invalid_user'),
                             "status" => -1
-                        );
+                        ];
                     }
                     echo json_encode($message);
                     break;
@@ -5830,10 +5830,10 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                             $device_type  = $array['device_type'];
                             $check_result = $api->check_passenger_companydetails($array['id'], $default_companyid);
                             if ($check_result == 0) {
-                                $message = array(
+                                $message = [
                                     "message" => __('invalid_user'),
                                     "status" => -1
-                                );
+                                ];
                                 echo json_encode($message);
                                 exit;
                             }
@@ -5841,7 +5841,7 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                                 $pagination = 1;
                             else
                                 $pagination = 0;
-                            $passengers_trips = array();
+                            $passengers_trips = [];
                             //$pending_bookings = array();
                             //$past_bookings    = array();
                             
@@ -5927,39 +5927,39 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
 					
                             if (count($passengers_trips) > 0) {
                                 //$message = $passengers_current;
-                                $message = array(
+                                $message = [
                                     "message" => __('success'),
                                     "detail" => $passengers_trips,
                                     "status" => 1
-                                );
+                                ];
                             } else {
-                                $message = array(
+                                $message = [
                                     "message" => __('no_data'),
                                     "status" => 0
-                                );
+                                ];
                             }
                             
                          
 						}else{
-							$message = array(
+							$message = [
 								"message" => __('no_child'),
 								"status" => 2
-							);
+							];
 						}
                             
                         } else {
                             $errors  = $validator->errors('errors');
-                            $message = array(
+                            $message = [
                                 "message" => __('validation_error'),
                                 "detail" => $errors,
                                 "status" => 2
-                            );
+                            ];
                         }
                     } else {
-                        $message = array(
+                        $message = [
                             "message" => __('invalid_user'),
                             "status" => -1
-                        );
+                        ];
                     }
                     echo json_encode($message);
                     break;
@@ -5989,9 +5989,9 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                                 $fromdate = $year . '-' . $month . '-' . '01';
                                 $todate   = date('Y-m-t', strtotime($fromdate));
                             }
-                            $arraydetails = array();
+                            $arraydetails = [];
                             //$alldetails = array();
-                            $perdayarray  = array();
+                            $perdayarray  = [];
                             $pagination   = 1;
                             $j            = $start;
 							
@@ -6020,7 +6020,7 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
 							$passengers_all_compl = $api->get_passenger_trips_bymonth($pagination, $booktype, $get_child['_id'], 1, 'A', '1', $start, $limit, $fromdate, $todate);
 							
                                 
-                            $alldetails = array();    
+                            $alldetails = [];    
                            
 							if (count($passengers_all_compl) > 0) {
 								
@@ -6061,9 +6061,9 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
 									}
 									$j++;
 								}
-								  $total_array = array(
+								  $total_array = [
                                         "trip_details" => $alldetails
-                                    );
+                                    ];
 								
 								//$alldetails = array_merge($alldetails,$past_bookings_new);
 							}
@@ -6080,41 +6080,41 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                            
 							
                             if (count($perdayarray) > 0) {
-                                $message = array(
+                                $message = [
                                     "message" => __('success'),
                                     "detail" => $perdayarray,
                                     "status" => 1,
                                     "site_currency" => $this->site_currency
-                                );
+                                ];
                             } else {
-                                $message = array(
+                                $message = [
                                     "message" => __('no_completed_data_month'),
                                     "status" => 0,
                                     "site_currency" => $this->site_currency
-                                );
+                                ];
                             }
 						}else{
-							$message = array(
+							$message = [
 								"message" => __('no_child'),
 								"status" => 2
-							);
+							];
 						}
                         
 					}  else {
                             $errors  = $validator->errors('errors');
-                            $message = array(
+                            $message = [
                                 "message" => __('validation_error'),
                                 "detail" => $errors,
                                 "status" => 2,
                                 "site_currency" => $this->site_currency
-                            );
+                            ];
                         }
                     } else {
-                        $message = array(
+                        $message = [
                             "message" => __('invalid_user'),
                             "status" => -1,
                             "site_currency" => $this->site_currency
-                        );
+                        ];
                     }
                     echo json_encode($message);
                     break;
@@ -6135,13 +6135,13 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                             $booktype     = "2";
                             $fromdate     = $date . ' 00:00:01';
                             $todate       = $date . ' 23:59:59';
-                            $arraydetails = array();
-                            $alldetails   = array();
+                            $arraydetails = [];
+                            $alldetails   = [];
                             if ($device_type == 1)
                                 $pagination = 1;
                             else
                                 $pagination = 0;
-                            $total_array = array();
+                            $total_array = [];
                             
                              /** CHILD TRIP BOOKING **/
 								$get_child_details = $api->get_passenger_childlist($userid,'');
@@ -6202,50 +6202,50 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
 									
                                    //  $total_array = array_merge($total_array,$past_bookings_new);
                                    //  $total_array = array_merge($total_array,$past_bookings_new);
-                                    $total_array = array(
+                                    $total_array = [
                                         "trip_Date" => $cdate,
                                         "trip_details" => $alldetails
-                                    );
+                                    ];
                                 }
                             }
                            
 						}
                             if (count($total_array) > 0) {
-                                $message = array(
+                                $message = [
                                     "message" => __('success'),
                                     "detail" => $total_array,
                                     "status" => 1,
                                     "site_currency" => $this->site_currency
-                                );
+                                ];
                                 //$message = $passengers_all_compl;
                             } else {
-                                $message = array(
+                                $message = [
                                     "message" => __('no_completed_data_date'),
                                     "status" => 0,
                                     "site_currency" => $this->site_currency
-                                );
+                                ];
                             }
                             }else{
-							$message = array(
+							$message = [
 								"message" => __('no_child'),
 								"status" => 2
-							);
+							];
 						}
                         } else {
                             $errors  = $validator->errors('errors');
-                            $message = array(
+                            $message = [
                                 "message" => __('validation_error'),
                                 "detail" => $errors,
                                 "status" => 2,
                                 "site_currency" => $this->site_currency
-                            );
+                            ];
                         }
                     } else {
-                        $message = array(
+                        $message = [
                             "message" => __('invalid_user'),
                             "status" => -1,
                             "site_currency" => $this->site_currency
-                        );
+                        ];
                     }
                     echo json_encode($message);
                     break;   
@@ -6348,28 +6348,28 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                                 }
                             }
 							
-                            $detail  = array(
+                            $detail  = [
                                 "pending_booking" => $driver_pending_bookings,
                                 "past_booking" => $pending_booking
-                            );
-                            $message = array(
+                            ];
+                            $message = [
                                 "message" => __('success'),
                                 "detail" => $detail,
                                 "status" => 1
-                            );
+                            ];
                         } else {
                             $errors  = $validator->errors('errors');
-                            $message = array(
+                            $message = [
                                 "message" => __('validation_error'),
                                 "detail" => $errors,
                                 "status" => 2
-                            );
+                            ];
                         }
                     } else {
-                        $message = array(
+                        $message = [
                             "message" => __('invalid_user'),
                             "status" => -1
-                        );
+                        ];
                     }
                     echo json_encode($message);
                     break;
@@ -6393,15 +6393,15 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                             */
                             $pagination           = 0;
                             //$ongoing_journey = array();
-                            $driver_logs_prog     = array();
+                            $driver_logs_prog     = [];
                             /*************** Driver Ongoing Journey ***************************/
                             $driver_logs_progress = $api->get_driver_current_ongoigtrips($driver_id, 'R', 'A', '2', $default_companyid);
                             //print_r($driver_logs_progress);
                             //exit;
-                            $driver_logs          = array();
+                            $driver_logs          = [];
                             if (count($driver_logs_progress) > 0) {
                                 $i          = 0;
-                                $alldetails = array();
+                                $alldetails = [];
                                 //for($i=0;$i<count($driver_logs_progress);$i++)
                                 foreach ($driver_logs_progress as $v) {
                                     if ($v['bookby'] == 2 && ($v['travel_status'] == 9 || $v['travel_status'] == 3)) {
@@ -6465,29 +6465,29 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                                 $upcoming_journey = __('no_upcoming_data');
                                 $upgoing_status   = 0;
                             }
-                            $detail  = array(
+                            $detail  = [
                                 "ongoing_journey" => $ongoing_journey,
                                 "upcoming_journey" => $upcoming_journey
-                            );
-                            $message = array(
+                            ];
+                            $message = [
                                 "message" => __('success'),
                                 "detail" => $detail,
                                 "ongoing_status" => $ongoing_status,
                                 "upcoming_status" => $upgoing_status
-                            );
+                            ];
                         } else {
                             $errors  = $validator->errors('errors');
-                            $message = array(
+                            $message = [
                                 "message" => __('validation_error'),
                                 "detail" => $errors,
                                 "status" => 2
-                            );
+                            ];
                         }
                     } else {
-                        $message = array(
+                        $message = [
                             "message" => __('invalid_user'),
                             "status" => -1
-                        );
+                        ];
                     }
                     echo json_encode($message);
                     break;
@@ -6497,19 +6497,19 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                     if ($rating_array['pass_id'] != null) {
 						$logvalid = $api->log_isValid($rating_array['pass_id']);
 						if($logvalid != true) {
-							$message = array(
+							$message = [
 								"message" => __('invalid_passengerlogid'),
 								"status" => 3
-							);
+							];
 							echo json_encode($message);
 							exit;
 						}
-						$ratings = array(1,2,3,4,5);
+						$ratings = [1,2,3,4,5];
 						if(!in_array($rating_array['ratings'],$ratings)) {
-							$message = array(
+							$message = [
 								"message" => __('invalid_ratings'),
 								"status" => 2
-							);
+							];
 							echo json_encode($message);
 							exit;
 						}
@@ -6520,23 +6520,23 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                             $ratings  = $rating_array['ratings'];
                             $comments = $rating_array['comments'];
                             $api->savecomments($pass_id, $ratings, $comments);
-                            $message = array(
+                            $message = [
                                 "message" => __('rate_comment_updated'),
                                 "status" => 1
-                            );
+                            ];
                         } else {
                             $errors  = $validator->errors('errors');
-                            $message = array(
+                            $message = [
                                 "message" => __('validation_error'),
                                 "detail" => $errors,
                                 "status" => -2
-                            );
+                            ];
                         }
                     } else {
-                        $message = array(
+                        $message = [
                             "message" => __('invalid_user'),
                             "status" => -1
-                        );
+                        ];
                     }
                     echo json_encode($message);
                     break;
@@ -6550,7 +6550,7 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                         $result = $api->get_creadit_card_details($passenger_id, $card_type, $default);
                       if(is_array($result)){
                         if (count($result) > 0) {
-                            $carddetails = array();
+                            $carddetails = [];
                             if ($default == 'yes') {
                                 $plain_cardno                         = encrypt_decrypt('decrypt', $result[0]['creditcard_no']);
                                 $carddetails['creditcard_no']         = $plain_cardno;
@@ -6563,14 +6563,14 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                                 $carddetails['masked_creditcard_cvv'] = $get_cvv; //repeatx($result[0]['creditcard_cvv'],'X','All');		
                                 $carddetails['passenger_cardid']      = $result[0]['passenger_cardid'];
                                 $carddetails['card_type']             = $result[0]['card_type'];
-                                $message                              = array(
+                                $message                              = [
                                     "message" => __('success'),
                                     "detail" => $carddetails,
                                     "status" => 1
-                                );
+                                ];
                             } else {
                                 $i          = 0;
-                                $alldetails = array();
+                                $alldetails = [];
                                 foreach ($result as $value) {
                                     $plain_cardno                         = encrypt_decrypt('decrypt', $value['creditcard_no']);
                                     $carddetails['creditcard_no']         = $plain_cardno;
@@ -6586,29 +6586,29 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                                     $alldetails[]                         = $carddetails;
                                     $i                                    = $i + 1;
                                 }
-                                $message = array(
+                                $message = [
                                     "message" => __('success'),
                                     "detail" => $alldetails,
                                     "status" => 1
-                                );
+                                ];
                             }
                         } else {
-                            $message = array(
+                            $message = [
                                 "message" => __('no_card'),
                                 "status" => 2
-                            );
+                            ];
                         }
 					}else {
-						 $message = array(
+						 $message = [
                             "message" => __('invalid_passengerid'),
                             "status" => -1
-                        );
+                        ];
 						}
                     } else {
-                        $message = array(
+                        $message = [
                             "message" => __('invalid_user'),
                             "status" => -1
-                        );
+                        ];
                     }
                     echo json_encode($message);
                     break;
@@ -6620,31 +6620,31 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                     if (!empty($mobiledata['passenger_cardid']) && !empty($mobiledata['passenger_id'])) {
                         $favourite_details = $api->delete_credit_card($mobiledata['passenger_cardid'], $mobiledata['passenger_id']);
                         if ($favourite_details == 1) {
-                            $message = array(
+                            $message = [
                                 "message" => __('credit_card_deleted'),
                                 "status" => 1
-                            );
+                            ];
                         }elseif ($favourite_details == -1){
-						 $message = array(
+						 $message = [
                             "message" => __('invalid_passengerid'),
                             "status" => -1
-                        );
+                        ];
 						} elseif ($favourite_details == -2){
-						 $message = array(
+						 $message = [
                             "message" => __('one_card_exist'),
                             "status" => -1
-                        );
+                        ];
 						}else {
-                            $message = array(
+                            $message = [
                                 "message" => __('invalid_card_id'),
                                 "status" => 2
-                            );
+                            ];
                         }
                     } else {
-                        $message = array(
+                        $message = [
                             "message" => __('invalid_card_id'),
                             "status" => 2
-                        );
+                        ];
                     }
                     echo json_encode($message);
                     break;
@@ -6654,19 +6654,19 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                     if ($update_driver_array['pass_id'] != null) {
                         $pass_id      = $update_driver_array['pass_id'];
                         $driver_reply = $update_driver_array['driver_reply'];
-                        $update_array = array(
+                        $update_array = [
                             "driver_reply" => $driver_reply
-                        );
+                        ];
                         $api->update_table(PASSENGERS_LOG, $update_array, "passengers_log_id", $pass_id);
-                        $message = array(
+                        $message = [
                             "message" => __('get_another_taxi'),
                             "status" => 1
-                        );
+                        ];
                     } else {
-                        $message = array(
+                        $message = [
                             "message" => __('invalid_user'),
                             "status" => -1
-                        );
+                        ];
                     }
                     echo json_encode($message);
                     break;
@@ -6734,7 +6734,7 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                                     }
                                     $totalrating = round($totalrating);
                                 }
-                                $result  = array(
+                                $result  = [
                                     "salutation" => $salutation,
                                     "name" => $name,
                                     "lastname" => $lastname,
@@ -6753,29 +6753,29 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                                     "taxi_model" => $model_name,
                                     "driver_license_id" => $driver_license_id,
                                     "driver_rating" => $totalrating
-                                );
-                                $message = array(
+                                ];
+                                $message = [
                                     "message" => __('success'),
                                     "detail" => $result,
                                     "status" => 1
-                                );
+                                ];
                             } else {
-                                $message = array(
+                                $message = [
                                     "message" => __('invalid_user_driver'),
                                     "status" => 0
-                                );
+                                ];
                             }
                         } else {
-                            $message = array(
+                            $message = [
                                 "message" => __('driver_not_login'),
                                 "status" => -1
-                            );
+                            ];
                         }
                     } else {
-                        $message = array(
+                        $message = [
                             "message" => __('invalid_user_driver'),
                             "status" => -1
-                        );
+                        ];
                     }
                     echo json_encode($message);
                     break;
@@ -6790,10 +6790,10 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                             $phone_exist = $api->check_phone_people($array['phone'], 'D', $default_companyid);
                             $phone_exist=1;
                             if ($phone_exist == 0) {
-                                $message = array(
+                                $message = [
                                     "message" => __('phone_not_exists'),
                                     "status" => 2
-                                );
+                                ];
                                 echo json_encode($message);
                                 exit;
                             } else {
@@ -6814,25 +6814,25 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                                     $get_driver_trip_details      = $api->get_driver_log_details($driver_id, $company_id);
 									//print_r($get_driver_trip_details);exit;
                                     if ($user_status == 'D') {
-                                        $message = array(
+                                        $message = [
                                             "message" => __('account_deactivte'),
                                             "status" => 0
-                                        );
+                                        ];
                                     } else if ($user_status == 'T') {
-                                        $message = array(
+                                        $message = [
                                             "message" => __('account_deactivte'),
                                             "status" => 0
-                                        );
+                                        ];
                                     } else if (($login_status == 'S') && ($login_from == 'D') && ($device_id != $array['device_id'])) {
-                                        $message = array(
+                                        $message = [
                                             "message" => __('already_login'),
                                             "status" => 0
-                                        );
+                                        ];
                                     } else if (($login_status == 'S') && ($login_from == 'D') && ($device_id == $array['device_id'])) {
                                        /* AS per requirement have to change flow */
 											 $update_id        = $result['_id'];
 											 $taxi_id          = "";
-										     $update_array                 = array(
+										     $update_array                 = [
                                                 "notification_setting" => "1",
                                                 "login_from" => "D",
                                                 "login_status" => "S",
@@ -6840,7 +6840,7 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                                                 "device_token" => $array['device_token'],
                                                 "device_type" => $array['device_type'],
                                                 "notification_status" => "1"
-                                            );
+                                            ];
                                            
                                             $driver_details[0]["driver_id"]        = $driver_id;
                                             // Need for update labong settings automatically
@@ -6851,7 +6851,7 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                                             $rejected_trips                      = count($driver_logs_rejected);
                                             $driver_earnings                     = $api->get_driver_earnings_with_rating($driver_id, $company_id);
                                             $driver_tot_earnings                 = $api->get_driver_total_earnings($driver_id);
-                                            $statistics                          = array();
+                                            $statistics                          = [];
                                             $total_trip                          = $trip_total_with_rate = $total_ratings = $today_earnings = $total_amount = 0;
 											
                                             foreach ($driver_earnings as $stat) {
@@ -6868,7 +6868,7 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                                             $overall_trip                           = $total_trip + $rejected_trips + $driver_cancelled_trips;
                                             $time_driven                            = $api->get_time_driven($driver_id, 'R', 'A', '1','1');
                                             $waittime =  $api->get_time_driven($driver_id, 'R', 'A', '1','2');
-                                            $statistics                             = array(
+                                            $statistics                             = [
                                                 "total_trip" => $overall_trip,
                                                 "completed_trip" => $total_trip,
                                                 "total_earnings" => round($driver_tot_earnings, 2),
@@ -6879,24 +6879,24 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                                                 "time_driven" => $time_driven,
                                                 "waiting_time" => $waittime,
                                                 "status" => 1
-                                            );
+                                            ];
                                             $driver_details[0]["driver_statistics"] = $statistics;
                                             /**************************************************/
-                                            $details                                = array(
+                                            $details                                = [
                                                 "driver_details" => $driver_details
-                                            );
-                                            $message                                = array(
+                                            ];
+                                            $message                                = [
                                                 "message" => __('login_success'),
                                                 "status" => 1,
                                                 "detail" => $details
-                                            );
+                                            ];
 										/* AS per requirement have to change flow */
                                         }  else {
 										/* AS per requirement have to change flow */
 											 $update_id        = $result['_id'];
 											 $driver_details[0]["driver_id"]        = $update_id;
 											 $taxi_id          = "";
-										     $update_array                 = array(
+										     $update_array                 = [
                                                 "notification_setting" => "1",
                                                 "login_from" => "D",
                                                 "login_status" => "S",
@@ -6904,7 +6904,7 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                                                 "device_token" => $array['device_token'],
                                                 "device_type" => $array['device_type'],
                                                 "notification_status" => "1"
-                                            );
+                                            ];
                                             // Need for update labong settings automatically
                                             $login_status_update          = $api->update_driver_phone($update_array, $update_id, $default_companyid);
                                              // Driver Statistics ********************/
@@ -6913,7 +6913,7 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                                             $rejected_trips                      = count($driver_logs_rejected);
                                             $driver_earnings                     = $api->get_driver_earnings_with_rating($driver_id, $company_id);
                                             $driver_tot_earnings                 = $api->get_driver_total_earnings($driver_id);
-                                            $statistics                          = array();
+                                            $statistics                          = [];
                                             $total_trip                          = $trip_total_with_rate = $total_ratings = $today_earnings = $total_amount = 0;
                                             foreach ($driver_earnings as $stat) {
                                                 $total_trip++;
@@ -6922,7 +6922,7 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                                             }
                                             $overall_trip                           = $total_trip + $rejected_trips + $driver_cancelled_trips;
                                             $time_driven                            = $api->get_time_driven($driver_id, 'R', 'A', '1','1');$waittime =  $api->get_time_driven($driver_id, 'R', 'A', '1','2');
-                                            $statistics                             = array(
+                                            $statistics                             = [
                                                 "total_trip" => $overall_trip,
                                                 "completed_trip" => $total_trip,
                                                 "total_earnings" => round($driver_tot_earnings, 2),
@@ -6933,45 +6933,45 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                                                 "time_driven" => $time_driven,
                                                 "waiting_time" => $waittime,
                                                 "status" => 1
-                                            );
+                                            ];
                                             $driver_details[0]["driver_statistics"] = $statistics;
                                             /**************************************************/
-                                            $details                                = array(
+                                            $details                                = [
                                                 "driver_details" => $driver_details
-                                            );
-                                            $message                                = array(
+                                            ];
+                                            $message                                = [
                                                 "message" => __('login_success'),
                                                 "status" => 1,
                                                 "detail" => $details
-                                            );
+                                            ];
 										/* AS per requirement have to change flow */
 										
                                            
                                         } 
                                     
                                 } else {
-                                    $message = array(
+                                    $message = [
                                         "message" => __('password_failed'),
                                         "status" => -1
-                                    );
+                                    ];
                                 }
                                 echo json_encode($message);
                             }
                         } else {
                             $errors  = $validator->errors('errors');
-                            $message = array(
+                            $message = [
                                 "message" => __('validation_error'),
                                 "status" => -5,
                                 "detail" => $errors
-                            );
+                            ];
                             echo json_encode($message);
                             exit;
                         }
                     } else {
-                        $message = array(
+                        $message = [
                             "message" => __('invalid_request'),
                             "status" => -6
-                        );
+                        ];
                         echo json_encode($message);
                     }
                     break;
@@ -6992,10 +6992,10 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                                 $email_exist    = $api->edit_check_email_people($d_email, $driver_id);
                                 $phone_exist    = $api->edit_check_phone_people($d_phone, $driver_id);
                                 if ($email_exist > 0) {
-                                    $message = array(
+                                    $message = [
                                         "message" => __('email_exists'),
                                         "status" => 0
-                                    );
+                                    ];
                                 }/* else if ($phone_exist > 0) {
                                     $message = array(
                                         "message" => __('phone_exists'),
@@ -7008,7 +7008,7 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                                                     "companydetails.bankaccount_no" => $bankaccount_no
                                                 );	*/
                                                 $password       = Html::chars(md5($d_personal_array['password']));
-									$update_array = array(
+									$update_array = [
 													//	"salutation" => $d_personal_array['salutation'],
 														"name" => $d_personal_array['firstname'],
 														"lastname" => $d_personal_array['lastname'],
@@ -7016,7 +7016,7 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
 														"phone" => $d_phone,
 														"password" => $password,
 														"org_password" => $d_personal_array['password']
-													);									
+													];									
 									
                                     if ($d_personal_array['profile_picture'] != NULL) {
                                         /* Profile Update */
@@ -7055,10 +7055,10 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                                             //Commonfunction::imageoriginalsize($d_image,$path11,$thumb_image_name,90);
 											$update_array["profile_picture"] = $image_name;
                                         } else {
-                                            $message = array(
+                                            $message = [
                                                 "message" => __('image_not_upload'),
                                                 "status" => 4
-                                            );
+                                            ];
                                         }
                                     }
                                     
@@ -7068,42 +7068,42 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                                     //$update_bank       = $api->edit_company_profile($driver_id,$bank_array);
                                     /*****************************************/
                                     if ($message == 1) {
-                                        $message = array(
+                                        $message = [
                                             "message" => __('profile_updated'),
                                             "status" => 1
-                                        );
+                                        ];
                                     } else {
-                                        $message = array(
+                                        $message = [
                                             "message" => __('try_again'),
                                             "status" => -1
-                                        );
+                                        ];
                                     }
 								} else{
-									$message      = array(
+									$message      = [
 										"message" => __('startkm_sholuld').$taxino_isValidstart_km,
 										"status" => -1
-									);
+									];
 								}
                                 }
                             } else {
                                 $errors  = $validator->errors('errors');
-                                $message = array(
+                                $message = [
                                     "message" => __('validation_error'),
                                     "status" => -5,
                                     "detail" => $errors
-                                );
+                                ];
                             }
                         } else {
-                            $message = array(
+                            $message = [
                                 "message" => __('invalid_user_driver'),
                                 "status" => -1
-                            );
+                            ];
                         }
                     } else {
-                        $message = array(
+                        $message = [
                             "message" => __('invalid_request'),
                             "status" => -1
-                        );
+                        ];
                     }
                     echo json_encode($message);
                     break;
@@ -7120,51 +7120,51 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                             //{-1 : confirm password must be the same as new password , -2 : Old Password is In Correct: -3: Invalid User,1:Password Changed Successfully	}
                             switch ($message) {
                                 case -1:
-                                    $message = array(
+                                    $message = [
                                         "message" => __('confirm_new_same'),
                                         "status" => -1
-                                    );
+                                    ];
                                     break;
                                 case -2:
-                                    $message = array(
+                                    $message = [
                                         "message" => __('old_pass_incorrect'),
                                         "status" => -2
-                                    );
+                                    ];
                                     break;
                                 case -3:
-                                    $message = array(
+                                    $message = [
                                         "message" => __('invalid_user'),
                                         "status" => -3
-                                    );
+                                    ];
                                     break;
                                 case 1:
-                                    $message = array(
+                                    $message = [
                                         "message" => __('password_changed'),
                                         "status" => 1
-                                    );
+                                    ];
                                     break;
                                 case -4:
-                                    $message = array(
+                                    $message = [
                                         "message" => __('old_new_pass_same'),
                                         "status" => -4
-                                    );
+                                    ];
                                     break;
                             }
                         } else {
                             $message = $validator->errors('errors');
                         }
                     } else {
-                        $message = array(
+                        $message = [
                             "message" => __('invalid_user'),
                             "status" => 0
-                        );
+                        ];
                     }
                     echo json_encode($message);
                     break;
                 //URL: http://192.168.1.88:1020/api/index/dGF4aV9hbGw=/?type=getdriver_update&passenger_tripid=703
                 case 'getdriver_update':
                     $array             = $mobiledata;
-                    $message           = array();
+                    $message           = [];
                     $trip_id           = $array["passenger_tripid"];
                      /* NEW CHANGES */
 					$driverdetails = $api->get_passenger_log_detail_reply($trip_id);
@@ -7234,33 +7234,33 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                                 }
                                 if (!empty($driver_reply)) {
                                     if ($driver_reply == '3') {
-                                        $message = array(
+                                        $message = [
                                             "message" => __("request_confirmed_passenger"),
                                             "trip_id" => $trip_id,
                                             "booking_type" => $booking_type, // 0 - Normal,1 - child
                                             "status" => 1
-                                        );
+                                        ];
                                         echo json_encode($message);
                                         exit;
                                     } elseif ($driver_reply == '4') {
-                                        $message = array(
+                                        $message = [
                                             "message" => __("driver_busy"),
                                             "status" => 2
-                                        );
+                                        ];
                                         echo json_encode($message);
                                         exit;
                                     } elseif ($driver_reply == '5') {
-                                        $message = array(
+                                        $message = [
                                             "message" => __("driver_busy"),
                                             "status" => 2
-                                        );
+                                        ];
                                         echo json_encode($message);
                                         exit;
                                     } else {
-                                        $message = array(
+                                        $message = [
                                             "message" => __('try_again'),
                                             "status" => 0
-                                        );
+                                        ];
                                     }
                                     //echo json_encode($message);
                                     //exit;
@@ -7269,29 +7269,29 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                                 $i = $i + 5000000;
                                 // echo $i;
                                 if ($i == $microseconds) {
-                                    $update_trip_array = array(
+                                    $update_trip_array = [
                                         "status" => 4
-                                    );
+                                    ];
                                     $result = $api->update_table(MDB_REQUEST_HISTORY, $update_trip_array, 'trip_id',$trip_id);
-                                    $message = array(
+                                    $message = [
                                         "message" => __("driver_busy"),
                                         "status" => 2
-                                    );
+                                    ];
                                     echo json_encode($message);
                                     exit;
                                 }
                             } else {
-                                $message = array(
+                                $message = [
                                     "message" => __('try_again'),
                                     "status" => 0
-                                );
+                                ];
                             }
                         }
                     } else {
-                        $message = array(
+                        $message = [
                             "message" => __('validation_error'),
                             "status" => 0
-                        );
+                        ];
                     }
                     echo json_encode($message);
                     break;
@@ -7305,37 +7305,37 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                         if (count($get_passenger_log_det) > 0) {
                             $driver_reply = $get_passenger_log_det['driver_reply'];
                             if ($driver_reply == 'A') {
-                                $detail  = array(
+                                $detail  = [
                                     "trip_id" => $passenger_tripid,
                                     "driverdetails" => ""
-                                );
-                                $message = array(
+                                ];
+                                $message = [
                                     "message" => __("request_confirmed_passenger"),
                                     "detail" => $detail,
                                     "status" => 1
-                                );
+                                ];
                             } else {
                                 $change_driver_status = $api->change_driver_status($passenger_tripid, 'C');
-                                $update_trip_array    = array(
+                                $update_trip_array    = [
                                     "status" => 4
-                                );
+                                ];
                                 $result               = $api->update_table(DRIVER_REQUEST_DETAILS, $update_trip_array, 'trip_id', $passenger_tripid);
-                                $message              = array(
+                                $message              = [
                                     "message" => __("request_canceled_passenger"),
                                     "status" => 3
-                                );
+                                ];
                             }
                         } else {
-                            $message = array(
+                            $message = [
                                 "message" => __('invalid_trip'),
                                 "status" => -1
-                            );
+                            ];
                         }
                     } else {
-                        $message = array(
+                        $message = [
                             "message" => __('try_again'),
                             "status" => 0
-                        );
+                        ];
                     }
                     echo json_encode($message);
                     break;
@@ -7403,58 +7403,58 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                                 }
                                 /**********************************************************/
                                 if (($driver_reply == 'A') && ($travel_status == 9)) {
-                                    $detail  = array(
+                                    $detail  = [
                                         "trip_id" => $trip_id,
                                         "pickup_location" => $pickup_location,
                                         "drop_location" => $drop_location,
                                         "driverdetails" => ""
-                                    );
-                                    $message = array(
+                                    ];
+                                    $message = [
                                         "message" => __("request_confirmed_passenger"),
                                         "detail" => $detail,
                                         "driver_latitute" => $driver_latitute,
                                         "driver_longtitute" => $driver_longtitute,
                                         "status" => 1
-                                    );
+                                    ];
                                 } elseif (($driver_reply == 'A') && ($travel_status == 8)) {
                                     $dispatcher_cancel_display = ($notification_status != 8) ? 1 : 0;
-                                    $message                   = array(
+                                    $message                   = [
                                         "message" => __("dispatcher_trip_cancelled"),
                                         "detail" => "",
                                         "driver_latitute" => $driver_latitute,
                                         "driver_longtitute" => $driver_longtitute,
                                         "status" => 10,
                                         "display" => $dispatcher_cancel_display
-                                    );
-                                    $update_trip_array         = array(
+                                    ];
+                                    $update_trip_array         = [
                                         "notification_status" => 8
-                                    );
+                                    ];
                                     $result = $api->update_table(MDB_PASSENGERS_LOGS, $update_trip_array, '_id',$trip_id);
                                 } elseif (($driver_reply == 'C') && ($travel_status == 6)) {
-                                    $message = array(
+                                    $message = [
                                         "message" => __("trip_cancel"),
                                         "detail" => "",
                                         "driver_latitute" => $driver_latitute,
                                         "driver_longtitute" => $driver_longtitute,
                                         "status" => 7
-                                    );
+                                    ];
                                 } elseif (($driver_reply == 'C') && ($travel_status == 9)) {
                                     $driver_cancel_display = ($notification_status != 5) ? 1 : 0;
-                                    $message               = array(
+                                    $message               = [
                                         "message" => __("driver_cancel_after_confirm"),
                                         "detail" => "",
                                         "driver_latitute" => $driver_latitute,
                                         "driver_longtitute" => $driver_longtitute,
                                         "status" => 8,
                                         "display" => $driver_cancel_display
-                                    );
-                                    $update_trip_array     = array(
+                                    ];
+                                    $update_trip_array     = [
                                         "notification_status" => 5
-                                    );
+                                    ];
                                     $result = $api->update_table(MDB_PASSENGERS_LOGS, $update_trip_array, '_id', $trip_id);
                                 } elseif (($driver_reply == 'A') && ($travel_status == 3)) {
                                     $arrived_display   = ($notification_status != 1) ? 1 : 0;
-                                    $message           = array(
+                                    $message           = [
                                         "message" => __('passenger_on_board'),
                                         "trip_id" => $trip_id,
                                         "driver_latitute" => $driver_latitute,
@@ -7462,10 +7462,10 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                                         "taxi_min_speed" => $get_taxi_min_speed,
                                         "status" => 2,
                                         "display" => $arrived_display
-                                    );
-                                    $update_trip_array = array(
+                                    ];
+                                    $update_trip_array = [
                                         "notification_status" => 1
-                                    );
+                                    ];
                                     $result = $api->update_table(MDB_PASSENGERS_LOGS, $update_trip_array, '_id', $trip_id);
                                 } elseif (($driver_reply == 'A') && ($travel_status == 2)) {
                                     $tripstart_display  = ($notification_status != 2) ? 1 : 0;
@@ -7475,7 +7475,7 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                                     //$result = $api->update_table(DRIVER_REQUEST_DETAILS,$update_trip_array,'trip_id',$passenger_tripid);
 									$currentdistance = $api->getCurrentDistance($trip_id);
 									$liveDistance = isset($currentdistance['distance']) ? round($currentdistance['distance']) : 0;
-                                    $message            = array(
+                                    $message            = [
                                         "message" => __('journey_started'),
                                         "pickup_time" => $actual_pickup_time,
                                         "trip_id" => $trip_id,
@@ -7486,28 +7486,28 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                                         "driver_longtitute" => $driver_longtitute,
                                         "status" => 3,
                                         "display" => $tripstart_display
-                                    );
-                                    $update_trip_array  = array(
+                                    ];
+                                    $update_trip_array  = [
                                         "notification_status" => 2
-                                    );
+                                    ];
                                     $result             = $api->update_table(MDB_PASSENGERS_LOGS, $update_trip_array, '_id', $trip_id);
                                 } elseif (($driver_reply == 'A') && ($travel_status == 5)) {
                                     $trip_complete_display = ($notification_status != 3) ? 1 : 0;
-                                    $message               = array(
+                                    $message               = [
                                         "message" => __('trip_completed'),
                                         "driver_status" => $trip_status,
                                         "driver_latitute" => $driver_latitute,
                                         "driver_longtitute" => $driver_longtitute,
                                         "status" => 4,
                                         "display" => $trip_complete_display
-                                    );
-                                    $update_trip_array     = array(
+                                    ];
+                                    $update_trip_array     = [
                                         "notification_status" => 3
-                                    );
+                                    ];
                                     $result = $api->update_table(MDB_PASSENGERS_LOGS, $update_trip_array, '_id', $trip_id);
                                 } elseif (($driver_reply == 'A') && ($travel_status == 1) && $transId != 0) {
                                     $tripfare_update_display = ($notification_status != 4) ? 1 : 0;
-                                    $message                 = array(
+                                    $message                 = [
                                         "message" => __('trip_fare_updated'),
                                         "fare" => $amt,
                                         "trip_id" => $trip_id,
@@ -7517,27 +7517,27 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                                         "driver_status" => $trip_status,
                                         "driver_latitute" => $driver_latitute,
                                         "driver_longtitute" => $driver_longtitute
-                                    );
-                                    $update_trip_array       = array(
+                                    ];
+                                    $update_trip_array       = [
                                         "notification_status" => 4
-                                    );
+                                    ];
                                     $result = $api->update_table(MDB_PASSENGERS_LOGS, $update_trip_array, '_id', $trip_id);
                                 } elseif (($driver_reply == 'A') && ($travel_status == 4)) {
-                                    $message = array(
+                                    $message = [
                                         "message" => __('trip_cancelled_passenger'),
                                         "driver_status" => $trip_status,
                                         "driver_latitute" => $driver_latitute,
                                         "driver_longtitute" => $driver_longtitute,
                                         "status" => 9
-                                    );
+                                    ];
                                 } else {
-                                    $message = array(
+                                    $message = [
                                         "message" => __('trip_not_started'),
                                         "driver_status" => $trip_status,
                                         "driver_latitute" => $driver_latitute,
                                         "driver_longtitute" => $driver_longtitute,
                                         "status" => 6
-                                    );
+                                    ];
                                 }
                             } else if (count($get_passenger_log_det) > 0) {
                                 foreach ($get_passenger_log_det as $status) {
@@ -7564,60 +7564,60 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                                     }
                                     /**********************************************************/
                                     if (($driver_reply == 'A') && ($travel_status == 9)) {
-                                        $detail  = array(
+                                        $detail  = [
                                             "trip_id" => $trip_id,
                                             "driverdetails" => ""
-                                        );
-                                        $message = array(
+                                        ];
+                                        $message = [
                                             "message" => __("request_confirmed_passenger"),
                                             "detail" => $detail,
                                             "driver_latitute" => $driver_latitute,
                                             "driver_longtitute" => $driver_longtitute,
                                             "status" => 1
-                                        );
+                                        ];
                                     } elseif (($driver_reply == 'A') && ($travel_status == 8)) {
                                         $dispatcher_cancel_display = ($notification_status != 8) ? 1 : 0;
-                                        $message                   = array(
+                                        $message                   = [
                                             "message" => __("dispatcher_trip_cancelled"),
                                             "detail" => "",
                                             "driver_latitute" => $driver_latitute,
                                             "driver_longtitute" => $driver_longtitute,
                                             "status" => 10,
                                             "display" => $dispatcher_cancel_display
-                                        );
-                                        $update_trip_array         = array(
+                                        ];
+                                        $update_trip_array         = [
                                             "notification_status" => 8
-                                        );
+                                        ];
                                         $result = $api->update_table(MDB_PASSENGERS_LOGS, $update_trip_array, '_id', $trip_id);
                                     } elseif (($driver_reply == 'C') && ($travel_status == 6) && ($notification_status != 5)) {
-                                        $message           = array(
+                                        $message           = [
                                             "message" => __("trip_cancel"),
                                             "detail" => "",
                                             "driver_latitute" => $driver_latitute,
                                             "driver_longtitute" => $driver_longtitute,
                                             "status" => 7
-                                        );
-                                        $update_trip_array = array(
+                                        ];
+                                        $update_trip_array = [
                                             "notification_status" => 5
-                                        );
+                                        ];
                                         $result = $api->update_table(MDB_PASSENGERS_LOGS, $update_trip_array, '_id', $trip_id);
                                     } elseif (($driver_reply == 'C') && ($travel_status == 9)) {
                                         $driver_cancel_display = ($notification_status != 5) ? 1 : 0;
-                                        $message               = array(
+                                        $message               = [
                                             "message" => __("driver_cancel_after_confirm"),
                                             "detail" => "",
                                             "driver_latitute" => $driver_latitute,
                                             "driver_longtitute" => $driver_longtitute,
                                             "status" => 8,
                                             "display" => $driver_cancel_display
-                                        );
-                                        $update_trip_array     = array(
+                                        ];
+                                        $update_trip_array     = [
                                             "notification_status" => 5
-                                        );
+                                        ];
                                         $result = $api->update_table(MDB_PASSENGERS_LOGS, $update_trip_array, '_id', $trip_id);
                                     } elseif (($driver_reply == 'A') && ($travel_status == 3)) {
                                         $arrived_display   = ($notification_status != 1) ? 1 : 0;
-                                        $message           = array(
+                                        $message           = [
                                             "message" => __('passenger_on_board'),
                                             "trip_id" => $trip_id,
                                             "driver_latitute" => $driver_latitute,
@@ -7625,15 +7625,15 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                                             "taxi_min_speed" => $get_taxi_min_speed,
                                             "status" => 2,
                                             "display" => $arrived_display
-                                        );
-                                        $update_trip_array = array(
+                                        ];
+                                        $update_trip_array = [
                                             "notification_status" => 1
-                                        );
+                                        ];
                                         $result = $api->update_table(MDB_PASSENGERS_LOGS, $update_trip_array, '_id',$trip_id);
                                     } elseif (($driver_reply == 'A') && ($travel_status == 2)) {
                                         $tripstart_display  = ($notification_status != 2) ? 1 : 0;
                                         $actual_pickup_time = $this->commonmodel->getcompany_all_currenttimestamp($default_companyid);	
-                                        $message            = array(
+                                        $message            = [
                                             "message" => __('journey_started'),
                                             "pickup_time" => $actual_pickup_time,
                                             "trip_id" => $trip_id,
@@ -7643,28 +7643,28 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                                             "driver_longtitute" => $driver_longtitute,
                                             "status" => 3,
                                             "display" => $tripstart_display
-                                        );
-                                        $update_trip_array  = array(
+                                        ];
+                                        $update_trip_array  = [
                                             "notification_status" => 2
-                                        );
+                                        ];
                                         $result = $api->update_table(MDB_PASSENGERS_LOGS, $update_trip_array, '_id',$trip_id);
                                     } elseif (($driver_reply == 'A') && ($travel_status == 5)) {
                                         $trip_complete_display = ($notification_status != 3) ? 1 : 0;
-                                        $message               = array(
+                                        $message               = [
                                             "message" => __('trip_completed'),
                                             "driver_status" => $trip_status,
                                             "driver_latitute" => $driver_latitute,
                                             "driver_longtitute" => $driver_longtitute,
                                             "status" => 4,
                                             "display" => $trip_complete_display
-                                        );
-                                        $update_trip_array     = array(
+                                        ];
+                                        $update_trip_array     = [
                                             "notification_status" => 3
-                                        );
+                                        ];
                                         $result = $api->update_table(MDB_PASSENGERS_LOGS, $update_trip_array, '_id',$trip_id);
                                     } elseif (($driver_reply == 'A') && ($travel_status == 1) && $transId != 0) {
                                         $tripfare_update_display = ($notification_status != 4) ? 1 : 0;
-                                        $message                 = array(
+                                        $message                 = [
                                             "message" => __('trip_fare_updated'),
                                             "fare" => $amt,
                                             "trip_id" => $trip_id,
@@ -7674,34 +7674,34 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                                             "driver_status" => $trip_status,
                                             "driver_latitute" => $driver_latitute,
                                             "driver_longtitute" => $driver_longtitute
-                                        );
-                                        $update_trip_array       = array(
+                                        ];
+                                        $update_trip_array       = [
                                             "notification_status" => 4
-                                        );
+                                        ];
                                         $result = $api->update_table(MDB_PASSENGERS_LOGS, $update_trip_array, '_id', $trip_id);
                                     } elseif (($driver_reply == 'A') && ($travel_status == 4) && ($notification_status != 5)) {
-                                        $message = array(
+                                        $message = [
                                             "message" => __('trip_cancelled_passenger'),
                                             "driver_status" => $trip_status,
                                             "driver_latitute" => $driver_latitute,
                                             "driver_longtitute" => $driver_longtitute,
                                             "status" => 9
-                                        );
+                                        ];
                                     } else {
-                                        $message = array(
+                                        $message = [
                                             "message" => __('trip_not_started'),
                                             "driver_status" => $trip_status,
                                             "driver_latitute" => $driver_latitute,
                                             "driver_longtitute" => $driver_longtitute,
                                             "status" => 6
-                                        );
+                                        ];
                                     }
                                 }
                             } else {
-                                $message = array(
+                                $message = [
                                     "message" => __('invalid_trip'),
                                     "status" => -1
-                                );
+                                ];
                             }
                         } elseif ($request_type == 1) {
                             $get_driver_request = $api->get_driver_request($trip_id);
@@ -7728,54 +7728,54 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                                     $driver_reply = 5;
                                 }
                                 if ($driver_reply == '3') {
-                                    $detail  = array(
+                                    $detail  = [
                                         "trip_id" => $trip_id,
                                         "driverdetails" => ""
-                                    );
-                                    $message = array(
+                                    ];
+                                    $message = [
                                         "message" => __("request_confirmed_passenger"),
                                         "detail" => $detail,
                                         "booking_type" => $booking_type,  // 0- Noraml 1 - Child 
                                         "status" => 1
-                                    );
+                                    ];
                                 } elseif ($driver_reply == '4') {
-                                    $message = array(
+                                    $message = [
                                         "message" => __("trip_cancel"),
                                         "detail" => "",
                                         "status" => 7
-                                    );
+                                    ];
                                 } elseif ($driver_reply == '5') {
-                                    $message = array(
+                                    $message = [
                                         "message" => __("driver_busy"),
                                         "status" => 2
-                                    );
+                                    ];
                                     echo json_encode($message);
                                     exit;
                                 } else {
-                                    $message = array(
+                                    $message = [
                                         "message" => __('trip_not_started'),
                                         "status" => 6
-                                    );
+                                    ];
                                 }
                             } else {
-                                $message = array(
+                                $message = [
                                     "message" => __('invalid_trip'),
                                     "status" => -1
-                                );
+                                ];
                             }
                         } else {
-                            $message = array(
+                            $message = [
                                 "message" => __('No Trips '),
                                 "status" => -1
-                            );
+                            ];
                         }
                     } else {
                         $errors  = $validator->errors('errors');
-                        $message = array(
+                        $message = [
                             "message" => __('validation_error'),
                             "status" => -5,
                             "detail" => $errors
-                        );
+                        ];
                     }
                     echo json_encode($message);
                     break;
@@ -7791,38 +7791,38 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                             //print_r($get_passenger_log_det);
                             $driver_reply = $get_driver_request[0]->status;
                             if ($driver_reply == '3') {
-                                $detail  = array(
+                                $detail  = [
                                     "trip_id" => $trip_id,
                                     "driverdetails" => ""
-                                );
-                                $message = array(
+                                ];
+                                $message = [
                                     "message" => __("request_confirmed_passenger"),
                                     "detail" => $detail,
                                     "status" => 1
-                                );
+                                ];
                             } elseif ($driver_reply == '4') {
-                                $message = array(
+                                $message = [
                                     "message" => __("trip_cancel"),
                                     "detail" => "",
                                     "status" => 7
-                                );
+                                ];
                             } else {
-                                $message = array(
+                                $message = [
                                     "message" => __('trip_not_started'),
                                     "status" => 6
-                                );
+                                ];
                             }
                         } else {
-                            $message = array(
+                            $message = [
                                 "message" => __('invalid_trip'),
                                 "status" => -1
-                            );
+                            ];
                         }
                     } else {
-                        $message = array(
+                        $message = [
                             "message" => __('trip_id_req'),
                             "status" => 0
-                        );
+                        ];
                     }
                     echo json_encode($message);
                     break;
@@ -7839,14 +7839,14 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                             $current_driver_status = $driver_model->get_driver_current_status($driver_status_array['driver_id']);
 							//print_r($current_driver_status);exit;
                             if (count($current_driver_status) > 0) {
-                                $trip_details         = array();
+                                $trip_details         = [];
                                 $passengers_log_id    = $driver_status_array['trip_id'];
-                                $update_driver_arrary = array(
-									"loc" => array("type" => "Point",
-												   "coordinates" => array((double)$driver_status_array['longitude'],
-																		  (double)$driver_status_array['latitude'])),
+                                $update_driver_arrary = [
+									"loc" => ["type" => "Point",
+												   "coordinates" => [(double)$driver_status_array['longitude'],
+																		  (double)$driver_status_array['latitude']]],
                                     "status" => strtoupper($driver_status_array['status'])
-                                );
+                                ];
                                 if ($current_driver_status['status'] != 'A') {									
                                     if (($driver_status_array['status'] == 'A') && ($passengers_log_id != null)) {
 										
@@ -7855,12 +7855,12 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
 										$grandlimoUrl = $api->getVideoURL();
 										
 										if(isset($tab_token['tab_token']) && !empty($tab_token['tab_token'])) {
-											$tabmessage = array(
+											$tabmessage = [
 												"message" => __('success'),
 												"version" => $grandlimoUrl['version'],
 												"video_url" => $grandlimoUrl['tab_video'],
 												"status" => 1
-											);
+											];
 										    $title = __('journey_started');
 											$tab_send_notification = $api->send_passenger_mobile_pushnotification($tab_token['tab_token'],1,$tabmessage,$this->tab_android_api,$title);
 										}
@@ -7880,11 +7880,11 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                                         }
                                         /********** Check whther the Trip is alreadt cancelled by the passenger **********/
                                         if (($driver_reply == 'A') && ($travel_status == 4)) {
-                                            $msg = array(
+                                            $msg = [
                                                 "message" => __("trip_cancelled_passenger"),
                                                 "detail" => "",
                                                 "status" => 7
-                                            );
+                                            ];
                                             echo json_encode($msg);
                                             exit;
                                         }
@@ -7901,22 +7901,22 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                                         }
                                         $act_pic_lat                = ($driver_status_array['latitude'] != 0) ? $driver_status_array['latitude'] : $pickup_latitude;
                                         $act_pic_long               = ($driver_status_array['longitude'] != 0) ? $driver_status_array['longitude'] : $pickup_longitude;
-                                        $update_passenger_log_array = array(
+                                        $update_passenger_log_array = [
                                             'travel_status' =>(int)$travel_status,
                                             'actual_pickup_time' => new \MongoDB\BSON\UTCDateTime(strtotime($actual_pickup_time) * 1000),
                                             'current_location' => $act_pickup_location,
                                             'pickup_latitude' => (double)$act_pic_lat,
                                             'pickup_longitude' => (double)$act_pic_long
-                                        );
+                                        ];
 										
                                         $result                     = $api->update_table(MDB_PASSENGERS_LOGS, $update_passenger_log_array, '_id', $passengers_log_id);
 										
 										
                                         /** Passenger log table update end **/
                                         /*************** Update arrival in driver request table ******************/
-                                        $update_trip_array          = array(
+                                        $update_trip_array          = [
                                             "status" => 6
-                                        );
+                                        ];
                                         $result                     = $api->update_table(MDB_REQUEST_HISTORY, $update_trip_array, 'trip_id', $passengers_log_id);
 										
 					 /*************************************************************************/
@@ -7924,25 +7924,25 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
 						//$result = $api->update_driverinfo($update_driver_arrary,$driver_status_array['driver_id']);
 						$result = $api->update_table(MDB_DRIVER_INFO, $update_driver_arrary, '_id', $driver_status_array['driver_id']);
 					}					
-                                        $trip_details = array(
+                                        $trip_details = [
                                             "pickup_latitude" => (double)$driver_status_array['latitude'],
                                             "pickup_longitude" =>(double)$driver_status_array['longitude'],
                                             "pickup_location" => $act_pickup_location,
                                             "drop_latitude" => (double)$drop_latitude,
                                             "drop_longitude" => (double)$drop_longitude,
                                             "drop_location" => $drop_location
-                                        );
-                                        $message      = array(
+                                        ];
+                                        $message      = [
                                             "message" => __('driver_location_update'),
                                             "status" => 1,
                                             "detail" => $trip_details
-                                        );
-                                        $push_message = array(
+                                        ];
+                                        $push_message = [
                                             "message" => __('journey_started'),
                                             "pickup_time" => $actual_pickup_time,
                                             "trip_id" => $passengers_log_id,
                                             "status" => 3
-                                        );		
+                                        ];		
                                         /* SEND VIDEO STREAM URL TO PARENT IF HIS CHILD IN TRIP */
 										$get_passenger_log_details_chk = $api->get_passenger_log_detail($passengers_log_id);
 									
@@ -7973,11 +7973,11 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
 											$parent_device_type = $parentInfo[0]['device_type'];
 											$get_taxi_channel_details = $api->get_taxi_channel_details($get_passenger_log_details[0]['taxi_id']);
 											$channel_id =  $get_taxi_channel_details['live_stream_channel'];
-											$parent_pushmessage           = array(
+											$parent_pushmessage           = [
 											"message" => str_replace("%s",$passeger_name,__('p_journey_started')),
-											"detail" => array('trip_id' => $passengers_log_id,'name'=>$passenger_name,'image'=>$passenger_image,'phone'=>$passenger_phone,'live_video' => 'https://www.ustream.tv/embed/'.$channel_id),
+											"detail" => ['trip_id' => $passengers_log_id,'name'=>$passenger_name,'image'=>$passenger_image,'phone'=>$passenger_phone,'live_video' => 'https://www.ustream.tv/embed/'.$channel_id],
 											"status" => 12
-											);
+											];
 											$title =  __('p_journey_started');
 											$p_send_notification = $api->send_passenger_mobile_pushnotification($parent_device_token,$parent_device_type,$parent_pushmessage,$this->customer_google_api,$title);
 										}
@@ -7992,68 +7992,68 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                                         
                                         				
                                     } elseif (($driver_status_array['status'] == 'A') && ($passengers_log_id == null)) {
-                                        $message = array(
+                                        $message = [
                                             "message" => __('invalid_trip_id'),
                                             "status" => -1,
                                             "detail" => $trip_details
-                                        );
+                                        ];
                                     } else {
 										
                                         if (($driver_status_array['latitude'] != 0) && ($driver_status_array['longitude'] != 0)) {
 											
                                             $result = $api->update_table(MDB_DRIVER_INFO, $update_driver_arrary, '_id', $driver_status_array['driver_id']);
                                         }
-                                        $message = array(
+                                        $message = [
                                             "message" => __('driver_location_update'),
                                             "status" => 1
-                                        );
+                                        ];
                                     }
                                 } else {
-                                    $update_driver_arrary = array(
-										"loc" => array("type" => "Point",
-													   "coordinates" => array((double)$driver_status_array['longitude'],
-																			  (double)$driver_status_array['latitude'])),
+                                    $update_driver_arrary = [
+										"loc" => ["type" => "Point",
+													   "coordinates" => [(double)$driver_status_array['longitude'],
+																			  (double)$driver_status_array['latitude']]],
                                         "status" => strtoupper($driver_status_array['status'])
-                                    );
+                                    ];
                                     if (($driver_status_array['latitude'] != 0) && ($driver_status_array['longitude'] != 0)) {
                                         $result = $api->update_table(MDB_DRIVER_INFO, $update_driver_arrary, '_id', $driver_status_array['driver_id']);
                                     }
-                                    $message = array(
+                                    $message = [
                                         "message" => __('already_trip'),
                                         "status" => -1
-                                    );
+                                    ];
                                 }
                             } else {
 								//echo "else"; exit;
-                                $insert_array = array(
+                                $insert_array = [
                                     "_id" => $driver_status_array['driver_id'],
                                     "status" => 'F',
                                     "shift_status" => 'OUT',
-									"loc" => array("type" => "Point",
-												   "coordinates" => array((double)$driver_status_array['longitude'],
-																		  (double)$driver_status_array['latitude'])),
+									"loc" => ["type" => "Point",
+												   "coordinates" => [(double)$driver_status_array['longitude'],
+																		  (double)$driver_status_array['latitude']]],
 									/*"latitude" => $driver_status_array['latitude'],
                                     "longitude" => $driver_status_array['longitude'],*/
-                                );
+                                ];
                                 if (($driver_status_array['latitude'] != 0) && ($driver_status_array['longitude'] != 0)) {
                                     $transaction = $this->commonmodel->insert(MDB_DRIVER_INFO, $insert_array);
                                 }
-                                $message = array(
+                                $message = [
                                     "message" => __('driver_location_update'),
                                     "status" => 1
-                                );
+                                ];
                             }
                         } else {
-                            $message = array(
+                            $message = [
                                 "message" => __('driver_not_login'),
                                 "status" => -1
-                            );
+                            ];
                         }
                     } else {
-                        $message = array(
+                        $message = [
                             "message" => __('invalid_user'),
                             "status" => -1
-                        );
+                        ];
                     }
                     echo json_encode($message);
                     break;
@@ -8071,13 +8071,13 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                                 //print_r($current_driver_status);
                                 //array_shift($driver_status_array);
                                 //array_shift($driver_status_array);							
-                                $trip_details         = array();
+                                $trip_details         = [];
                                 $passengers_log_id    = $driver_status_array['trip_id'];
-                                $update_driver_arrary = array(
+                                $update_driver_arrary = [
                                     "latitude" => $driver_status_array['latitude'],
                                     "longitude" => $driver_status_array['longitude'],
                                     "status" => strtoupper($driver_status_array['status'])
-                                );
+                                ];
                                 if ($current_driver_status[0]->status != 'A') {
                                     if (($driver_status_array['status'] == 'A') && ($passengers_log_id != null)) {
                                         $get_passenger_log_details = $api->get_passenger_log_detail($passengers_log_id);
@@ -8100,11 +8100,11 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                                         }
                                         /********** Check whther the Trip is alreadt cancelled by the passenger **********/
                                         if (($driver_reply == 'A') && ($travel_status == 4)) {
-                                            $msg = array(
+                                            $msg = [
                                                 "message" => __("trip_cancelled_passenger"),
                                                 "detail" => "",
                                                 "status" => 7
-                                            );
+                                            ];
                                             echo json_encode($msg);
                                             exit;
                                         }
@@ -8121,43 +8121,43 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                                         }
                                         $act_pic_lat                = ($driver_status_array['latitude'] != 0) ? $driver_status_array['latitude'] : $pickup_latitude;
                                         $act_pic_long               = ($driver_status_array['longitude'] != 0) ? $driver_status_array['longitude'] : $pickup_longitude;
-                                        $update_passenger_log_array = array(
+                                        $update_passenger_log_array = [
                                             'travel_status' => $travel_status,
                                             'actual_pickup_time' => $actual_pickup_time,
                                             'current_location' => $act_pickup_location,
                                             'pickup_latitude' => $act_pic_lat,
                                             'pickup_longitude' => $act_pic_long
-                                        );
+                                        ];
                                         $result                     = $api->update_table(PASSENGERS_LOG, $update_passenger_log_array, 'passengers_log_id', $passengers_log_id);
                                         /** Passenger log table update end **/
                                         /*************** Update arrival in driver request table ******************/
-                                        $update_trip_array          = array(
+                                        $update_trip_array          = [
                                             "status" => 6
-                                        );
+                                        ];
                                         $result                     = $api->update_table(DRIVER_REQUEST_DETAILS, $update_trip_array, 'trip_id', $passengers_log_id);
                                         /*************************************************************************/
                                         if (($driver_status_array['latitude'] != 0) && ($driver_status_array['longitude'] != 0)) {
                                             $result = $api->update_table(DRIVER, $update_driver_arrary, 'driver_id', $driver_status_array['driver_id']);
                                         }
-                                        $trip_details = array(
+                                        $trip_details = [
                                             "pickup_latitude" => $driver_status_array['latitude'],
                                             "pickup_longitude" => $driver_status_array['longitude'],
                                             "pickup_location" => $act_pickup_location,
                                             "drop_latitude" => $drop_latitude,
                                             "drop_longitude" => $drop_longitude,
                                             "drop_location" => $drop_location
-                                        );
-                                        $message      = array(
+                                        ];
+                                        $message      = [
                                             "message" => __('driver_location_update'),
                                             "status" => 1,
                                             "detail" => $trip_details
-                                        );
-                                        $push_message = array(
+                                        ];
+                                        $push_message = [
                                             "message" => __('journey_started'),
                                             "pickup_time" => $actual_pickup_time,
                                             "trip_id" => $passengers_log_id,
                                             "status" => 3
-                                        );
+                                        ];
                                         
                                         /* Send Push notification to their parent */
 										if($passenger_parent_id == 0){}
@@ -8166,12 +8166,12 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
 										$parentInfo = $api->get_passenger_details_by_id($passenger_parent_id);
 										$parent_device_token = $parentInfo[0]['device_token'];
 										$parent_device_type = $parentInfo[0]['device_type'];
-										$parent_pushmessage = array(
+										$parent_pushmessage = [
                                             "message" => str_replace("%s",$passeger_name,__('p_journey_started')),
                                             "pickup_time" => $actual_pickup_time,
                                             "trip_id" => $passengers_log_id,
                                             "status" => 3
-                                        );
+                                        ];
 										$title = __('journey_started_child');
 										$p_send_notification = $api->send_passenger_mobile_pushnotification($parent_device_token,$parent_device_type,$parent_pushmessage,$this->customer_google_api,$title);
 										}
@@ -8183,62 +8183,62 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                                         $title = __('journey_started');
                                         $p_send_notification = $api->send_passenger_mobile_pushnotification($p_device_token,$p_device_type,$push_message,$this->customer_google_api,$title);															
                                     } elseif (($driver_status_array['status'] == 'A') && ($passengers_log_id == null)) {
-                                        $message = array(
+                                        $message = [
                                             "message" => __('invalid_trip_id'),
                                             "status" => -1,
                                             "detail" => $trip_details
-                                        );
+                                        ];
                                     } else {
                                         if (($driver_status_array['latitude'] != 0) && ($driver_status_array['longitude'] != 0)) {
                                             $result = $api->update_table(DRIVER, $update_driver_arrary, 'driver_id', $driver_status_array['driver_id']);
                                         }
-                                        $message = array(
+                                        $message = [
                                             "message" => __('driver_location_update'),
                                             "status" => 1
-                                        );
+                                        ];
                                     }
                                 } else {
-                                    $update_driver_arrary = array(
+                                    $update_driver_arrary = [
                                         "latitude" => $driver_status_array['latitude'],
                                         "longitude" => $driver_status_array['longitude'],
                                         "status" => strtoupper($driver_status_array['status'])
-                                    );
+                                    ];
                                     //print_r($update_driver_arrary);
                                     if (($driver_status_array['latitude'] != 0) && ($driver_status_array['longitude'] != 0)) {
                                         $result = $api->update_table(DRIVER, $update_driver_arrary, 'driver_id', $driver_status_array['driver_id']);
                                     }
-                                    $message = array(
+                                    $message = [
                                         "message" => __('already_trip'),
                                         "status" => -1
-                                    );
+                                    ];
                                 }
                             } else {
-                                $insert_array = array(
+                                $insert_array = [
                                     "driver_id" => $driver_status_array['driver_id'],
                                     "latitude" => $driver_status_array['latitude'],
                                     "longitude" => $driver_status_array['longitude'],
                                     "status" => 'F',
                                     "shift_status" => 'OUT'
-                                );
+                                ];
                                 if (($driver_status_array['latitude'] != 0) && ($driver_status_array['longitude'] != 0)) {
                                     $transaction = $this->commonmodel->insert(DRIVER, $insert_array);
                                 }
-                                $message = array(
+                                $message = [
                                     "message" => __('driver_location_update'),
                                     "status" => 1
-                                );
+                                ];
                             }
                         } else {
-                            $message = array(
+                            $message = [
                                 "message" => __('driver_not_login'),
                                 "status" => -1
-                            );
+                            ];
                         }
                     } else {
-                        $message = array(
+                        $message = [
                             "message" => __('invalid_user'),
                             "status" => -1
-                        );
+                        ];
                     }
                     echo json_encode($message);
                     break;
@@ -8259,20 +8259,20 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                         } else {
                             $travel_status = 9;
                         }
-                        $driver_statistics = array();
+                        $driver_statistics = [];
                         $result            = $api->update_driverreply_status($pass_logid, $driver_id, $taxi_id, $company_id, $driver_reply, $travel_status, $field, $flag, $default_companyid);
                         //echo $result;exit;
                         if ($result == 1) {
                             if ($driver_reply == 'A') {
                                 /********* Update the status in driver request table **************/
-                                $update_trip_array    = array(
+                                $update_trip_array    = [
                                     "status" => 3
-                                );
+                                ];
                                 $update_result        = $api->update_table(MDB_REQUEST_HISTORY, $update_trip_array, 'trip_id',$pass_logid);
                                 /********** Update the Driver table he goes Busy status ****************/
-                                $update_driver_array  = array(
+                                $update_driver_array  = [
                                     "status" => 'B'
-                                );
+                                ];
                                 $update_driver_result = $api->update_table(MDB_DRIVER_INFO,$update_driver_array,'_id',$driver_id);
                                 /**************************************************************************/
                             }
@@ -8283,9 +8283,9 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                             //$delete_pass_log_temp =$api->delete_passengers_log_temp($pass_logid);
                         } else if ($result == 2) {
                             /********** Update the Driver table he goes Busy status ****************/
-                            $update_driver_array  = array(
+                            $update_driver_array  = [
                                 "status" => 'F'
-                            );
+                            ];
                             $update_driver_result = $api->update_table(MDB_DRIVER_INFO,$update_driver_array,'_id',$driver_id);
                             /**************************************************************************/
                             $message              = __('request_rejected');
@@ -8299,7 +8299,7 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                             $rejected_trips = count($rejected_trips);
                             $driver_earnings        = $api->get_driver_earnings_with_rating($driver_id, $company_id);
                             $driver_tot_earnings    = $api->get_driver_total_earnings($driver_id);
-                            $statistics             = array();
+                            $statistics             = [];
                             $total_trip             = $today_earnings = $total_amount = 0;
                             foreach ($driver_earnings as $stat) {
                                 $total_trip++;
@@ -8307,7 +8307,7 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                             }
                             $overall_trip         = $total_trip + $rejected_trips + $driver_cancelled_trips;
                             $time_driven          = $api->get_time_driven($driver_id, 'R', 'A', '1','1');$waittime =  $api->get_time_driven($driver_id, 'R', 'A', '1','2');
-                            $driver_statistics    = array(
+                            $driver_statistics    = [
                                 "total_trip" => $overall_trip,
                                 "completed_trip" => $total_trip,
                                 "total_earnings" => round($driver_tot_earnings, 2),
@@ -8318,18 +8318,18 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                                 "time_driven" => $time_driven,
                                 "waiting_time" => $waittime,
                                 "status" => 1
-                            );
+                            ];
                             //print_r($driver_statistics);exit;
                             //Driver Statistics Functionality End
                             /********** Update the Driver table he goes Busy status ****************/
-                            $update_driver_array  = array(
+                            $update_driver_array  = [
                                 "status" => 'F'
-                            );
+                            ];
                             $update_driver_result = $api_model->update_table(MDB_DRIVER_INFO, $update_driver_array, '_id', (int)$driver_id);
                             /*************** Update in driver request table ******************/
-                            $update_trip_array    = array(
+                            $update_trip_array    = [
                                 "status" => 9
-                            );
+                            ];
                             $result               = $api->update_table(MDB_REQUEST_HISTORY, $update_trip_array, 'trip_id', (int)$pass_logid);
                             /*************************************************************************/
                             $message              = __('trip_cancelled_driver');
@@ -8378,8 +8378,8 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                             //$result = file_get_contents("http://s1.freesmsapi.com/messages/send?skey=b5cedd7a407366c4b4459d3509d4cebf&message=".urlencode($sms_message)."&senderid=NAJIK&recipient=$to");
                         }
                         $totalrating   = "";
-                        $driverdetails = array();
-                        $trip_detail   = array();
+                        $driverdetails = [];
+                        $trip_detail   = [];
                         $driverdetails = $api->get_passenger_log_detail_reply($pass_logid);
 					
 						
@@ -8392,39 +8392,39 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                             }
                             $values['profile_image'] = $img;
                         }
-                        $detail = array(
+                        $detail = [
                             "trip_id" => $pass_logid,
                             "driverdetails" => $driverdetails,
                             "driver_statistics" => $driver_statistics
-                        );
+                        ];
                         if ($response_status == 1) {
-                            $msg = array(
+                            $msg = [
                                 "message" => $message,
                                 "status" => $response_status,
                                 "detail" => $detail
-                            );
+                            ];
                         } else {
-                            $msg = array(
+                            $msg = [
                                 "message" => $message,
                                 "status" => $response_status,
                                 "driver_statistics" => $driver_statistics
-                            );
+                            ];
                         }
                         if ($push_status == 1 || $push_status == 6 || $push_status == 7) {
                             if ($push_status == 1) {
-                                $push_message = array(
+                                $push_message = [
                                     "message" => $push_msg,
                                     "trip_id" => $pass_logid,
                                     "driverdetails" => $driverdetails,
                                     "status" => $push_status
-                                );
+                                ];
                             } else {
-                                $push_message = array(
+                                $push_message = [
                                     "message" => $push_msg,
                                     "trip_id" => $pass_logid,
                                     "trip_detail" => $trip_detail,
                                     "status" => $push_status
-                                );
+                                ];
                             }
                            $title = $push_msg ;
                            
@@ -8451,10 +8451,10 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                             //exit;
                         }
                     } else {
-                        $msg = array(
+                        $msg = [
                             "message" => __('invalid_trip'),
                             "status" => -1
-                        );
+                        ];
                     }
                     echo json_encode($msg);
                     break;
@@ -8463,10 +8463,10 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                     $driver_status_array = $mobiledata;
                     $check_result        = $api->check_driver_companydetails($driver_status_array['driver_id'], $default_companyid);
                     if ($check_result == 0) {
-                        $message = array(
+                        $message = [
                             "message" => __('invalid_user'),
                             "status" => -1
-                        );
+                        ];
                         echo json_encode($message);
                         exit;
                         ;
@@ -8474,7 +8474,7 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                     if ($driver_status_array['driver_id'] != null) {
                         //$result = $api->select_table(DRIVER,'driver_id',$array['driver_id']);	
                         $result         = $api->select_driverloc($driver_status_array['driver_id'], $default_companyid);
-                        $driver_details = array();
+                        $driver_details = [];
                         $latitude       = $longitude = '0.0';
                         $status         = 'F';
                         //print_r($result);
@@ -8489,7 +8489,7 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                                 $update_date   = $details['update_date'];
                             }
                             //$result[0]['status'] =  ($driver_status != 'B') ?  $driver_status : 'F';
-                            $driver_details = array(
+                            $driver_details = [
                                 "id" => $id,
                                 "driver_id" => $driver_id,
                                 "latitude" => $latitude,
@@ -8497,10 +8497,10 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                                 "status" => $status,
                                 "shift_status" => $shift_status,
                                 "update_date" => $update_date
-                            );
+                            ];
                         }
                         $driver_current_journey = $api->get_driver_current_journey($driver_status_array['driver_id'], $default_companyid, '0');
-                        $trip_details           = array();
+                        $trip_details           = [];
                         if (count($driver_current_journey) > 0) {
                             foreach ($driver_current_journey as $values) {
                                 $current_location  = $values['current_location'];
@@ -8511,35 +8511,35 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                                 $drop_longitude    = $values['drop_longitude'];
                                 //$no_passengers = $value->no_passengers;									
                             }
-                            $trip_details = array(
+                            $trip_details = [
                                 "pickup_location" => $current_location,
                                 "drop_location" => $drop_location,
                                 "current_latitude" => $current_latitude,
                                 "current_longitude" => $current_longitude,
                                 "drop_latitude" => $drop_latitude,
                                 "drop_longitude" => $drop_longitude
-                            );
+                            ];
                         } else {
-                            $trip_details = array(
+                            $trip_details = [
                                 'No Trip Found.'
-                            );
+                            ];
                         }
                         if (count($result) > 0)
-                            $message = array(
+                            $message = [
                                 "current_location" => $result,
                                 "current_trip" => $trip_details,
                                 "status" => 1
-                            );
+                            ];
                         else
-                            $message = array(
+                            $message = [
                                 "message" => 'Driver Not Found or Kindly update your status',
                                 "status" => -1
-                            );
+                            ];
                     } else {
-                        $message = array(
+                        $message = [
                             "message" => __('invalid_user'),
                             "status" => -1
-                        );
+                        ];
                     }
                     echo json_encode($message);
                     break;
@@ -8551,15 +8551,15 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                         if (count($result) > 0)
                             $message = $result;
                         else
-                            $message = array(
+                            $message = [
                                 "message" => __('invalid_trip'),
                                 "status" => 0
-                            );
+                            ];
                     } else {
-                        $message = array(
+                        $message = [
                             "message" => __('invalid_user'),
                             "status" => -1
-                        );
+                        ];
                     }
                     echo json_encode($message);
                     break;
@@ -8581,21 +8581,21 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                         }
                         if (count($org_array) > 0) {
                             $result  = $api->update_table(PASSENGERS_LOG, $org_array, 'passengers_log_id', $passengers_log_id);
-                            $message = array(
+                            $message = [
                                 "message" => 'Data Updated Successfully',
                                 "status" => 1
-                            );
+                            ];
                         } else {
-                            $message = array(
+                            $message = [
                                 "message" => 'Atleast Provide Single Field Data',
                                 "status" => 0
-                            );
+                            ];
                         }
                     } else {
-                        $message = array(
+                        $message = [
                             "message" => __('invalid_user'),
                             "status" => -1
-                        );
+                        ];
                     }
                     echo json_encode($message);
                     break;
@@ -8604,10 +8604,10 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                     $driver_upcoming_journey = $mobiledata;
                     $check_result            = $api->check_driver_companydetails($driver_upcoming_journey['driver_id'], $default_companyid);
                     if ($check_result == 0) {
-                        $message = array(
+                        $message = [
                             "message" => __('invalid_user'),
                             "status" => -1
-                        );
+                        ];
                         echo json_encode($message);
                         exit;
                     }
@@ -8630,22 +8630,22 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                             $array_inc++;
                         }
                         if (count($driver_logs_upcoming) == 0) {
-                            $message = array(
+                            $message = [
                                 "message" => __('no_data'),
                                 "status" => 0
-                            );
+                            ];
                         } else {
-                            $message = array(
+                            $message = [
                                 "message" => $upcoming_journey,
                                 "status" => 1
-                            );
+                            ];
                             //$message = Arr::merge($msg,$upcoming_journey);
                         }
                     } else {
-                        $message = array(
+                        $message = [
                             "message" => __('invalid_user'),
                             "status" => -1
-                        );
+                        ];
                     }
                     echo json_encode($message);
                     break;
@@ -8673,23 +8673,23 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                         //$result = file_get_contents("http://s1.freesmsapi.com/messages/send?skey=b5cedd7a407366c4b4459d3509d4cebf&message=".urlencode($message)."&senderid=NAJIK&recipient=$to");
                         $result          = true;
                         if ($result) {
-                            $message = array(
+                            $message = [
                                 "message" => __('sms_invite_send'),
                                 "status" => 1
-                            );
+                            ];
                         } else {
-                            $message = array(
+                            $message = [
                                 "message" => __('try_again'),
                                 "status" => 0
-                            );
+                            ];
                         }
                     } else {
                         $validation_error = $validator->errors('errors');
-                        $message          = array(
+                        $message          = [
                             "message" => __('validation_error'),
                             "status" => -3,
                             "detail" => $validation_error
-                        );
+                        ];
                     }
                     echo json_encode($message);
                     break;
@@ -8712,7 +8712,7 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                         $message           = DRIVER_TELL_TO_FRIEND_MESSAGE;
                         $mail              = "";
                         $subject           = __('driver_telltofriend_subject') . ' ' . $this->app_name;
-                        $replace_variables = array(
+                        $replace_variables = [
                             REPLACE_LOGO => EMAILTEMPLATELOGO,
                             REPLACE_SITENAME => $this->app_name,
                             REPLACE_NAME => $name,
@@ -8723,7 +8723,7 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                             REPLACE_COMPANYDOMAIN => $this->domain_name,
                             REPLACE_COPYRIGHTS => SITE_COPYRIGHT,
                             REPLACE_COPYRIGHTYEAR => COPYRIGHT_YEAR
-                        );
+                        ];
                         /* Added for language email template */
                         if ($this->lang != 'en') {
                             if (file_exists(DOCROOT . TEMPLATEPATH . $this->lang . '/driver_telltofriend-' . $this->lang . '.html')) {
@@ -8750,17 +8750,17 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                             mail($to, $subject, $message, $headers);
                         }
                         //$rejectedemails.' '.__('already_reg')
-                        $message = array(
+                        $message = [
                             "message" => __('driver_tellfri_email_success'),
                             "status" => 1
-                        );
+                        ];
                     } else {
                         $validation_error = $validator->errors('errors');
-                        $message          = array(
+                        $message          = [
                             "message" => __('validation_error'),
                             "status" => -3,
                             "detail" => $validation_error
-                        );
+                        ];
                     }
                     echo json_encode($message);
                     break;
@@ -8788,7 +8788,7 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                             if (count($goal_detail) > 0) {
                                 $today_earnings = $goal_detail[0]['acheive_amt'];
                             }
-                            $statistics = array();
+                            $statistics = [];
                             $total_trip = $trip_total_with_rate = $total_ratings = $total_amount = 0;
                             foreach ($driver_comments as $stat) {
                                  $total_trip++;//exit;
@@ -8804,7 +8804,7 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                                 $notification_setting = $driver_details[0]['notification_setting'];
                                 
                                 $overall_trip         = $total_trip + $rejected_trips + $driver_cancelled_trips; //exit;
-                                $statistics           = array(
+                                $statistics           = [
                                     "drivername" => $drivername,
                                     "total_trip" => $overall_trip,
                                     "completed_trip" => $total_trip,
@@ -8818,31 +8818,31 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                                     "time_driven" => $time_driven,
                                     "waiting_time" => $waittime,
                                     "status" => 1
-                                );
-                                $message              = array(
+                                ];
+                                $message              = [
                                     "message" => __('success'),
                                     "detail" => $statistics,
                                     "status" => 1
-                                );
+                                ];
                             } else {
-                                $message = array(
+                                $message = [
                                     "message" => __('invalid_driver'),
                                     "status" => 2
-                                );
+                                ];
                             }
                             //	$message = $statistics;		
                             //}	
                         } else {
-                            $message = array(
+                            $message = [
                                 "message" => __('driver_not_login'),
                                 "status" => -1
-                            );
+                            ];
                         }
                     } else {
-                        $message = array(
+                        $message = [
                             "message" => __('invalid_user'),
                             "status" => -1
-                        );
+                        ];
                     }
                     echo json_encode($message);
                     break;
@@ -8854,10 +8854,10 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                         $driver_id      = $array['driver_id'];
                         $company_status = $api->api_companystatus($array['driver_id']);
                         if (($company_status == 'D') || ($company_status == 'T')) {
-                            $message = array(
+                            $message = [
                                 "message" => __('user_blocked'),
                                 "status" => -7
-                            );
+                            ];
                             echo json_encode($message);
                             //return;
                             exit;
@@ -8865,18 +8865,18 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                         if ($array['driver_id'] != null) {
                             $check_result = $api->check_driver_companydetails($array['driver_id'], $default_companyid);
                             if ($check_result == 0) {
-                                $message = array(
+                                $message = [
                                     "message" => __('company_deactivaed_driver'),
                                     "status" => '-1'
-                                );
+                                ];
                                 echo json_encode($message);
                                 exit;
                             }else if($check_result == -1){
 								
-								$message = array(
+								$message = [
                                 "message" => __('invalid_user_driver'),
                                 "status" => -1
-                            );
+                            ];
                              echo json_encode($message);
                                 exit;
 							}
@@ -8896,7 +8896,7 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
 										/* Shift history */
 										$cat_id = commonfunction::get_auto_id(MDB_SHIFT_HISTORY);
                                         /* Shift history */
-                                        $insert_array = array(
+                                        $insert_array = [
 											"_id"=>$cat_id,
                                             "driver_id" => $driver_id,
                                             "taxi_id" => $taxi_id,
@@ -8904,39 +8904,39 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                                             "shift_end" => "",
                                             "reason" => $array['reason'],
                                             "createdate" => $this->currentdate
-                                        );
+                                        ];
                                         //Inserting to Transaction Table 
                                         $transaction  = $this->commonmodel->insert(MDB_SHIFT_HISTORY, $insert_array);
                                         //print_r($transaction);	exit;	
                                        // $insert_id    = $transaction[0];
                                         $insert_id    = $cat_id;
                                         if ($transaction) {
-                                            $detail  = array(
+                                            $detail  = [
                                                 "update_id" => $insert_id
-                                            );
-                                            $message = array(
+                                            ];
+                                            $message = [
                                                 "message" => __('driver_shift'),
                                                 "status" => 1,
                                                 "detail" => $detail
-                                            );
+                                            ];
                                         } else {
-                                            $message = array(
+                                            $message = [
                                                 "message" => __('try_again'),
                                                 "status" => -2
-                                            );
+                                            ];
                                         }
                                     } else {
-                                        $message = array(
+                                        $message = [
                                             "message" => __('taxi_not_assigned'),
                                             "status" => -3
-                                        );
+                                        ];
                                         //exit;				   
                                     }
                                 } else {
-                                    $message = array(
+                                    $message = [
                                         "message" => __('taxi_not_assigned'),
                                         "status" => -3
-                                    );
+                                    ];
                                 }
                             } else {
 								//print_r($current_driver_status);exit;
@@ -8946,55 +8946,55 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                                     if ($driver_trip_count == 0) {
                                       $update_id     = $array['update_id'];
                                         //$company_all_currenttimestamp = $this->commonmodel->getcompany_all_currenttimestamp($default_companyid);
-                                        $update_arrary = array(
+                                        $update_arrary = [
                                             "shift_end" => new \MongoDB\BSON\UTCDateTime(strtotime($company_all_currenttimestamp) * 1000)
-                                        );
+                                        ];
                                         if ($update_id != "") {
                                             $transaction  = $this->commonmodel->update(DRIVERSHIFTSERVICE, $update_arrary, '_id', (int)$update_id);
                                             $driver_reply = $api->update_driver_shift_status($driver_id, 'OUT');
                                             if ($transaction) {
-                                                $message = array(
+                                                $message = [
                                                     "message" => __('driver_shift_out'),
                                                     "status" => 1
-                                                );
+                                                ];
                                             } else {
-                                                $message = array(
+                                                $message = [
                                                     "message" => __('try_again'),
                                                     "status" => -2
-                                                );
+                                                ];
                                             }
                                         } else {
-                                            $message = array(
+                                            $message = [
                                                 "message" => __('update_id_missing'),
                                                 "status" => -5
-                                            );
+                                            ];
                                         }
                                     } else {
-                                        $message = array(
+                                        $message = [
                                             "message" => __('trip_in_future'),
                                             "status" => -4
-                                        );
+                                        ];
                                     }
                                 } else {
-                                    $message = array(
+                                    $message = [
                                         "message" => __('driver_in_trip'),
                                         "status" => -1
-                                    );
+                                    ];
                                 }
                             }
                         } else {
-                            $message = array(
+                            $message = [
                                 "message" => __('invalid_user_driver'),
                                 "status" => -1
-                            );
+                            ];
                         }
                     } else {
                         $validation_error = $validator->errors('errors');
-                        $message          = array(
+                        $message          = [
                             "message" => __('validation_error'),
                             "status" => -3,
                             "detail" => $validation_error
-                        );
+                        ];
                     }
                     echo json_encode($message);
                     break;
@@ -9007,10 +9007,10 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                             $driver_id      = $array['driver_id'];
                             $company_status = $api->api_companystatus($array['driver_id']);
                             if (($company_status == 'D') || ($company_status == 'T')) {
-                                $message = array(
+                                $message = [
                                     "message" => __('user_blocked'),
                                     "status" => -7
-                                );
+                                ];
                                 echo json_encode($message);
                                 //return;
                                 exit;
@@ -9027,21 +9027,21 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                                         //$company_all_currenttimestamp = $this->commonmodel->getcompany_all_currenttimestamp($default_companyid);
                                         $update_shift_status = $api->update_driver_shift_status($driver_id, $array['shiftstatus']);
                                         if ($update_shift_status != 0) {
-                                            $message = array(
+                                            $message = [
                                                 "message" => __('driver_shift'),
                                                 "status" => 1
-                                            );
+                                            ];
                                         } else {
-                                            $message = array(
+                                            $message = [
                                                 "message" => __('try_again'),
                                                 "status" => -2
-                                            );
+                                            ];
                                         }
                                     } else {
-                                        $message = array(
+                                        $message = [
                                             "message" => __('taxi_not_assigned'),
                                             "status" => -3
-                                        );
+                                        ];
                                     }
                                 } else {
                                     if ($current_driver_status[0]->status != 'A') {
@@ -9056,15 +9056,15 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                                             //$transaction = $this->commonmodel->update(DRIVERSHIFTSERVICE,$update_arrary,'driver_shift_id',$update_id);
                                             $driver_reply = $api->update_driver_shift_status($driver_id, 'OUT');
                                             if ($driver_reply) {
-                                                $message = array(
+                                                $message = [
                                                     "message" => __('driver_shift_out'),
                                                     "status" => 2
-                                                );
+                                                ];
                                             } else {
-                                                $message = array(
+                                                $message = [
                                                     "message" => __('try_again'),
                                                     "status" => -2
-                                                );
+                                                ];
                                             }
                                             /*}
                                             else
@@ -9072,37 +9072,37 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                                             $message = array("message" => __('update_id_missing'),"status"=>-5);
                                             }*/
                                         } else {
-                                            $message = array(
+                                            $message = [
                                                 "message" => __('trip_in_future'),
                                                 "status" => -4
-                                            );
+                                            ];
                                         }
                                     } else {
-                                        $message = array(
+                                        $message = [
                                             "message" => __('driver_in_trip'),
                                             "status" => -1
-                                        );
+                                        ];
                                     }
                                 }
                             } else {
-                                $message = array(
+                                $message = [
                                     "message" => __('invalid_user_driver'),
                                     "status" => -1
-                                );
+                                ];
                             }
                         } else {
-                            $message = array(
+                            $message = [
                                 "message" => __('driver_not_login'),
                                 "status" => -1
-                            );
+                            ];
                         }
                     } else {
                         $validation_error = $validator->errors('errors');
-                        $message          = array(
+                        $message          = [
                             "message" => __('validation_error'),
                             "status" => -3,
                             "detail" => $validation_error
-                        );
+                        ];
                     }
                     echo json_encode($message);
                     break;
@@ -9145,9 +9145,9 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                                     $driver_id     = $trans_result[0]['driver_id'];
                                     if ($travel_status == 1 && $transid != "") {
                                         /********** Update Driver Status after complete Payments *****************/
-                                        $update_driver_arrary = array(
+                                        $update_driver_arrary = [
                                             "status" => 'F'
-                                        );
+                                        ];
                                         //$result               = $api->update_table(DRIVER, $update_driver_arrary, 'driver_id', $driver_id);
                                         $result               = $api->update_table(MDB_DRIVER_INFO, $update_driver_arrary, '_id', $driver_id);
                                         /************Update Driver Status ***************************************/
@@ -9156,25 +9156,25 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                                         $journey_status       = 1; // Waiting for Payment
                                         $journey              = $api->update_journey_status($trip_id, $msg_status, $driver_reply, $journey_status);
                                         /*************** Update arrival in driver request table ******************/
-                                        $update_trip_array    = array(
+                                        $update_trip_array    = [
                                             "status" => 7
-                                        );
+                                        ];
                                         //$result               = $api->update_table(DRIVER_REQUEST_DETAILS, $update_trip_array, 'trip_id', $trip_id);
 										$result               = $api->update_table(MDB_REQUEST_HISTORY, $update_trip_array, 'trip_id', $trip_id); 
                                         /*************************************************************************/
-                                        $message              = array(
+                                        $message              = [
                                             "message" => __('trip_fare_already_updated'),
                                             "status" => -1
-                                        );
+                                        ];
                                         echo json_encode($message);
                                         break;
                                     }
 									
                                     if ($travel_status == 5 && $transid != "") {
 										/*****fd***** Update Driver Status after complete Payments *****************/
-                                        $update_driver_arrary = array(
+                                        $update_driver_arrary = [
                                             "status" => 'F'
-                                        );
+                                        ];
                                         $result               = $api->update_table(MDB_DRIVER_INFO, $update_driver_arrary, '_id', $driver_id);
                                         /************Update Driver Status ***************************************/
                                         $msg_status           = 'R';
@@ -9182,23 +9182,23 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                                         $journey_status       = 1; // Waiting for Payment
                                         $journey              = $api->update_journey_status($trip_id, $msg_status, $driver_reply, $journey_status);
                                         /*************** Update arrival in driver request table ******************/
-                                        $update_trip_array    = array(
+                                        $update_trip_array    = [
                                             "status" => 7
-                                        );
+                                        ];
                                         $result               = $api->update_table(MDB_REQUEST_HISTORY, $update_trip_array, 'trip_id', $trip_id);
                                         /*************************************************************************/
-                                        $message              = array(
+                                        $message              = [
                                             "message" => __('trip_fare_and_status_updated'),
                                             "status" => -1
-                                        );
+                                        ];
                                         echo json_encode($message);
                                         break;
                                     }
                                     if ($travel_status == 2 && $transid != "") {
                                         /********** Update Driver Status after complete Payments *****************/
-                                        $update_driver_arrary = array(
+                                        $update_driver_arrary = [
                                             "status" => 'F'
-                                        );
+                                        ];
                                         $result               = $api->update_table(MDB_DRIVER_INFO, $update_driver_arrary, '_id', $driver_id);
                                         /************Update Driver Status ***************************************/
                                         $msg_status           = 'R';
@@ -9206,15 +9206,15 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                                         $journey_status       = 1; // Waiting for Payment
                                         $journey              = $api->update_journey_status($trip_id, $msg_status, $driver_reply, $journey_status);
                                         /*************** Update arrival in driver request table ******************/
-                                        $update_trip_array    = array(
+                                        $update_trip_array    = [
                                             "status" => 7
-                                        );
+                                        ];
                                         $result               = $api->update_table(MDB_REQUEST_HISTORY, $update_trip_array, 'trip_id', $trip_id);
                                         /*************************************************************************/
-                                        $message              = array(
+                                        $message              = [
                                             "message" => __('trip_fare_and_status_updated'),
                                             "status" => -1
-                                        );
+                                        ];
                                         echo json_encode($message);
                                         break;
                                     }
@@ -9285,25 +9285,25 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                                             $drop_time = $get_passenger_log_details[0]->drop_time;
                                         }
                                         /*************** Update arrival in driver request table ******************/
-                                        $update_trip_array    = array(
+                                        $update_trip_array    = [
                                             "status" => 7
-                                        );
+                                        ];
                                         $result               = $api->update_table(MDB_REQUEST_HISTORY, $update_trip_array, 'trip_id', $trip_id);
                                         /*************************************************************************/
                                         /** Update Driver Status **/
                                         
-										$update_driver_array   = array(
-											"loc" => array("type" => "Point",
-														   "coordinates" => array((double)$array['drop_longitude'],(double)$array['drop_latitude'])),
+										$update_driver_array   = [
+											"loc" => ["type" => "Point",
+														   "coordinates" => [(double)$array['drop_longitude'],(double)$array['drop_latitude']]],
                                             "status" => strtoupper('A'),
                                             "update_date" => new \MongoDB\BSON\UTCDateTime(strtotime($this->currentdate) * 1000)
-                                        );
+                                        ];
                                         if (($array['drop_latitude'] > 0) && ($array['drop_longitude'] > 0)) {
                                             $result = $api->update_table(MDB_DRIVER_INFO, $update_driver_array, '_id', $driver_id);
                                         } else {
-                                            $update_driver_arrary = array(
+                                            $update_driver_arrary = [
                                                 "status" => 'A'
-                                            );
+                                            ];
                                             $result               = $api->update_table(MDB_DRIVER_INFO, $update_driver_array, '_id', $driver_id);
                                         }
                                         /*********************/
@@ -9508,14 +9508,14 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
 										if($passenger_parent_id == 0){}
 										else{
 											if($passenger_allow_creditcard == 1){
-												$gateway_details_new = array(
-                                                 array(
+												$gateway_details_new = [
+                                                 [
                                                     "_id" => "5",
                                                     "pay_mod_name" => "Pay By Primary Account",
                                                     "pay_mod_default" => "0"
                                                 
-                                            )
-                                            );
+                                            ]
+                                            ];
                                             $gateway_details = array_merge($gateway_details,$gateway_details_new);
 											}
 											
@@ -9569,7 +9569,7 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                                         $waitM          = ($convertmins < 10) ? '0' . $convertmins : $convertmins;
                                         $waitS          = ($convertsecs < 10) ? '0' . $convertsecs : $convertsecs;
                                         $waitingTime    = ($waitH != "00") ? $waitH . ':' . $waitM . ':' . $waitS : $waitM .':' . $waitS;
-                                        $detail         = array(
+                                        $detail         = [
                                             "trip_id" => $trip_id,
                                             "pass_id" => $passengers_id,
                                             "distance" => $total_distance,
@@ -9604,12 +9604,12 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                                             "credit_card_status" => $credit_card_sts,
                                             "wallet_amount_used" => 0,
 											"payment_type" => $payment_type
-                                        );
-                                        $message        = array(
+                                        ];
+                                        $message        = [
                                             "message" => __('trip_completed_driver'),
                                             "detail" => $detail,
                                             "status" => 4
-                                        );
+                                        ];
                                         //print_r($message);
                                         //exit;
                                         /** Send Trip fare details to Driver ***/
@@ -9618,11 +9618,11 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                                         $d_device_type  = $get_passenger_log_details[0]['driver_device_type'];
                                        
                                         /** Send Trip fare details to Passenger ***/
-                                        $pushmessage    = array(
+                                        $pushmessage    = [
                                             "message" => __('trip_completed'),
 											"detail" => $detail,
                                             "status" => 9
-                                        );
+                                        ];
                                         //$d_send_notification = $api->send_driver_mobile_pushnotification($d_device_token,$d_device_type,$pushmessage,$this->driver_android_api);	
 										
                                        
@@ -9650,12 +9650,12 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
 													$parentInfo = $api->get_passenger_details_by_id($passenger_parent_id);
 													$parent_device_token = $parentInfo[0]['device_token'];
 													$parent_device_type = $parentInfo[0]['device_type'];
-													$parent_pushmessage           = array(
+													$parent_pushmessage           = [
 													"message" => str_replace("%s",$passeger_name,__('p_trip_completed')),
-													"detail" => array('name'=>$passenger_name,'image'=>$passenger_image,'phone'=>$passenger_phone),
+													"detail" => ['name'=>$passenger_name,'image'=>$passenger_image,'phone'=>$passenger_phone],
 													"detail" => $detail,
 													"status" => 4
-												);
+												];
 													$title = __('trip_completed_child');
 													$p_send_notification = $api->send_passenger_mobile_pushnotification($parent_device_token,$parent_device_type,$parent_pushmessage,$this->customer_google_api,$title);
 												}	
@@ -9672,34 +9672,34 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                                         $p_send_notification = $api->send_passenger_mobile_pushnotification($p_device_token,$p_device_type,$pushmessage,$this->customer_google_api,$title);						
                                         //$message = $pushmessage;
                                     } else if ($travel_status == 1) {
-                                        $message = array(
+                                        $message = [
                                             "message" => __('trip_already_completed'),
                                             "status" => -1
-                                        );
+                                        ];
                                     } else {
-                                        $message = array(
+                                        $message = [
                                             "message" => __('trip_not_started'),
                                             "status" => -1
-                                        );
+                                        ];
                                     }
                                 }
                             } else {
-                                $message = array(
+                                $message = [
                                     "message" => __('invalid_trip'),
                                     "status" => -1
-                                );
+                                ];
                             }
                         } else {
-                            $message = array(
+                            $message = [
                                 "message" => __('invalid_trip'),
                                 "status" => -1
-                            );
+                            ];
                         }
                     } else {
-                        $message = array(
+                        $message = [
                             "message" => __('invalid_request'),
                             "status" => -1
-                        );
+                        ];
                     }
                     echo json_encode($message);
                     break;
@@ -9719,7 +9719,7 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                    
                     $validator = $this->payment_validation($array);
                    
-                    $driver_statistics = array();
+                    $driver_statistics = [];
                     if ($validator->check()) {
 						$passenger_log_id = $array['trip_id'];
                         if($array['actual_distance'] == "")
@@ -9747,10 +9747,10 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
 						if($array['pay_mod_id'] == 4) {
 							$passStatus = $api->getPassAvailable($get_passenger_log_details[0]['passengers_id']);
 							if($passStatus != 1) {
-								$message                      = array(
+								$message                      = [
                                     "message" => __('not_eligible'),
                                     "status" => -1
-                                );
+                                ];
                                 echo json_encode($message);
 								exit;
 							}
@@ -9764,16 +9764,16 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                             if (count($trans_result) > 0) {
                                 /********** Update Driver Status after complete Payments *****************/
                                 $drivers_id           = isset($get_passenger_log_details[0]['driver_id']) ? $get_passenger_log_details[0]['driver_id'] : '';
-                                $update_driver_arrary = array(
+                                $update_driver_arrary = [
                                     "status" => 'F'
-                                );
+                                ];
                                 $result = $api->update_table(MDB_DRIVER_INFO, $update_driver_arrary, '_id', $drivers_id);
                                 /************Update Driver Status ***************************************/
                                 $journey = $api->update_journey_status($passenger_log_id, 'R', 'A', 1);
                                 /*************** Update in driver request table ******************/
-                                $update_trip_array    = array(
+                                $update_trip_array    = [
                                     "status" => 8
-                                );
+                                ];
                                 $result = $api->update_table(MDB_REQUEST_HISTORY, $update_trip_array, 'trip_id', $passenger_log_id);
                                 /*************************************************************************/
 								$default_companyid      = isset($get_passenger_log_details[0]['company_id']) ? $get_passenger_log_details[0]['company_id'] : $default_companyid;
@@ -9783,7 +9783,7 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
 								$driver_cancelled_trips = $api->get_driver_cancelled_trips($drivers_id, $default_companyid);
 								$driver_earnings        = $api->get_driver_earnings_with_rating($drivers_id, $default_companyid);
 								$driver_tot_earnings    = $api->get_driver_total_earnings($drivers_id);
-								$driver_statistics      = array();
+								$driver_statistics      = [];
 								
 								$total_trip             = $trip_total_with_rate = $total_ratings = $today_earnings = $total_amount = 0;
 								foreach ($driver_earnings as $stat) {
@@ -9794,7 +9794,7 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
 								$overall_trip      = $total_trip + $rejected_trips + $driver_cancelled_trips;
 								
 								$time_driven       = $api->get_time_driven($drivers_id, 'R', 'A', '1','1');$waittime =  $api->get_time_driven($drivers_id, 'R', 'A', '1','2');
-								$driver_statistics = array(
+								$driver_statistics = [
 									"total_trip" => $overall_trip,
 									"completed_trip" => $total_trip,
 									"total_earnings" => round($driver_tot_earnings, 2),
@@ -9805,12 +9805,12 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
 									"time_driven" => $time_driven,
 									"waiting_time" => $waittime,
 									"status" => 1
-								);                              
+								];                              
                                 //Driver Statistics Functionality End
-                                $message                      = array(
+                                $message                      = [
                                     "message" => __('trip_fare_already_updated'),
                                     "status" => -1
-                                );
+                                ];
                                 $message['driver_statistics'] = $driver_statistics;
                                 echo json_encode($message);
                                 break;
@@ -9821,7 +9821,7 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                                 try {
                                     $update_commission = $this->commonmodel->update_commission($passenger_log_id, $total_fare, ADMIN_COMMISSON);
 									$inc_id = $api->get_insert_id(MDB_TRANSACTION);
-                                    $insert_array = array(
+                                    $insert_array = [
 										"passengers_log_id" => (int)$passenger_log_id,
                                         "distance" => $array['distance'],
                                         "actual_distance" => $array['actual_distance'],
@@ -9849,7 +9849,7 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
 										"payment_basis" => (int)3,
 										"notify_status" => (int)0,
 										"current_date" => new \MongoDB\BSON\UTCDateTime(strtotime($this->currentdate) * 1000)
-                                    );
+                                    ];
                                     $check_trans_already_exist = $api->checktrans_details($passenger_log_id);
 									
                                     if (count($check_trans_already_exist) > 0) {
@@ -9863,15 +9863,15 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                                     }
                                     /********** Update Driver Status after complete Payments *****************/
                                     $drivers_id = isset($get_passenger_log_details[0]['driver_id']) ? $get_passenger_log_details[0]['driver_id'] : '';
-                                    $update_driver_arrary = array(
+                                    $update_driver_arrary = [
                                         "status" => 'F'
-                                    );
+                                    ];
                                     $result = $api->update_table(MDB_DRIVER_INFO, $update_driver_arrary, '_id', $drivers_id);
                                     /************Update Driver Status ***************************************/
                                     /*************** Update in driver request table ******************/
-                                    $update_trip_array = array(
+                                    $update_trip_array = [
                                         "status" => 8
-                                    );
+                                    ];
                                     $result = $api->update_table(MDB_REQUEST_HISTORY, $update_trip_array, 'trip_id',$passenger_log_id);
                                     /*************************************************************************/
                                     $pickup            = isset($get_passenger_log_details[0]['current_location']) ? $get_passenger_log_details[0]['current_location'] : '';
@@ -9884,24 +9884,24 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                                         $message            = str_replace("##SITE_NAME##", SITE_NAME, $message);
 										$result = $api->sendSMS($to, $message);
                                     }
-                                    $detail           = array(
+                                    $detail           = [
                                         "fare" => $amount,
                                         "pickup" => $pickup,
                                         "jobreferral" => $jobreferral,
                                         "trip_id" => $passenger_log_id
-                                    );
-                                    $message          = array(
+                                    ];
+                                    $message          = [
                                         "message" => __('trip_fare_updated'),
                                         "detail" => $detail,
                                         "status" => 1
-                                    );
-                                    $pushmessage      = array(
+                                    ];
+                                    $pushmessage      = [
                                         "message" => __('trip_fare_updated'),
                                         "fare" => $amount,
                                         "trip_id" => $passenger_log_id,
                                         "pickup" => $pickup,
                                         "status" => 5
-                                    );
+                                    ];
                                     //print_r($pushmessage);
                                     //exit;
                                     //$message = $pushmessage;	
@@ -9909,10 +9909,10 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                                 }
                                 catch (Kohana_Exception $e) {
                                     //	print_r($e);
-                                    $message = array(
+                                    $message = [
                                         "message" => __('trip_fare_already_updated'),
                                         "status" => -1
-                                    );
+                                    ];
                                 }
                             } else if ($array['pay_mod_id'] == 2) {
                                 //$passenger_cardid = $array['passenger_cardid'];
@@ -9932,16 +9932,16 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
 										//echo "test".print_r($payment_status);exit;
                                         if ($payment_status == 0) {
                                             $gateway_response = isset($_SESSION['paymentresponse']['L_LONGMESSAGE0']) ? $_SESSION['paymentresponse']['L_LONGMESSAGE0'] : 'Payment Failed';
-                                            $message          = array(
+                                            $message          = [
                                                 "message" => $gateway_response,
                                                 "gateway_response" => $gateway_response,
                                                 "status" => 0
-                                            );
+                                            ];
                                         } else if ($payment_status == 3) {
-                                            $message = array(
+                                            $message = [
                                                 "message" => __('gve_credit_card_details'),
                                                 "status" => -2
-                                            );
+                                            ];
                                         } else if ($payment_status == 1) {
                                             $tranaction_id             = "";
                                             $check_trans_already_exist = $api->checktrans_details($passenger_log_id);
@@ -9952,53 +9952,53 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                                                 $update_promo_discount = $api->update_promo_discount($passenger_log_id, $promocode, $promodiscount_amount);*/
                                             $jobreferral       = $tranaction_id;
                                             $pickup            = isset($get_passenger_log_details[0]['current_location']) ? $get_passenger_log_details[0]['current_location'] :'';
-                                            $detail            = array(
+                                            $detail            = [
                                                 "fare" => $amount,
                                                 "pickup" => $pickup,
                                                 "jobreferral" => $jobreferral,
                                                 "trip_id" => $passenger_log_id
-                                            );
-                                            $message           = array(
+                                            ];
+                                            $message           = [
                                                 "message" => __('trip_fare_updated'),
                                                 "detail" => $detail,
                                                 "status" => 1
-                                            );
-                                            $pushmessage       = array(
+                                            ];
+                                            $pushmessage       = [
                                                 "message" => __('trip_fare_updated'),
                                                 "fare" => $amount,
                                                 "trip_id" => $passenger_log_id,
                                                 "pickup" => $pickup,
                                                 "status" => 5
-                                            );
+                                            ];
                                             /*************** Update in driver request table ******************/
-                                            $update_trip_array = array(
+                                            $update_trip_array = [
                                                 "status" => 8
-                                            );
+                                            ];
                                             $result            = $api->update_table(MDB_REQUEST_HISTORY, $update_trip_array, 'trip_id', $passenger_log_id);
                                             /*************************************************************************/
                                             $send_mail_status  = $this->send_mail_passenger($passenger_log_id, 1);
                                         } else if ($payment_status == -1) {
-                                            $message = array(
+                                            $message = [
                                                 "message" => __('invalid_trip'),
                                                 "status" => -1
-                                            );
+                                            ];
                                         } else if ($payment_status == 7) {
-                                            $message = array(
+                                            $message = [
                                                 "message" => __('no_payment_gateway'),
                                                 "status" => -1
-                                            );
+                                            ];
                                         }
                                     } else {
-                                        $message = array(
+                                        $message = [
                                             "message" => __('no_creditcard'),
                                             "status" => -9
-                                        );
+                                        ];
                                     }
                                 } else {
-                                    $message = array(
+                                    $message = [
                                         "message" => __('no_card'),
                                         "status" => -9
-                                    );
+                                    ];
                                 }
                             } else if ($array['pay_mod_id'] == 3) {
 								$updateMode = $api->update_payment_type($array['trip_id'],$array['pay_mod_id']);
@@ -10012,11 +10012,11 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
 									$array['token'] = $token;
 									$log_temp = $api->add_passenger_log_temp($array);
 									
-									$message = array(
+									$message = [
                                             "message" => $hespay->message,
                                             "status" => 1,
 											"payment_url" => $paymenturl.$token
-                                    );
+                                    ];
 									echo json_encode($message);
 									exit;
 								} else {
@@ -10032,14 +10032,14 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
 										if($passenger_parent_id == 0){}
 										else{
 											if($passenger_allow_creditcard == 1){
-												$gateway_details_new = array(
-                                                 array(
+												$gateway_details_new = [
+                                                 [
                                                     "_id" => "5",
                                                     "pay_mod_name" => "Pay By Primary Account",
                                                     "pay_mod_default" => "0"
                                                 
-                                            )
-                                            );
+                                            ]
+                                            ];
                                             $gateway_details = array_merge($gateway_details,$gateway_details_new);
 											}
 											
@@ -10052,11 +10052,11 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
 									
 									
 									
-									$message = array(
+									$message = [
                                             "message" => $hespay->message,
                                             "status" => 0,
 											"gateway_details" => $gateway_details
-                                    );
+                                    ];
 									echo json_encode($message);
 									exit;
 								}
@@ -10141,7 +10141,7 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                                     $update_commission = $this->commonmodel->update_commission($passenger_log_id, $total_fare, ADMIN_COMMISSON);
 									$payBy = $api->getPayBy($get_passenger_log_details[0]['passengers_id']);
 									$inc_id = $api->get_insert_id(MDB_TRANSACTION);
-                                    $insert_array = array(
+                                    $insert_array = [
 										"passengers_log_id" => (int)$passenger_log_id,
                                         "distance" => $array['distance'],
                                         "actual_distance" => $array['actual_distance'],
@@ -10169,7 +10169,7 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
 										"payment_basis" => (int)$payBy['pay_by'],
 										"notify_status" => (int)0,
 										"current_date" => new \MongoDB\BSON\UTCDateTime(strtotime($this->currentdate) * 1000)
-                                    );
+                                    ];
                                     $check_trans_already_exist = $api->checktrans_details($passenger_log_id);
 									
                                     if (count($check_trans_already_exist) > 0) {
@@ -10183,15 +10183,15 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                                     }
                                     /********** Update Driver Status after complete Payments *****************/
                                     $drivers_id = isset($get_passenger_log_details[0]['driver_id']) ? $get_passenger_log_details[0]['driver_id'] : '';
-                                    $update_driver_arrary = array(
+                                    $update_driver_arrary = [
                                         "status" => 'F'
-                                    );
+                                    ];
                                     $result = $api->update_table(MDB_DRIVER_INFO, $update_driver_arrary, '_id', $drivers_id);
                                     /************Update Driver Status ***************************************/
                                     /*************** Update in driver request table ******************/
-                                    $update_trip_array = array(
+                                    $update_trip_array = [
                                         "status" => 8
-                                    );
+                                    ];
                                     $result = $api->update_table(MDB_REQUEST_HISTORY, $update_trip_array, 'trip_id',$passenger_log_id);
                                     /*************************************************************************/
                                     $pickup            = isset($get_passenger_log_details[0]['current_location']) ? $get_passenger_log_details[0]['current_location'] : '';
@@ -10204,24 +10204,24 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                                         $message            = str_replace("##SITE_NAME##", SITE_NAME, $message);
 										$result = $api->sendSMS($to, $message);
                                     }
-                                    $detail           = array(
+                                    $detail           = [
                                         "fare" => $amount,
                                         "pickup" => $pickup,
                                         "jobreferral" => $jobreferral,
                                         "trip_id" => $passenger_log_id
-                                    );
-                                    $message          = array(
+                                    ];
+                                    $message          = [
                                         "message" => __('trip_fare_updated'),
                                         "detail" => $detail,
                                         "status" => 1
-                                    );
-                                    $pushmessage      = array(
+                                    ];
+                                    $pushmessage      = [
                                         "message" => __('trip_fare_updated'),
                                         "fare" => $amount,
                                         "trip_id" => $passenger_log_id,
                                         "pickup" => $pickup,
                                         "status" => 5
-                                    );
+                                    ];
                                     //print_r($pushmessage);
                                     //exit;
                                     //$message = $pushmessage;	
@@ -10229,10 +10229,10 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                                 }
                                 catch (Kohana_Exception $e) {
                                     //	print_r($e);
-                                    $message = array(
+                                    $message = [
                                         "message" => __('trip_fare_already_updated'),
                                         "status" => -1
-                                    );
+                                    ];
                                 }
                             }
                             //Driver Statistics Functionality Start
@@ -10243,7 +10243,7 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                             $driver_cancelled_trips = $api->get_driver_cancelled_trips($driver_id, $default_companyid);
                             $driver_earnings        = $api->get_driver_earnings_with_rating($driver_id, $default_companyid);
 							
-                            $statistics             = array();
+                            $statistics             = [];
                             $total_trip             = $trip_total_with_rate = $total_ratings = $today_earnings = $total_amount = 0;
                             foreach ($driver_earnings as $stat) {
                                 $total_trip++;
@@ -10252,7 +10252,7 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                             }
                             $overall_trip      = $total_trip + $rejected_trips + $driver_cancelled_trips;
                             $time_driven       = $api->get_time_driven($driver_id, 'R', 'A', '1','1');$waittime =  $api->get_time_driven($driver_id, 'R', 'A', '1','2');
-                            $driver_statistics = array(
+                            $driver_statistics = [
                                 "total_trip" => $overall_trip,
                                 "completed_trip" => $total_trip,
                                 "total_earnings" => round($total_amount, 2),
@@ -10263,20 +10263,20 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                                 "time_driven" => $time_driven,
                                 "waiting_time" => $waittime,
                                 "status" => 1
-                            );
+                            ];
                             /**************************************************/
                         } else {
-                            $message = array(
+                            $message = [
                                 "message" => __('invalid_trip'),
                                 "status" => -1
-                            );
+                            ];
                         }
                     } else {
                         $validation_error = $validator->errors('errors');
-                        $message          = array(
+                        $message          = [
                             "message" => $validation_error,
                             "status" => -3
-                        );
+                        ];
                     }
                     //Driver Statistics Functionality End
                     $message['driver_statistics'] = $driver_statistics;
@@ -10293,36 +10293,36 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                     $check_travelstatus = $api_model->check_travelstatus($passenger_log_id);
 					
                     if ($check_travelstatus == -1) {
-                        $message = array(
+                        $message = [
                             "message" => __('invalid_trip'),
                             "status" => 3
-                        );
+                        ];
                         echo json_encode($message);
                         break;
                     }
                     if ($check_travelstatus == 4) {
-                        $message = array(
+                        $message = [
                             "message" => __('trip_already_canceled'),
                             "status" => -1
-                        );
+                        ];
                         echo json_encode($message);
                         break;
                     }
                     if ($check_travelstatus == 2) {
-                        $message = array(
+                        $message = [
                             "message" => __('passenger_in_journey'),
                             "status" => -1
-                        );
+                        ];
                         echo json_encode($message);
                         break;
                     }
                     $flag         = 1;
                     $trans_result = $api_model->check_tranc($passenger_log_id, $flag);
                     if (count($trans_result) > 1) {
-                        $message = array(
+                        $message = [
                             "message" => __('trip_fare_already_updated'),
                             "status" => -1
-                        );
+                        ];
                         echo json_encode($message);
                         break;
                     }
@@ -10351,20 +10351,20 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                             $payment_types      = 0;
 							
                             $transaction_detail = $api_model->cancel_triptransact_details($cancel_trip_array, $cancellation_nfree, $payment_types);
-                            $pushmessage        = array(
+                            $pushmessage        = [
                                 "message" => __('trip_cancelled_passenger'),
                                 "status" => 2
-                            );
+                            ];
                            
                             $d_device_token     = isset($get_passenger_log_det[0]['driver_device_token'])?$get_passenger_log_det[0]['driver_device_token']:'';
                             $d_device_type      = isset($get_passenger_log_det[0]['driver_device_type'])?$get_passenger_log_det[0]['driver_device_type']:'';
                             //$d_send_notification = $api->send_driver_mobile_pushnotification($d_device_token,$d_device_type,$pushmessage,$this->driver_android_api);
-                            $message            = array(
+                            $message            = [
                                 "message" => __('trip_cancel_passenger'),
                                 "cancellation_from" => __('Free'),
                                 "cancellation_amount" => 0,
                                 "status" => 1
-                            ); //with out cancellation fee
+                            ]; //with out cancellation fee
                             echo json_encode($message);
                         } else {
                             $total            = $api_model->get_passenger_cancel_faredetail($passenger_log_id);
@@ -10379,7 +10379,7 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                                         $update_commission          = $this->commonmodel->update_commission($passenger_log_id, $total, $siteinfo_details['admin_commission']);
 										
 										$auto_id = $this->commonmodel->get_auto_id(MDB_TRANSACTION);
-                                        $insert_array               = array(
+                                        $insert_array               = [
 											"_id" => $auto_id,
                                             "passengers_log_id" => $passenger_log_id,
                                             "remarks" => $remarks,
@@ -10389,20 +10389,20 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                                             "company_amount" => $update_commission['company_commission'],
                                             "trans_packtype" => $update_commission['trans_packtype'],
 											'current_date' => new \MongoDB\BSON\UTCDateTime(strtotime($this->currentdate) * 1000),
-                                        );
+                                        ];
                                         $transaction                = $this->commonmodel->insert(MDB_TRANSACTION, $insert_array);
-                                        $update_travel_status_array = array(
+                                        $update_travel_status_array = [
                                             "travel_status" => (int)4
-                                        ); // Passenger Cancelled
+                                        ]; // Passenger Cancelled
                                         $result_sts_update          = $api->update_table(MDB_PASSENGERS_LOGS, $update_travel_status_array, '_id', (int)$passenger_log_id);
                                         $cancel_from                = __('Cash');
                                         //to reduce the wallet amount while cancelling the trip
                                         if (count($passenger_wallet) > 0 && $passenger_wallet['wallet_amount'] >= $total) {
                                             $balance_wallet_amount = $passenger_wallet['wallet_amount'] - $total;
                                             //update wallet amount in passenger table
-                                            $update_wallet_array   = array(
+                                            $update_wallet_array   = [
                                                 "wallet_amount" => $balance_wallet_amount
-                                            );
+                                            ];
                                             $wallet_update         = $api->update_table(MDB_PASSENGERS, $update_wallet_array, '_id', (int)$passenger_id);
                                             $cancel_from           = __('Wallet');
                                         }
@@ -10416,32 +10416,32 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
 											
 											$result = $api->sendSMS($to,$message);
                                         }
-                                        $pushmessage    = array(
+                                        $pushmessage    = [
                                             "message" => __('trip_cancelled_passenger'),
                                             "status" => 2
-                                        );
+                                        ];
                                         $d_device_token = $get_passenger_log_det[0]['driver_device_token'];
                                         $d_device_type  = $get_passenger_log_det[0]['driver_device_type'];
-                                        $message        = array(
+                                        $message        = [
                                             "message" => __('trip_cancel_passenger'),
                                             "cancellation_from" => $cancel_from,
                                             "cancellation_amount" => $total,
                                             "status" => 1
-                                        );
+                                        ];
                                         echo json_encode($message);
                                     }
                                     catch (Kohana_Exception $e) {
                                         //	print_r($e);
-                                        $message = array(
+                                        $message = [
                                             "message" => __('try_again'),
                                             "status" => 3
-                                        );
+                                        ];
                                     }
                                 } else {
-                                    $message = array(
+                                    $message = [
                                         "message" => __('invalid_trip'),
                                         "status" => 3
-                                    );
+                                    ];
                                 }
                             } else {
                                 $card_type       = '';
@@ -10456,11 +10456,11 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                                     $cancelAmount   = isset($cancelArr[1]) ? $cancelArr[1] : 0;
                                     if ($payment_status == 0) {
                                         $gateway_response = isset($_SESSION['paymentresponse']['L_LONGMESSAGE0']) ? $_SESSION['paymentresponse']['L_LONGMESSAGE0'] : 'Payment Failed';
-                                        $message          = array(
+                                        $message          = [
                                             "message" => __('cancel_payment_failed'),
                                             "gateway_response" => $gateway_response,
                                             "status" => 0
-                                        );
+                                        ];
                                         echo json_encode($message);
                                         break;
                                     } else if ($payment_status == 1) {
@@ -10475,16 +10475,16 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                                             $message           = str_replace("##SITE_NAME##", SITE_NAME, $message);
 											$result = $this->commonmodel->sendSMS($to,$message);
                                         }
-                                        $message          = array(
+                                        $message          = [
                                             "message" => __('trip_cancel_passenger'),
                                             "cancellation_from" => __('credit_card'),
                                             "cancellation_amount" => $cancelAmount,
                                             "status" => 1
-                                        );
-                                        $pushmessage      = array(
+                                        ];
+                                        $pushmessage      = [
                                             "message" => __('trip_cancelled_passenger'),
                                             "status" => 2
-                                        );
+                                        ];
                                         $d_device_token   = $get_passenger_log_det[0]['driver_device_token'];
                                         $d_device_type    = $get_passenger_log_det[0]['driver_device_type'];
 										
@@ -10492,35 +10492,35 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                                         echo json_encode($message);
                                         break;
                                     } else if ($payment_status == -1) {
-                                        $message = array(
+                                        $message = [
                                             "message" => __('invalid_trip'),
                                             "status" => 3
-                                        );
+                                        ];
                                         echo json_encode($message);
                                         break;
                                     }
                                 } else if (count($carddetails) == 0 && count($no_default_card) > 0) {
-                                    $message = array(
+                                    $message = [
                                         "message" => __('passenger_has_no_default_creditcard'),
                                         "status" => 5
-                                    );
+                                    ];
                                     echo json_encode($message);
                                     break;
                                 } else {
-                                    $message = array(
+                                    $message = [
                                         "message" => __('cancel_no_creditcard'),
                                         "status" => 4
-                                    );
+                                    ];
                                     echo json_encode($message);
                                     break;
                                 }
                             }
                         }
                     } else {
-                        $message = array(
+                        $message = [
                             "message" => __('invalid_trip'),
                             "status" => 3
-                        );
+                        ];
                         echo json_encode($message);
                         break;
                     }
@@ -10563,21 +10563,21 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                             Commonfunction::imageresize($d_image, DRIVER_DOC_IMG_WIDTH, DRIVER_DOC_IMG_HEIGHT, $foldername, $image_name, 90);
                             chmod($foldername, 0777);
                             unlink($image_path);
-                            $message = array(
+                            $message = [
                                 "message" => __('file_upload_success'),
                                 "status" => 1
-                            );
+                            ];
                         } else {
-                            $message = array(
+                            $message = [
                                 "message" => __('image_not_upload'),
                                 "status" => -1
-                            );
+                            ];
                         }
                     } else {
-                        $message = array(
+                        $message = [
                             "message" => __('image_not_upload'),
                             "status" => -1
-                        );
+                        ];
                     }
                     echo json_encode($message);
                     exit;
@@ -10590,10 +10590,10 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
 
                         $check_fb_user = $api->check_fb_user($array_values['phone_no'], $default_companyid, $array_values['country_code']);
                         if ($check_fb_user > 0) {
-                            $message = array(
+                            $message = [
                                 "message" => __('fb_user'),
                                 'status' => 3
-                            );
+                            ];
                             echo json_encode($message);
                             break;
                         }
@@ -10608,7 +10608,7 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                            $email = $forgot_result[0]['email'];
                             $mail  = "";
                             if ($array_values['user_type'] == 'P') {
-                                $replace_variables = array(
+                                $replace_variables = [
                                     REPLACE_LOGO => URL_BASE . PUBLIC_FOLDER_IMGPATH . '/logo.png',
                                     REPLACE_SITENAME => $this->app_name,
                                     REPLACE_USERNAME => $forgot_result[0]['name'],
@@ -10619,9 +10619,9 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                                     RESET_LINK => URL_BASE . 'passengers/resetpassword/?phone_no=' . $array_values['phone_no'] . '&activation_key=' . $forgot_result[0]['activation_key'],
                                     REPLACE_COMPANYDOMAIN => $this->domain_name,
                                     REPLACE_COPYRIGHTS => COMPANY_COPYRIGHT
-                                );
+                                ];
                             } else {
-                                $replace_variables = array(
+                                $replace_variables = [
                                     REPLACE_LOGO => URL_BASE . PUBLIC_FOLDER_IMGPATH . '/logo.png',
                                     REPLACE_SITENAME => $this->app_name,
                                     REPLACE_USERNAME => $forgot_result[0]['name'],
@@ -10633,7 +10633,7 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                                     REPLACE_COMPANYDOMAIN => $this->domain_name,
                                     REPLACE_COPYRIGHTS => SITE_COPYRIGHT,
                                     REPLACE_COPYRIGHTYEAR => COPYRIGHT_YEAR
-                                );
+                                ];
                             }
                             /*Added for language email template */
                             if ($this->lang != 'en') {
@@ -10664,21 +10664,21 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                                 mail($to, $subject, $message, $headers);
                             }
                            
-                            $message = array(
+                            $message = [
                                 "message" => __('forgot_pass_success'),
                                 'status' => 1
-                            );
+                            ];
                         } else {
-                            $message = array(
+                            $message = [
                                 "message" => __('invalid_user'),
                                 'status' => 2
-                            );
+                            ];
                         }
                     } else {
-                        $message = array(
+                        $message = [
                             "message" => __('invalid_user'),
                             "status" => 2
-                        );
+                        ];
                     }
                     echo json_encode($message);
                     break;
@@ -10710,16 +10710,16 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
 							$details[$key]['iconic_image'] = $iconic_image;
 							$details[$key]['iconic_image_thumb'] = $iconic_image_thumb;
 					}
-					$result = array(
+					$result = [
                             "message" => __('taxi_model'),
 							"detail" => $details,
                             "status" => 1
-                        );
+                        ];
 					echo json_encode($result);
 					exit;
 					break;	
 					case 'view_child_request_details':
-					$alreadyReg =  array();
+					$alreadyReg =  [];
 					$passenger_id = (isset($mobiledata['passenger_id'])) ? $mobiledata['passenger_id'] : '';
 					$validator = $this->check_validation_passenger($mobiledata);
                     if ($validator->check()) {
@@ -10731,26 +10731,26 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
 							//if($child['user_status'] == 1){$alreadyReg['details'][] = array('_id' => 'phone' => $child['phone'],'name' => $child['name'],'status' => 1); }else{$alreadyReg['details'][] = array('phone' => $child['phone'],'name' => $child['name'],'status' => 2 ); }
 								
 						//	}
-						$result = array(
+						$result = [
                             "message" => __('view_child_request_details'),
 							"detail" => $get_child_requestt_details,
                             "status" => 1
-                        );
+                        ];
 					}else{
-						$result = array(
+						$result = [
                             "message" => __('invalid_user'),
                             "status" => 2
-                        );
+                        ];
 					}
 					echo json_encode($result);
 					exit;
 					}
 					else {
                         $errors = $validator->errors('errors');
-                        $result = array(
+                        $result = [
                             "message" => $errors,
                             "status" => -1
-                        );
+                        ];
                         echo json_encode($result);
                         exit;
 						}
@@ -10761,10 +10761,10 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
 					$account_type = (isset($mobiledata['account_type'])) ? $mobiledata['account_type'] : '';
 					$valid = $addModel->parent_id_isValid($passenger_id);
 					if($valid != true) {
-						$message = array(
+						$message = [
 							"message" => __('invalid_passengerid'),
 							"status" => 3
-						);
+						];
 						echo json_encode($message);
 						exit;
 					}
@@ -10781,29 +10781,29 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                                         $profile_image = URL_BASE . "public/images/no_image109.png";
                                     }
 							/** PASSENGERS PROFILE PHOTO **/
-								$response[] = array('id' => $get_child['_id'],'name' => $get_child['name'],'phone' => $get_child['phone'],'profile_image' => $profile_image,'allow_creditcard' => $get_child['allow_creditcard'],'account_type' => $get_child['account_type'],'account_type_name' =>$get_child['account_type_name'],'request_id' =>$get_child['request_id']);
+								$response[] = ['id' => $get_child['_id'],'name' => $get_child['name'],'phone' => $get_child['phone'],'profile_image' => $profile_image,'allow_creditcard' => $get_child['allow_creditcard'],'account_type' => $get_child['account_type'],'account_type_name' =>$get_child['account_type_name'],'request_id' =>$get_child['request_id']];
 							}
 							
-						$result = array(
+						$result = [
                             "message" => __('child_account_details'),
 							"detail" => $response,
                             "status" => 1
-                        );
+                        ];
 					}else{
-						$result = array(
+						$result = [
                             "message" => __('no_child'),
                             "status" => 2
-                        );
+                        ];
 					}
 					echo json_encode($result);
 					exit;
 					}
 					else {
                         $errors = $validator->errors('errors');
-                        $result = array(
+                        $result = [
                             "message" => $errors,
                             "status" => -1
-                        );
+                        ];
                         echo json_encode($result);
                         exit;
 						}
@@ -10814,10 +10814,10 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
 					$account_type = (isset($mobiledata['account_type'])) ? $mobiledata['account_type'] : '';
 					$valid = $addModel->parent_id_isValid($passenger_id);
 					if($valid != true) {
-						$message = array(
+						$message = [
 							"message" => __('invalid_passengerid'),
 							"status" => 3
-						);
+						];
 						echo json_encode($message);
 						exit;
 					}
@@ -10834,31 +10834,31 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                                         $profile_image = URL_BASE . "public/images/no_image109.png";
                                     }
 							/** PASSENGERS PROFILE PHOTO **/
-								$response[$get_child['account_type_name']][] = array('id' => $get_child['_id'],'name' => $get_child['name'],'phone' => $get_child['phone'],'profile_image' => $profile_image,'allow_creditcard' => $get_child['allow_creditcard'],'account_type' => $get_child['account_type'],'account_type_name' =>$get_child['account_type_name'],'request_id' =>$get_child['request_id']);
+								$response[$get_child['account_type_name']][] = ['id' => $get_child['_id'],'name' => $get_child['name'],'phone' => $get_child['phone'],'profile_image' => $profile_image,'allow_creditcard' => $get_child['allow_creditcard'],'account_type' => $get_child['account_type'],'account_type_name' =>$get_child['account_type_name'],'request_id' =>$get_child['request_id']];
 							
 							
 							}
 							
-						$result = array(
+						$result = [
                             "message" => __('child_account_details'),
 							"detail" => $response,
                             "status" => 1
-                        );
+                        ];
 					}else{
-						$result = array(
+						$result = [
                             "message" => __('no_child'),
                             "status" => 2
-                        );
+                        ];
 					}
 					echo json_encode($result);
 					exit;
 					}
 					else {
                         $errors = $validator->errors('errors');
-                        $result = array(
+                        $result = [
                             "message" => $errors,
                             "status" => -1
-                        );
+                        ];
                         echo json_encode($result);
                         exit;
 						}
@@ -10872,20 +10872,20 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                     if ($validator->check()) {
 						$get_child_details = $api->child_member_operations($child_id,$flag,$checkflag,$request_id);//Flag 1 : Remove Member, Flag 2: Allow creditcard 
 						if($get_child_details == 1){
-						$message      = array(
+						$message      = [
 									"message" => __('profile_updated_successfully'),
 									"status" => 1
-								);
+								];
                         echo json_encode($message);
                         exit;
 					    }		
 					}
 					else {
                         $errors = $validator->errors('errors');
-                        $result = array(
+                        $result = [
                             "message" => $errors,
                             "status" => -1
-                        );
+                        ];
                         echo json_encode($result);
                         exit;
 						}
@@ -10898,19 +10898,19 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                     if ($validator->check()) {
 						$update_payment_type = $api->update_payment_type($trip_id,$payment_type);
 						if($update_payment_type){
-							$message      = array(
+							$message      = [
 										"message" => __('success'),
 										"status" => 1
-									);
+									];
 							echo json_encode($message);
 							exit;
 					    }		
 					} else {
                         $errors = $validator->errors('errors');
-                        $result = array(
+                        $result = [
                             "message" => $errors,
                             "status" => -1
-                        );
+                        ];
                         echo json_encode($result);
                         exit;
 					}
@@ -10927,37 +10927,37 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
 								$tabTokenUpdate = $api->tabTokenUpdate($check_taxisacn['_id'],$tabdeviceToken);
 								$grandlimoUrl = $api->getVideoURL();
 								if($tabTokenUpdate) {
-									$message      = array(
+									$message      = [
 										"message" => __('success'),
 										"version" => $grandlimoUrl['version'],
 										"video_url" => $grandlimoUrl['tab_video'],										
 										"status" => 1
-									);
+									];
 									echo json_encode($message);
 									exit;
 								}
 							}
-							$message      = array(
+							$message      = [
 										"message" => __('success'),
 										"detail" => $check_taxisacn,
 										"status" => 1
-									);
+									];
 							echo json_encode($message);
 							exit;
 					    }  else {
-							$message      = array(
+							$message      = [
 								"message" => __('failed'),
 								"status" => -1
-							);
+							];
 							echo json_encode($message);
 							exit;
 						}		
 					} else {
                         $errors = $validator->errors('errors');
-                        $result = array(
+                        $result = [
                             "message" => $errors,
                             "status" => -1
-                        );
+                        ];
                         echo json_encode($result);
                         exit;
 					}
@@ -10985,20 +10985,20 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
 						$message         = str_replace("##FROM##", $fromname, $message);
 						$message         = str_replace("##MESSAGE##", $content, $message);
 						$result 		 = $api->sendSMS($to, $message);	
-						$message      = array(
+						$message      = [
 									"message" => __('success'),
 									"status" => 1
-								);
+								];
                         echo json_encode($message);
                         exit;				
 						}
 						}
 					else {
                         $errors = $validator->errors('errors');
-                        $result = array(
+                        $result = [
                             "message" => $errors,
                             "status" => -1
-                        );
+                        ];
                         echo json_encode($result);
                         exit;
 						}
@@ -11037,7 +11037,7 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                                             $taxi_id                      = $getTaxiforDriver['mapping_taxiid'];
                                             $company_all_currenttimestamp = $this->commonmodel->getcompany_all_currenttimestamp($company_id);
                                            $cat_id = commonfunction::get_auto_id(MDB_SHIFT_HISTORY);
-                                            $insert_array                 = array(
+                                            $insert_array                 = [
                                                 '_id' => (int)$cat_id,
 												'driver_shift_id' => (int)$driver_id,
                                                 'taxi_id' => (int)$taxi_id,
@@ -11046,7 +11046,7 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                                                 'reason' => null,
                                                 'createdate' => new \MongoDB\BSON\UTCDateTime(strtotime($this->currentdate) * 1000)
 												
-                                            );
+                                            ];
                                             //Inserting to Transaction Table 
                                             $transaction                  = $this->commonmodel->insert(MDB_SHIFT_HISTORY, $insert_array);
                                             //print_r($transaction);		
@@ -11077,7 +11077,7 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                                             $rejected_trips                      = count($driver_logs_rejected);
                                             $driver_earnings                     = $api->get_driver_earnings_with_rating($driver_id, $company_id);
                                             $driver_tot_earnings                 = $api->get_driver_total_earnings($driver_id);
-                                            $statistics                          = array();
+                                            $statistics                          = [];
                                             $total_trip                          = $trip_total_with_rate = $total_ratings = $today_earnings = $total_amount = 0;
                                             foreach ($driver_earnings as $stat) {
                                                 $total_trip++;
@@ -11086,7 +11086,7 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                                             }
                                             $overall_trip                           = $total_trip + $rejected_trips + $driver_cancelled_trips;
                                             $time_driven                            = $api->get_time_driven($driver_id, 'R', 'A', '1','1');$waittime =  $api->get_time_driven($driver_id, 'R', 'A', '1','2');
-                                            $statistics                             = array(
+                                            $statistics                             = [
                                                 "total_trip" => $overall_trip,
                                                 "completed_trip" => $total_trip,
                                                 "total_earnings" => round($driver_tot_earnings, 2),
@@ -11097,54 +11097,54 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                                                 "time_driven" => $time_driven,
                                                 "waiting_time" => $waittime,
                                                 "status" => 1
-                                            );
+                                            ];
                                             $driver_details[0]["driver_statistics"] = $statistics;
                                             /**************************************************/
-                                            $details                                = array(
+                                            $details                                = [
                                                 "driver_details" => $driver_details
-                                            );
-                                            $message                                = array(
+                                            ];
+                                            $message                                = [
                                                 "message" => __('driver_info_update'),
                                                 "status" => 1,
                                                 "detail" => $details
-                                            );
+                                            ];
 									
 									
 									echo json_encode($message);
 									exit;
 								}
 								}else if($update_taxi_info == -3){
-									$message      = array(
+									$message      = [
 										"message" => __('invalid_taxinumber'),
 										"status" => -1
-									);
+									];
 								echo json_encode($message);
 								exit;
 								}
 							}else{
-								$message      = array(
+								$message      = [
 										"message" => __('startkm_sholuld').$taxino_isValidstart_km,
 										"status" => -1
-									);
+									];
 								echo json_encode($message);
 								exit;
 								
 								}
 							}else{
-								$message      = array(
+								$message      = [
 										"message" => __('invalid_taxinumber'),
 										"status" => -1
-									);
+									];
 								echo json_encode($message);
 								exit;
 								
 							}
 						}
 							 else {
-							$message = array(
+							$message = [
 								"message" => __('invalid_user_driver'),
 								"status" => -1
-							);
+							];
 							echo json_encode($message);
 							exit;
 							}
@@ -11152,10 +11152,10 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
 					
 						else {
 							$errors = $validator->errors('errors');
-							$result = array(
+							$result = [
 								"message" => $errors,
 								"status" => -1
-							);
+							];
 							echo json_encode($result);
 							exit;
 						}
@@ -11174,25 +11174,25 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
 						$taxi_id = $check_taxino['_id'];//exit;
 						$update_taxi_info = $api->driver_feedback($driver_id,$taxi_id,$default_companyid,$model_type,$feedback);
 						if($update_taxi_info == 1){
-						$message      = array(
+						$message      = [
 									"message" => __('driver_info_update'),
 									"status" => 1
-								);
+								];
                         echo json_encode($message);
                         exit;
 					    }else{
-							$message      = array(
+							$message      = [
 									"message" => __('invalid_user_driver'),
 									"status" => 1
-								);
+								];
                         echo json_encode($message);
                         exit;
 						}
 						}else{
-							$message      = array(
+							$message      = [
 									"message" => __('invalid_taxinumber'),
 									"status" => 1
-								);
+								];
                         echo json_encode($message);
                         exit;
 							
@@ -11200,16 +11200,16 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
 						}
 						else {
                         $errors = $validator->errors('errors');
-                        $result = array(
+                        $result = [
                             "message" => $errors,
                             "status" => -1
-                        );
+                        ];
                         echo json_encode($result);
                         exit;
 						}
                     break;
                     case 'find_contacts':
-                    $response = array();
+                    $response = [];
 					$contacts = (isset($mobiledata['phone'])) ? $mobiledata['phone'] : '';
                     $validator = $this->find_contacts_validation($mobiledata);
                     if ($validator->check()) {
@@ -11223,24 +11223,24 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
 							}
 						}
 						if(count($response)>0){
-						 $result = array(
+						 $result = [
                             "message" => __('success'),
 							"details" => $response,
                             "status" => 1
-                        );}else{
-						 $result = array(
+                        ];}else{
+						 $result = [
                             "message" => __('no_contacts'),
                             "status" => -1
-                        );
+                        ];
 						}
                         echo json_encode($result);
                         exit;
 					}else {
                         $errors = $validator->errors('errors');
-                        $result = array(
+                        $result = [
                             "message" => $errors,
                             "status" => -1
-                        );
+                        ];
                         echo json_encode($result);
                         exit;
 						}
@@ -11251,31 +11251,31 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
 					$app_user = 0;
 					$new_user = 0;
 					$child_user = 0;
-					$bulkmessages     = array();
+					$bulkmessages     = [];
 					
                     $contacts = (isset($mobiledata['phone'])) ? $mobiledata['phone'] : '';
                     $account_type = (isset($mobiledata['account_type'])) ? $mobiledata['account_type'] : '';
                     $passenger_id = (isset($mobiledata['parent_id'])) ? $mobiledata['parent_id'] : '';
 					$valid = $addModel->parent_id_isValid($passenger_id);
 					$accvalid = $addModel->account_type_isValid($account_type);
-					$requestDetails = array();
+					$requestDetails = [];
 					if($valid != true) {
-						$message = array(
+						$message = [
 							"message" => __('invalid_passengerid'),
 							"status" => 3
-						);
+						];
 						echo json_encode($message);
 						exit;
 					}
 					if($accvalid != true) {
-						$message = array(
+						$message = [
 							"message" => __('invalid_account_type'),
 							"status" => 2
-						);
+						];
 						echo json_encode($message);
 						exit;
 					}
-					$name='';$email='';$requestDetails_exists=array();$requestPassengers1=array();
+					$name='';$email='';$requestDetails_exists=[];$requestPassengers1=[];
 					
                     $validator = $this->find_contacts_validation($mobiledata);
                     if ($validator->check()) {
@@ -11298,11 +11298,11 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
 								$profile_image = URL_BASE . "public/images/no_image109.png";
 							}
 							
-							$pushmessage           = array(
+							$pushmessage           = [
                             "message" => str_replace("%s",$name,__('sent_child_account')),
-                            "detail" => array('name'=>$username,'image'=>$profile_image,'phone'=>$sender_details[0]['phone'],'parent_id' => $passenger_id,'request_id' =>current($requestDetails)),
+                            "detail" => ['name'=>$username,'image'=>$profile_image,'phone'=>$sender_details[0]['phone'],'parent_id' => $passenger_id,'request_id' =>current($requestDetails)],
 							 "status" => 8
-							);
+							];
 							$get_passenger_details = $api->get_passenger_details($phone, $default_companyid);
 							$notify = App::helper('notifications');
 							$notify->setSender($passenger_id);
@@ -11319,10 +11319,10 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
 								$p_send_notification = $api->send_passenger_mobile_pushnotification($p_device_token,$p_device_type,$pushmessage,$this->customer_google_api,$title);
 							}
 							
-							$message = array(
+							$message = [
 								"message" => __('sent_child_account_success'),
 								"status" => 1
-							);
+							];
 							$app_user++;
 							//echo json_encode($message);
 							//exit;		
@@ -11356,20 +11356,20 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
 										$bulkmessages[$to]  = $message;
 										//$result          = $api->sendSMS($to, $message);										
 									}
-									$detail  = array(
+									$detail  = [
 										"email" => $email,
 										"skip_credit" => SKIP_CREDIT_CARD
-									);
-									$message = array(
+									];
+									$message = [
 										"message" => $message,
 										"detail" => $detail,
 										"status" => 1
-									);
+									];
 								} else {
-									$message = array(
+									$message = [
 										"message" => __('try_again'),
 										"status" => 4
-									);
+									];
 								}
 								$new_user++;
 								//echo json_encode($message);
@@ -11379,10 +11379,10 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
 							else{
 								
 								$requestDetails_exists[] = $phone_exist;
-								$result = array(
+								$result = [
 									"message" =>__('sent_child_account_fail'),
 									"status" => -1
-								);
+								];
 								$child_user++;
 								//echo json_encode($result);
 								//exit;
@@ -11402,7 +11402,7 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
 							$requestPassengers1 = $api->getRequestPassengers_details($requestDetails_exists);
 						 }
 						 $requestPassengers = array_merge($requestPassengers,$requestPassengers1);
-						 $message = array(
+						 $message = [
                                         "message" => str_replace("%s",$total_primary_contacts,__('request_sent_from_contact')),
                                         "sub_message1" => str_replace("%s",$app_user,__('request_sent_from_contact_popup')), 
                                         "sub_message2" => str_replace("%s",$new_user,__('request_sent_from_contact_popup1')),
@@ -11412,7 +11412,7 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                                         "existing_child_account" => $child_user,
                                         "details" => $requestPassengers,
                                         "status" => 1
-                                    );
+                                    ];
                         echo json_encode($message);        
 						exit;
 						
@@ -11421,10 +11421,10 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
 					}
                     else {
                         $errors = $validator->errors('errors');
-                        $result = array(
+                        $result = [
                             "message" => $errors,
                             "status" => -1
-                        );
+                        ];
                         echo json_encode($result);
                         exit;
 						}
@@ -11442,18 +11442,18 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
 					$accvalid = $addModel->account_type_isValid($account_type);
 					
 					if($valid != true) {
-						$message = array(
+						$message = [
 							"message" => __('invalid_passengerid'),
 							"status" => 3
-						);
+						];
 						echo json_encode($message);
 						exit;
 					}
 					if($accvalid != true) {
-						$message = array(
+						$message = [
 							"message" => __('invalid_account_type'),
 							"status" => 2
-						);
+						];
 						echo json_encode($message);
 						exit;
 					}
@@ -11472,12 +11472,12 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
 								$profile_image = URL_BASE . "public/images/no_image109.png";
 							}
 						
-							$pushmessage           = array(
+							$pushmessage           = [
 								"message" => str_replace("%s",$username,__('sent_child_account')),
-								"detail" => array('name'=>$username,'image'=>$profile_image,'phone'=>$sender_details[0]['phone'],'parent_id' => $passenger_id,'request_id' =>current($requestDetails)),
+								"detail" => ['name'=>$username,'image'=>$profile_image,'phone'=>$sender_details[0]['phone'],'parent_id' => $passenger_id,'request_id' =>current($requestDetails)],
 								
 								"status" => 8
-							);
+							];
 							//print_r($pushmessage);exit;
 							
 							$get_passenger_details = $api->get_passenger_details($phone, $default_companyid);
@@ -11497,11 +11497,11 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
 								$title = __('child_account_request');
 								$p_send_notification = $api->send_passenger_mobile_pushnotification($p_device_token,$p_device_type,$pushmessage,$this->customer_google_api,$title);
 							}
-							$message = array(
+							$message = [
 								"message" => __('sent_child_account_success'),
-								"detail" => array('name'=>$username,'image'=>$profile_image,'phone'=>$sender_details[0]['phone'],'parent_id' => $passenger_id,'request_id' =>current($requestDetails)),
+								"detail" => ['name'=>$username,'image'=>$profile_image,'phone'=>$sender_details[0]['phone'],'parent_id' => $passenger_id,'request_id' =>current($requestDetails)],
 								"status" => 1
-							);
+							];
 							echo json_encode($message);
 							exit;		
 							}else if($phone_exist == 0){
@@ -11516,7 +11516,7 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
 									$username   = $parentInfo['name'].' '.$parentInfo['lastname'];
 									$updateChild = $api->update_child($passenger_id);
 									
-									$replace_variables=array(REPLACE_LOGO=>URL_BASE.PUBLIC_FOLDER_IMGPATH.'/logo.png',REPLACE_SITENAME=>$this->app_name,REPLACE_USERNAME=>'',REPLACE_OTP=>$otp,REPLACE_SITELINK=>URL_BASE.'users/contactinfo/',REPLACE_SITEEMAIL=>$this->siteemail,REPLACE_SITEURL=>URL_BASE,REPLACE_PARENTID=>$username,REPLACE_COPYRIGHTS=>SITE_COPYRIGHT,REPLACE_ANDROID_PASSENGER_APP => ANDROID_PASSENGER_APP,REPLACE_IOS_PASSENGER_APP => IOS_PASSENGER_APP);									
+									$replace_variables=[REPLACE_LOGO=>URL_BASE.PUBLIC_FOLDER_IMGPATH.'/logo.png',REPLACE_SITENAME=>$this->app_name,REPLACE_USERNAME=>'',REPLACE_OTP=>$otp,REPLACE_SITELINK=>URL_BASE.'users/contactinfo/',REPLACE_SITEEMAIL=>$this->siteemail,REPLACE_SITEURL=>URL_BASE,REPLACE_PARENTID=>$username,REPLACE_COPYRIGHTS=>SITE_COPYRIGHT,REPLACE_ANDROID_PASSENGER_APP => ANDROID_PASSENGER_APP,REPLACE_IOS_PASSENGER_APP => IOS_PASSENGER_APP];									
 									//$message=$this->emailtemplate->emailtemplate(DOCROOT.TEMPLATEPATH.'child_registration.html',$replace_variables);
 									if ($this->lang != 'en') {
 										if (file_exists(DOCROOT . TEMPLATEPATH . $this->lang . '/child_registration-' . $this->lang . '.html')) {
@@ -11532,7 +11532,7 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
 										
 									if(SMTP == 1) {
 										$notify = App::helper('notification');
-										$notify->setReceivers(array($email));
+										$notify->setReceivers([$email]);
 										$notify->setSubject($subject);
 										$notify->setContent($message);
 										$notify->sendNotification();
@@ -11558,30 +11558,30 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
 										$message         = str_replace("##IOS_PASSENGER_APP##", IOS_PASSENGER_APP, $message);
 										$result = $api->sendSMS($to, $message);										
 									}
-									$detail  = array(
+									$detail  = [
 										"email" => $email,
 										"skip_credit" => SKIP_CREDIT_CARD
-									);
-									$message = array(
+									];
+									$message = [
 										"message" => __('account_saved'),
 										"detail" => $detail,
 										"status" => 1
-									);
+									];
 								} else {
-									$message = array(
+									$message = [
 										"message" => __('try_again'),
 										"status" => 4
-									);
+									];
 								}
 								echo json_encode($message);
 								exit;
 							}
 							else{
 								
-								$result = array(
+								$result = [
 									"message" =>__('sent_child_account_fail'),
 									"status" => -1
-								);
+								];
 								echo json_encode($result);
 								exit;
 								
@@ -11590,10 +11590,10 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
 					}
 					else {
                         $errors = $validator->errors('errors');
-                        $result = array(
+                        $result = [
                             "message" => $errors,
                             "status" => -1
-                        );
+                        ];
                         echo json_encode($result);
                         exit;
 						}
@@ -11611,18 +11611,18 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
 					$ppvalid = $addModel->parent_id_isValid($passenger_id);
 					
 					if($pvalid != true) {
-						$message = array(
+						$message = [
 							"message" => __('invalid_passengerid'),
 							"status" => 3
-						);
+						];
 						echo json_encode($message);
 						exit;
 					}
 					if($ppvalid != true) {
-						$message = array(
+						$message = [
 							"message" => __('invalid_passengerid'),
 							"status" => 3
-						);
+						];
 						echo json_encode($message);
 						exit;
 					}
@@ -11632,31 +11632,31 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
 					$name = $childInfo[0]['name'].' '.$childInfo[0]['lastname'];
 					if($status == 1) {
 						$child_request_status = $api->child_request_status($parent_id,$passenger_id,$status,$request_id);
-						$pushmessage           = array(
+						$pushmessage           = [
                             "message" => str_replace("%s",$name,__('request_accept')),
 							"passenger_id" => $passenger_id,
                             "status" => 11
-						);
+						];
 						$title= __('child_request_accept');
 						$p_send_notification = $api->send_passenger_mobile_pushnotification($parentInfo[0]['device_token'],$parentInfo[0]['device_type'],$pushmessage,$this->customer_google_api,$title);
-						$message = array(
+						$message = [
 							"message" =>str_replace("%s",$name,__('request_accept')),
 							"status" => 1
-						);
+						];
 					} else {
 						
 						$child_request_status = $api->delete_child_request($parent_id,$passenger_id,$request_id);
-						$pushmessage           = array(
+						$pushmessage           = [
                             "message" => str_replace("%s",$name,__('request_decline')),
 							"passenger_id" => $passenger_id,
                             "status" => 11
-						);
+						];
 						$title= __('child_request_decline');
 						$p_send_notification = $api->send_passenger_mobile_pushnotification($parentInfo[0]['device_token'],$parentInfo[0]['device_type'],$pushmessage,$this->customer_google_api,$title);
-						$message = array(
+						$message = [
 							"message" =>str_replace("%s",$name,__('request_decline')),
 							"status" => 1
-						);
+						];
 					}
 					echo json_encode($message);
                     exit;           
@@ -11666,26 +11666,26 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
 					$addModel = Model::factory('add');
 					$valid = $addModel->passenger_isValid($id);
 					if($valid != true) {
-						$message = array(
+						$message = [
 							"message" => __('invalid_passenger'),
 							"status" => 3
-						);
+						];
 						echo json_encode($message);
 						exit;
 					}
 					$request = $api->get_notification_count($id);
 					if($request != 0) {
-						$message = array(
+						$message = [
 							"message" =>__('you_have_request'),
 							"details" => $request,
 							"status" => 1
-						);
+						];
 					} else {
-						$message = array(
+						$message = [
 							"message" =>__('no_request'),
 							"details" => $request,
 							"status" => 0
-						);
+						];
 					}					
 					echo json_encode($message);
                     exit;
@@ -11696,10 +11696,10 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
 					$addModel = Model::factory('add');
 					$valid = $addModel->passenger_isValid($id);
 					if($valid != true) {
-						$message = array(
+						$message = [
 							"message" => __('invalid_passenger'),
 							"status" => 3
-						);
+						];
 						echo json_encode($message);
 						exit;
 					}
@@ -11720,17 +11720,17 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
 					}
 					
 					if(!empty($request)) {
-						$message = array(
+						$message = [
 							"message" =>__('you_have_request'),
 							"details" => $request,
 							"status" => 1
-						);
+						];
 					} else {
-						$message = array(
+						$message = [
 							"message" =>__('no_request'),
 							"details" => $request,
 							"status" => 0
-						);
+						];
 					}					
 					echo json_encode($message);
                     exit;           
@@ -11739,16 +11739,16 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
 					$validator = $this->token_validation($mobiledata);
 					$update_token = $api->update_device_token($mobiledata);//type 1 - android mobile 2 - android tab
 					if($validator->check()) {
-						$result = array(
+						$result = [
 							"message" => __('token_update'),
 							"status" => 1
-						);
+						];
 					} else {
 						$errors = $validator->errors('errors');
-						$result = array(
+						$result = [
 							"message" => $errors,
 							"status" => -1
-						);						
+						];						
 					}
 					echo json_encode($result);
 					exit;				
@@ -11761,25 +11761,25 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
 						$p_email     = $mobiledata['email'];
 						$email_exist = $api->check_email_passengers($p_email, $default_companyid);
 							if ($email_exist > 0) {
-								$result = array(
+								$result = [
 									"message" => __('email_exists'),
 									"status" => 2
-								);
+								];
 								echo json_encode($result);
 								exit;	
 						}
-						$result = array(
+						$result = [
 							"message" => __('success'),
 							"status" => 1
-						);
+						];
 						echo json_encode($result);
 						exit;	
 					} else {
 						$errors = $validator->errors('errors');
-						$result = array(
+						$result = [
 							"message" => $errors,
 							"status" => -1
-						);	
+						];	
 						echo json_encode($result);
 						exit;					
 					}
@@ -11796,11 +11796,11 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
 				print_r($gateway_details);exit;
 				
 				*/
-					$pushmessage           = array(
+					$pushmessage           = [
                             "message" => __('success'),
 							"status" => 11,
 							"video_url" => 'http://182.72.62.190:2222/public/video/79193296grandlimo.mp4'
-						);
+						];
 						$title= __('child_request_decline');
 						$p_send_notification = $api->send_tab_mobile_pushnotification('fluJqc-alLM:APA91bFSRyXh8UD7zCKH3CHuEimg1FZ4tl_yyq7lnd3lrX8g51WVLqBqH73WI-54IwFE2cEm9s63hKNRboVP5umDlsLvd8Lq_IQCx2zVPj1mwhUsxoRdtzE2-sOhCME_npcX5c0esmv2',1,$pushmessage,$this->customer_google_api,$title);
 						print "<pre>";
@@ -11824,7 +11824,7 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                     if ($trip_id != "") {
                         $passenger_log_details = $api->get_trip_detail_only($trip_id);                    
                         if (count($passenger_log_details) > 0) {
-                            $post                         = array();
+                            $post                         = [];
                             $post['driver_id']            = $driver_id;
                             $post['passengers_id']        = isset($passenger_log_details['passengers_id']) ? $passenger_log_details['passengers_id']: '';
                             $post['passengers_log_id']    = $trip_id;
@@ -11834,22 +11834,22 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                             $operator_id                  = isset($passenger_log_details['operator_id']) ? $passenger_log_details['operator_id']:'';
 							$travel_status       = isset($passenger_log_details['travel_status']) ? $passenger_log_details['travel_status']: '';
                             if ($reject_type == 1) {
-								$driver_checkabcd     = $api->setdrivercheck(array('status' => 'request1'));
+								$driver_checkabcd     = $api->setdrivercheck(['status' => 'request1']);
 								$driver_reply = isset($passenger_log_details['driver_reply']) ? $passenger_log_details['driver_reply'] : '';
-								$driver_checkabcd     = $api->setdrivercheck(array('status' => $passenger_log_details));
+								$driver_checkabcd     = $api->setdrivercheck(['status' => $passenger_log_details]);
                                 if ($driver_reply == 'R') {
                                     $message = __('trip_cancel_timeout');
-                                    $msg     = array(
+                                    $msg     = [
                                         "message" => $message,
                                         "status" => '8'
-                                    );
+                                    ];
                                     echo json_encode($msg); //exit;
                                 } else if ($travel_status == 6) {
 											
-                                    $message = array(
+                                    $message = [
                                         "message" => __('trip_already_canceled'),
                                         "status" => 4
-                                    );
+                                    ];
                                     echo json_encode($message);
                                     break;
                                 } else {
@@ -11857,12 +11857,12 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                                     $rejected_driver    = isset($passenger_log_details['driver_id']) ? $passenger_log_details['driver_id']:'';
                                     $passengers_log_id  = $trip_id;
                                     $push_msg           = __('request_rejected');
-                                    $message            = array(
+                                    $message            = [
                                         "message" => $push_msg,
                                         "trip_id" => $passengers_log_id,
                                         "trip_detail" => "",
                                         "status" => 6
-                                    );
+                                    ];
                                     /********** Update Trip Status *****************/
                                     $driver_reply       = "";
                                     //$update_trip_array  = array("driver_reply" => 'R');
@@ -11882,10 +11882,10 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                                             $rejected_timeout_drivers = $driver_id;
                                         }
                                         if ($status != '4') {
-                                            $update_trip_array = array(
+                                            $update_trip_array = [
                                                 "status" => '0',
                                                 "rejected_timeout_drivers" => $rejected_timeout_drivers
-                                            );
+                                            ];
                                             //$result = $api->update_table(DRIVER_REQUEST_DETAILS,$update_trip_array,'trip_id',$trip_id);							
                                         }
                                         $add_rejected_list      = $api->add_rejected_list($post, $rejection_type);
@@ -11895,7 +11895,7 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                                         $driver_cancelled_trips = $api->get_driver_cancelled_trips($driver_id, $company_id);
                                         $driver_earnings        = $api->get_driver_earnings_with_rating($driver_id, $company_id);
                                         $driver_tot_earnings    = $api->get_driver_total_earnings($driver_id);
-                                        $statistics             = array();
+                                        $statistics             = [];
                                         $total_trip             = $trip_total_with_rate = $total_ratings = $today_earnings = $total_amount = 0;
                                         foreach ($driver_earnings as $stat) {
                                             $total_trip++;
@@ -11905,7 +11905,7 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                                         }
                                         $overall_trip = $total_trip + $rejected_trips + $driver_cancelled_trips;
                                         $time_driven  = $api->get_time_driven($driver_id, 'R', 'A', '1');
-                                        $statistics   = array(
+                                        $statistics   = [
                                             "total_trip" => $overall_trip,
                                             "completed_trip" => $total_trip,
                                             "total_earnings" => round($driver_tot_earnings, 2),
@@ -11915,12 +11915,12 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                                             "shift_status" => 'IN',
                                             "time_driven" => $time_driven,
                                             "status" => 1
-                                        );
-                                        $message      = array(
+                                        ];
+                                        $message      = [
                                             "message" => __('request_rejected'),
                                             "driver_statistics" => $statistics,
                                             "status" => 6
-                                        );
+                                        ];
                                     }
                                     /***********************************************************************************/
                                 }
@@ -11939,13 +11939,13 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                                         } else {
                                             $rejected_timeout_drivers = $driver_id;
                                         }
-                                        $driver_checkabcd     = $api->setdrivercheck(array('status' => 'check_new_request_tripid'));
+                                        $driver_checkabcd     = $api->setdrivercheck(['status' => 'check_new_request_tripid']);
                                         $get_request_dets = $api->check_new_request_tripid($taxi_id, $company_id, $trip_id, $driver_id, $company_all_currenttimestamp, "", $operator_id);
                                         if ($status != '4') {
-                                            $update_trip_array = array(
+                                            $update_trip_array = [
                                                 "status" => 0,
                                                 "rejected_timeout_drivers" => $rejected_timeout_drivers
-                                            );
+                                            ];
                                             $result = $api->update_table(MDB_REQUEST_HISTORY,$update_trip_array,'_id',$trip_id);
                                         }
                                     }
@@ -11956,7 +11956,7 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                                     $driver_cancelled_trips = $api->get_driver_cancelled_trips($driver_id, $company_id);
                                     $driver_earnings        = $api->get_driver_earnings_with_rating($driver_id, $company_id);
                                     $driver_tot_earnings    = $api->get_driver_total_earnings($driver_id);
-                                    $statistics             = array();
+                                    $statistics             = [];
                                     $total_trip             = $trip_total_with_rate = $total_ratings = $today_earnings = $total_amount = 0;
                                     foreach ($driver_earnings as $stat) {
                                         $total_trip++;
@@ -11967,7 +11967,7 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                                     $overall_trip = $total_trip + $rejected_trips + $driver_cancelled_trips;
                                      $time_driven                            = $api->get_time_driven($driver_id, 'R', 'A', '1','1');$waittime =  $api->get_time_driven($driver_id, 'R', 'A', '1','2');
                                     //$time_driven  = $api->get_time_driven($driver_id, 'R', 'A', '1');
-                                    $statistics   = array(
+                                    $statistics   = [
                                         "total_trip" => $overall_trip,
                                         "completed_trip" => $total_trip,
                                         "total_earnings" => round($driver_tot_earnings, 2),
@@ -11978,36 +11978,36 @@ Class Controller_Mobileapi115 extends Controller_Mobile101
                                         "time_driven" => $time_driven,
                                          "waiting_time" => $waittime,
                                         "status" => 1
-                                    );
-                                    $message      = array(
+                                    ];
+                                    $message      = [
                                         "message" => __('driver_reply_timeout'),
                                         "driver_statistics" => $statistics,
                                         "status" => 7
-                                    );
+                                    ];
                                 }
                             }
                         } else {
-                            $message = array(
+                            $message = [
                                 "message" => __('invalid_trip'),
                                 "status" => 2
-                            );
+                            ];
                         }
                     } else {
                         $message = __('trip_id_req');
-                        $message = array(
+                        $message = [
                             "message" => $message,
                             "status" => '-1'
-                        );
+                        ];
                     }
 				echo json_encode($message);
                 exit;
             }
             exit;
         } else {
-            $message = array(
+            $message = [
                 "message" => __('invalid_company'),
                 "status" => -8
-            );
+            ];
             //"url_explode"=>$find_url,"count"=>count($apikey_result),"encrypt valu"=>$company_api_encrypt,"decrypt valu"=>$company_api_decrypt,"descrypt_split"=>$company_split,"Company APK"=>$company_api_key);
             echo json_encode($message);
             exit;

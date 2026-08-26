@@ -1,6 +1,6 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 
-return array(
+return [
 'button_login' => 'Log In',
 'button_signup' => 'Sign Up',
 'button_update' => 'Update',
@@ -1977,4 +1977,4 @@ return array(
 'taxi_assign_period_end' => 'Taxi assigned period has been expired',
 'no_completed_data_month' => 'There is no completed trip in this month',
 'referral_code_info_details'=>'Enter referral code here to earn free ride coupons. Note: Referral scheme is only applicable for users who have never booked on '.SITE_NAME.' before.',
-); 
+]; 

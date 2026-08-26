@@ -32,68 +32,68 @@ Class Model_Siteusers extends Model
     /**Validating User SignUP details**/
     public function validate_signup($arr)
     {
-        return Validation::factory($arr)->rule('name', 'not_empty')->rule('name', 'min_length', array(
+        return Validation::factory($arr)->rule('name', 'not_empty')->rule('name', 'min_length', [
             ':value',
             '4'
-        ))->rule('name', 'max_length', array(
+        ])->rule('name', 'max_length', [
             ':value',
             '32'
-        ))->rule('lastname', 'not_empty')->rule('lastname', 'min_length', array(
+        ])->rule('lastname', 'not_empty')->rule('lastname', 'min_length', [
             ':value',
             '1'
-        ))->rule('lastname', 'max_length', array(
+        ])->rule('lastname', 'max_length', [
             ':value',
             '32'
-        ))->rule('email', 'not_empty')->rule('email', 'email')->rule('email', 'max_length', array(
+        ])->rule('email', 'not_empty')->rule('email', 'email')->rule('email', 'max_length', [
             ':value',
             '50'
-        ))->rule('password', 'valid_password', array(
+        ])->rule('password', 'valid_password', [
             ':value',
             '/^[A-Za-z0-9@#$%!^&*(){}?-_<>=+|~`\'".,:;[]+]*$/u'
-        ))->rule('password', 'not_empty')->rule('password', 'min_length', array(
+        ])->rule('password', 'not_empty')->rule('password', 'min_length', [
             ':value',
             '5'
-        ))->rule('password', 'max_length', array(
+        ])->rule('password', 'max_length', [
             ':value',
             '50'
-        ))->rule('password', 'valid_password', array(
+        ])->rule('password', 'valid_password', [
             ':value',
             '/^[A-Za-z0-9@#$%!^&*(){}?-_<>=+|~`\'".,:;[]+]*$/u'
-        )) /*->rule('repassword', 'not_empty')
+        ]) /*->rule('repassword', 'not_empty')
         ->rule('repassword', 'min_length', array(':value', '5'))
         ->rule('repassword', 'max_length', array(':value', '50'))
         ->rule('repassword',  'matches', array(':validation', 'password', 'repassword'))*/ ;
     }
     public function validate_twittersignup($arr)
     {
-        return Validation::factory($arr)->rule('name', 'not_empty')->rule('name', 'min_length', array(
+        return Validation::factory($arr)->rule('name', 'not_empty')->rule('name', 'min_length', [
             ':value',
             '4'
-        ))->rule('name', 'max_length', array(
+        ])->rule('name', 'max_length', [
             ':value',
             '32'
-        ))->rule('lastname', 'not_empty')->rule('lastname', 'min_length', array(
+        ])->rule('lastname', 'not_empty')->rule('lastname', 'min_length', [
             ':value',
             '1'
-        ))->rule('lastname', 'max_length', array(
+        ])->rule('lastname', 'max_length', [
             ':value',
             '32'
-        ))->rule('email', 'not_empty')->rule('email', 'email')->rule('email', 'max_length', array(
+        ])->rule('email', 'not_empty')->rule('email', 'email')->rule('email', 'max_length', [
             ':value',
             '50'
-        ))->rule('password', 'valid_password', array(
+        ])->rule('password', 'valid_password', [
             ':value',
             '/^[A-Za-z0-9@#$%!^&*(){}?-_<>=+|~`\'".,:;[]+]*$/u'
-        ))->rule('password', 'not_empty')->rule('password', 'min_length', array(
+        ])->rule('password', 'not_empty')->rule('password', 'min_length', [
             ':value',
             '5'
-        ))->rule('password', 'max_length', array(
+        ])->rule('password', 'max_length', [
             ':value',
             '50'
-        ))->rule('password', 'valid_password', array(
+        ])->rule('password', 'valid_password', [
             ':value',
             '/^[A-Za-z0-9@#$%!^&*(){}?-_<>=+|~`\'".,:;[]+]*$/u'
-        ))->rule('account_type', 'not_empty');
+        ])->rule('account_type', 'not_empty');
     }
     /**User Signup**/
     public function signup($sign, $val, $img_name, $location_details, $account_type, $userurl = null, $random_key = null, $verifylink)
@@ -101,7 +101,7 @@ Class Model_Siteusers extends Model
         $accounttype = ($account_type == "job") ? 2 : 1; // job means : careseeker login
         $username    = Html::chars($sign['name']);
         $password    = Html::chars(md5($sign['password']));
-        $result      = DB::insert(PEOPLE, array(
+        $result      = DB::insert(PEOPLE, [
             'name',
             'lastname',
             'email',
@@ -114,7 +114,7 @@ Class Model_Siteusers extends Model
             'status',
             'account_type',
             'verify_link'
-        ))->values(array(
+        ])->values([
             $sign['name'],
             $sign['lastname'],
             $sign['email'],
@@ -127,7 +127,7 @@ Class Model_Siteusers extends Model
             ACTIVE,
             $accounttype,
             $verifylink
-        ))->execute();
+        ])->execute();
         if ($result) {
             $email = DB::select()->from(PEOPLE)->where('email', '=', $val['email'])->execute()->as_array();
             $this->session->set("user_name", $email["0"]["name"] . $email["0"]["lastname"]);
@@ -148,7 +148,7 @@ Class Model_Siteusers extends Model
         $result = Db::query(Database::SELECT, $sql)->execute()->as_array();
         return $result;*/
         
-		$result = $this->mongo_db->find_one(MDB_SITEINFO,array('_id'=>(int)1),array('app_description','site_tagline','site_copyrights','android_passenger_app_url','ios_passenger_app_url'));
+		$result = $this->mongo_db->find_one(MDB_SITEINFO,['_id'=>(int)1],['app_description','site_tagline','site_copyrights','android_passenger_app_url','ios_passenger_app_url']);
          return $result;
         
     }
@@ -160,30 +160,30 @@ Class Model_Siteusers extends Model
         $result = Db::query(Database::SELECT, $sql)->execute()->as_array();
         return $result;
         */
-         $arguments = array(
+         $arguments = [
 		
-			array('$project' =>
-				array(
+			['$project' =>
+				[
 					
 					'content'=>'$content',
 					'alt_tags'=>'$alt_tags',
 					
-				)
-			),
-			array('$match'=>array('TYPE' => 3)),
-			array('$sort'=>array('order' => 1)),
-			array('$skip'=>0),
-			array('$limit'=>5),
-		);
+				]
+			],
+			['$match'=>['TYPE' => 3]],
+			['$sort'=>['order' => 1]],
+			['$skip'=>0],
+			['$limit'=>5],
+		];
         $result = $this->mongo_db->aggregate(MDB_CMS,$arguments);
 		//print_r($result);exit;
-        return (isset($result['result']))?$result['result']:array();
+        return (isset($result['result']))?$result['result']:[];
         
     }
     /** get banner images **/
     public function get_banner_images()
     {
-        $result = array();
+        $result = [];
         // Check if the username already exists in the database
         //$sql    = "SELECT banner_image1,banner_image2,banner_image3,banner_image4,banner_image5 FROM " . CMS . " WHERE TYPE =  '2' ";
         //$result = Db::query(Database::SELECT, $sql)->execute()->as_array();
@@ -195,43 +195,43 @@ Class Model_Siteusers extends Model
         return $result;
         */
         
-         $ops = array(
-         array('$unwind' => '$company_cms'),
-				array('$match' => array('_id' => $cid,'company_cms.type'=>(int)2)),
-				array('$project' => array('_id' => 0,
+         $ops = [
+         ['$unwind' => '$company_cms'],
+				['$match' => ['_id' => $cid,'company_cms.type'=>(int)2]],
+				['$project' => ['_id' => 0,
 					'menu_name' => '$company_cms.menu_name', 
 					'title' => '$company_cms.title',
 					'content' => '$company_cms.content',
 					'page_url' => '$company_cms.page_url',
 					'state_default' => '$company_cms.state_default',
 					'type' => '$company_cms.type'
-					)
-				),
+					]
+				],
 				
-			);
+			];
 			$result = $this->mongo_db->aggregate(MDB_COMPANY,$ops);
 			//echo '<pre>';print_r($result);exit;
-			return (!empty($result['result']))?$result['result']:array();
+			return (!empty($result['result']))?$result['result']:[];
         
       
     }
     public function get_company_cms($cid)
     {
-        $result = array();
+        $result = [];
         //$result = DB::select()->from(COMPANYINFO)->where('company_cid', '=', $cid)->limit(1)->execute()->as_array();
         return $result;
     }
     public function get_company_cms_page($cid)
     {
-        $result = array();
+        $result = [];
         //$result = DB::select()->from(COMPANY_CMS)->where('company_id', '=', $cid)->execute()->as_array();
         return $result;
     }
     public function update_currency_code($uid, $currency)
     {
-        $currency_arr = array(
+        $currency_arr = [
             'currency' => $currency
-        );
+        ];
         $user_update  = DB::update(PEOPLE)->set($currency_arr)->where('id', '=', $uid)->execute();
         $session      = Session::instance();
         $session->set('currency_select', $currency);
@@ -266,13 +266,13 @@ Class Model_Siteusers extends Model
         if ($arr['password'] == 'Password') {
             $arr['password'] = "";
         }
-        return Validation::factory($arr)->rule('email', 'not_empty')->rule('email', 'email')->rule('password', 'not_empty')->rule('password', 'min_length', array(
+        return Validation::factory($arr)->rule('email', 'not_empty')->rule('email', 'email')->rule('password', 'not_empty')->rule('password', 'min_length', [
             ':value',
             '5'
-        ))->rule('password', 'valid_password', array(
+        ])->rule('password', 'valid_password', [
             ':value',
             '/^[A-Za-z0-9@#$%!^&*(){}?-_<>=+|~`\'".,:;[]+]*$/u'
-        ));
+        ]);
     }
     /**User Login**/
     public function login($log, $location_details)
@@ -284,14 +284,14 @@ Class Model_Siteusers extends Model
          $password = Html::chars(md5($log['password']));
          echo "sssssssssss". ADMIN;exit;
          
-         $result = $this->mongo_db->find_one(MDB_PASSENGERS,array('phone'=>$phone,'user_status'=>'A','password'=>$password),array('_id','salutation','name','lastname','email','phone','deviceid','devicetoken','devicetype','child_exist','allow_creditcard','login_status'));
+         $result = $this->mongo_db->find_one(MDB_PASSENGERS,['phone'=>$phone,'user_status'=>'A','password'=>$password],['_id','salutation','name','lastname','email','phone','deviceid','devicetoken','devicetype','child_exist','allow_creditcard','login_status']);
 		if (count($result) > 0) {
 			$login_time   = $this->currentdate;
-            $update_array    = array(
+            $update_array    = [
                 'last_login' => $login_time
-            );
+            ];
            
-				$update = $this->mongo_db->update(MDB_PASSENGERS,array('_id'=>(int)$result['_id']),array('$set'=> $update_array));
+				$update = $this->mongo_db->update(MDB_PASSENGERS,['_id'=>(int)$result['_id']],['$set'=> $update_array]);
 			 if (($result["user_type"] == ADMIN)) {
                 return 0;
             } else {
@@ -317,87 +317,87 @@ Class Model_Siteusers extends Model
     // Validating User Details while Updating User Details
     public function validate_user_settings($arr, $files_value_array)
     {
-        return Validation::factory($arr, $files_value_array)->rule('file', 'Upload::type', array(
+        return Validation::factory($arr, $files_value_array)->rule('file', 'Upload::type', [
             $files_value_array['photo'],
-            array(
+            [
                 'jpg',
                 'jpeg',
                 'png',
                 'gif'
-            )
-        ))->rule('file', 'Upload::size', array(
+            ]
+        ])->rule('file', 'Upload::size', [
             $files_value_array['photo'],
             '2M'
-        ));
+        ]);
     }
     // Validating User Details while Updating User Details
     public function validate_carepicture_settings($arr, $files_value_array)
     {
-        return Validation::factory($arr, $files_value_array)->rule('file', 'Upload::type', array(
+        return Validation::factory($arr, $files_value_array)->rule('file', 'Upload::type', [
             $files_value_array['image'],
-            array(
+            [
                 'jpg',
                 'jpeg',
                 'png',
                 'gif'
-            )
-        ))->rule('file', 'Upload::size', array(
+            ]
+        ])->rule('file', 'Upload::size', [
             $files_value_array['image'],
             '2M'
-        ));
+        ]);
     }
     public function validate_user_profilesettings($arr)
     {
-        return Validation::factory($arr)->rule('name', 'not_empty')->rule('name', 'illegal_chars', array(
+        return Validation::factory($arr)->rule('name', 'not_empty')->rule('name', 'illegal_chars', [
             ':value',
             '/^[\p{L}-.,_; \'0-9]*$/u'
-        ))->rule('name', 'min_length', array(
+        ])->rule('name', 'min_length', [
             ':value',
             '4'
-        ))->rule('name', 'max_length', array(
+        ])->rule('name', 'max_length', [
             ':value',
             '32'
-        ))->rule('lastname', 'not_empty')->rule('lastname', 'illegal_chars', array(
+        ])->rule('lastname', 'not_empty')->rule('lastname', 'illegal_chars', [
             ':value',
             '/^[\p{L}-.,_; \'0-9]*$/u'
-        ))->rule('lastname', 'min_length', array(
+        ])->rule('lastname', 'min_length', [
             ':value',
             '1'
-        ))->rule('lastname', 'max_length', array(
+        ])->rule('lastname', 'max_length', [
             ':value',
             '32'
-        ))->rule('email', 'not_empty')->rule('email', 'max_length', array(
+        ])->rule('email', 'not_empty')->rule('email', 'max_length', [
             ':value',
             '50'
-        ))->rule('email', 'email_domain')->rule('description', 'not_empty')->rule('description', 'illegal_chars', array(
+        ])->rule('email', 'email_domain')->rule('description', 'not_empty')->rule('description', 'illegal_chars', [
             ':value',
             '/^[\p{L}-.,_; \'0-9]*$/u'
-        ))->rule('description', 'min_length', array(
+        ])->rule('description', 'min_length', [
             ':value',
             '5'
-        ))->rule('school', 'not_empty')->rule('education', 'illegal_chars', array(
+        ])->rule('school', 'not_empty')->rule('education', 'illegal_chars', [
             ':value',
             '/^[\p{L}-.,_; \'0-9]*$/u'
-        ))->rule('education', 'not_empty')->rule('education', 'illegal_chars', array(
+        ])->rule('education', 'not_empty')->rule('education', 'illegal_chars', [
             ':value',
             '/^[\p{L}-.,_; \'0-9]*$/u'
-        ));
+        ]);
     }
     public function validate_user_profilesettings_optional($arr)
     {
-        return Validation::factory($arr)->rule('phone', 'phone')->rule('dob', 'date')->rule('organisation', 'alpha_space')->rule('organisation', 'illegal_chars', array(
+        return Validation::factory($arr)->rule('phone', 'phone')->rule('dob', 'date')->rule('organisation', 'alpha_space')->rule('organisation', 'illegal_chars', [
             ':value',
             '/^[\p{L}-.,_; \'0-9]*$/u'
-        ))->rule('organisation', 'not_numeric')->rule('work', 'alpha_space')->rule('work', 'illegal_chars', array(
+        ])->rule('organisation', 'not_numeric')->rule('work', 'alpha_space')->rule('work', 'illegal_chars', [
             ':value',
             '/^[\p{L}-.,_; \'0-9]*$/u'
-        ))->rule('work', 'not_numeric')->rule('website', 'url')->rule('user_paypal_account', 'max_length', array(
+        ])->rule('work', 'not_numeric')->rule('website', 'url')->rule('user_paypal_account', 'max_length', [
             ':value',
             '60'
-        ))->rule('user_paypal_account', 'email')->rule('user_paypal_account', 'Model_Authorize::unique_email')->rule('account_balance_amt', 'numeric')->rule('group', 'alpha_space')->rule('group', 'illegal_chars', array(
+        ])->rule('user_paypal_account', 'email')->rule('user_paypal_account', 'Model_Authorize::unique_email')->rule('account_balance_amt', 'numeric')->rule('group', 'alpha_space')->rule('group', 'illegal_chars', [
             ':value',
             '/^[\p{L}-.,_; \'0-9]*$/u'
-        ))->rule('group', 'not_numeric');
+        ])->rule('group', 'not_numeric');
     }
     public function update_user_settings_optional($array_data, $id)
     {
@@ -440,9 +440,9 @@ Class Model_Siteusers extends Model
     {
         $mdate     = $this->currentdate;
         // Update user records in the database
-        $sql_query = (array(
+        $sql_query = ([
             'updated_date' => $mdate
-        )); //'location' =>$array_data['location'] ,'industry' =>$array_data['industry'],'smart_tags' => $array_data['smart_tags'],
+        ]); //'location' =>$array_data['location'] ,'industry' =>$array_data['industry'],'smart_tags' => $array_data['smart_tags'],
         if (isset($array_data['name']) && $array_data['name'] != "") {
             $name              = $array_data['name'];
             $sql_query['name'] = $name;
@@ -488,7 +488,7 @@ Class Model_Siteusers extends Model
         $lat    = $this->lat;
         $lon    = $this->lon;
         $rad    = '';
-        $result = array();
+        $result = [];
         if ($userid != null) {
             if ($rad == "") {
                 if (($lat != null) && ($lon != null)) {
@@ -510,10 +510,10 @@ Class Model_Siteusers extends Model
     // Validating Forgot Password Details
     public function validate_forgotpwd($arr)
     {
-        return Validation::factory($arr)->rule('email', 'email')->rule('email', 'max_length', array(
+        return Validation::factory($arr)->rule('email', 'email')->rule('email', 'max_length', [
             ':value',
             '100'
-        ))->rule('email', 'not_empty');
+        ])->rule('email', 'not_empty');
     }
     // Check Whether Email is Already Exist or Not
     public function check_email($email = "")
@@ -552,10 +552,10 @@ Class Model_Siteusers extends Model
         $mdate  = $this->currentdate;
         $pass   = md5($random_key);
         // Create a new user record in the database
-        $result = DB::update(PEOPLE)->set(array(
+        $result = DB::update(PEOPLE)->set([
             'password' => $pass,
             'updated_date' => $mdate
-        ))->where('email', '=', $array_data['email'])->execute();
+        ])->where('email', '=', $array_data['email'])->execute();
         if ($result) {
             $rs = DB::select('name', 'username', 'email', 'password')->from(PEOPLE)->where('email', '=', $post_value_array['email'])->where('status', '=', ACTIVE)->execute()->as_array();
             return $rs;
@@ -570,10 +570,10 @@ Class Model_Siteusers extends Model
         $mdate  = $this->currentdate;
         $pass   = md5($array_data['confirm_password']);
         // Create a new user record in the database
-        $result = DB::update(PEOPLE)->set(array(
+        $result = DB::update(PEOPLE)->set([
             'password' => $pass,
             'updated_date' => $mdate
-        ))->where('id', '=', $userid)->execute();
+        ])->where('id', '=', $userid)->execute();
         if (count($result) == SUCESS) {
             $rs = DB::select('username', 'name', 'password', 'email')->from(PEOPLE)->where('id', '=', $userid)->execute()->as_array();
             return $rs;
@@ -582,58 +582,58 @@ Class Model_Siteusers extends Model
     // Validating Change Password Details
     public function validate_changepwd($arr)
     {
-        return Validation::factory($arr)->rule('old_password', 'not_empty')->rule('old_password', 'valid_password', array(
+        return Validation::factory($arr)->rule('old_password', 'not_empty')->rule('old_password', 'valid_password', [
             ':value',
             '/^[A-Za-z0-9@#$%!^&*(){}?-_<>=+|~`\'".,:;[]+]*$/u'
-        ))->rule('old_password', 'max_length', array(
+        ])->rule('old_password', 'max_length', [
             ':value',
             '16'
-        ))->rule('new_password', 'not_empty')->rule('new_password', 'valid_password', array(
+        ])->rule('new_password', 'not_empty')->rule('new_password', 'valid_password', [
             ':value',
             '/^[A-Za-z0-9@#$%!^&*(){}?-_<>=+|~`\'".,:;[]+]*$/u'
-        ))->rule('new_password', 'min_length', array(
+        ])->rule('new_password', 'min_length', [
             ':value',
             '5'
-        ))->rule('new_password', 'max_length', array(
+        ])->rule('new_password', 'max_length', [
             ':value',
             '16'
-        ))->rule('confirm_password', 'not_empty')->rule('confirm_password', 'valid_password', array(
+        ])->rule('confirm_password', 'not_empty')->rule('confirm_password', 'valid_password', [
             ':value',
             '/^[A-Za-z0-9@#$%!^&*(){}?-_<>=+|~`\'".,:;[]+]*$/u'
-        ))->rule('confirm_password', 'matches', array(
+        ])->rule('confirm_password', 'matches', [
             ':validation',
             'new_password',
             'confirm_password'
-        ))->rule('confirm_password', 'min_length', array(
+        ])->rule('confirm_password', 'min_length', [
             ':value',
             '5'
-        ))->rule('confirm_password', 'max_length', array(
+        ])->rule('confirm_password', 'max_length', [
             ':value',
             '16'
-        ));
+        ]);
     }
     /**Validating Reset Password Details **/
     public function validate_resetpwd($arr)
     {
         return Validation::factory($arr)->rule('new_password', 'not_empty')
         //->rule('new_password','alpha_dash')
-            ->rule('new_password', 'valid_password', array(
+            ->rule('new_password', 'valid_password', [
             ':value',
             '/^[A-Za-z0-9@#$%!^&*(){}?-_<>=+|~`\'".,:;[]+]*$/u'
-        ))->rule('new_password', 'max_length', array(
+        ])->rule('new_password', 'max_length', [
             ':value',
             '16'
-        ))->rule('conf_password', 'not_empty')
+        ])->rule('conf_password', 'not_empty')
         //->rule('conf_password','alpha_dash')
             
         //->rule('conf_password', array(':equals','new_password'))
-            ->rule('conf_password', 'valid_password', array(
+            ->rule('conf_password', 'valid_password', [
             ':value',
             '/^[A-Za-z0-9@#$%!^&*(){}?-_<>=+|~`\'".,:;[]+]*$/u'
-        ))->rule('conf_password', 'max_length', array(
+        ])->rule('conf_password', 'max_length', [
             ':value',
             '16'
-        ));
+        ]);
     }
     // Check Whether the Eneterd Password is Correct While User Change Password
     public function check_pass($pass = "", $userid = "")
@@ -651,9 +651,9 @@ Class Model_Siteusers extends Model
     //update user photo null 
     public function update_user_photo($userid)
     {
-        $sql_query = array(
+        $sql_query = [
             'photo' => ""
-        );
+        ];
         //print_r($sql_query);exit;
         $result    = DB::update(PEOPLE)->set($sql_query)->where('id', '=', $userid)->execute();
         return 1;
@@ -662,14 +662,14 @@ Class Model_Siteusers extends Model
     public function set_description_active($usr_id, $key, $settings)
     {
         if ($settings[0]['admin_activation_reg'] == YES) {
-            $sql_query = array(
+            $sql_query = [
                 'activation_code_status' => ACTIVATION_CODE_STATUS
-            );
+            ];
         } else {
-            $sql_query = array(
+            $sql_query = [
                 'status' => ACTIVE,
                 'activation_code_status' => ACTIVATION_CODE_STATUS
-            );
+            ];
         }
         $result = DB::update(USERS)->set($sql_query)->where('id', '=', $usr_id)->where('activation_code', '=', $key)->where('status', '=', IN_ACTIVE)->execute();
         if ($result == 1) {
@@ -712,16 +712,16 @@ Class Model_Siteusers extends Model
      */
     public function validate_email($arr)
     {
-        return Validation::factory($arr)->rule('email', 'not_empty')->rule('email', 'max_length', array(
+        return Validation::factory($arr)->rule('email', 'not_empty')->rule('email', 'max_length', [
             ':value',
             '50'
-        ))->rule('email', 'Model_Authorize::check_label_not_empty', array(
+        ])->rule('email', 'Model_Authorize::check_label_not_empty', [
             ":value",
             __('enter_email')
-        ))->rule('email', 'email_domain')->rule('email', 'Model_Authorize::unique_email');
+        ])->rule('email', 'email_domain')->rule('email', 'Model_Authorize::unique_email');
     }
     /**For Facebook user signup insertion**/
-    public function register_facebook_user($profile_data = array(), $fb_access_token, $arr, $location_details, $userurl = null, $random_key = null, $pwd = '', $verify_code)
+    public function register_facebook_user($profile_data = [], $fb_access_token, $arr, $location_details, $userurl = null, $random_key = null, $pwd = '', $verify_code)
     {
         $lat         = $this->lat;
         $lng         = $this->lon;
@@ -730,7 +730,7 @@ Class Model_Siteusers extends Model
         if (empty($result)) {
             $username      = Html::chars($profile_data->first_name);
             $password      = md5($pwd); //  md5(Commonfunction::randomkey_generator());
-            $insert_result = DB::insert(PEOPLE, array(
+            $insert_result = DB::insert(PEOPLE, [
                 'username',
                 'name',
                 'email',
@@ -748,7 +748,7 @@ Class Model_Siteusers extends Model
                 'last_login',
                 'account_type',
                 'verify_link'
-            ))->values(array(
+            ])->values([
                 strtolower($username),
                 $profile_data->name,
                 $profile_data->email,
@@ -766,7 +766,7 @@ Class Model_Siteusers extends Model
                 $this->currentdate,
                 $accounttype,
                 $verify_code
-            ))->execute();
+            ])->execute();
             //'latitude','langitude','login_city','login_state','login_country','login_country_code','login_ip',
             //,$lat,$lng,$city,$state,$country,$country_code,$ip
             $this->session->set("id", $insert_result[0]);
@@ -774,18 +774,18 @@ Class Model_Siteusers extends Model
             $this->session->set("email", $profile_data->email);
             $this->session->set("fb_access_token", $fb_access_token);
             unset($_SESSION["account_type"]);
-            $rslt = array();
-            $rslt = array(
+            $rslt = [];
+            $rslt = [
                 "name" => $profile_data->first_name,
                 "email" => $profile_data->email,
                 "password" => $password
-            );
+            ];
             return $rslt;
         } else {
             $login_time   = $this->currentdate;
-            $result_login = DB::update(PEOPLE)->set(array(
+            $result_login = DB::update(PEOPLE)->set([
                 'last_login' => $login_time
-            ))->execute();
+            ])->execute();
             if (($result["0"]["user_type"] == ADMIN)) {
                 $this->session->set("user_email", $result[0]["email"]);
                 $this->session->set("name", $result[0]["name"]);
@@ -802,7 +802,7 @@ Class Model_Siteusers extends Model
         }
     }
     /**For Facebook user signup insertion**/
-    public function register_facebook_user1($profile_data = array(), $fb_access_token, $arr, $location_details, $userurl = null, $random_key = null, $verify_code)
+    public function register_facebook_user1($profile_data = [], $fb_access_token, $arr, $location_details, $userurl = null, $random_key = null, $verify_code)
     {
         $lat         = $this->lat;
         $lng         = $this->lon;
@@ -811,7 +811,7 @@ Class Model_Siteusers extends Model
         if (empty($result)) {
             $username      = Html::chars($profile_data->first_name);
             $password      = md5(Commonfunction::randomkey_generator());
-            $insert_result = DB::insert(PEOPLE, array(
+            $insert_result = DB::insert(PEOPLE, [
                 'username',
                 'name',
                 'email',
@@ -829,7 +829,7 @@ Class Model_Siteusers extends Model
                 'last_login',
                 'account_type',
                 'verify_link'
-            ))->values(array(
+            ])->values([
                 strtolower($username),
                 $profile_data->name,
                 $profile_data->email,
@@ -847,23 +847,23 @@ Class Model_Siteusers extends Model
                 $this->currentdate,
                 $accounttype,
                 $verify_code
-            ))->execute();
+            ])->execute();
             //'latitude','langitude','login_city','login_state','login_country','login_country_code','login_ip',
             //,$lat,$lng,$city,$state,$country,$country_code,$ip
             $this->session->set("fb_id", $insert_result[0]);
             unset($_SESSION["account_type"]);
-            $rslt = array();
-            $rslt = array(
+            $rslt = [];
+            $rslt = [
                 "name" => $profile_data->first_name,
                 "email" => $profile_data->email,
                 "password" => $password
-            );
+            ];
             return $rslt;
         } else {
             $login_time   = $this->currentdate;
-            $result_login = DB::update(PEOPLE)->set(array(
+            $result_login = DB::update(PEOPLE)->set([
                 'last_login' => $login_time
-            ))->execute();
+            ])->execute();
             if (($result["0"]["user_type"] == ADMIN)) {
                 $this->session->set("user_email", $result[0]["email"]);
                 $this->session->set("name", $result[0]["name"]);
@@ -912,16 +912,16 @@ Class Model_Siteusers extends Model
     }
     public function get_verify($verifycode)
     {
-        $query = DB::select(array(
+        $query = DB::select([
             'verify_link_status',
             'status'
-        ))->from(PEOPLE)->where('verify_link', '=', $verifycode)->execute()->get('status');
+        ])->from(PEOPLE)->where('verify_link', '=', $verifycode)->execute()->get('status');
         if ($query == 1) {
             return 0;
         } else {
-            DB::update(PEOPLE)->set(array(
+            DB::update(PEOPLE)->set([
                 'verify_link_status' => '1'
-            ))->where('verify_link', '=', $verifycode)->execute();
+            ])->where('verify_link', '=', $verifycode)->execute();
             return 1;
         }
     }
@@ -971,7 +971,7 @@ Class Model_Siteusers extends Model
     {
         $result = DB::select()->from(USER_EMAIL_SETTINGS)->where('userid', '=', $userid)->execute()->as_array();
         if (count($result) > 0) {
-            $set_arr = array(
+            $set_arr = [
                 'gen_1' => isset($arr['gen_1']) ? $arr['gen_1'] : '0',
                 'gen_2' => isset($arr['gen_2']) ? $arr['gen_2'] : '0',
                 'mycon_1' => isset($arr['mycon_1']) ? $arr['mycon_1'] : '0',
@@ -991,10 +991,10 @@ Class Model_Siteusers extends Model
                 'book_lis_1' => isset($arr['book_lis_1']) ? $arr['book_lis_1'] : '0',
                 'book_lis_2' => isset($arr['book_lis_2']) ? $arr['book_lis_2'] : '0',
                 'book_lis_3' => isset($arr['book_lis_3']) ? $arr['book_lis_3'] : '0'
-            );
+            ];
             $rs      = DB::update(USER_EMAIL_SETTINGS)->set($set_arr)->where('userid', '=', $userid)->execute();
         } else {
-            $cols   = array(
+            $cols   = [
                 'userid',
                 'gen_1',
                 'gen_2',
@@ -1015,8 +1015,8 @@ Class Model_Siteusers extends Model
                 'book_lis_1',
                 'book_lis_2',
                 'book_lis_3'
-            );
-            $vals   = array(
+            ];
+            $vals   = [
                 $userid,
                 isset($arr['gen_1']) ? $arr['gen_1'] : '0',
                 isset($arr['gen_2']) ? $arr['gen_2'] : '0',
@@ -1037,7 +1037,7 @@ Class Model_Siteusers extends Model
                 isset($arr['book_lis_1']) ? $arr['book_lis_1'] : '0',
                 isset($arr['book_lis_2']) ? $arr['book_lis_2'] : '0',
                 isset($arr['book_lis_3']) ? $arr['book_lis_3'] : '0'
-            );
+            ];
             $result = DB::insert(USER_EMAIL_SETTINGS, $cols)->values($vals)->execute();
         }
     }
@@ -1048,11 +1048,11 @@ Class Model_Siteusers extends Model
     }
     public function usermapupdate($id, $locat, $lati, $lng)
     {
-        $query  = array(
+        $query  = [
             "location" => $locat,
             "lati" => $lati,
             "lng" => $lng
-        );
+        ];
         $result = DB::update('people')->set($query)->where('id', '=', $id)->execute();
         return $result;
     }
@@ -1094,32 +1094,32 @@ Class Model_Siteusers extends Model
     public function validate_contact($arr)
     {
         $arr['email'] = trim($arr['email']);
-        return Validation::factory($arr)->rule('name1', 'not_empty')->rule('name1', 'not_numeric')->rule('name1', 'min_length', array(
+        return Validation::factory($arr)->rule('name1', 'not_empty')->rule('name1', 'not_numeric')->rule('name1', 'min_length', [
             ':value',
             '3'
-        ))->rule('email', 'not_empty')->rule('email', 'email')->rule('email', 'max_length', array(
+        ])->rule('email', 'not_empty')->rule('email', 'email')->rule('email', 'max_length', [
             ':value',
             '50'
-        ))->rule('phone', 'numeric') //num
+        ])->rule('phone', 'numeric') //num
             ->rule('type', 'not_empty')->rule('subject', 'not_empty')->rule('message', 'not_empty');
     }
     public function savecontact($arr)
     {
-        $result = DB::insert('contact', array(
+        $result = DB::insert('contact', [
             'name',
             'email',
             'phone',
             'type',
             'subject',
             'message'
-        ))->values(array(
+        ])->values([
             $arr['name1'],
             $arr['email'],
             $arr['phone'],
             $arr['type'],
             $arr['subject'],
             $arr['message']
-        ))->execute();
+        ])->execute();
         return $result;
     }
     public function page_details_aboutus()
@@ -1140,7 +1140,7 @@ Class Model_Siteusers extends Model
             ->execute()->as_array(); // print_r($result);exit;   				
         return $result; */
         
-$result = $this->mongo_db->find_one(MDB_PEOPLE,array('_id'=>(int)$userid,'user_type' => 'N'),array('name','email','phone'));
+$result = $this->mongo_db->find_one(MDB_PEOPLE,['_id'=>(int)$userid,'user_type' => 'N'],['name','email','phone']);
 return $result;
 
     }
@@ -1164,103 +1164,103 @@ return $result;
         $arr['email1'] = trim($arr['email1']);
         return Validation::factory($arr)->rule('name', 'not_empty')->rule('name', 'not_numeric')
         //->rule('name','alpha')  
-            ->rule('name', 'min_length', array(
+            ->rule('name', 'min_length', [
             ':value',
             '3'
-        ))->rule('email1', 'not_empty')->rule('email1', 'email')->rule('email1', 'max_length', array(
+        ])->rule('email1', 'not_empty')->rule('email1', 'email')->rule('email1', 'max_length', [
             ':value',
             '50'
-        ))->rule('message', 'not_empty')->rule('message', 'min_length', array(
+        ])->rule('message', 'not_empty')->rule('message', 'min_length', [
             ':value',
             '10'
-        ));
+        ]);
     }
     public function add_contact_details($data)
     {
-        $rs = DB::insert(QUICK_CONTACTS)->columns(array(
+        $rs = DB::insert(QUICK_CONTACTS)->columns([
             'name',
             'email',
             'message',
             'contact_date'
-        ))->values(array(
+        ])->values([
             $data['name'],
             $data['email1'],
             $data['message'],
             $this->currentdate
-        ))->execute();
+        ])->execute();
         return $rs;
     }
     /**Validating company Signup details**/
     public function validate_company_signup($arr)
     {
-        return Validation::factory($arr)->rule('firstname', 'not_empty')->rule('firstname', 'min_length', array(
+        return Validation::factory($arr)->rule('firstname', 'not_empty')->rule('firstname', 'min_length', [
             ':value',
             '4'
-        ))->rule('firstname', 'max_length', array(
+        ])->rule('firstname', 'max_length', [
             ':value',
             '32'
-        ))->rule('lastname', 'not_empty')->rule('lastname', 'max_length', array(
+        ])->rule('lastname', 'not_empty')->rule('lastname', 'max_length', [
             ':value',
             '32'
-        ))->rule('email', 'not_empty')->rule('email', 'email')->rule('email', 'max_length', array(
+        ])->rule('email', 'not_empty')->rule('email', 'email')->rule('email', 'max_length', [
             ':value',
             '100'
-        ))->rule('companyname', 'not_empty')->rule('companyname', 'min_length', array(
+        ])->rule('companyname', 'not_empty')->rule('companyname', 'min_length', [
             ':value',
             '4'
-        ))->rule('companyname', 'max_length', array(
+        ])->rule('companyname', 'max_length', [
             ':value',
             '30'
-        ))->rule('company_name', 'Model_Siteusers::checkcompany', array(
+        ])->rule('company_name', 'Model_Siteusers::checkcompany', [
             ':value',
             $arr['country'],
             $arr['state'],
             $arr['city']
-        ))->rule('paypal_account', 'not_empty')->rule('paypal_account', 'email')->rule('paypal_account', 'max_length', array(
+        ])->rule('paypal_account', 'not_empty')->rule('paypal_account', 'email')->rule('paypal_account', 'max_length', [
             ':value',
             '150'
-        ))->rule('country', 'not_empty')->rule('city', 'not_empty')->rule('state', 'not_empty')->rule('address', 'not_empty')->rule('companyaddress', 'not_empty')->rule('mobile', 'not_empty')->rule('mobile', 'phone')->rule('mobile', 'min_length', array(
+        ])->rule('country', 'not_empty')->rule('city', 'not_empty')->rule('state', 'not_empty')->rule('address', 'not_empty')->rule('companyaddress', 'not_empty')->rule('mobile', 'not_empty')->rule('mobile', 'phone')->rule('mobile', 'min_length', [
             ':value',
             '4'
-        ))->rule('mobile', 'max_length', array(
+        ])->rule('mobile', 'max_length', [
             ':value',
             '36'
-        ))->rule('mobile', 'Model_Siteusers::checkphone', array(
+        ])->rule('mobile', 'Model_Siteusers::checkphone', [
             ':value'
-        ))->rule('password', 'valid_password', array(
+        ])->rule('password', 'valid_password', [
             ':value',
             '/^[A-Za-z0-9@#$%!^&*(){}?-_<>=+|~`\'".,:;[]+]*$/u'
-        ))->rule('password', 'not_empty')->rule('password', 'min_length', array(
+        ])->rule('password', 'not_empty')->rule('password', 'min_length', [
             ':value',
             '4'
-        ))->rule('password', 'max_length', array(
+        ])->rule('password', 'max_length', [
             ':value',
             '36'
-        ))->rule('confirm_password', 'not_empty')->rule('confirm_password', 'min_length', array(
+        ])->rule('confirm_password', 'not_empty')->rule('confirm_password', 'min_length', [
             ':value',
             '4'
-        ))->rule('confirm_password', 'valid_password', array(
+        ])->rule('confirm_password', 'valid_password', [
             ':value',
             '/^[A-Za-z0-9@#$%!^&*(){}?-_<>=+|~`\'".,:;[]+]*$/u'
-        ))->rule('confirm_password', 'matches', array(
+        ])->rule('confirm_password', 'matches', [
             ':validation',
             'password',
             'confirm_password'
-        ))->rule('confirm_password', 'max_length', array(
+        ])->rule('confirm_password', 'max_length', [
             ':value',
             '36'
-        ))->rule('domain_name', 'not_empty')->rule('domain_name', 'min_length', array(
+        ])->rule('domain_name', 'not_empty')->rule('domain_name', 'min_length', [
             ':value',
             '4'
-        ))->rule('domain_name', 'max_length', array(
+        ])->rule('domain_name', 'max_length', [
             ':value',
             '10'
-        ))->rule('domain_name', 'alpha_numeric', array(
+        ])->rule('domain_name', 'alpha_numeric', [
             ':value',
             '/^[0-9]{1,}/'
-        ))->rule('domain_name', 'Model_Add::checkdomain', array(
+        ])->rule('domain_name', 'Model_Add::checkdomain', [
             ':value'
-        ))->rule('time_zone', 'not_empty');
+        ])->rule('time_zone', 'not_empty');
     }
     public static function checkdomain($domainname)
     {
@@ -1288,7 +1288,7 @@ return $result;
         //$company_username = Html::chars($sign['company_username']);
         $org_password              = Html::chars($sign['password']);
         $password                  = Html::chars(md5($sign['confirm_password']));
-        $result                    = DB::insert(PEOPLE, array(
+        $result                    = DB::insert(PEOPLE, [
             'name',
             'lastname',
             'email',
@@ -1306,7 +1306,7 @@ return $result;
             'account_type',
             'status',
             'login_from'
-        ))->values(array(
+        ])->values([
             $sign['firstname'],
             $sign['lastname'],
             $sign['email'],
@@ -1324,9 +1324,9 @@ return $result;
             '0',
             'A',
             'WD'
-        ))->execute();
+        ])->execute();
         $last_insert_id            = $result[0];
-        $cresult                   = DB::insert(COMPANY, array(
+        $cresult                   = DB::insert(COMPANY, [
             'company_name',
             'company_address',
             'company_country',
@@ -1335,7 +1335,7 @@ return $result;
             'userid',
             'company_status',
             'time_zone'
-        ))->values(array(
+        ])->values([
             $sign['companyname'],
             $sign['companyaddress'],
             $sign['country'],
@@ -1344,12 +1344,12 @@ return $result;
             $last_insert_id,
             'D',
             $sign['time_zone']
-        ))->execute();
+        ])->execute();
         $last_insert_id1           = $cresult[0];
-        $update_people             = DB::update(PEOPLE)->set(array(
+        $update_people             = DB::update(PEOPLE)->set([
             'company_id' => $last_insert_id1
-        ))->where('id', '=', $last_insert_id)->execute();
-        $insert_tdispatchalogrithm = DB::insert(TBLALGORITHM, array(
+        ])->where('id', '=', $last_insert_id)->execute();
+        $insert_tdispatchalogrithm = DB::insert(TBLALGORITHM, [
             'labelname',
             'alg_created_by',
             'alg_company_id',
@@ -1357,7 +1357,7 @@ return $result;
             'hide_customer',
             'hide_droplocation',
             'hide_fare'
-        ))->values(array(
+        ])->values([
             1,
             $last_insert_id,
             $last_insert_id1,
@@ -1365,7 +1365,7 @@ return $result;
             0,
             0,
             0
-        ))->execute();
+        ])->execute();
         $key                       = "";
         $charset                   = "abcdefghijklmnopqrstuvwxyz";
         $charset .= "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
@@ -1373,7 +1373,7 @@ return $result;
         $length = mt_rand(30, 35);
         for ($i = 0; $i < $length; $i++)
             $key .= $charset[(mt_rand(0, (strlen($charset) - 1)))];
-        DB::insert(COMPANYINFO, array(
+        DB::insert(COMPANYINFO, [
             'company_cid',
             'company_domain',
             'company_app_name',
@@ -1383,7 +1383,7 @@ return $result;
             'header_bgcolor',
             'menu_color',
             'mouseover_color'
-        ))->values(array(
+        ])->values([
             $last_insert_id1,
             $sign['domain_name'],
             $sign['companyname'],
@@ -1393,38 +1393,38 @@ return $result;
             '#FFFFFF',
             '#000000',
             '#FFD800'
-        ))->execute();
-        $cms          = DB::insert(COMPANY_CMS, array(
+        ])->execute();
+        $cms          = DB::insert(COMPANY_CMS, [
             'company_id',
             'menu_name',
             'title',
             'content',
             'page_url',
             'type'
-        ));
-        $banner_image = DB::insert(COMPANY_CMS, array(
+        ]);
+        $banner_image = DB::insert(COMPANY_CMS, [
             'company_id',
             'image_tag',
             'alt_tags',
             'banner_image',
             'type'
-        ));
+        ]);
         for ($i = 1; $i <= 5; $i++) {
-            $cms->values(array(
+            $cms->values([
                 $last_insert_id1,
                 "page$i",
                 "page$i",
                 "page$i",
                 "page$i",
                 1
-            ));
-            $banner_image->values(array(
+            ]);
+            $banner_image->values([
                 $last_insert_id1,
                 "banner$i",
                 "banner$i",
                 "",
                 2
-            ));
+            ]);
         }
         $cms->execute();
         $banner_image->execute();
@@ -1450,7 +1450,7 @@ return $result;
         /*$result = DB::select()->from(COUNTRY)->where('country_status', '=', 'A')->order_by('country_name', 'asc')->execute()->as_array();*/
         
        
-		$result = $this->mongo_db->find_one(MDB_CSC,array('country_status'=>'A'),array('country_name'));
+		$result = $this->mongo_db->find_one(MDB_CSC,['country_status'=>'A'],['country_name']);
         return $result;
     }
     /**get city details**/
@@ -1460,11 +1460,11 @@ return $result;
         return $result;*/
        
 			//MongoDB with aggregate process only
-			$ops = array(
-				array('$unwind' => '$stateinfo'),
-				array('$unwind' => '$stateinfo.cityinfo'),
-				array('$match' => array('stateinfo.cityinfo.city_status'=>array('$ne'=>'T'))),
-				array('$project' => array('_id' => 0,
+			$ops = [
+				['$unwind' => '$stateinfo'],
+				['$unwind' => '$stateinfo.cityinfo'],
+				['$match' => ['stateinfo.cityinfo.city_status'=>['$ne'=>'T']]],
+				['$project' => ['_id' => 0,
 					'city_id' => '$stateinfo.cityinfo.city_id', 
 					'city_name' => '$stateinfo.cityinfo.city_name',
 					'city_stateid' => '$stateinfo.cityinfo.city_stateid',
@@ -1474,18 +1474,18 @@ return $result;
 					'city_default' => '$stateinfo.cityinfo.default',
 					'state_name' => '$stateinfo.state_name',
 					'country_name' => '$country_name'
-					)
-				),
-				array(
-					'$sort' => array(
+					]
+				],
+				[
+					'$sort' => [
 						'country_name' => 1
-					),
-				),
+					],
+				],
 			
-			);
+			];
 			$result = $this->mongo_db->aggregate(MDB_CSC,$ops);
 			//echo '<pre>';print_r($result);exit;
-			return (!empty($result['result']))?$result['result']:array();
+			return (!empty($result['result']))?$result['result']:[];
 		
         
         
@@ -1495,28 +1495,28 @@ return $result;
     {
         /*$result = DB::select()->from(STATE)->where('state_status', '=', 'A')->order_by('state_name', 'asc')->execute()->as_array();
         return $result;*/
-        $ops = array(
-				array('$unwind' => '$stateinfo'),
-				array('$match' => array('stateinfo.state_status'=>array('$ne'=>'T'))),
-				array('$project' => array('_id' => 0,
+        $ops = [
+				['$unwind' => '$stateinfo'],
+				['$match' => ['stateinfo.state_status'=>['$ne'=>'T']]],
+				['$project' => ['_id' => 0,
 					'state_id' => '$stateinfo.state_id', 
 					'state_name' => '$stateinfo.state_name',
 					'state_countryid' => '$stateinfo.state_countryid',
 					'state_status' => '$stateinfo.state_status',
 					'state_default' => '$stateinfo.default',
 					'country_name' => '$country_name'
-					)
-				),
-				array(
-					'$sort' => array(
+					]
+				],
+				[
+					'$sort' => [
 						'country_name' => 1
-					),
-				)
+					],
+				]
 				
-			);
+			];
 			$result = $this->mongo_db->aggregate(MDB_CSC,$ops);
 			//echo '<pre>';print_r($result);exit;
-			return (!empty($result['result']))?$result['result']:array();
+			return (!empty($result['result']))?$result['result']:[];
         
     }
     /** for getting city details **/
@@ -1534,19 +1534,19 @@ return $result;
     /** for vlaidate company login details **/
     public function validate_company_login($arr)
     {
-        return Validation::factory($arr)->rule('company_email', 'not_empty')->rule('company_email', 'email')->rule('company_email', 'max_length', array(
+        return Validation::factory($arr)->rule('company_email', 'not_empty')->rule('company_email', 'email')->rule('company_email', 'max_length', [
             ':value',
             '100'
-        ))->rule('company_password', 'valid_password', array(
+        ])->rule('company_password', 'valid_password', [
             ':value',
             '/^[A-Za-z0-9@#$%!^&*(){}?-_<>=+|~`\'".,:;[]+]*$/u'
-        ))->rule('company_password', 'not_empty')->rule('company_password', 'min_length', array(
+        ])->rule('company_password', 'not_empty')->rule('company_password', 'min_length', [
             ':value',
             '4'
-        ))->rule('company_password', 'max_length', array(
+        ])->rule('company_password', 'max_length', [
             ':value',
             '36'
-        ));
+        ]);
     }
     /** for getting package status **/
     public function package_details()
@@ -1567,7 +1567,7 @@ return $result;
         $menu_result = Db::query(Database::SELECT, $sql)->execute()->as_array();
         return $menu_result;*/
 
-        $menu_result = $this->mongo_db->find_one(MDB_CMS,array('status_post'=>'P'),array('menu_name','menu_link','status_post','order_status','menu','meta_title','meta_keyword','meta_description','content','content_status'));
+        $menu_result = $this->mongo_db->find_one(MDB_CMS,['status_post'=>'P'],['menu_name','menu_link','status_post','order_status','menu','meta_title','meta_keyword','meta_description','content','content_status']);
 		return $menu_result;
     }
     /** menu listing in header pages **/
@@ -1580,26 +1580,26 @@ return $result;
     /** contact us validation**/
     public function validate_contactus($arr = "")
     {
-        return Validation::factory($arr)->rule('name', 'not_empty')->rule('name', 'Model_Siteusers::checkurlgiven', array(
+        return Validation::factory($arr)->rule('name', 'not_empty')->rule('name', 'Model_Siteusers::checkurlgiven', [
             ':value'
-        )) //to avoid injection
-            ->rule('email', 'not_empty')->rule('email', 'email')->rule('email', 'max_length', array(
+        ]) //to avoid injection
+            ->rule('email', 'not_empty')->rule('email', 'email')->rule('email', 'max_length', [
             ':value',
             '100'
-        ))->rule('email', 'Model_Siteusers::checkurlgiven', array(
+        ])->rule('email', 'Model_Siteusers::checkurlgiven', [
             ':value'
-        )) //to avoid injection
-            ->rule('phone', 'phone', array(
+        ]) //to avoid injection
+            ->rule('phone', 'phone', [
             ':value'
-        ))->rule('phone', 'Model_Siteusers::checkurlgiven', array(
+        ])->rule('phone', 'Model_Siteusers::checkurlgiven', [
             ':value'
-        )) //to avoid injection
-            ->rule('subject', 'not_empty')->rule('subject', 'Model_Siteusers::checkurlgiven', array(
+        ]) //to avoid injection
+            ->rule('subject', 'not_empty')->rule('subject', 'Model_Siteusers::checkurlgiven', [
             ':value'
-        )) //to avoid injection
-            ->rule('security_code', 'not_empty')->rule('security_code', 'Model_Siteusers::checkurlgiven', array(
+        ]) //to avoid injection
+            ->rule('security_code', 'not_empty')->rule('security_code', 'Model_Siteusers::checkurlgiven', [
             ':value'
-        )) //to avoid injection
+        ]) //to avoid injection
             ->rule('message', 'not_empty');
     }
     /** inserting a contacus info in table **/
@@ -1613,7 +1613,7 @@ return $result;
             /** MONGO CONVERSION **/
             $this->commonmodel = Model::factory('commonmodel');
             $auto_id = $this->commonmodel->get_auto_id(MDB_CONTACTS);
-            $fieldname_array = array(
+            $fieldname_array = [
 			'_id' => (int)$auto_id,
 			'name' => $sign['name'],
 			'email' => $sign['email'],
@@ -1622,7 +1622,7 @@ return $result;
 			'phone' =>  $sign['phone'],
 			'sent_date' =>  new \MongoDB\BSON\UTCDateTime(strtotime($current_time) * 1000)
 			
-		);	
+		];	
 			$insert      = $this->mongo_db->Insert(MDB_CONTACTS,$fieldname_array);
 			return $passresult = (isset($insert['err']) ? 0 : 1);
             
@@ -1647,19 +1647,19 @@ return $result;
         $Commonmodel  = Model::factory('Commonmodel');
         //$user_createdby = $_SESSION['userid'];
         $current_time = $Commonmodel->getcompany_all_currenttimestamp($company_id);
-        $result       = DB::insert(LOGS, array(
+        $result       = DB::insert(LOGS, [
             'booking_logid',
             'log_userid',
             'log_message',
             'log_booking',
             'log_createdate'
-        ))->values(array(
+        ])->values([
             $booking_logid,
             $company_id,
             $log_message,
             $log_booking,
             $current_time
-        ))->execute();
+        ])->execute();
         return $result;
     }
     public static function country_citylist($country_id)
@@ -1669,19 +1669,19 @@ return $result;
     }
     public static function get_company_taxi_image($company_id)
     {
-        $result = array();
+        $result = [];
         //$result = DB::select('taxi_image')->from(TAXI)->join(TAXIMAPPING, 'LEFT')->on(TAXIMAPPING . '.mapping_taxiid', '=', TAXI . '.taxi_id')->where('taxi_company', '=', $company_id)->execute()->as_array();
         return $result;
     }
     public static function get_company_info($company_id)
     {
-        $result = array();
+        $result = [];
         //$result = DB::select('company_phone_number', 'company_address', 'company_tagline', 'company_name', 'header_bgcolor', 'menu_color', 'mouseover_color')->from(PEOPLE)->join(COMPANYINFO, 'LEFT')->on(COMPANYINFO . '.company_cid', '=', PEOPLE . '.company_id')->join(COMPANY, 'LEFT')->on(COMPANY . '.cid', '=', PEOPLE . '.company_id')->where('user_type', '=', 'C')->where('company_id', '=', $company_id)->execute()->as_array();
         return $result;
     }
     public static function get_company_type($company_id)
     {
-        $result = array();
+        $result = [];
         //$sql    = "SELECT upgrade_packageid FROM package_report WHERE upgrade_companyid=$company_id ORDER BY  `upgrade_id` desc LIMIT 0 , 1";
         //$result = Db::query(Database::SELECT, $sql)->execute()->as_array();
         return $result;
@@ -1690,16 +1690,16 @@ return $result;
     {
 		
 		/** MONGO CONVERSION **/
-		$arguments = array(
-						array('$lookup'=>array(
+		$arguments = [
+						['$lookup'=>[
 							'from'=>MDB_DRIVER_INFO,
 							'localField'=>"_id",
 							'foreignField'=>"_id",
 							 'as'=>"driverinfo"        
-						)),
-						array('$unwind'=>'$driverinfo'),
+						]],
+						['$unwind'=>'$driverinfo'],
 						
-						array('$project' => array(
+						['$project' => [
 						
 							'_id' => '$_id',
 							'phone' => '$phone',
@@ -1719,8 +1719,8 @@ return $result;
 							"driver_device_type" => '$device_type',
 							"driver_device_type" => '$device_type',
 						
-						)),
-						array('$match'=>array(
+						]],
+						['$match'=>[
 							'user_type'=>'D',
 							'status'=>'A',
 							'login_status'=>'S',
@@ -1729,12 +1729,12 @@ return $result;
 							'shift_status'=>'IN'
 							
 							
-						)),					
-					);
+						]],					
+					];
 					
         $result = $this->mongo_db->aggregate(MDB_PEOPLE,$arguments);
         //echo '<pre>'; print_r($result);exit;
-        return (!empty($result['result'])?$result['result']:array());
+        return (!empty($result['result'])?$result['result']:[]);
 		
 		/** MONGO CONVERSION **/
 		
@@ -1767,10 +1767,10 @@ return $result;
     public function slider_settings()
     {
         //MongoDB
-        $res    = $this->mongo_db->find_one(MDB_SLIDER_SETTINGS, array(
+        $res    = $this->mongo_db->find_one(MDB_SLIDER_SETTINGS, [
             '_id' => 2
-        ));
-        $result = array();
+        ]);
+        $result = [];
         foreach ($res as $keys => $values) {
             $result[0][$keys] = $values;
         }

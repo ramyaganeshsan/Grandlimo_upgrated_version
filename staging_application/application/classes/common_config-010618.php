@@ -4,10 +4,10 @@ defined('SYSPATH') or die("No direct script access.");
 //MongoDB Instance
 $mongodb        = MangoDB::instance('default');
 
-$result = $mongodb->find_one(MDB_SITEINFO,array('_id'=>1));
-$smtp_result = $mongodb->find_one(MDB_SMTP_SETTINGS,array('_id'=>1));
-$default_currency = $mongodb->find_one(MDB_PAYMENT_GATEWAYS,array('payment_status'=> 'A','default_payment_gateway'=>1,'company_id'=>1));
-$payment_knet = $mongodb->find_one(MDB_PAYMENT_GATEWAYS,array('payment_status'=> 'A','default_payment_gateway'=>1,'company_id'=>1),array('knet_response_url','knet_error_url','knet_resource_path','knet_alias'));
+$result = $mongodb->find_one(MDB_SITEINFO,['_id'=>1]);
+$smtp_result = $mongodb->find_one(MDB_SMTP_SETTINGS,['_id'=>1]);
+$default_currency = $mongodb->find_one(MDB_PAYMENT_GATEWAYS,['payment_status'=> 'A','default_payment_gateway'=>1,'company_id'=>1]);
+$payment_knet = $mongodb->find_one(MDB_PAYMENT_GATEWAYS,['payment_status'=> 'A','default_payment_gateway'=>1,'company_id'=>1],['knet_response_url','knet_error_url','knet_resource_path','knet_alias']);
 
 define('APPLICATION_NAME', 'q8grandlimo');
 DEFINE('PROTOCOL', 'http');
@@ -360,42 +360,42 @@ function findcompanyid($subdomain)
 {
     //MongoDB
     $mongodb        = MangoDB::instance('default');
-    $rs = $mongodb->find_one(MDB_COMPANY,array('companyinfo.company_domain'=>$subdomain),array('_id'));
+    $rs = $mongodb->find_one(MDB_COMPANY,['companyinfo.company_domain'=>$subdomain],['_id']);
     return (count($rs)>0)?$rs['_id']:0;
 }
 function findcompany_timezone($company_cid)
 {
     //MongoDB
     $mongodb        = MangoDB::instance('default');
-    $rs = $mongodb->find_one(MDB_COMPANY,array('_id'=>(int)$company_cid),array('companydetails.time_zone'));
+    $rs = $mongodb->find_one(MDB_COMPANY,['_id'=>(int)$company_cid],['companydetails.time_zone']);
     return (count($rs)>0)?$rs['companydetails']['time_zone']:0;
 }
 function getcompanycontent($cid)
 {
     //MongoDB
     $mongodb        = MangoDB::instance('default');
-    $rs = $mongodb->find_one(MDB_COMPANY,array('_id'=>(int)$cid,'company_cms.type'=>1,'company_cms.status'=>1),array('company_cms.menu_name','company_cms.page_url'));
-    return (!empty($rs))?$rs['company_cms']:array();
+    $rs = $mongodb->find_one(MDB_COMPANY,['_id'=>(int)$cid,'company_cms.type'=>1,'company_cms.status'=>1],['company_cms.menu_name','company_cms.page_url']);
+    return (!empty($rs))?$rs['company_cms']:[];
 }
-$company_currency = $mongodb->find_one(MDB_PAYMENT_GATEWAYS,array('payment_status'=> 'A','default_payment_gateway'=>1,'company_id'=>(int)COMPANY_CID),array('currency_code','currency_symbol'));
+$company_currency = $mongodb->find_one(MDB_PAYMENT_GATEWAYS,['payment_status'=> 'A','default_payment_gateway'=>1,'company_id'=>(int)COMPANY_CID],['currency_code','currency_symbol']);
 
 $company_curency_symbol = isset($company_currency['currency_symbol']) ? $company_currency['currency_symbol'] : CURRENCY;
 $company_curency_code   = isset($company_currency['currency_code']) ? $company_currency['currency_code'] : CURRENCY_FORMAT;
 //echo SITE_EMAIL_CONTACT;exit;
 if (COMPANY_CID != 0) {
     //MongoDB
-    $ops = array(
-        array('$match' => array('user_type'=>'A','company_id'=>(int)COMPANY_CID)),
-        array(
-            '$lookup' => array(
+    $ops = [
+        ['$match' => ['user_type'=>'A','company_id'=>(int)COMPANY_CID]],
+        [
+            '$lookup' => [
                 'from'=>MDB_COMPANY,
                 'localField'=> "company_id",
                 'foreignField' => "_id",
                 'as'=> "cdetails"
-            )
-        ),
-        array('$project' =>
-            array('_id' => 0,
+            ]
+        ],
+        ['$project' =>
+            ['_id' => 0,
                 'company_logo' => '$cdetails.companyinfo.company_logo', 
                 'company_favicon' => '$cdetails.companyinfo.company_favicon',
                 'company_facebook_share' => '$cdetails.companyinfo.company_facebook_share',
@@ -430,12 +430,12 @@ if (COMPANY_CID != 0) {
                 'login_city' => '$login_city',
                 'login_state' => '$login_state',
                 'login_country' => '$login_country',
-            )
-        ),
-        array(
+            ]
+        ],
+        [
           '$limit' => 1
-        )
-    );
+        ]
+    ];
     $res = $mongodb->aggregate(MDB_PEOPLE,$ops);
    //echo '<pre>';
    //print_r($res['result'][0]); echo '</pre>';exit;
@@ -486,18 +486,18 @@ if (COMPANY_CID != 0) {
     define("SITE_FAVICON", $rs['company_favicon'][0]);
     if(!empty(COMPANY_LOGIN_CITY) && !empty(COMPANY_LOGIN_STATE) && !empty(COMPANY_LOGIN_COUNTRY)){
         //MongoDB with aggregate process only
-		$ops = array(
-			array('$unwind' => '$stateinfo'),
-			array('$unwind' => '$stateinfo.cityinfo'),
-			array('$match' => array('stateinfo.cityinfo.city_id'=>(int)COMPANY_LOGIN_CITY,'stateinfo.cityinfo.city_stateid'=>(int)COMPANY_LOGIN_STATE,'stateinfo.cityinfo.city_countryid'=>(int)COMPANY_LOGIN_COUNTRY)),
-			array('$project' => array('_id' => 0,
+		$ops = [
+			['$unwind' => '$stateinfo'],
+			['$unwind' => '$stateinfo.cityinfo'],
+			['$match' => ['stateinfo.cityinfo.city_id'=>(int)COMPANY_LOGIN_CITY,'stateinfo.cityinfo.city_stateid'=>(int)COMPANY_LOGIN_STATE,'stateinfo.cityinfo.city_countryid'=>(int)COMPANY_LOGIN_COUNTRY]],
+			['$project' => ['_id' => 0,
                     'state_name' => '$stateinfo.state_name', 
                     'city_name' => '$stateinfo.cityinfo.city_name',
                     'zipcode' => '$stateinfo.cityinfo.zipcode',
                     'iso_country_code' => '$iso_country_code',
-                )
-            )
-		);
+                ]
+            ]
+		];
 		$res = $mongodb->aggregate(MDB_CSC,$ops);
 		$result = $res['result'];
         define("COMPANY_LOGIN_CITY_NAME", $result[0]['city_name']);
@@ -521,7 +521,7 @@ if (COMPANY_CID != 0) {
 }
 //echo CANCELLATION_FARE; exit;
 define("COPYRIGHT_YEAR", "2016");
-$config = array(
+$config = [
     "Africa/Abidjan" => "Africa/Abidjan",
     "Africa/Accra" => "Africa/Accra",
     "Africa/Addis_Ababa" => "Africa/Addis_Ababa",
@@ -1025,7 +1025,7 @@ $config = array(
     "US/Pacific" => "US/Pacific",
     "US/Pacific-New" => "US/Pacific-New",
     "US/Samoa" => "US/Samoa"
-);
+];
 define('SELECT_TIMEZONE', serialize($config));
 function convert_timezone($time, $timezone = '')
 {
@@ -1037,14 +1037,14 @@ function findcompany_currency($company_cid)
 {
     //MongoDB
     $mongodb        = MangoDB::instance('default');
-    $result = $mongodb->find_one(MDB_PAYMENT_GATEWAYS,array('payment_status'=> 'A','default_payment_gateway'=>1,'company_id'=>(int)$company_cid),array('currency_symbol'));
+    $result = $mongodb->find_one(MDB_PAYMENT_GATEWAYS,['payment_status'=> 'A','default_payment_gateway'=>1,'company_id'=>(int)$company_cid],['currency_symbol']);
     return (!empty($result))?$result['currency_symbol']:CURRENCY;
 }
 function findcompany_currencyformat($company_cid)
 {
     //MongoDB
     $mongodb        = MangoDB::instance('default');
-    $result = $mongodb->find_one(MDB_PAYMENT_GATEWAYS,array('payment_status'=> 'A','default_payment_gateway'=>1,'company_id'=>(int)$company_cid),array('currency_code'));
+    $result = $mongodb->find_one(MDB_PAYMENT_GATEWAYS,['payment_status'=> 'A','default_payment_gateway'=>1,'company_id'=>(int)$company_cid],['currency_code']);
     return (!empty($result))?$result['currency_code']:CURRENCY_FORMAT;
 }
 // FUNCTION FOR CURRENCY CONVERSION
@@ -1166,7 +1166,7 @@ function get_tell_to_friend_referral_code($userid)
 {
     //MongoDB
     $mongodb        = MangoDB::instance('default');
-    $result = $mongodb->find_one(MDB_PASSENGERS,array('_id'=>(int)$userid),array('referral_code'));
+    $result = $mongodb->find_one(MDB_PASSENGERS,['_id'=>(int)$userid],['referral_code']);
     return (!empty($result))?$result['referral_code']:'';
 }
 define("SENDGRID_HOST", 'smtp.sendgrid.net');
@@ -1230,7 +1230,7 @@ define( "USER_SELECTED_TIMEZONE", $dynamicTimeZone );
 //MongoDB Embedded document search value with assosciative array
 function recursive_array_search($array, $key, $value)
 {
-    $results = array();
+    $results = [];
     if (is_array($array)) {
         $arrval = (isset($array[$key])) ? trim(strtolower($array[$key])) : '';
         if($value) $searchval = trim(strtolower($value));

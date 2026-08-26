@@ -37,11 +37,11 @@ class Controller_Settings extends Controller_Website
                 $this->selected_page_title = __("add settings site");
                 $this->page_title = __('site_settings');
                 $settings_post=arr::get($_REQUEST,'addsettings_submit');
-                $errors = array();
+                $errors = [];
             //    $img_exist=$settings->check_logo_exist($userid);
                 if(isset($settings_post)){
              
-                $validator = $settings->validate_add_settings_site(arr::extract($_POST,array('site_name','site_slogan','site_version','site_language','site_paypal_currency_code','site_paypal_currency','contact_email','comman_email_from','comman_email_to','date_format_display','time_format_display','date_time_format_display','date_format_tooltip','time_format_tooltip','date_time_tooltip','date_time_highlight_tooltip','site_tracker')));
+                $validator = $settings->validate_add_settings_site(arr::extract($_POST,['site_name','site_slogan','site_version','site_language','site_paypal_currency_code','site_paypal_currency','contact_email','comman_email_from','comman_email_to','date_format_display','time_format_display','date_time_format_display','date_format_tooltip','time_format_tooltip','date_time_tooltip','date_time_highlight_tooltip','site_tracker']));
 
                 if ($validator->check()) 
                 {
@@ -83,8 +83,8 @@ class Controller_Settings extends Controller_Website
                 $settings = Model::factory('settings');
 
 		$signup_submit =arr::get($_REQUEST,'submit_addmodel'); 
-		$errors = array();
-		$post_values = array();
+		$errors = [];
+		$post_values = [];
 		
                 $this->selected_page_title = __("site_settings");
                 $view= View::factory('admin/add_settings_site')
@@ -111,7 +111,7 @@ class Controller_Settings extends Controller_Website
                 $action .= "/".$id;
                 $settings = Model::factory('Settings');
                 $settings_post=arr::get($_REQUEST,'editsettings_submit');
-		$errors = array();
+		$errors = [];
 		//check if site logo exist
                 $img_exist=$settings->check_logo_exist();
                 //check if favicon exist
@@ -119,10 +119,10 @@ class Controller_Settings extends Controller_Website
                 
                 if(isset($settings_post) && (Validation::factory($_POST,$_FILES))){
 
-   $validator = $settings->validate_edit_settings_site(array_merge($_POST,array('site_name','site_slogan','site_description','site_version','site_language',
+   $validator = $settings->validate_edit_settings_site(array_merge($_POST,['site_name','site_slogan','site_description','site_version','site_language',
    'site_paypal_currency_code','site_paypal_currency','contact_email','comman_email_from','comman_email_to',
    'date_format_display','time_format_display','date_time_format_display','date_format_tooltip',
-   'time_format_tooltip','date_time_tooltip','date_time_highlight_tooltip','site_tracker','site_logo')),$_FILES);
+   'time_format_tooltip','date_time_tooltip','date_time_highlight_tooltip','site_tracker','site_logo']),$_FILES);
 
                     if ($validator->check()) 
                     {
@@ -275,11 +275,11 @@ class Controller_Settings extends Controller_Website
                 $action .= "/".$id;
                 $settings = Model::factory('Settings');
                 $settings_post=arr::get($_REQUEST,'metasettings_submit');
-		$errors = array();
+		$errors = [];
 		
 		if(isset($settings_post)){
 		
-                        $validator = $settings->validate_site_settings_meta(arr::extract($_POST,array('meta_keywords','meta_description')));
+                        $validator = $settings->validate_site_settings_meta(arr::extract($_POST,['meta_keywords','meta_description']));
 
                         if ($validator->check()) 
                         {
@@ -319,7 +319,7 @@ class Controller_Settings extends Controller_Website
         {
          
                 $settings = Model::factory('Settings');
-                $errors = array();
+                $errors = [];
                 $this->selected_page_title = __("Manage Site Settings Meta");
                 $view= View::factory('admin/site_settings_meta')
                 ->bind('validator', $validator)
@@ -335,12 +335,12 @@ class Controller_Settings extends Controller_Website
         public function action_site_settings_user()
         {
                 $msg = "";
-                $error = array();
+                $error = [];
                 $user_settings_post=arr::get($_POST,'usersettings_submit'); 
                 
                 if(isset($user_settings_post)){
                 
-                        $validator = $this->settings->validate_site_settings_user(arr::extract($_POST,array('inactive_users')));
+                        $validator = $this->settings->validate_site_settings_user(arr::extract($_POST,['inactive_users']));
 
                         if ($validator->check()) 
                         {                        
@@ -387,17 +387,17 @@ class Controller_Settings extends Controller_Website
                 $settings = Model::factory('Settings');
                 $settings_post=arr::get($_REQUEST,'gigsettings_submit');
                 
-                $errors = array();
+                $errors = [];
 
  
 
                 if(isset($settings_post)){
 
                                         $validator = $settings->validate_site_settings_gig(arr::extract($_POST,
-                                        array('min_days','max_days','prices','commission_amount','commission_type_id',
+                                        ['min_days','max_days','prices','commission_amount','commission_type_id',
                                         'alternate_name','sidebar_cat_limit',
                                         'rating_type_id','min_title_length','max_title_length','max_desc_length','amount_cleared_days',
-                                        'inprogress_overtime','auto_review_complete')));
+                                        'inprogress_overtime','auto_review_complete']));
                                         
 									 				$price_explode = explode(',',$_POST['prices']);
 									 				$commission_explode = explode(',',$_POST['commission_amount']);
@@ -413,7 +413,7 @@ class Controller_Settings extends Controller_Website
 
                                                 $status = $settings->edit_site_settings_gig($_POST);
                                                         //Flash message 
-	                                                        Message::success(__('update_gigsettings_flash',array(':param'=> ($this->job_settings[0]['alternate_name']))));
+	                                                        Message::success(__('update_gigsettings_flash',[':param'=> ($this->job_settings[0]['alternate_name'])]));
 
 
 
@@ -427,8 +427,8 @@ class Controller_Settings extends Controller_Website
 
                 }
                 $site_settings_gig = $settings->get_site_settings_gig();
-                $this->selected_page_title = __("menu_gig_settings",array(':param'=>($this->job_settings[0]['alternate_name'])));
-                $this->page_title = __("menu_gig_settings",array(':param'=>($this->job_settings[0]['alternate_name'])));
+                $this->selected_page_title = __("menu_gig_settings",[':param'=>($this->job_settings[0]['alternate_name'])]);
+                $this->page_title = __("menu_gig_settings",[':param'=>($this->job_settings[0]['alternate_name'])]);
                 $view = View::factory('admin/site_settings_gig')
                 ->bind('current_uri',$id)
                 ->bind('action',$action)
@@ -450,9 +450,9 @@ class Controller_Settings extends Controller_Website
                 $action .= "/".$id;
                 $settings = Model::factory('Settings');
                 $settings_post=arr::get($_REQUEST,'socialnetwork_submit');
-		$errors = array();
+		$errors = [];
 		if (isset($settings_post)){	
-               $validator = $settings->validate_site_socialnetwork(arr::extract($_POST,array('facebook_api','facebook_access_token','facebook_secret_key','facebook_userid','facebook_application_id','facebook_page_id','twitter_username','tiwtter_consumer_key','twitter_consumer_secret','twitter_access_key','twitter_access_token')));
+               $validator = $settings->validate_site_socialnetwork(arr::extract($_POST,['facebook_api','facebook_access_token','facebook_secret_key','facebook_userid','facebook_application_id','facebook_page_id','twitter_username','tiwtter_consumer_key','twitter_consumer_secret','twitter_access_key','twitter_access_token']));
 
                     if ($validator->check()) 
                     {
@@ -529,10 +529,10 @@ class Controller_Settings extends Controller_Website
                 $action .= "/".$id;
                 $settings = Model::factory('Settings');
                 $settings_post=arr::get($_REQUEST,'cashwithdraw_submit');
-		$errors = array();
+		$errors = [];
 		if(isset($settings_post)){ 
 
-               $validator = $settings->validate_site_cashwithdraw(arr::extract($_POST,array('min_amount','max_amount','transaction_fee','transaction_fee_type')));
+               $validator = $settings->validate_site_cashwithdraw(arr::extract($_POST,['min_amount','max_amount','transaction_fee','transaction_fee_type']));
 
                     if ($validator->check()) 
                     {
@@ -648,12 +648,12 @@ class Controller_Settings extends Controller_Website
 			$offset = REC_PER_PAGE*($page_no-PAGE_NO);
 
 
-			$pag_data = Pagination::factory(array (
-				  'current_page'   => array('source' => 'query_string','key' => 'page'),
+			$pag_data = Pagination::factory([
+				  'current_page'   => ['source' => 'query_string','key' => 'page'],
 				  'items_per_page' => REC_PER_PAGE,
 		          'total_items'    => $count_pages_list,
 		          'view' => 'pagination/basic',			  
-			));
+			]);
 	   
 			$all_pages_list = $settings_static_pages->all_pages_list($offset, REC_PER_PAGE);
 			//****pagination ends here***//
@@ -699,7 +699,7 @@ class Controller_Settings extends Controller_Website
 		//getting request for form submit
 		$page_edit = arr::get($_REQUEST,'edit_pages_submit');
 
-		$errors = array();
+		$errors = [];
 
 
 		//validation starts here	
@@ -709,8 +709,8 @@ class Controller_Settings extends Controller_Website
 			//****send validation fields into model for checking rules***//
 			//===================================================================
 		        
-		     $validator = $settings_static_pages->edit_static_page_form(arr::extract($_POST,array('page_title','page_url','page_description',
-		     'meta_title','meta_keyword')));	
+		     $validator = $settings_static_pages->edit_static_page_form(arr::extract($_POST,['page_title','page_url','page_description',
+		     'meta_title','meta_keyword']));	
 
 			//validation starts here			 		
 			if ($validator->check()) 
@@ -781,7 +781,7 @@ class Controller_Settings extends Controller_Website
         public function action_mail_settings()
         {
                 $mail_settings = Model::factory('Settings');
-                $errors = array();
+                $errors = [];
 
                 $this->selected_page_title = __("mail_settings");
                 $view= View::factory('admin/manage_mail_settings')
@@ -806,11 +806,11 @@ class Controller_Settings extends Controller_Website
                 $action .= "/".$id;
                 $settings = Model::factory('Settings');
                 $settings_post=arr::get($_REQUEST,'editmailsettings_submit');
-				$errors = array();
+				$errors = [];
 		
                 if(isset($settings_post) && Validation::factory($_POST)){
 
-  					 $validator = $settings->validate_edit_mail_settings(arr::extract($_POST,array('smtp_host','smtp_port','smtp_username','smtp_password')));
+  					 $validator = $settings->validate_edit_mail_settings(arr::extract($_POST,['smtp_host','smtp_port','smtp_username','smtp_password']));
 
                     if ($validator->check()) 
                     {
@@ -861,7 +861,7 @@ class Controller_Settings extends Controller_Website
 	public function action_twitter()
 	{		
 		//Get tokens from the url oauth_token 
-		$twit_tokens=arr::extract($_GET,array('oauth_token','oauth_verifier','denied'));
+		$twit_tokens=arr::extract($_GET,['oauth_token','oauth_verifier','denied']);
 		if(isset($twit_tokens['denied']))
 		{
 			echo "inside twitter";exit;
@@ -885,28 +885,28 @@ class Controller_Settings extends Controller_Website
 	public function action_twitter_confirm()
 	{	
 		$this->twitter->logged_in();		
-		$twit_tokens=arr::extract($_GET,array('oauth_token','oauth_verifier','denied'));		
+		$twit_tokens=arr::extract($_GET,['oauth_token','oauth_verifier','denied']);		
 		if(isset($twit_tokens['oauth_token']) && isset($twit_tokens['oauth_verifier']))	 
 		{			
 			$this->user = $this->twitter->get_user();
 			
 			$name=$this->user['name'];
 			
-			$user_details=array('username' => $this->user['screen_name'],'firstname' =>$name);
+			$user_details=['username' => $this->user['screen_name'],'firstname' =>$name];
 			$result=DB::select()->from(USERS)
 				->where('username', '=', $this->user['screen_name'])
 				->execute()
 				->as_array();
 			if(count($result)==0)
 			{
-				$this->session->set('twitter_details',array('username'=>$user_details['username'],
-									'firstname' =>$user_details['firstname']));
+				$this->session->set('twitter_details',['username'=>$user_details['username'],
+									'firstname' =>$user_details['firstname']]);
 				$this->request->redirect("socialnetwork/twittersignin");
 				
 			}
 			else
 			{
-					$this->commonmodel->insert(USER_LOGIN_DETAILS,array('userid'=>$result[0]['id'],'login_ip' =>Request::$client_ip,'user_agent'=>Request::$user_agent,'last_login' =>$this->getCurrentTimeStamp));
+					$this->commonmodel->insert(USER_LOGIN_DETAILS,['userid'=>$result[0]['id'],'login_ip' =>Request::$client_ip,'user_agent'=>Request::$user_agent,'last_login' =>$this->getCurrentTimeStamp]);
 					$this->session->set('auction_userid',$result[0]['id']);
 					$this->session->set('auction_username',$this->user['screen_name']);
 					Message::success(__("logged_in_successfully"));
@@ -931,7 +931,7 @@ class Controller_Settings extends Controller_Website
 		$view=View::factory(THEME_FOLDER.'twitter_emailstep')
 						->bind('errors',$errors);
 
-		$email=arr::extract($_POST,array('email'));
+		$email=arr::extract($_POST,['email']);
 		$validate=$this->socialnetworkmodel->validate_email($email);
 		$submit=$this->request->post('signin');
 		if(isset($submit)){
@@ -942,14 +942,14 @@ class Controller_Settings extends Controller_Website
 				//print_r($user_details);exit;
 				if(isset($user_details))
 				{
-					$insert=$this->commonmodel->insert(USERS,array('username'=>$user_details['username'],
+					$insert=$this->commonmodel->insert(USERS,['username'=>$user_details['username'],
 										'firstname' =>$user_details['firstname'],
 										'email' =>$email['email'],
 										'password' => md5($password),
 										'login_type' =>"T",
 										'referral_id' =>Text::random(),
 										'status' => ACTIVE,
-										'created_date' =>$this->getCurrentTimeStamp));
+										'created_date' =>$this->getCurrentTimeStamp]);
 
 					if($insert)
 					{
@@ -957,23 +957,23 @@ class Controller_Settings extends Controller_Website
 						$this->session->set('auction_username',$user_details['username']);
 						$this->session->delete('twitter_details');
 
-						$this->username = array(TO_MAIL => $email['email'], USERNAME => $user_details['username'], PASSWORD =>$password);
+						$this->username = [TO_MAIL => $email['email'], USERNAME => $user_details['username'], PASSWORD =>$password];
 						$this->replace_variable = array_merge($this->replace_variables,$this->username);
 								
 				   		//send mail to user by defining common function variables from here
 						$mail = Commonfunction::get_email_template_details(TWITTER_SIGNUP,$this->replace_variable,SEND_MAIL_TRUE);
 						if($mail == MAIL_SUCCESS)
 			   			{
-			   				Message::success(__('registration_success_via_social',array(':param'=>'Via Twitter',':param1'=>__('please_check_mail'))));
+			   				Message::success(__('registration_success_via_social',[':param'=>'Via Twitter',':param1'=>__('please_check_mail')]));
 							$this->request->redirect('users/');		
 			   			}	
-						Message::success(__('registration_success_via_social',array(':param'=>'Via Twitter',":param1"=>"")));				
+						Message::success(__('registration_success_via_social',[':param'=>'Via Twitter',":param1"=>""]));				
 						$this->request->redirect("users/");
 					}
 				}
 				else
 				{
-					Message::error(__('error_in_registration_via_social',array(':param'=>'Via Twitter')));
+					Message::error(__('error_in_registration_via_social',[':param'=>'Via Twitter']));
 					$this->request->redirect("users/signup");
 				}
 			}

@@ -40,7 +40,7 @@ setlocale(LC_ALL, 'en_US.utf-8');
  * @link http://kohanaframework.org/guide/using.autoloading
  * @link http://www.php.net/manual/function.spl-autoload-register
  */
-spl_autoload_register(array('Kohana', 'auto_load'));
+spl_autoload_register(['Kohana', 'auto_load']);
 
 /**
  * Enable the Kohana auto-loader for unserialization.
@@ -52,8 +52,6 @@ ini_set('unserialize_callback_func', 'spl_autoload_call');
 
 ini_set('display_errors', 1);
 ini_set ('gd.jpeg_ignore_warning', 1);
-//ini_set('mongo.long_as_object', 1);
-ini_set('mongo.native_long', 1);
 // -- Configuration and initialization -------
 
 /**
@@ -90,15 +88,15 @@ Kohana::$environment = isset($_SERVER['KOHANA_ENV']) ? constant('Kohana::'.strto
  * - boolean  caching     enable or disable internal caching                 FALSE
  * - boolean  expose      set the X-Powered-By header                        FALSE
  */
-Kohana::init(array(
+Kohana::init([
     'base_url'      => '/',
     'index_file'    => FALSE,
     'errors'        => TRUE,
     'profile'       => (Kohana::$environment == Kohana::DEVELOPMENT),
     'caching'       => (Kohana::$environment == Kohana::PRODUCTION)
-));
+]);
 
-set_exception_handler(array('Kohana_Exception', 'handler'));
+set_exception_handler(['Kohana_Exception', 'handler']);
 
 
 /**
@@ -114,7 +112,7 @@ Kohana::$config->attach(new Config_File);
 /**
  * Enable modules. Modules are referenced by a relative or absolute path.
  */
-Kohana::modules(array(
+Kohana::modules([
     // 'auth'       => MODPATH.'auth',       // Basic authentication
     // 'cache'      => MODPATH.'cache',      // Caching with multiple backends
     // 'codebench'  => MODPATH.'codebench',  // Benchmarking tool
@@ -130,335 +128,335 @@ Kohana::modules(array(
 	//'debugtoolbar' 	=> MODPATH.'debugtoolbar', // debugtoolbar
     'mongoDB' 		=> MODPATH.'mangodb', 	// mongoDB
     'phpqrcode' 		=> MODPATH.'phpqrcode', 	// mongoDB
-));
+]);
 
 /**
  * Set the routes. Each route must have a minimum of a name, a URI and a set of
  * defaults for the URI.
  */
-Route::set('error', 'error/<action>/<origuri>/<message>', array('action' => '[0-9]++', 'origuri' => '.+', 'message' => '.+'))
-->defaults(array(
+Route::set('error', 'error/<action>/<origuri>/<message>', ['action' => '[0-9]++', 'origuri' => '.+', 'message' => '.+'])
+->defaults([
     'controller' => 'error',
     'action'     => 'index'
-));
+]);
 Route::set('default', '(<controller>(/<action>(/<id>)))')
-	->defaults(array(
+	->defaults([
 		'controller' => 'users',
 		'action'     => 'index',
-	));
+	]);
 Route::set('admin', '(<controller>(/<action>(/<id>/<method>)))')
-	->defaults(array(
+	->defaults([
 		'controller' => 'admin',
 		'action'     => 'index',
 		'method'     => NULL,
-	));
+	]);
 
 Route::set('edit', '(<controller>(/<action>(/<id>/<method>/<lparam>)))')
-	->defaults(array(
+	->defaults([
 		'controller' => 'admin',
 		'action'     => 'index',
 		'method'     => NULL,
 		'lparam'     => NULL,
-	));
+	]);
 
 Route::set('aboutus', 'about-us.html')
-    ->defaults(array(
+    ->defaults([
         'controller' => 'page',
         'action'     => 'aboutus'
-    ));
+    ]);
 
 Route::set('blog', 'blog.html')
-    ->defaults(array(
+    ->defaults([
         'controller' => 'page',
         'action'     => 'blog'
-    ));
+    ]);
 
 Route::set('careers', 'careers.html')
-    ->defaults(array(
+    ->defaults([
         'controller' => 'page',
         'action'     => 'careers'
-    ));
+    ]);
 
 Route::set('support', 'support.html')
-    ->defaults(array(
+    ->defaults([
         'controller' => 'page',
         'action'     => 'support'
-    ));
+    ]);
 
 
 Route::set('Portfolios', 'portfolios.html')
-    ->defaults(array(
+    ->defaults([
         'controller' => 'page',
         'action'     => 'Portfolios'
-    ));
+    ]);
 	
 
 Route::set('company-registration', 'company-registration.html')
-    ->defaults(array(
+    ->defaults([
         'controller' => 'users',
         'action'     => 'company_registration'
-    ));
+    ]);
 
 Route::set('advance-search', 'advance-search.html')
-    ->defaults(array(
+    ->defaults([
         'controller' => 'site/find',
         'action'     => 'advancesearch'
-    ));
+    ]);
 
 Route::set('search', 'search.html')
-    ->defaults(array(
+    ->defaults([
         'controller' => 'find',
         'action'     => 'search'
-    ));
+    ]);
 
 Route::set('how-it-works', 'how-it-works.html')
-    ->defaults(array(
+    ->defaults([
         'controller' => 'page',
         'action'     => 'demo'
-    ));
+    ]);
 
 Route::set('contact-us', 'contact-us.html')
-    ->defaults(array(
+    ->defaults([
         'controller' => 'users',
         'action'     => 'contactus'
-    ));
+    ]);
 
 Route::set('thankyou', 'thank-you.html')
-    ->defaults(array(
+    ->defaults([
         'controller' => 'users',
         'action'     => 'thankyou'
-    ));
+    ]);
 
 Route::set('free-trial-thank-you', 'free-trial-thank-you.html')
-    ->defaults(array(
+    ->defaults([
         'controller' => 'users',
         'action'     => 'trial_thankyou'
-    ));
+    ]);
     
 
 Route::set('livechat', 'livechat.html')
-    ->defaults(array(
+    ->defaults([
         'controller' => 'users',
         'action'     => 'contactuslive'
-    ));
+    ]);
 
 Route::set('demo', 'demo.html')
-    ->defaults(array(
+    ->defaults([
         'controller' => 'page',
         'action'     => 'demo'
-    ));
+    ]);
 
 Route::set('sitemap', 'sitemap.xml')
-    ->defaults(array(
+    ->defaults([
         'controller' => 'xmlsitemap',
         'action'     => 'index'
-    ));
+    ]);
     
 Route::set('features', 'features.html')
-    ->defaults(array(
+    ->defaults([
         'controller' => 'page',
         'action'     => 'features'
-    ));
+    ]);
 
 Route::set('pricing', 'pricing.html')
-    ->defaults(array(
+    ->defaults([
         'controller' => 'page',
         'action'     => 'pricing'
-    )); 
+    ]); 
 
 Route::set('release', 'release-notes.html')
-    ->defaults(array(
+    ->defaults([
         'controller' => 'page',
         'action'     => 'release'
-    ));
+    ]);
 
 Route::set('vehicle-service', 'vehicle-assistance.html')
-    ->defaults(array(
+    ->defaults([
         'controller' => 'page',
         'action'     => 'vehicle_service'
-    ));
+    ]);
 
 Route::set('health-service', 'medical-assistance.html')
-    ->defaults(array(
+    ->defaults([
         'controller' => 'page',
         'action'     => 'health_service'
-    ));
+    ]);
 
 Route::set('delivery-service', 'delivery-assistance.html')
-    ->defaults(array(
+    ->defaults([
         'controller' => 'page',
         'action'     => 'delivery_service'
-    ));
+    ]);
 
 Route::set('taxi-service', 'taxi-booking-and-dispatching.html')
-    ->defaults(array(
+    ->defaults([
         'controller' => 'page',
         'action'     => 'taxi_service'
-    ));
+    ]);
 
 Route::set('home-service', 'home-assistance.html')
-    ->defaults(array(
+    ->defaults([
         'controller' => 'page',
         'action'     => 'home_service'
-    ));
+    ]);
 
 Route::set('case-studies', 'case-studies.html')
-    ->defaults(array(
+    ->defaults([
         'controller' => 'page',
         'action'     => 'case_studies'
-    ));
+    ]);
 
 Route::set('case-studies-details', 'case-study-details.html')
-    ->defaults(array(
+    ->defaults([
         'controller' => 'page',
         'action'     => 'case_study_details'
-    ));
+    ]);
 
 Route::set('solution', 'solutions.html')
-    ->defaults(array(
+    ->defaults([
         'controller' => 'page',
         'action'     => 'solutions'
-    )); 
+    ]); 
 
 Route::set('casestudy-download', 'downloads.html')
-	->defaults(array(
+	->defaults([
 		'controller' => 'page',
 		'action'     => 'casestudy_down',
-	));
+	]);
  
 Route::set('caller-id', 'callerid.html')
-    ->defaults(array(
+    ->defaults([
         'controller' => 'page',
         'action'     => 'caller_id'
-    ));   
+    ]);   
     
 Route::set('online-booking', 'onlinebooking.html')
-    ->defaults(array(
+    ->defaults([
         'controller' => 'page',
         'action'     => 'online_booking'
-    ));  
+    ]);  
     
 Route::set('our-promise', 'ourpromise.html')
-    ->defaults(array(
+    ->defaults([
         'controller' => 'page',
         'action'     => 'our_promise'
-    ));   
+    ]);   
  
 Route::set('privacy--policy', 'privacy-policy.html')
-    ->defaults(array(
+    ->defaults([
         'controller' => 'page',
         'action'     => 'privacy_policy'
-    )); 
+    ]); 
 
 Route::set('package', 'package.html')
-    ->defaults(array(
+    ->defaults([
         'controller' => 'page',
         'action'     => 'package'
-    )); 
+    ]); 
 
 Route::set('license', 'license-agreement.html')
-    ->defaults(array(
+    ->defaults([
         'controller' => 'page',
         'action'     => 'license'
-    ));
+    ]);
     
 Route::set('terms--conditions', 'terms-and-conditions.html')
-    ->defaults(array(
+    ->defaults([
         'controller' => 'page',
         'action'     => 'terms_conditions'
-    )); 
+    ]); 
     
 Route::set('api', 'api.html')
-    ->defaults(array(
+    ->defaults([
         'controller' => 'page',
         'action'     => 'api'
-    )); 
+    ]); 
 
 Route::set('faq', 'faq.html')
-    ->defaults(array(
+    ->defaults([
         'controller' => 'page',
         'action'     => 'faq'
-    ));
+    ]);
 Route::set('help', 'help.html')
-    ->defaults(array(
+    ->defaults([
         'controller' => 'page',
         'action'     => 'help'
-    ));
+    ]);
    
 Route::set('tutorial', 'tutorial.html')
-    ->defaults(array(
+    ->defaults([
         'controller' => 'page',
         'action'     => 'tutorial'
-    ));
+    ]);
     
 
 Route::set('taxi-booking-apps', 'taxibookingapps.html')
-    ->defaults(array(
+    ->defaults([
         'controller' => 'page',
         'action'     => 'taxi_booking_apps'
-    ));
+    ]);
 
 Route::set('knet_response', 'knet_response.html')
-    ->defaults(array(
+    ->defaults([
         'controller' => 'knetpayment',
         'action'     => 'knet_response'
-    ));
+    ]);
 Route::set('knet_wallet_response', 'knet_wallet_response.html')
-    ->defaults(array(
+    ->defaults([
         'controller' => 'knetpayment',
         'action'     => 'knet_wallet_response'
-    ));
+    ]);
 Route::set('tap_success', 'tap_success.html')
-    ->defaults(array(
+    ->defaults([
         'controller' => 'knetpayment',
         'action'     => 'tap_success'
-    ));
+    ]);
 Route::set('tap_error', 'tap_error.html')
-    ->defaults(array(
+    ->defaults([
         'controller' => 'knetpayment',
         'action'     => 'tap_error'
-    ));
+    ]);
 Route::set('tap_cancel', 'tap_cancel.html')
-    ->defaults(array(
+    ->defaults([
         'controller' => 'knetpayment',
         'action'     => 'tap_cancel'
-    ));
+    ]);
 Route::set('wallet_success', 'wallet_success.html')
-    ->defaults(array(
+    ->defaults([
         'controller' => 'knetpayment',
         'action'     => 'wallet_success'
-    ));
+    ]);
 Route::set('tap_error', 'wallet_error.html')
-    ->defaults(array(
+    ->defaults([
         'controller' => 'knetpayment',
         'action'     => 'wallet_error'
-    ));	
+    ]);	
 Route::set('new_login', 'login.html')
-    ->defaults(array(
+    ->defaults([
         'controller' => 'users',
         'action'     => 'new_login'
-    ));	 
+    ]);	 
 Route::set('new_signup', 'signup.html')
-    ->defaults(array(
+    ->defaults([
         'controller' => 'users',
         'action'     => 'new_signup'
-    ));	 
+    ]);	 
 
 Route::set('meet_our_drivers', 'meet_our_drivers.html')
-    ->defaults(array(
+    ->defaults([
         'controller' => 'page',
         'action'     => 'meet_our_drivers'
-    )); 
+    ]); 
 Route::set('how_it_works', 'how_it_works.html')
-    ->defaults(array(
+    ->defaults([
         'controller' => 'page',
         'action'     => 'how_it_works'
-    ));   
+    ]);   
 Route::set('booking_success', 'booking-success.html')
-    ->defaults(array(
+    ->defaults([
         'controller' => 'users',
         'action'     => 'booking_success'
-    ));       		
+    ]);       		
     
 //Include defined Constants files
 require Kohana::find_file('classes','table_config');

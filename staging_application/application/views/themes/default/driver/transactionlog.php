@@ -1,7 +1,7 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.'); 
 foreach($dashstyles as $file => $type)
 { 
-echo HTML::style($file, array('media' => $type)); 
+echo HTML::style($file, ['media' => $type]); 
 }    
 foreach($dashscripts as $file => $type)
 { 

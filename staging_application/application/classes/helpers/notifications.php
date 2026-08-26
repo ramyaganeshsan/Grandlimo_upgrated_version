@@ -34,20 +34,20 @@
       public function sendNotification() {
           if(!empty($this->sender) && !empty($this->receiver)) {
             $mongo = MangoDB::instance('default');
-            $rs = $mongo->find(MDB_NOTIFICATIONS,array(),array('_id'))->sort(array('_id'=>-1))->limit(1);
+            $rs = $mongo->find(MDB_NOTIFICATIONS,[],['_id'])->sort(['_id'=>-1])->limit(1);
 			$rs = iterator_to_array($rs);
 			reset($rs);
 			$rs_first_key = key($rs);
 			$_id = $rs_first_key + 1;
             
-            $data = array('_id'=>$_id,
+            $data = ['_id'=>$_id,
 				'sender' => (int)$this->sender,			
 				'receiver' => (int)$this->receiver,			
 				'message' => $this->content,
 				'request_id' => (int)$this->request_id,
 				'notification_type' => (int)$this->notification_type,			
 				'read_status' => (int)0,									
-			);
+			];
 			$result = $mongo->insert(MDB_NOTIFICATIONS,$data);
           } 
       }

@@ -10,7 +10,7 @@
 				foreach($adminscripts as $file) { echo HTML::script($file, NULL, TRUE)."\n"; }
 			 
 				foreach($adminstyles as $file => $type) { 
-						echo HTML::style($file, array('media' => $type))."\n";
+						echo HTML::style($file, ['media' => $type])."\n";
 				}
 			/* */
 		?>

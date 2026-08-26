@@ -166,12 +166,12 @@ abstract class Controller_Dispatchadminnode extends Controller_Template
     public function email_send(array $mail, $type = 'smtp', $htmlneed = true)
     {
         if (is_array($mail)) {
-            if ($this->array_keys_exists($mail, array(
+            if ($this->array_keys_exists($mail, [
                 'to',
                 'from',
                 'subject',
                 'message'
-            ))) {
+            ])) {
                 $to      = $mail['to'];
                 $from    = $mail['from'];
                 $subject = $mail['subject'];
@@ -189,27 +189,27 @@ abstract class Controller_Dispatchadminnode extends Controller_Template
                             $username    = $smtp_detail[0]['smtp_username'];
                             $password    = $smtp_detail[0]['smtp_password'];
                             $port        = $smtp_detail[0]['smtp_port'];
-                            $smtp_config = array(
+                            $smtp_config = [
                                 'driver' => 'smtp',
-                                'options' => array(
+                                'options' => [
                                     'hostname' => $host,
                                     'username' => $username,
                                     'password' => $password,
                                     'port' => $port,
                                     'encryption' => 'ssl'
-                                )
-                            );
+                                ]
+                            ];
                         }
-                        $smtp_config1 = array(
+                        $smtp_config1 = [
                             'driver' => 'smtp',
-                            'options' => array(
+                            'options' => [
                                 'hostname' => 'smtp.gmail.com',
                                 'username' => 'johnjoeshep@gmail.com',
                                 'password' => 'test@123',
                                 'port' => '465',
                                 'encryption' => 'ssl'
-                            )
-                        );
+                            ]
+                        ];
                         //mail sending option here
                         try {
                             if (Email::connect($smtp_config1)) {

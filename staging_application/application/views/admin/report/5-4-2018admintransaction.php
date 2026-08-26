@@ -380,7 +380,7 @@ if($total_transaction>0)
 		$promocode = isset($listings['promocode'])?$listings['promocode']:'-';
 		$fare = isset($listings['fare'][0])?$listings['fare'][0]:0;
 		$editedfare = isset($listings['total_fare_detail'])?$listings['total_fare_detail']:0;
-		$faredetail = isset($listings['fare_detail'])?$listings['fare_detail']:array();
+		$faredetail = isset($listings['fare_detail'])?$listings['fare_detail']:[];
 		$cancel_reason = isset($listings['cancel_reason'])?$listings['cancel_reason']:'-';
 		$admin_amount = isset($listings['admin_amount'][0])?$listings['admin_amount'][0]:0;
 		$company_amount = isset($listings['company_amount'][0])?$listings['company_amount'][0]:0;

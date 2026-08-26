@@ -20,9 +20,9 @@ class Controller_Payment extends Controller_Website {
 
 
 		     $this->paypalconfig = $this->paypal_db->getpaypalconfig(); 
-		     $this->paypaldbconfig = count($this->paypalconfig) > 0?array("username"=>$this->paypalconfig[0]['paypal_api_username'],
+		     $this->paypaldbconfig = count($this->paypalconfig) > 0?["username"=>$this->paypalconfig[0]['paypal_api_username'],
 		     "password"=>$this->paypalconfig[0]['paypal_api_password'], "signature"=>$this->paypalconfig[0]['paypal_api_signature'], 
-		     "environment"=>($this->paypalconfig[0]['payment_method'] =="L")?"live":"sandbox"):"";
+		     "environment"=>($this->paypalconfig[0]['payment_method'] =="L")?"live":"sandbox"]:"";
 		
 		     // Load default configuration
 		     $this->paypalconfigfile = Kohana::$config->load('paypal');		
@@ -148,11 +148,11 @@ class Controller_Payment extends Controller_Website {
 
 
 
-                        $data = array(
+                        $data = [
                          'AMT' => $amount, 'CURRENCYCODE' => $this->paypal_currencycode, 'RETURNURL' => $returnurl, 'CANCELURL' => $cancelurl , 
                          'PAYMENTACTION' =>'Sale','DESC'=>$product_title,'MAXAMT'=>'',//$this->paypalcashwithdrawconfig['max_amount']
                         'EMAIL'=>$email,'NOSHIPPING'=>1,'L_NAME0'=>$product_title,'L_NUMBER0'=>$pack_id,'L_QTY0'=>1,'L_TAXAMT0'=>0.00,'L_AMT0'=>
-                         $amount,'ITEMAMT'=>$amount); //,'FROMDATE'=>$fdate,'TODATE'=>$tdate,'FROMTIME'=>$ftime,'TOTIME'=>$ttime,'TOTAL_HOURS'=>$bookinghours
+                         $amount,'ITEMAMT'=>$amount]; //,'FROMDATE'=>$fdate,'TODATE'=>$tdate,'FROMTIME'=>$ftime,'TOTIME'=>$ttime,'TOTAL_HOURS'=>$bookinghours
 
 
                         $payment = $paypal->set($data);
@@ -191,19 +191,19 @@ class Controller_Payment extends Controller_Website {
             $paypal = Paypal::instance('ExpressCheckout',$this->paypaldbconfig);
 
             // Get the customers details from Paypal
-            $customer = $paypal->GetExpressCheckoutDetails(array('TOKEN'=>$token));
+            $customer = $paypal->GetExpressCheckoutDetails(['TOKEN'=>$token]);
            
 
             if (Arr::get($customer, 'ACK') === 'Success')
             {
                     // Perform any calculations to determine the final charging price
 
-                    $params = array(
+                    $params = [
                     'TOKEN'     => $token,
                     'PAYERID'   => Arr::get($customer, 'PAYERID'),
                     'AMT'       => $this->session->get('paypal_token_'.$token),
                     'CURRENCYCODE' => $this->paypal_currencycode
-                    );
+                    ];
 
          	 $pack_id = $this->session->get('pack_id');
 		$get_packagedetails = $add_company->payment_packagedetails($pack_id);
@@ -280,7 +280,7 @@ class Controller_Payment extends Controller_Website {
                             $this->session->set('shipping_countrycode',Arr::get($customer, 'COUNTRYCODE'));  
                
                             //transaction
-                            $transactionfield = array(
+                            $transactionfield = [
                                                         'PAYERID' => Arr::get($customer, 'PAYERID'),
                                                         'PAYERSTATUS' => Arr::get($customer, 'PAYERSTATUS'),
 
@@ -299,7 +299,7 @@ class Controller_Payment extends Controller_Website {
                                                         'INVOICEID' => $this->session->get('paypal_invoiceno_' .$token),
                                                         'LOGIN_ID' => Request::$client_ip,
                                                         'USER_AGENT' => Request::$user_agent
-                                                        );
+                                                        ];
                             
                             $transactionfield = $transactionfield + $paymentresponse;           
        
@@ -330,7 +330,7 @@ class Controller_Payment extends Controller_Website {
 
 
 				$mail="";								
-				$replace_variables=array(REPLACE_LOGO=>EMAILTEMPLATELOGO,REPLACE_SITENAME=>$this->app_name,REPLACE_USERNAME=>ucfirst($name),REPLACE_EMAIL=>$email,REPLACE_SITELINK=>URL_BASE.'users/contactinfo/',REPLACE_SITEEMAIL=>$this->siteemail,REPLACE_SITEURL=>URL_BASE,REPLACE_ORDERID=>$orderid,REPLACE_ORDERLIST=>$orderlist,REPLACE_COPYRIGHTS=>SITE_COPYRIGHT,REPLACE_COPYRIGHTYEAR=>COPYRIGHT_YEAR);
+				$replace_variables=[REPLACE_LOGO=>EMAILTEMPLATELOGO,REPLACE_SITENAME=>$this->app_name,REPLACE_USERNAME=>ucfirst($name),REPLACE_EMAIL=>$email,REPLACE_SITELINK=>URL_BASE.'users/contactinfo/',REPLACE_SITEEMAIL=>$this->siteemail,REPLACE_SITEURL=>URL_BASE,REPLACE_ORDERID=>$orderid,REPLACE_ORDERLIST=>$orderlist,REPLACE_COPYRIGHTS=>SITE_COPYRIGHT,REPLACE_COPYRIGHTYEAR=>COPYRIGHT_YEAR];
 
 				$message=$this->emailtemplate->emailtemplate(DOCROOT.TEMPLATEPATH.'order-mail.html',$replace_variables);
 
@@ -534,7 +534,7 @@ class Controller_Payment extends Controller_Website {
 		            curl_close($curl); 
 
 		            $intial=0;
-	             	$nvpArray = array();
+	             	$nvpArray = [];
 
 
 		            while(strlen($nvpstr)){
@@ -550,12 +550,12 @@ class Controller_Payment extends Controller_Website {
 			            $nvpArray[urldecode($keyval)] =urldecode( $valval);
 			            $nvpstr=substr($nvpstr,$valuepos+1,strlen($nvpstr));
 	               	   }
-		            $_SESSION["paymentresponse"]=array();
+		            $_SESSION["paymentresponse"]=[];
                     $_SESSION["paymentresponse"]=$nvpArray;  
 
                     if(isset($_SESSION["paymentresponse"]) && !empty($_SESSION["paymentresponse"]) )
                     {
-                        $paymentresponse=array();
+                        $paymentresponse=[];
 
                         $ack = strtoupper($_SESSION['paymentresponse']["ACK"]);		                
 		                if($ack=="SUCCESS" || $ack=="SUCCESSWITHWARNING" )
@@ -566,7 +566,7 @@ class Controller_Payment extends Controller_Website {
    
                             $paymentresponse=$_SESSION['paymentresponse'];
 
-                            $transactionfield = array(
+                            $transactionfield = [
 
                                             'FIRSTNAME' => $this->session->get('username'),
                                             'LASTNAME' => $this->session->get('username'),
@@ -581,7 +581,7 @@ class Controller_Payment extends Controller_Website {
                                             'INVOICEID' => $_SESSION['paymentresponse']["TRANSACTIONID"], 
                                             'LOGIN_ID' => Request::$client_ip,
                                             'USER_AGENT' => Request::$user_agent
-                                            );                        
+                                            ];                        
 
                             $transactionfield = $transactionfield + $paymentresponse;   
                             $this->session->set('transactionfield',$transactionfield);// Data store
@@ -596,7 +596,7 @@ class Controller_Payment extends Controller_Website {
 
                             $orderid=$order_no=$_SESSION['paymentresponse']["TRANSACTIONID"];
         
-                            $Transactionfield=array();    
+                            $Transactionfield=[];    
                             $Transactionfield=$this->session->get('transactionfield');
 
 
@@ -620,7 +620,7 @@ class Controller_Payment extends Controller_Website {
                                         '<p>'.__('paypal_invoice').' : '. $order_no.'</p>';
          
       	                    $mail="";								
-					        $replace_variables=array(REPLACE_LOGO=>EMAILTEMPLATELOGO,REPLACE_SITENAME=>$this->app_name,REPLACE_USERNAME=>ucfirst($name),REPLACE_EMAIL=>$email,REPLACE_SITELINK=>URL_BASE.'users/contactinfo/',REPLACE_SITEEMAIL=>$this->siteemail,REPLACE_SITEURL=>URL_BASE,REPLACE_ORDERID=>$orderid,REPLACE_ORDERLIST=>$orderlist,REPLACE_COPYRIGHTS=>SITE_COPYRIGHT,REPLACE_COPYRIGHTYEAR=>COPYRIGHT_YEAR);
+					        $replace_variables=[REPLACE_LOGO=>EMAILTEMPLATELOGO,REPLACE_SITENAME=>$this->app_name,REPLACE_USERNAME=>ucfirst($name),REPLACE_EMAIL=>$email,REPLACE_SITELINK=>URL_BASE.'users/contactinfo/',REPLACE_SITEEMAIL=>$this->siteemail,REPLACE_SITEURL=>URL_BASE,REPLACE_ORDERID=>$orderid,REPLACE_ORDERLIST=>$orderlist,REPLACE_COPYRIGHTS=>SITE_COPYRIGHT,REPLACE_COPYRIGHTYEAR=>COPYRIGHT_YEAR];
 
 					        $message=$this->emailtemplate->emailtemplate(DOCROOT.TEMPLATEPATH.'order-mail.html',$replace_variables);
 
@@ -688,7 +688,7 @@ class Controller_Payment extends Controller_Website {
 
 	       
 	        if(Arr::get($_POST, 'pending_req_list')){	     
-	                $params = array();           
+	                $params = [];           
 	                $params += Arr::get($_POST, 'pending_req_list');    
 	                
 	                $user_paypalac = $this->paypal_db->get_user_paypalac($params);        //params = UNIQUEID
@@ -696,7 +696,7 @@ class Controller_Payment extends Controller_Website {
 	        }
 	        
 
-	        $data = array( 'CURRENCYCODE' => $this->paypal_currencycode, 'EMAILSUBJECT' => __('refund_mailsubj'));
+	        $data = [ 'CURRENCYCODE' => $this->paypal_currencycode, 'EMAILSUBJECT' => __('refund_mailsubj')];
 
 	        if(count($user_paypalac) < 1){
 	        
@@ -709,7 +709,7 @@ class Controller_Payment extends Controller_Website {
 	        //SET PAYPAL USER Email Ids as MASS PAY field Require
 	        foreach($user_paypalac as $key => $value){
 
-			$receiver_emails = array();
+			$receiver_emails = [];
 			$receiver_emails_count = 0;
 			$masspay_reponse = '';
 		     if($value['paypal_account'] == '')
@@ -741,7 +741,7 @@ class Controller_Payment extends Controller_Website {
 	                foreach($user_paypalac as $key => $value){	 
 	                         
 	                        if(isset($masspay_reponse['L_ERRORCODE'.$error_count])){
-	                        $withdraw_transactionfield = array(
+	                        $withdraw_transactionfield = [
 	                              'correlationid' => $masspay_reponse['CORRELATIONID'],
 	                              'masscapturetime' => $masspay_reponse['TIMESTAMP'],
 	                              'version' => $masspay_reponse['VERSION'],
@@ -758,12 +758,12 @@ class Controller_Payment extends Controller_Website {
 	                              'severitycode' => $masspay_reponse['L_SEVERITYCODE'.$error_count],
 	                              'login_id' => Request::$client_ip,
 	                              'user_agent' => Request::$user_agent	              
-                                ); 
+                                ]; 
                                 $withdraw_status =  '2';
-                                $params = array($value['requested_id']);
+                                $params = [$value['requested_id']];
                                 }else{
 
-                                        $withdraw_transactionfield = array(
+                                        $withdraw_transactionfield = [
 	                              'correlationid' => $masspay_reponse['CORRELATIONID'],
 	                              'masscapturetime' => $masspay_reponse['TIMESTAMP'],
 	                              'version' => $masspay_reponse['VERSION'],
@@ -781,9 +781,9 @@ class Controller_Payment extends Controller_Website {
 	                              'severitycode' => $masspay_reponse['L_SEVERITYCODE'.$error_count],
 	                              'login_id' => Request::$client_ip,
 	                              'user_agent' => Request::$user_agent	              
-                                );  
+                                ];  
                                 $withdraw_status =  '1';
-                                 $params = array($value['requested_id']);
+                                 $params = [$value['requested_id']];
                                 }
 
                                 $this->paypal_db->updatewithdraw_details($params , "2",$value['id'],$value['amount'] );
@@ -802,7 +802,7 @@ class Controller_Payment extends Controller_Website {
 	              
 	                      foreach($user_paypalac as $key => $value){	
 	                      //transaction details
-	                      $withdraw_transactionfield = array(
+	                      $withdraw_transactionfield = [
 	                                              'correlationid' => $masspay_reponse['CORRELATIONID'],
 	                                              'masscapturetime' => $masspay_reponse['TIMESTAMP'],
 	                                              'version' => $masspay_reponse['VERSION'],
@@ -817,11 +817,11 @@ class Controller_Payment extends Controller_Website {
 	                                              'payment_response' => JSON_ENCODE($masspay_reponse),                           
 	                                              'login_id' => Request::$client_ip,
 	                                              'user_agent' => Request::$user_agent	              
-                                                );
+                                                ];
                                                 //print_r( $withdraw_transactionfield['amount']); exit; 
                                                          
                                                 $withdraw_status =  '1';
-                                                $params = array($value['requested_id']);
+                                                $params = [$value['requested_id']];
                               	                      
 	                     	 //$this->paypal_db->addtransaction_deatils($transactionfield);
 	                      	$res = $this->paypal_db->updatewithdraw_details($params , '1',$value['id'],$value['amount'] ); 
@@ -840,7 +840,7 @@ class Controller_Payment extends Controller_Website {
                                  
                                         '<p>'.__('paypal_invoice').' : '. $order_no.'</p>';
 				
-					        $replace_variables=array(REPLACE_LOGO=>EMAILTEMPLATELOGO,REPLACE_SITENAME=>$this->app_name,REPLACE_USERNAME=>ucfirst($name),REPLACE_EMAIL=>$email,REPLACE_SITELINK=>URL_BASE.'users/contactinfo/',REPLACE_SITEEMAIL=>$this->siteemail,REPLACE_SITEURL=>URL_BASE,REPLACE_ORDERID=>$orderid,REPLACE_ORDERLIST=>$orderlist,REPLACE_COPYRIGHTS=>SITE_COPYRIGHT,REPLACE_COPYRIGHTYEAR=>COPYRIGHT_YEAR);
+					        $replace_variables=[REPLACE_LOGO=>EMAILTEMPLATELOGO,REPLACE_SITENAME=>$this->app_name,REPLACE_USERNAME=>ucfirst($name),REPLACE_EMAIL=>$email,REPLACE_SITELINK=>URL_BASE.'users/contactinfo/',REPLACE_SITEEMAIL=>$this->siteemail,REPLACE_SITEURL=>URL_BASE,REPLACE_ORDERID=>$orderid,REPLACE_ORDERLIST=>$orderlist,REPLACE_COPYRIGHTS=>SITE_COPYRIGHT,REPLACE_COPYRIGHTYEAR=>COPYRIGHT_YEAR];
 
 					        $message=$this->emailtemplate->emailtemplate(DOCROOT.TEMPLATEPATH.'fund-order-mail.html',$replace_variables);
 

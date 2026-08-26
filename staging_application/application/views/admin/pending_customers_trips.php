@@ -139,7 +139,7 @@ if($total_company>0)
                         </td>
                         <input type="hidden" name="status"  maxlength="256" id="keyword" value="1" />
                         <?php
-                        $recharge_type_array = array('1'=>__('manual_pay'),'2'=>__('credit_pay'),'3'=>__('pending_pay'),'4'=> __('trip_payment'),'5'=> __('trip_pending_payment'),'6'=>__('pending_repayment'),'7'=>__('dispatcher_alteration'),'8'=>__('knet_payment'));
+                        $recharge_type_array = ['1'=>__('manual_pay'),'2'=>__('credit_pay'),'3'=>__('pending_pay'),'4'=> __('trip_payment'),'5'=> __('trip_pending_payment'),'6'=>__('pending_repayment'),'7'=>__('dispatcher_alteration'),'8'=>__('knet_payment')];
                          ?>                                              
 					</tr>
 
@@ -224,7 +224,7 @@ if($total_company>0)
          $trip_id = isset($listings['trip_id'])? $listings['trip_id']:'';
          $pending_amount = isset($listings['pending_amount'])? $listings['pending_amount']:'';         
 		
-		 $payment_data = isset($listings['payment_data'])? $listings['payment_data']:array();
+		 $payment_data = isset($listings['payment_data'])? $listings['payment_data']:[];
 		 $clear_pending = isset($listings['clear_pending'])? $listings['clear_pending']:'';
 
 		 $cash = $knet =$online = $wallet = $paid_date = '';

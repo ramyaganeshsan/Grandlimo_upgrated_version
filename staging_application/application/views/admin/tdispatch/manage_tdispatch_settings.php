@@ -38,7 +38,7 @@ if(count($tdispatch_settings)>0) {
 			<td valign="top" width="20%"><label><?php echo __('controller_setting');?></label><span class="star">*</span></td>   	
 			<td> <?php  
 				//$labelname_type = array( "1" => "Server will select the nearest taxi and dispatch","2" => "Operator able to select the taxi"); 
-				$labelname_type = array( "1" => "Auto","2" => "Manual"); 
+				$labelname_type = [ "1" => "Auto","2" => "Manual"]; 
 				?>
 				   <div id="uniform-user_type">
 				   <?php /*<select name="labelname" title="<?php echo __('select_operating_settings'); ?>">

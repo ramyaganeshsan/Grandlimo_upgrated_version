@@ -66,7 +66,7 @@ class Controller_Knetpayment extends Controller_Website
         if($flag == 'schedule')
         {   
             $id = $_REQUEST['UDF2'];
-            $update_status = $api_model->update_table('invoice_schedule_trip', array('pay_status'=>__('success')), '_id', $id);
+            $update_status = $api_model->update_table('invoice_schedule_trip', ['pay_status'=>__('success')], '_id', $id);
             $this->request->redirect(URL_BASE.'passengers/invoice');
             die();
         }
@@ -133,10 +133,10 @@ class Controller_Knetpayment extends Controller_Website
         /*         * ***** Process the next step once we get the response from payment gateway *************************** */
 
 
-        $paymentresponse = array();
+        $paymentresponse = [];
         if ($_GET['Result'] == 1) {
             
-            $driver_details = isset($driver_id)?$this->commonmodel->select(PEOPLE,array('_id'=>$driver_id)) : '';
+            $driver_details = isset($driver_id)?$this->commonmodel->select(PEOPLE,['_id'=>$driver_id]) : '';
             $driver_no = (isset($driver_details['phone']))?$driver_details['phone']:0;
                                                 
             if ($driver_no != 0) 
@@ -153,11 +153,11 @@ class Controller_Knetpayment extends Controller_Website
             //} else {
             //$paymentresponse = $_SESSION['paymentresponse'];
             //}
-            $match = array('passengers_log_id' => (int) $passenger_log_id);
+            $match = ['passengers_log_id' => (int) $passenger_log_id];
             $delete = $this->mongo_db->remove(MDB_TRANSACTION, $match);
 
             $inc_id = $api_model->get_insert_id(MDB_TRANSACTION);
-            $insert_array = array(
+            $insert_array = [
                 "_id" => $inc_id,
                 "passengers_log_id" => (int) $passenger_log_id,
                 "distance" => $distance,
@@ -189,7 +189,7 @@ class Controller_Knetpayment extends Controller_Website
                 "pending_amt" => isset($tempdata['pending_amt']) ? $tempdata['pending_amt'] : 0,
                 "passenger_pending_amt" => $passenger_pending_amt,
                 "fare_update_status"=>(int)0
-            );
+            ];
             //print_r($insert_array);
             $transactionfield = $insert_array + $siteinfo_details;
             //print_r($transactionfield);
@@ -197,9 +197,9 @@ class Controller_Knetpayment extends Controller_Website
             //$transactionfield     = $insert_array + $paymentresponse + $siteinfo_details; // Data Store
             //print_r($transactionfield);exit;
             /*             * ******** Update Driver Status after complete Payments **************** */
-            $update_driver_arrary = array(
+            $update_driver_arrary = [
                 "status" => 'F'
-            );
+            ];
             $result = $api_model->update_table(MDB_DRIVER_INFO, $update_driver_arrary, '_id', $driver_id);
             /*             * ******************************************************************************** */
             //Update Travel Status after payment done
@@ -210,11 +210,11 @@ class Controller_Knetpayment extends Controller_Website
             //===================================
             //$transaction_detail = $api_model->triptransact_details($transactionfield, $payment_types);
             $result = $this->mongo_db->Insert(MDB_TRANSACTION, $insert_array);
-            $update_payment_status = array(
+            $update_payment_status = [
                 "payment_status" => 1,
                 "travel_status" => 1,
                 "fare_update_status"=>(int)0
-            );
+            ];
             $update_status = $api_model->update_table(MDB_PASSENGERS_LOGS, $update_payment_status, '_id', $passenger_log_id);
 
             /*             * ********** */
@@ -226,28 +226,28 @@ class Controller_Knetpayment extends Controller_Website
             }
             $jobreferral = $tranaction_id;
             $pickup = isset($pickupLocation) ? $pickupLocation : '';
-            $detail = array(
+            $detail = [
                 "fare" => $tripfare,
                 "pickup" => $pickup,
                 "jobreferral" => $jobreferral,
                 "trip_id" => $passenger_log_id
-            );
-            $message = array(
+            ];
+            $message = [
                 "message" => __('trip_fare_updated'),
                 "detail" => $detail,
                 "status" => 1
-            );
-            $pushmessage = array(
+            ];
+            $pushmessage = [
                 "message" => __('trip_fare_updated'),
                 "fare" => $tripfare,
                 "trip_id" => $passenger_log_id,
                 "pickup" => $pickup,
                 "status" => 5
-            );
+            ];
 
-            $update_trip_array = array(
+            $update_trip_array = [
                 "status" => 8
-            );
+            ];
             $result = $api_model->update_table(MDB_REQUEST_HISTORY, $update_trip_array, 'trip_id', $passenger_log_id);
 
 
@@ -291,7 +291,7 @@ class Controller_Knetpayment extends Controller_Website
                 $used_wallet_amount = 0;
             }
             
-            $payment_array =array(
+            $payment_array =[
                 'add_amt'=>0,
                 'cash_pay'=>0,
                 'card_pay'=>0,
@@ -299,7 +299,7 @@ class Controller_Knetpayment extends Controller_Website
                 'pending_pay'=>0,
                 'wallet_pay'=>$used_wallet_amount,
                 'fare_note'=>''
-                );
+                ];
 
                 $api_model->payentry($passenger_log_id,$payment_array);
 
@@ -427,7 +427,7 @@ class Controller_Knetpayment extends Controller_Website
             <tr><td width='80px' align='center'>" . $distance_km . "    " . __('km') . "</td><td width='80px' align='center'>" . $trip_minutes . "</td></tr>
             </tbody></table></td></tr>";
             $mail              = "";
-            $replace_variables = array(
+            $replace_variables = [
                 REPLACE_LOGO => URL_BASE . PUBLIC_FOLDER_IMGPATH . '/logo.png',
                 REPLACE_SITENAME => $this->app_name,
                 REPLACE_USERNAME => $name,
@@ -443,7 +443,7 @@ class Controller_Knetpayment extends Controller_Website
                 //REPLACE_COMPANYDOMAIN => $this->domain_name,
                 REPLACE_COPYRIGHTS => SITE_COPYRIGHT,
                 REPLACE_COPYRIGHTYEAR => COPYRIGHT_YEAR
-            );
+            ];
             /* Added for language email template */
             if ($this->lang != 'en') {
                 if (file_exists(DOCROOT . TEMPLATEPATH . $this->lang . '/tripcomplete-mail-' . $this->lang . '.html')) {
@@ -487,22 +487,22 @@ class Controller_Knetpayment extends Controller_Website
         if($flag == 'schedule')
         {   
             $id = $_REQUEST['UDF2'];
-            $update_status = $api_model->update_table('invoice_schedule_trip', array('pay_status'=>__('failed')), '_id', $id);
+            $update_status = $api_model->update_table('invoice_schedule_trip', ['pay_status'=>__('failed')], '_id', $id);
             $this->request->redirect(URL_BASE.'passengers/invoice');
             die();
         }
         
         $trip_id = $_REQUEST['UDF1'];
-        $update_payment_status = array(
+        $update_payment_status = [
             "payment_status" => 0,
             "travel_status" => 5
-        );
+        ];
         $update_status = $api_model->update_table(MDB_PASSENGERS_LOGS, $update_payment_status, '_id', $trip_id);
-        $message = array(
+        $message = [
             "message" => __('payment_failed'),
             "trip_id" => $trip_id,
             "status" => 0
-        );
+        ];
         //echo json_encode($message);
         exit;
     }
@@ -569,7 +569,7 @@ class Controller_Knetpayment extends Controller_Website
         if($PaymentID != 0 && $id != 0)
         {
             $update_wallet = $api_model->update_wallet_without_log($id,$add_amt,0,$PaymentID,8);
-            $response = array('message'=>__('success'),'status'=>1);
+            $response = ['message'=>__('success'),'status'=>1];
             echo json_encode($response);exit;
         }
         else
@@ -582,7 +582,7 @@ class Controller_Knetpayment extends Controller_Website
     public function action_wallet_failure()
     {
         print_r($_REQUEST);exit;
-        $response = array('message'=>__('failure'),'status'=>0);
+        $response = ['message'=>__('failure'),'status'=>0];
         echo json_encode($response);exit;
     }
 

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * MONGO DB WRAPPER
+ * MONGO DB WRAPPER — mongodb extension (PHP 8.2+)
  */
 namespace Database;
 
@@ -12,14 +12,24 @@ class Mongo{
     private $query;
     private $result;
     private $last_insert;
+    private $pending_filter = [];
+    private $pending_projection = null;
+    private $pending_sort = [];
+    private $pending_skip = 0;
+    private $pending_limit = 0;
     
     use \Singleton;
     
     public function __construct($host, $user, $pwd, $db){
         try{
             $userpass = strlen($user)? $user.":".$pwd."@" : "";
-            $dbcon = new \MongoDB\Client("mongodb://{$userpass}{$host}");
-            $this->db = $dbcon->$db;
+            if (class_exists('\\MongoDB\\Client')) {
+                $dbcon = new \MongoDB\Client("mongodb://{$userpass}{$host}");
+                $this->db = $dbcon->$db;
+            } else {
+                $manager = new \MongoDB\Driver\Manager("mongodb://{$userpass}{$host}");
+                $this->db = new \MongoDBLegacyDatabase($manager, $db);
+            }
         }catch(\Exception $e){
             echo $e->getCode()." - ".$e->getMessage();
             die();
@@ -31,11 +41,15 @@ class Mongo{
      * @param $data array
      * @return $this
      */
-    public function insert($data, $opts = array()){
+    public function insert($data, $opts = []){
             
         $data['_id'] = (!isset($data['_id']))? new \MongoDB\BSON\ObjectId() : $data['_id'];
         try{
-            $this->collection->insertOne($data);
+            if (method_exists($this->collection, 'insertOne')) {
+                $this->collection->insertOne($data);
+            } else {
+                $this->collection->insert($data);
+            }
             $this->last_insert = $data['_id'];
             return $this;
         }catch(\Exception $e){
@@ -45,7 +59,7 @@ class Mongo{
     
     /**
      * returns the last inserted document's id
-     * @return MongoId() object
+     * @return \MongoDB\BSON\ObjectId
      */
     public function last_id(){
         return $this->last_insert;
@@ -57,19 +71,56 @@ class Mongo{
      * @param $fields array, the fields to return
      * @return $this
      */
-    public function find($params=array(), $fields=null){
-        if($fields == null)
-            $this->result = $this->collection->find($params);
-        else
-            $this->result = $this->collection->find($params, array("projection" => $fields));
+    public function find($params=[], $fields=null){
+        $this->pending_filter = $params;
+        $this->pending_projection = $fields;
+        $this->pending_sort = [];
+        $this->pending_skip = 0;
+        $this->pending_limit = 0;
+        $this->result = null;
         return $this;
+    }
+
+    protected function find_options()
+    {
+        $options = [];
+        if ($this->pending_projection !== null) {
+            $options['projection'] = $this->pending_projection;
+        }
+        if ($this->pending_sort) {
+            $options['sort'] = $this->pending_sort;
+        }
+        if ($this->pending_skip) {
+            $options['skip'] = $this->pending_skip;
+        }
+        if ($this->pending_limit) {
+            $options['limit'] = $this->pending_limit;
+        }
+        return $options;
+    }
+
+    protected function execute_find()
+    {
+        if ($this->result !== null) {
+            return $this->result;
+        }
+        $options = $this->find_options();
+        if (method_exists($this->collection, 'find')) {
+            $this->result = $this->collection->find($this->pending_filter, $options);
+        } else {
+            $this->result = [];
+        }
+        return $this->result;
     }
     /**
      * returns the last collection search num docs found
      * @return int
      */
     public function count(){
-        return $this->result->count();
+        if (method_exists($this->collection, 'countDocuments')) {
+            return $this->collection->countDocuments($this->pending_filter);
+        }
+        return iterator_count($this->execute_find());
     }
     
     
@@ -78,8 +129,9 @@ class Mongo{
      * @param $sort array to sort by
      * @return $this
      */
-    public function sort($sort = array()){
-        $this->result = $this->result->sort($sort);
+    public function sort($sort = []){
+        $this->pending_sort = $sort;
+        $this->result = null;
         return $this;
     }
     
@@ -90,11 +142,9 @@ class Mongo{
      * @return $this
      */
     public function limit($skip = 0, $set = 30){
-        if($skip > 0)
-            $this->result = $this->result->limit($set)->skip($skip);
-        else{
-            $this->result = $this->result->limit($set);
-        }
+        $this->pending_skip = (int) $skip;
+        $this->pending_limit = (int) $set;
+        $this->result = null;
         return $this;
     }
     
@@ -105,22 +155,30 @@ class Mongo{
      * @return $this
      */
      
-    public function update($select = array(), $set = array()){
-        $this->result = $this->collection->update($select, array('$set'=>$set));
+    public function update($select = [], $set = []){
+        if (method_exists($this->collection, 'updateMany')) {
+            $this->collection->updateMany($select, ['$set'=>$set]);
+        } else {
+            $this->collection->update($select, ['$set'=>$set], ['multi' => true]);
+        }
         return $this;
     }
     
-    private function update_array($select = array(), $opts = array()){
-        $this->result = $this->collection->update($select, $opts);
+    private function update_array($select = [], $opts = []){
+        if (method_exists($this->collection, 'updateMany')) {
+            $this->collection->updateMany($select, $opts);
+        } else {
+            $this->collection->update($select, $opts, ['multi' => true]);
+        }
         return $this;
     }
     
-    public function addToSet($select = array(), $addToSet){
-        return $this->update_array($select, array('$addToSet'=>$addToSet));
+    public function addToSet($select = [], $addToSet){
+        return $this->update_array($select, ['$addToSet'=>$addToSet]);
     }
     
-    public function push($select = array(), $push){
-        return $this->update_array($select, array('$push'=>$push));
+    public function push($select = [], $push){
+        return $this->update_array($select, ['$push'=>$push]);
     }
     
     /**
@@ -149,10 +207,16 @@ class Mongo{
      * @param $params array fields to search by
      * @return row
      */
-    public function findOne($params = array(), $fields = array()){
-        return count($fields)? $this->collection->findOne($params, $fields) : $this->collection->findOne($params);
-        
-        
+    public function findOne($params = [], $fields = []){
+        $options = count($fields) ? ['projection' => $fields] : [];
+        if (method_exists($this->collection, 'findOne')) {
+            return $this->collection->findOne($params, $options);
+        }
+        $options['limit'] = 1;
+        foreach ($this->collection->find($params, $options) as $doc) {
+            return $doc;
+        }
+        return null;
     }
     
     /**
@@ -162,8 +226,22 @@ class Mongo{
      * @param $fields array fields to return after update
      * @return array result set
      */
-    public function findAndModify($query, $update, $fields=array()){
-        return $this->collection->findAndModify($query, $update, $fields);
+    public function findAndModify($query, $update, $fields=[]){
+        if (method_exists($this->collection, 'findOneAndUpdate')) {
+            $options = ['returnDocument' => 2];
+            if ($fields) {
+                $options['projection'] = $fields;
+            }
+            return $this->collection->findOneAndUpdate($query, $update, $options);
+        }
+        $cmd = new \MongoDB\Driver\Command([
+            'findAndModify' => $this->collection,
+            'query' => $query,
+            'update' => $update,
+            'new' => true,
+            'fields' => $fields,
+        ]);
+        return null;
     }
     
     /**
@@ -171,8 +249,8 @@ class Mongo{
      * @return array
      */
     public function result(){
-        $list = array();
-        foreach($this->result as $doc){
+        $list = [];
+        foreach($this->execute_find() as $doc){
             $list[] = $doc;
         }
         return $list;
@@ -184,8 +262,12 @@ class Mongo{
      * @param $params array with the criteria to remove by
      * @return $this
      */    
-    public function remove($params=array()){
-        $this->collection->deleteMany($params);
+    public function remove($params=[]){
+        if (method_exists($this->collection, 'deleteMany')) {
+            $this->collection->deleteMany($params);
+        } else {
+            $this->collection->remove($params);
+        }
         return $this;
     }
     
@@ -229,7 +311,7 @@ class Mongo{
         $selector = false;
         
         if((isset($obj->parentID) || $select_rule !== null)){
-            $selector = $select_rule !== null ? $select_rule : array('_id'=>$obj->parentID);
+            $selector = $select_rule !== null ? $select_rule : ['_id'=>$obj->parentID];
         }
         
         if(isset($obj->collection)){
@@ -238,7 +320,7 @@ class Mongo{
         
         if($selector != false && isset($obj->memberOf)){
             //we need to insert this item in an array that is part of a collection
-            $addToSet = array($obj->memberOf=>$obj->elements);
+            $addToSet = [$obj->memberOf=>$obj->elements];
             return $this->addToSet($selector, $addToSet);
         
         }else if($selector != false){

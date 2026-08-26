@@ -304,7 +304,7 @@ foreach($all_company_list as $key=>$val)
 
     $payment_msg= commonfunction::get_payment_message($payment_type,$wallet_amount_used,$pending_amt,$advance_payment,$driver_edit_status,$add_amt) ;
 
-    $fare_detail = isset($val['fare_details'])?$val['fare_details']:array();
+    $fare_detail = isset($val['fare_details'])?$val['fare_details']:[];
 
     /* This fare was static keys based on complete trip API, If any change regarding this one update mandatory */
     $cash_fare = isset($fare_detail[0]['value'])?$fare_detail[0]['value']:0;

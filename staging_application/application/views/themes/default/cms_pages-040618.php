@@ -15,7 +15,7 @@ if($lang == 'ar') {
     <div class="innerpage_banner">
       <?php if ($page_url == 'careers.html') {
 
-      $careers_page_contents = isset($careers_page_content[0])?$careers_page_content[0]:array();
+      $careers_page_contents = isset($careers_page_content[0])?$careers_page_content[0]:[];
 
       ?>
       <img src="public/images/careers_banner.png" alt="Careers" class="img-responsive"> 
