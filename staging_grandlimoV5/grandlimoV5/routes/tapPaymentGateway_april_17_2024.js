@@ -1,3 +1,4 @@
+var { withQuery } = require("../utils/withQuery");
 var express = require("express");
 var router = express.Router();
 var apimodel = require("../models/apimodel");
@@ -11,7 +12,6 @@ const tapPaymentGateway = require("../utils/tapPaymentGateway.js");
 var i18n = require("i18n");
 var q = require("q");
 var fs = require("fs");
-const url = require("url");
 
 const getMessage = (status, statusCode) => {
   if (status === "Cancelled")
@@ -77,10 +77,7 @@ module.exports = function (app) {
           if (walletLog.length > 0 && existingPaymentToken != "") {
             let redirect_url = protocol + hostname + "/processPayment/failed";
             return res.redirect(
-              url.format({
-                pathname: redirect_url,
-                query: { message: "Transaction already completed." },
-              })
+              withQuery(redirect_url, { message: "Transaction already completed." })
             );
             // var message = ;
             // res.type("text/json");
@@ -99,10 +96,7 @@ module.exports = function (app) {
               let redirect_url =
                 protocol + hostname + "/processPayment/success";
               return res.redirect(
-                url.format({
-                  pathname: redirect_url,
-                  query: { message: "Wallet recharged succesfully" },
-                })
+                withQuery(redirect_url, { message: "Wallet recharged succesfully" })
               );
               // var message = "Wallet recharged succesfully";
               // res.type("text/json");
@@ -116,7 +110,7 @@ module.exports = function (app) {
       // return res.send(message);
       let redirect_url = protocol + hostname + "/processPayment/failed";
       return res.redirect(
-        url.format({ pathname: redirect_url, query: { message: message } })
+        withQuery(redirect_url, { message: message })
       );
     }
   });
@@ -153,7 +147,7 @@ module.exports = function (app) {
       var message = "Invalid transaction. Please contact our support team.";
       let redirect_url = protocol + hostnameRedirect + "/processPayment/failed";
       res.redirect(
-        url.format({ pathname: redirect_url, query: { message: message } })
+        withQuery(redirect_url, { message: message })
       );
     }
 
@@ -262,7 +256,7 @@ module.exports = function (app) {
       var message = "Invalid transaction. Please contact our support team.";
       let redirect_url = protocol + hostnameRedirect + "/processPayment/failed";
       res.redirect(
-        url.format({ pathname: redirect_url, query: { message: message } })
+        withQuery(redirect_url, { message: message })
       );
     }
 
@@ -800,14 +794,10 @@ module.exports = function (app) {
                                                                   hostnameRedirect +
                                                                   "/processPayment/success";
                                                                 res.redirect(
-                                                                  url.format({
-                                                                    pathname:
-                                                                      redirect_url,
-                                                                    query: {
+                                                                  withQuery(redirect_url, {
                                                                       message:
                                                                         message,
-                                                                    },
-                                                                  })
+                                                                    })
                                                                 );
                                                               })
                                                               .catch((err) => {
@@ -871,7 +861,7 @@ module.exports = function (app) {
       // return res.send(message);
       let redirect_url = protocol + hostnameRedirect + "/processPayment/failed";
       res.redirect(
-        url.format({ pathname: redirect_url, query: { message: message } })
+        withQuery(redirect_url, { message: message })
       );
     }
   });

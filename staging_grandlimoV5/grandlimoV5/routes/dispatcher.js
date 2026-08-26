@@ -12,7 +12,6 @@ var config = require('../config/common_config.json');
 var i18n = require('i18n');
 var q= require('q');
 var fs= require('fs');
-const url = require('url');    
 
 
 module.exports = function (app) {

@@ -254,7 +254,7 @@ facebook_secretkey,facebook_share,twitter_share,site_logo FROM " . SITEINFO . " 
             } else {
                 $current_time = date('Y-m-d H:i:s');
             }
-			$current_time = new MongoDate(strtotime($current_time));
+			$current_time = new \MongoDB\BSON\UTCDateTime(strtotime($current_time) * 1000);
 			$rs = $this->mongo_db->find(MDB_PASSENGERS,array(),array('_id'))->sort(array('_id'=>-1))->limit(1);
 			$res = (!empty($rs))?iterator_to_array($rs):array(1);
 			reset($res);
@@ -277,8 +277,8 @@ facebook_secretkey,facebook_share,twitter_share,site_logo FROM " . SITEINFO . " 
                 'activation_status' => '1',
                 'login_from' => 3,
                 'user_status' => 'A',
-                'created_date' => new MongoDate(strtotime($current_time)),
-                'updated_date' => new MongoDate(strtotime($current_time)),
+                'created_date' => new \MongoDB\BSON\UTCDateTime(strtotime($current_time) * 1000),
+                'updated_date' => new \MongoDB\BSON\UTCDateTime(strtotime($current_time) * 1000),
                 'passenger_cid' => (int)$company_id
             );
 			//print_r($insert_array);exit;
@@ -686,11 +686,11 @@ facebook_secretkey,facebook_share,twitter_share,site_logo FROM " . SITEINFO . " 
 					'approx_distance' => $approx_distance,
 					'approx_fare' => (double)$approx_fare,
 					'time_to_reach_passen' => $distance_away,
-					'pickup_time' => new MongoDate(strtotime($update_time)),
-					'actual_pickup_time' => new MongoDate(strtotime($update_time)),
+					'pickup_time' => new \MongoDB\BSON\UTCDateTime(strtotime($update_time) * 1000),
+					'actual_pickup_time' => new \MongoDB\BSON\UTCDateTime(strtotime($update_time) * 1000),
 					'pickupdrop' => $pickupdrop,
 					'waitingtime' => $waitingtime,
-					'createdate' => new MongoDate(strtotime($this->currentdate)),
+					'createdate' => new \MongoDB\BSON\UTCDateTime(strtotime($this->currentdate) * 1000),
 					'taxi_modelid' => (int)$val['motor_model'],
 					'taxi_id' => (int)$val['taxi_id'],
 					'booking_from' => 1,
@@ -743,8 +743,8 @@ facebook_secretkey,facebook_share,twitter_share,site_logo FROM " . SITEINFO . " 
                     'drop_location' => (urldecode($val['dropplace']))?(urldecode($val['dropplace'])):'',
 					'drop_latitude' => (isset($drop_latitude))?$drop_latitude:'',
 					'drop_longitude' => (isset($drop_longitude))?$drop_longitude:'',
-                    'pickup_time' => new MongoDate(strtotime($pickup_time)),
-                    'actual_pickup_time' => new MongoDate(strtotime($update_time)),
+                    'pickup_time' => new \MongoDB\BSON\UTCDateTime(strtotime($pickup_time) * 1000),
+                    'actual_pickup_time' => new \MongoDB\BSON\UTCDateTime(strtotime($update_time) * 1000),
                    'no_passengers' => (int)$val['no_passengers'],
 					'max_luggage' => (int)$val['max_luggage'],
 					'luggage' => (int)$val['max_luggage'],
@@ -774,7 +774,7 @@ facebook_secretkey,facebook_share,twitter_share,site_logo FROM " . SITEINFO . " 
                     'distance' => (isset($val['distance']))?$val['distance']:'',
                      'pickupdrop' => (isset($val['pickupdrop']))?$val['pickupdrop']:'',
                      'fixedprice' => (isset($val['fixedprice']))?$val['fixedprice']:'',
-                    'createdate' => new MongoDate(strtotime($this->currentdate)),
+                    'createdate' => new \MongoDB\BSON\UTCDateTime(strtotime($this->currentdate) * 1000),
                     'payment_type' => $payment_type,
 					'rating' =>0,
 					'drop_time' =>"",
@@ -808,8 +808,8 @@ facebook_secretkey,facebook_share,twitter_share,site_logo FROM " . SITEINFO . " 
                    'drop_location' => (urldecode($val['dropplace']))?(urldecode($val['dropplace'])):'',
 					'drop_latitude' => (isset($drop_latitude))?$drop_latitude:'',
 					'drop_longitude' => (isset($drop_longitude))?$drop_longitude:'',
-                    'pickup_time' => new MongoDate(strtotime($pickup_time)),
-                    'actual_pickup_time' => new MongoDate(strtotime($update_time)),
+                    'pickup_time' => new \MongoDB\BSON\UTCDateTime(strtotime($pickup_time) * 1000),
+                    'actual_pickup_time' => new \MongoDB\BSON\UTCDateTime(strtotime($update_time) * 1000),
                     'no_passengers' => (int)$val['no_passengers'],
 					'max_luggage' => (int)$val['max_luggage'],
 					'luggage' => (int)$val['max_luggage'],
@@ -836,7 +836,7 @@ facebook_secretkey,facebook_share,twitter_share,site_logo FROM " . SITEINFO . " 
                     'distance' => (isset($val['distance']))?$val['distance']:'',
                     'pickupdrop' => (isset($val['pickupdrop']))?$val['pickupdrop']:'',
                      'fixedprice' => (isset($val['fixedprice']))?$val['fixedprice']:'',
-                    'createdate' => new MongoDate(strtotime($this->currentdate)),        
+                    'createdate' => new \MongoDB\BSON\UTCDateTime(strtotime($this->currentdate) * 1000),        
                     'now_after' => 1,
 					'book_type' => 'Book Later',
 					'book_tag' => 'N',
@@ -1107,7 +1107,7 @@ facebook_secretkey,facebook_share,twitter_share,site_logo FROM " . SITEINFO . " 
     /** Driver availability **/
       public function get_driver_availability($driver_id, $pickup_time)
     {
-		$match = array('pickup_time' => new MongoDate(strtotime($pickup_time)),
+		$match = array('pickup_time' => new \MongoDB\BSON\UTCDateTime(strtotime($pickup_time) * 1000),
 					   'driver_id' => (int)$driver_id,
 					   'driver_reply' => 'A',
 					   'travel_status' => 9 );
@@ -2405,7 +2405,7 @@ WHERE  " . PASSENGERS_LOG . ".`passengers_log_id` =  '$passengerlog_id' $company
 			'ack' => $details['ACK'],
 			'transaction_id' => $details['TRANSACTIONID'],
 			'payment_type' => $details['payment_type'],
-			'order_time' => new MongoDate(strtotime($current_time)),
+			'order_time' => new \MongoDB\BSON\UTCDateTime(strtotime($current_time) * 1000),
 			'amt' => (float)$details['amt'],
 			'currency_code' => $details['CURRENCYCODE'],
 			'payment_status' => $details['ACK'],
@@ -2704,7 +2704,7 @@ WHERE  " . PASSENGERS_LOG . ".`passengers_log_id` =  '$passengerlog_id' $company
 							'trip_id' => (int)$trip_id,
 							'status' => $status,
 							'distance' => (float)0,
-							'createdate' => new MongoDate(strtotime($current_time)),
+							'createdate' => new \MongoDB\BSON\UTCDateTime(strtotime($current_time) * 1000),
 							'loc' => array("type"=>"MultiPoint","coordinates"=> $loc_array));
 							//print_r($loc_data);exit;
 						$loc_result = $this->mongo_db->insert(MDB_LOCATION_HISTORY,$loc_data);
@@ -3026,7 +3026,7 @@ WHERE  " . PASSENGERS_LOG . ".`passengers_log_id` =  '$passengerlog_id' $company
             'drop_longitude' => $drop_longitude,
             'drop_location' => $drop_location,
 			'distance' => $total_distance,
-            'drop_time' => new MongoDate(strtotime($drop_time)),
+            'drop_time' => new \MongoDB\BSON\UTCDateTime(strtotime($drop_time) * 1000),
             'waitingtime' => $waiting_hours,
             'company_tax' => $tax
         );
@@ -3467,7 +3467,7 @@ WHERE  " . PASSENGERS_LOG . ".`passengers_log_id` =  '$passengerlog_id'";
 		$match_array['passengers_id'] = (int)$userid;
 		$match_array['travel_status'] = array('$in' => array(9,2,3));
 		$match_array['driver_reply'] = $driver_reply;
-		$match_array['pickup_time'] = array('$gte' => new MongoDate(strtotime($start_time)));
+		$match_array['pickup_time'] = array('$gte' => new \MongoDB\BSON\UTCDateTime(strtotime($start_time) * 1000));
 		
         $arguments = array(
 			array('$lookup'=>array(
@@ -3614,7 +3614,7 @@ WHERE  " . PASSENGERS_LOG . ".`passengers_log_id` =  '$passengerlog_id'";
 		$match_array['bookby'] = BOOK_BY_CONTROLLER;
 		$match_array['travel_status'] = array('$in' => array(9,3));
 		$match_array['driver_reply'] = '';		
-		$match_array['pickup_time'] = array('$gte' => new MongoDate(strtotime($start_time)));
+		$match_array['pickup_time'] = array('$gte' => new \MongoDB\BSON\UTCDateTime(strtotime($start_time) * 1000));
 
         $arguments = array(
 			array('$lookup'=>array(
@@ -3644,7 +3644,7 @@ WHERE  " . PASSENGERS_LOG . ".`passengers_log_id` =  '$passengerlog_id'";
 					'pickup_location'=>'$current_location',
 					'drop_location'=>'$drop_location',
 					'no_passengers'=>'$no_passengers',
-					'pickup_time' => array('$cond' => array(array('$eq' => array('$actual_pickup_time',new MongoDate(strtotime('1969-12-31 00:00:00')))),'$pickup_time','$actual_pickup_time')),
+					'pickup_time' => array('$cond' => array(array('$eq' => array('$actual_pickup_time',new \MongoDB\BSON\UTCDateTime(strtotime('1969-12-31 00:00:00') * 1000))),'$pickup_time','$actual_pickup_time')),
 					'rating'=>'$rating', 
 					'driver_name'=>'$people.name',
 					'driver_lastname'=>'$people.lastname',
@@ -4389,8 +4389,8 @@ JOIN  " . PEOPLE . " ON (  " . PEOPLE . ".`id` =  " . PASSENGERS_LOG . ".`driver
 		//$start_time   = '2015-04-20 00:00:01';
 		//$end_time     = '2015-04-20 23:59:59';
 		$match = array('mapping_driverid'=>(int)$driver_id,
-						//'mapping_startdate'=>array('$lte' => new MongoDate(strtotime($end_time))),
-						//'mapping_enddate'=>array('$gte' => new MongoDate(strtotime($start_time)))
+						//'mapping_startdate'=>array('$lte' => new \MongoDB\BSON\UTCDateTime(strtotime($end_time) * 1000)),
+						//'mapping_enddate'=>array('$gte' => new \MongoDB\BSON\UTCDateTime(strtotime($start_time) * 1000))
 						);
 		if ($company_id != '' && $company_id != 0) {
             $match['mapping_companyid'] = (int)$company_id;
@@ -4580,8 +4580,8 @@ JOIN  " . PEOPLE . " ON (  " . PEOPLE . ".`id` =  " . PASSENGERS_LOG . ".`driver
 					'as'=>"passengers")),
 				array('$unwind'=>'$passengers'),
 				array('$match'=>array(
-					'createdate'=>array('$gte'=> new MongoDate(strtotime($start_time)),
-										'$lte'=> new MongoDate(strtotime($end_time))),
+					'createdate'=>array('$gte'=> new \MongoDB\BSON\UTCDateTime(strtotime($start_time) * 1000),
+										'$lte'=> new \MongoDB\BSON\UTCDateTime(strtotime($end_time) * 1000)),
 					'driver_id'=>(int)$id,
 					'msg_status'=> $msg_status,
 					'driver_reply'=> $driver_reply,
@@ -5152,9 +5152,9 @@ JOIN  " . PEOPLE . " ON (  " . PEOPLE . ".`id` =  " . PASSENGERS_LOG . ".`driver
             $current_datetime = date('Y-m-d H:i:s');
         }
         if ($otp_array['user_type'] == 'P') {            
-			$update_otp = $this->mongo_db->update(MDB_PASSENGERS,array('phone'=>$otp_array['phone'],'passenger_cid'=>(int)$company_id),array('$set'=>array('otp'=>$otp,'updated_date'=> new MongoDate(strtotime($current_datetime)) )),array('upsert'=>false));            
+			$update_otp = $this->mongo_db->update(MDB_PASSENGERS,array('phone'=>$otp_array['phone'],'passenger_cid'=>(int)$company_id),array('$set'=>array('otp'=>$otp,'updated_date'=> new \MongoDB\BSON\UTCDateTime(strtotime($current_datetime) * 1000) )),array('upsert'=>false));            
         } else if ($otp_array['user_type'] == 'D') {
-			$update_otp = $this->mongo_db->update(MDB_PEOPLE,array('phone'=>$otp_array['phone']),array('$set'=>array('otp'=>$otp,'updated_date'=> new MongoDate(strtotime($current_datetime)) )),array('upsert'=>false));
+			$update_otp = $this->mongo_db->update(MDB_PEOPLE,array('phone'=>$otp_array['phone']),array('$set'=>array('otp'=>$otp,'updated_date'=> new \MongoDB\BSON\UTCDateTime(strtotime($current_datetime) * 1000) )),array('upsert'=>false));
         } else {
             $update_otp = false;
         }
@@ -5790,7 +5790,7 @@ JOIN  " . PEOPLE . " ON (  " . PEOPLE . ".`id` =  " . PASSENGERS_LOG . ".`driver
 								'expdateyear' => $expdateyear,
 								'default_card' => (int)$default,
 								'status' => 1,
-								"createdate" => new MongoDate(strtotime($this->currentdate))));
+								"createdate" => new \MongoDB\BSON\UTCDateTime(strtotime($this->currentdate) * 1000)));
 								//print_r($update_array);exit;
             if ($default == 1) {
 				//echo "ssdsds ";exit;
@@ -6054,8 +6054,8 @@ JOIN  " . PEOPLE . " ON (  " . PEOPLE . ".`id` =  " . PASSENGERS_LOG . ".`driver
     {
         $start_time   = $date . ' 00:00:01';
         $end_time     = $date . ' 23:59:59';
-		$match = array('createdate'=>array('$gte'=> new MongoDate(strtotime($start_time)),
-										   '$lte'=> new MongoDate(strtotime($end_time))),
+		$match = array('createdate'=>array('$gte'=> new \MongoDB\BSON\UTCDateTime(strtotime($start_time) * 1000),
+										   '$lte'=> new \MongoDB\BSON\UTCDateTime(strtotime($end_time) * 1000)),
 						//'passengers_id'=> (int)$userid,
 						'passengers_id'=> array('$in' =>$ids),
 						'travel_status'=> (int)$status,
@@ -6237,7 +6237,7 @@ JOIN  " . PEOPLE . " ON (  " . PEOPLE . ".`id` =  " . PASSENGERS_LOG . ".`driver
 						'msg_status' => '$msg_status'						
 					)),
 					array('$match'=>array(
-						'createdate'=>array('$gte' => new MongoDate(strtotime($start_time)), '$lte'=> new MongoDate(strtotime($end_time))),
+						'createdate'=>array('$gte' => new \MongoDB\BSON\UTCDateTime(strtotime($start_time) * 1000), '$lte'=> new \MongoDB\BSON\UTCDateTime(strtotime($end_time) * 1000)),
 						'passengers_id' => (int)$userid,		
 						'travel_status' => (int)1,	
 						'driver_reply' => 'A',	
@@ -6259,8 +6259,8 @@ JOIN  " . PEOPLE . " ON (  " . PEOPLE . ".`id` =  " . PASSENGERS_LOG . ".`driver
 		
 		//$match_query['passengers_id'] = array('$in' =>$ids);
 		
-		$match = array('createdate'=>array('$gte'=> new MongoDate(strtotime($start_time)),
-										   '$lte'=> new MongoDate(strtotime($end_time))),
+		$match = array('createdate'=>array('$gte'=> new \MongoDB\BSON\UTCDateTime(strtotime($start_time) * 1000),
+										   '$lte'=> new \MongoDB\BSON\UTCDateTime(strtotime($end_time) * 1000)),
 						'passengers_id'=> array('$in' =>$ids),
 						'travel_status'=> (int)$status,
 						'driver_reply'=> $driver_reply);
@@ -7239,7 +7239,7 @@ JOIN  " . PEOPLE . " ON (  " . PEOPLE . ".`id` =  " . PASSENGERS_LOG . ".`driver
     {
         $datetime     = explode(' ', $company_all_currenttimestamp);
         $currentdate  = $datetime[0] . ' 00:00:01';
-		$match = array('passengers_id'=>(int)$passenger_id,'createdate'=>array('$gte'=> new MongoDate(strtotime($currentdate))));
+		$match = array('passengers_id'=>(int)$passenger_id,'createdate'=>array('$gte'=> new \MongoDB\BSON\UTCDateTime(strtotime($currentdate) * 1000)));
 		$result = $this->mongo_db->remove(MDB_REJECTION_HISTORY,$match);		
         return (isset($result['err'])?0:1);
     }
@@ -7429,7 +7429,7 @@ JOIN  " . PEOPLE . " ON (  " . PEOPLE . ".`id` =  " . PASSENGERS_LOG . ".`driver
 		$match_query['driver_reply'] = $driver_reply;
 		$match_query['travel_status'] = (int)$travel_status;
 		if ($start_time != "" && $end_time!="") {
-			//$match_query['createdate'] = array('$gte' => new MongoDate(strtotime($start_time)),'$lte' => new MongoDate(strtotime($end_time)));
+			//$match_query['createdate'] = array('$gte' => new \MongoDB\BSON\UTCDateTime(strtotime($start_time) * 1000),'$lte' => new \MongoDB\BSON\UTCDateTime(strtotime($end_time) * 1000));
         }
 		$arguments = array(
 			array('$lookup'  		=> array(
@@ -8125,7 +8125,7 @@ JOIN  " . PEOPLE . " ON (  " . PEOPLE . ".`id` =  " . PASSENGERS_LOG . ".`driver
 					"creditcard_details.$i.expdatemonth" => isset($v['expdatemonth']) ? $v['expdatemonth']: '',
 					"creditcard_details.$i.expdateyear" => isset($v['expdateyear']) ? $v['expdateyear']: '',
 					"creditcard_details.$i.default_card" => (int) isset($v['default_card']) ? $v['default_card']: '',
-					"creditcard_details.$i.createdate" => new MongoDate(strtotime($this->currentdate)),
+					"creditcard_details.$i.createdate" => new \MongoDB\BSON\UTCDateTime(strtotime($this->currentdate) * 1000),
 					"creditcard_details.$i.card_holder_name" =>isset($v['expdateyear']) ? $v['expdateyear']: '',*/
 		/*if($default == 1){
 			if(count($result) > 1)
@@ -8317,7 +8317,7 @@ JOIN  " . PEOPLE . " ON (  " . PEOPLE . ".`id` =  " . PASSENGERS_LOG . ".`driver
 		$match_array['msg_status'] = $msg_status;
 		$match_array['driver_reply'] = $driver_reply;
 		$match_array['travel_status'] = array('$in' => array(2,3,5,9));
-		$match_array['pickup_time'] = array('$gte' => new MongoDate(strtotime($start_time)));
+		$match_array['pickup_time'] = array('$gte' => new \MongoDB\BSON\UTCDateTime(strtotime($start_time) * 1000));
         $arguments = array(
 			array('$lookup'=>array(
 				'from'=>MDB_PASSENGERS,
@@ -8463,7 +8463,7 @@ JOIN  " . PEOPLE . " ON (  " . PEOPLE . ".`id` =  " . PASSENGERS_LOG . ".`driver
             'passengers_id' => (int)$post['passengers_id'],
             'reason' => $post['reason'],
             'rejection_type' => (int)$rejection_type,
-            'createdate' => new MongoDate(strtotime($post['createdate']))
+            'createdate' => new \MongoDB\BSON\UTCDateTime(strtotime($post['createdate']) * 1000)
 		);
 		$result = $this->mongo_db->insert(MDB_REJECTION_HISTORY,$insert_data);
     }
@@ -8697,7 +8697,7 @@ JOIN  " . PEOPLE . " ON (  " . PEOPLE . ".`id` =  " . PASSENGERS_LOG . ".`driver
         $end_time                 = $get_company_time_details['end_time']; 
         //echo  $driver_id.'//'.$end_time;exit;
         $match = array('driver_id'=> (int)$driver_id,
-						'createdate'=>array('$gte' => new MongoDate(strtotime($start_time)),'$lte' => new MongoDate(strtotime($end_time)))
+						'createdate'=>array('$gte' => new \MongoDB\BSON\UTCDateTime(strtotime($start_time) * 1000),'$lte' => new \MongoDB\BSON\UTCDateTime(strtotime($end_time) * 1000))
 						);
         $res = $this->mongo_db->count(MDB_REJECTION_HISTORY,$match);
         return (isset($res)) ? $res : 0 ;		
@@ -8707,7 +8707,7 @@ JOIN  " . PEOPLE . " ON (  " . PEOPLE . ".`id` =  " . PASSENGERS_LOG . ".`driver
         $get_company_time_details = $this->get_company_time_details($company_id);
         $start_time               = $get_company_time_details['start_time']; 
         $end_time                 = $get_company_time_details['end_time']; 
-        $res = $this->mongo_db->count(MDB_REJECTION_HISTORY, array('driver_id'=>(int)$driver_id,'createdate'=>array('$gte' => new MongoDate(strtotime($start_time)),'$lte' => new MongoDate(strtotime($end_time)))));
+        $res = $this->mongo_db->count(MDB_REJECTION_HISTORY, array('driver_id'=>(int)$driver_id,'createdate'=>array('$gte' => new \MongoDB\BSON\UTCDateTime(strtotime($start_time) * 1000),'$lte' => new \MongoDB\BSON\UTCDateTime(strtotime($end_time) * 1000))));
 		
         return (isset($result)) ? $result : array() ;		
     }
@@ -8752,7 +8752,7 @@ JOIN  " . PEOPLE . " ON (  " . PEOPLE . ".`id` =  " . PASSENGERS_LOG . ".`driver
         $currentdate = $datetime[0] . ' 00:00:01';
 		$arguments = array(array('$match' => array('status' => (int)0,
 												   'selected_driver' =>(int) $driver_id,
-												   'createdate' => array('$gte' => new MongoDate(strtotime($currentdate)))
+												   'createdate' => array('$gte' => new \MongoDB\BSON\UTCDateTime(strtotime($currentdate) * 1000))
 												   )),
 									array('$project' => array('trip_id' => '$trip_id',
 														   'available_drivers' => '$available_drivers')),
@@ -9233,7 +9233,7 @@ JOIN  " . PEOPLE . " ON (  " . PEOPLE . ".`id` =  " . PASSENGERS_LOG . ".`driver
 						'driver_id' => (int)$driver_id,
 						'travel_status' => 4,
 						'notification_status' => array('$nin' => array(4,5)),
-						'createdate' => new MongoDate(strtotime($current_time))
+						'createdate' => new \MongoDB\BSON\UTCDateTime(strtotime($current_time) * 1000)
 					);
 		$arguments = array(
 			array('$match'=>$match_array),
@@ -9293,7 +9293,7 @@ JOIN  " . PEOPLE . " ON (  " . PEOPLE . ".`id` =  " . PASSENGERS_LOG . ".`driver
 		
 		
 		if ($createdate == 0) {
-			$match_query['pickup_time'] = array('$gte' => new MongoDate(strtotime($start_time)));
+			$match_query['pickup_time'] = array('$gte' => new \MongoDB\BSON\UTCDateTime(strtotime($start_time) * 1000));
         }
 		 if ($company_id != "" && $company_id != 0 ) {
 			$match_query['company_id'] = (int)$company_id;
@@ -9453,7 +9453,7 @@ JOIN  " . PEOPLE . " ON (  " . PEOPLE . ".`id` =  " . PASSENGERS_LOG . ".`driver
 		//$match_query['driver_reply'] = $driver_reply;
 		$match_query['travel_status'] = 0;
 		if ($createdate == 0) {
-			$match_query['pickup_time'] = array('$gte' => new MongoDate(strtotime($current_time)));
+			$match_query['pickup_time'] = array('$gte' => new \MongoDB\BSON\UTCDateTime(strtotime($current_time) * 1000));
         }
 		if ($pagination == 1) {
 			$field_arguments = array(
@@ -9553,7 +9553,7 @@ JOIN  " . PEOPLE . " ON (  " . PEOPLE . ".`id` =  " . PASSENGERS_LOG . ".`driver
 		$match_query['driver_reply'] = $driver_reply;
 		$match_query['travel_status'] = array('$in' => array(9,2,3,5));
 		if ($createdate == 0) {
-			$match_query['pickup_time'] = array('$gte' => new MongoDate(strtotime($start_time)));
+			$match_query['pickup_time'] = array('$gte' => new \MongoDB\BSON\UTCDateTime(strtotime($start_time) * 1000));
         }
 		if ($pagination == 1) {
 			$field_arguments = array(
@@ -9752,7 +9752,7 @@ JOIN  " . PEOPLE . " ON (  " . PEOPLE . ".`id` =  " . PASSENGERS_LOG . ".`driver
             ),		
 			array(
                 '$project' => array(
-					'pickup_time' => array('$sum' => array('$cond' => array(array('$eq' => array('$actual_pickup_time',new MongoDate(strtotime('0000-00-00 00:00:00')))),'$pickup_time','$actual_pickup_time'))),
+					'pickup_time' => array('$sum' => array('$cond' => array(array('$eq' => array('$actual_pickup_time',new \MongoDB\BSON\UTCDateTime(strtotime('0000-00-00 00:00:00') * 1000))),'$pickup_time','$actual_pickup_time'))),
 					'passengers_log_id'=>'$_id',
 					'pickup_location'=>'$current_location',
 					'passenger_name'=>'$passengers.name',
@@ -9945,7 +9945,7 @@ JOIN  " . PEOPLE . " ON (  " . PEOPLE . ".`id` =  " . PASSENGERS_LOG . ".`driver
 		$result = $this->mongo_db->find(MDB_REQUEST_HISTORY,
 										array('status' => 0, 'selected_driver' => (int)$driver_id,
 											  'trip_id' => array('$ne' => (int)$trip_id),
-											  'createdate' => array('$gte' => new MongoDate(strtotime($currentdate)))),
+											  'createdate' => array('$gte' => new \MongoDB\BSON\UTCDateTime(strtotime($currentdate) * 1000))),
 										array('trip_id','available_drivers','rejected_timeout_drivers'))
 								->sort(array('trip_id' => -1));
 		$result = iterator_to_array($result);
@@ -9974,7 +9974,7 @@ JOIN  " . PEOPLE . " ON (  " . PEOPLE . ".`id` =  " . PASSENGERS_LOG . ".`driver
         $datetime     = explode(' ', $company_all_currenttimestamp);
         $current_date = $datetime[0] . ' 00:00:01';
         $createdate   = isset($current_date) ? $current_date : $datetime;
-		$createdate = new MongoDate(strtotime($createdate));
+		$createdate = new \MongoDB\BSON\UTCDateTime(strtotime($createdate) * 1000);
 		$match = array('_id'=>(int)$trip_id,
 					   'selected_driver'=> (int)$driver_id,
 					   'status'=>array('$ne'=>4),
@@ -10291,7 +10291,7 @@ JOIN  " . PEOPLE . " ON (  " . PEOPLE . ".`id` =  " . PASSENGERS_LOG . ".`driver
         $createdate   = isset($current_date) ? $current_date : $datetime;
 		$match = array('status' => 1,
 					   'selected_driver' =>(int)$driver_id,
-					   'createdate' => array('$gte'=> new MongoDate(strtotime($createdate))),
+					   'createdate' => array('$gte'=> new \MongoDB\BSON\UTCDateTime(strtotime($createdate) * 1000)),
 					   );
 		$result = $this->mongo_db->count(MDB_REQUEST_HISTORY,$match);
 		return isset($result) ? $result:0;
@@ -10434,8 +10434,8 @@ JOIN  " . PEOPLE . " ON (  " . PEOPLE . ".`id` =  " . PASSENGERS_LOG . ".`driver
 					'as'=>"transaction")),
 				array('$unwind'=>'$transaction'),
 				array('$match'=>array(
-					'createdate'=>array('$gte'=>new MongoDate(strtotime($start_time)),
-										'$lte'=>new MongoDate(strtotime($end_time))),
+					'createdate'=>array('$gte'=>new \MongoDB\BSON\UTCDateTime(strtotime($start_time) * 1000),
+										'$lte'=>new \MongoDB\BSON\UTCDateTime(strtotime($end_time) * 1000)),
 					'driver_id'=>(int)$driver_id,
 					'travel_status'=>1
 				)),
@@ -10676,8 +10676,8 @@ JOIN  " . PEOPLE . " ON (  " . PEOPLE . ".`id` =  " . PASSENGERS_LOG . ".`driver
 			'activation_key' => null,
 			'activation_status' => '1',
 			'user_status' => 'I',
-			'created_date' => new MongoDate(strtotime($current_time)),
-			'updated_date' => new MongoDate(strtotime($current_time)),
+			'created_date' => new \MongoDB\BSON\UTCDateTime(strtotime($current_time) * 1000),
+			'updated_date' => new \MongoDB\BSON\UTCDateTime(strtotime($current_time) * 1000),
 			'passenger_cid' => (int)$company_id,
 			'device_token'=> $devicetoken,
 			'device_id' => $deviceid,
@@ -10879,7 +10879,7 @@ JOIN  " . PEOPLE . " ON (  " . PEOPLE . ".`id` =  " . PASSENGERS_LOG . ".`driver
                 'device_id' => $deviceid,
                 'device_token' => $devicetoken,
                 'referred_by' => (int)$ref_id,
-                'createdate' =>  new MongoDate(strtotime($current_time))
+                'createdate' =>  new \MongoDB\BSON\UTCDateTime(strtotime($current_time) * 1000)
             );
 			$passRef = $this->mongo_db->Insert(MDB_PASSENGER_REFERRAL,$ref_fieldArr);
             //to update the referral amount into the wallet column in passenger table
@@ -11173,7 +11173,7 @@ JOIN  " . PEOPLE . " ON (  " . PEOPLE . ".`id` =  " . PASSENGERS_LOG . ".`driver
         $get_company_time_details = $this->get_company_time_details($company_id);
         $start_time               = $get_company_time_details['start_time']; //Start time
         $end_time                 = $get_company_time_details['end_time']; //end time
-        $result = $this->mongo_db->count(MDB_PASSENGERS_LOGS,array('travel_status'=>9,'driver_reply'=>"C",'createdate'=>array('$gte'=>new MongoDate(strtotime($start_time)),'$lte'=>new MongoDate(strtotime($end_time)))));
+        $result = $this->mongo_db->count(MDB_PASSENGERS_LOGS,array('travel_status'=>9,'driver_reply'=>"C",'createdate'=>array('$gte'=>new \MongoDB\BSON\UTCDateTime(strtotime($start_time) * 1000),'$lte'=>new \MongoDB\BSON\UTCDateTime(strtotime($end_time) * 1000))));
         return (isset($result))?$result:0;
     }
      public function logged_user_status_web($driver_id, $company_id)
@@ -11208,7 +11208,7 @@ JOIN  " . PEOPLE . " ON (  " . PEOPLE . ".`id` =  " . PASSENGERS_LOG . ".`driver
 		if($company_id!="" && $company_id!=0){
 			$match_array['company_id']=(int)$company_id;
 		}
-		//$match_array['taxi_driver_mapping.mapping_enddate']= array('$gte'=> new MongoDate(strtotime($current_time)));
+		//$match_array['taxi_driver_mapping.mapping_enddate']= array('$gte'=> new \MongoDB\BSON\UTCDateTime(strtotime($current_time) * 1000));
 		$arguments = array(
 						array('$lookup'=>array(
 							'from'=>MDB_TAXI_DRIVER_MAPPING,
@@ -11236,7 +11236,7 @@ JOIN  " . PEOPLE . " ON (  " . PEOPLE . ".`id` =  " . PASSENGERS_LOG . ".`driver
 			if($company_id!="" && $company_id!=0){
 				$match_array['company_id']=(int)$company_id;
 			}
-			$match_array['pickup_time']= array('$gte'=> new MongoDate(strtotime($start_time)));
+			$match_array['pickup_time']= array('$gte'=> new \MongoDB\BSON\UTCDateTime(strtotime($start_time) * 1000));
 			$result1 = $this->mongo_db->find(MDB_PASSENGERS_LOGS,$match_array,array('_id','travel_status'))->sort(array('_id' => -1))->skip(0)->limit(1);
 			$get_driver_log_details = iterator_to_array($result1);
             if (count($get_driver_log_details) == 0) {
@@ -11263,7 +11263,7 @@ JOIN  " . PEOPLE . " ON (  " . PEOPLE . ".`id` =  " . PASSENGERS_LOG . ".`driver
                 if (count($driver_shift) > 0) {
                     $this->currentdate  = Commonfunction::getCurrentTimeStamp();
                     $shiftupdate_arrary = array(
-                        "shift_end" => new MongoDate(strtotime($this->currentdate))
+                        "shift_end" => new \MongoDB\BSON\UTCDateTime(strtotime($this->currentdate) * 1000)
                     );
                     $driver_shift_id    = isset($driver_shift[0]['_id']) ? $driver_shift[0]['_id'] : '';
 					if($driver_shift_id != ''){
@@ -11396,7 +11396,7 @@ JOIN  " . PEOPLE . " ON (  " . PEOPLE . ".`id` =  " . PASSENGERS_LOG . ".`driver
         $st_time               = $get_company_time_details['start_time'];
 		$start_time = Commonfunction::convertphpdate('Y-m-d H:i:s',$st_time);
 		
-		$match = array('pickup_time' => array('$gte'=> new MongoDate(strtotime($start_time))),
+		$match = array('pickup_time' => array('$gte'=> new \MongoDB\BSON\UTCDateTime(strtotime($start_time) * 1000)),
 						'passengers_id' => (int)$passengerId,
 						'driver_reply' => 'A',
 						'now_after' => '0',
@@ -12340,7 +12340,7 @@ JOIN  " . PEOPLE . " ON (  " . PEOPLE . ".`id` =  " . PASSENGERS_LOG . ".`driver
         $currentdate = $datetime[0] . ' 00:00:01';
 		$arguments = array(array('$match' => array('status' => (int)0,
 												   'selected_driver' =>(int) $driver_id,
-												   'createdate' => array('$gte' => new MongoDate(strtotime($currentdate)))
+												   'createdate' => array('$gte' => new \MongoDB\BSON\UTCDateTime(strtotime($currentdate) * 1000))
 												   )),
 									array('$project' => array('trip_id' => '$trip_id',
 														   'available_drivers' => '$available_drivers')),
@@ -12403,7 +12403,7 @@ JOIN  " . PEOPLE . " ON (  " . PEOPLE . ".`id` =  " . PASSENGERS_LOG . ".`driver
         $currentdate = $datetime[0] . ' 00:00:01';
 		$arguments = array(array('$match' => array('status' => (int)0,
 												   'selected_driver' => (int)$driver_id,
-												   'createdate' => array('$gte' => new MongoDate(strtotime($currentdate)))
+												   'createdate' => array('$gte' => new \MongoDB\BSON\UTCDateTime(strtotime($currentdate) * 1000))
 												   )),
 									array('$project' => array('trip_id' => '$trip_id',
 														   'available_drivers' => '$available_drivers')),
@@ -12461,7 +12461,7 @@ JOIN  " . PEOPLE . " ON (  " . PEOPLE . ".`id` =  " . PASSENGERS_LOG . ".`driver
         $currentdate = $datetime[0] . ' 00:00:01';
 		$arguments = array(array('$match' => array('status' => (int)0,
 												   'selected_driver' => (int)$driver_id,
-												   'createdate' => array('$gte' => new MongoDate(strtotime($currentdate)))
+												   'createdate' => array('$gte' => new \MongoDB\BSON\UTCDateTime(strtotime($currentdate) * 1000))
 												   )),
 									array('$project' => array('trip_id' => '$trip_id',
 														   'available_drivers' => '$available_drivers')),

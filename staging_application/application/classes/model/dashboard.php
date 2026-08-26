@@ -195,7 +195,7 @@ class Model_Dashboard extends Model
 		
 		$match_query['travel_status'] = 1;
 		
-		$match_query['pickup_time'] = array('$gte'=>new MongoDate(strtotime($start)),'$lte'=>new MongoDate(strtotime($end)));
+		$match_query['pickup_time'] = array('$gte'=>new \MongoDB\BSON\UTCDateTime(strtotime($start) * 1000),'$lte'=>new \MongoDB\BSON\UTCDateTime(strtotime($end) * 1000));
 		if($company_id != 0 && $company_id!=""){
 			$match_query['company_id'] = (int)$company_id;
 		}

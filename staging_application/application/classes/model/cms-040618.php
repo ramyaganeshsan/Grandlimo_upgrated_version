@@ -213,7 +213,7 @@ Class Model_Cms extends Model
         $inc_id = $taxi_id = $first_key+1;       
       
 
-        $career_data = array('_id' => (int)$inc_id,'job_id'=>(int)$arr['job_id'],'name'=>$arr['name'],'email'=>$arr['email'],'phone'=>$arr['phone'],'resume_file'=>$filename,'created_date' => new MongoDate(strtotime($this->currentdate)) );
+        $career_data = array('_id' => (int)$inc_id,'job_id'=>(int)$arr['job_id'],'name'=>$arr['name'],'email'=>$arr['email'],'phone'=>$arr['phone'],'resume_file'=>$filename,'created_date' => new \MongoDB\BSON\UTCDateTime(strtotime($this->currentdate) * 1000) );
 
         $result = $this->mongo_db->insert(MDB_RESUMES,$career_data);
 
@@ -452,7 +452,7 @@ Class Model_Cms extends Model
             'subject' => $sign['subject'],
             'message'=> $message,
             'phone' =>  $sign['phone'],
-            'sent_date' =>  new MongoDate(strtotime($current_time))
+            'sent_date' =>  new \MongoDB\BSON\UTCDateTime(strtotime($current_time) * 1000)
             
         );  
             $insert      = $this->mongo_db->Insert(MDB_CONTACTS,$fieldname_array);

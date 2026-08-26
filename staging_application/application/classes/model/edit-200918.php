@@ -1499,7 +1499,7 @@ Class Model_Edit extends Model
                 'login_city' => (int)$post['city'],
                 'lastname' => $post['lastname'],
                 'gender' => $post['gender'],
-                'dob' => new MongoDate(strtotime($post['dob'])),
+                'dob' => new \MongoDB\BSON\UTCDateTime(strtotime($post['dob']) * 1000),
                 'email' => $post['email'],
                 'driver_license_id' => $post['driver_license_id'],
                 'phone' => $post['phone'],
@@ -1517,7 +1517,7 @@ Class Model_Edit extends Model
 				'login_city' => (int)$post['city'],
 				'lastname' => $post['lastname'],
 				'gender' => $post['gender'],
-				'dob' => new MongoDate(strtotime($post['dob'])),
+				'dob' => new \MongoDB\BSON\UTCDateTime(strtotime($post['dob']) * 1000),
 				'email' => $post['email'],
 				'password' => $password,
 				'org_password' => $post['password'],
@@ -1575,13 +1575,13 @@ Class Model_Edit extends Model
 		$driver_info_data = array(
 			'driverinfo' => array(
 				array(
-					'driver_license_expire_date' => new MongoDate(strtotime($post['driver_license_expire_date'])),
+					'driver_license_expire_date' => new \MongoDB\BSON\UTCDateTime(strtotime($post['driver_license_expire_date']) * 1000),
 					'driver_pco_license_number' => $post['driver_pco_license_number'],
-					'driver_pco_license_expire_date'=> new MongoDate(strtotime($post['driver_pco_license_expire_date'])),
+					'driver_pco_license_expire_date'=> new \MongoDB\BSON\UTCDateTime(strtotime($post['driver_pco_license_expire_date']) * 1000),
 					'driver_insurance_number'=>(int)$post['driver_insurance_number'],
-					'driver_insurance_expire_date'=> new MongoDate(strtotime($post['driver_insurance_expire_date'])),
+					'driver_insurance_expire_date'=> new \MongoDB\BSON\UTCDateTime(strtotime($post['driver_insurance_expire_date']) * 1000),
 					'driver_national_insurance_number'=>$post['driver_national_insurance_number'],
-					'driver_national_insurance_expire_date'=> new MongoDate(strtotime($post['driver_national_insurance_expire_date']))
+					'driver_national_insurance_expire_date'=> new \MongoDB\BSON\UTCDateTime(strtotime($post['driver_national_insurance_expire_date']) * 1000)
 				)
 			)
 		);	
@@ -3035,8 +3035,8 @@ Class Model_Edit extends Model
         return 1;*/
 	
 		$data     = array(
-			'start_date' => new MongoDate(strtotime($post['start_date'])),
-            'expire_date' => new MongoDate(strtotime( $post['expire_date'])),
+			'start_date' => new \MongoDB\BSON\UTCDateTime(strtotime($post['start_date']) * 1000),
+            'expire_date' => new \MongoDB\BSON\UTCDateTime(strtotime( $post['expire_date']) * 1000),
             'promo_limit' => (int)$post['promo_limit']
 		);
 		$result = $this->mongo_db->update(MDB_PASSENGERS_PROMO,array('promocode'=>$promocode),array('$set'=>$data),array('upsert'=>false,'multiple'=>true));

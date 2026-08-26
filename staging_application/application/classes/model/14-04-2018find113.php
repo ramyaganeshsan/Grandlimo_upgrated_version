@@ -247,7 +247,7 @@ class Model_Find113 extends Model
 		$match = array(
 				'people.status'=>"A",
 				/*'people.booking_limit'=> array('$gt' => $this->mongo_db->count(MDB_PASSENGERS_LOGS,array('createdate'=>array(
-									'$gte'=> new MongoDate(strtotime($start_time))),
+									'$gte'=> new \MongoDB\BSON\UTCDateTime(strtotime($start_time) * 1000)),
 									'driver_id'=>'people._id',
 									'travel_status'=>1,
 									'booking_from' => array('$ne'=>2)))),*/
@@ -258,10 +258,10 @@ class Model_Find113 extends Model
 				'company.companydetails.company_status' => 'A',      
 				'driverinfo.status' => 'F',     //MULTI TRIP 
 				'driverinfo.shift_status' => 'IN',      
-				//'taxi_mapping.mapping_startdate' => array('$lte' => new MongoDate(strtotime($start_time))),
-				//'taxi_mapping.mapping_enddate' => array('$gte' => new MongoDate(strtotime($end_time)))
+				//'taxi_mapping.mapping_startdate' => array('$lte' => new \MongoDB\BSON\UTCDateTime(strtotime($start_time) * 1000)),
+				//'taxi_mapping.mapping_enddate' => array('$gte' => new \MongoDB\BSON\UTCDateTime(strtotime($end_time) * 1000))
 				//'package_report.check_package_type' => 'T',
-				//'package_report.upgrade_expirydate' => array('$gte' => new MongoDate(strtotime($end_time)))
+				//'package_report.upgrade_expirydate' => array('$gte' => new \MongoDB\BSON\UTCDateTime(strtotime($end_time) * 1000))
 			); 
         if ($company_id != "") {
             $match['taxi_mapping.mapping_companyid'] = (int)$company_id;
@@ -275,7 +275,7 @@ class Model_Find113 extends Model
         $check_pass_log = $this->mongo_db->count(MDB_PASSENGERS_LOGS);//exit;
         
         $book_limit =  $this->mongo_db->count(MDB_PASSENGERS_LOGS,array(
-									'createdate'=>array('$gte'=> new MongoDate(strtotime($start_time))),
+									'createdate'=>array('$gte'=> new \MongoDB\BSON\UTCDateTime(strtotime($start_time) * 1000)),
 									'driver_id'=> '$people._id',
 									//'taxi_modelid'=> (int)$motor_model,
 									'travel_status'=>1,
@@ -612,8 +612,8 @@ class Model_Find113 extends Model
 							'shift_status' => 'IN',
 							'_id'=>array('$in'=>$driver_list_array)
 						);
-        $match2   = array(  //'tmap.mapping_startdate' => array('$gte'=> new MongoDate(strtotime($start_time))),
-							//'tmap.mapping_enddate' => array('$lte'=>new MongoDate(strtotime($end_time))),
+        $match2   = array(  //'tmap.mapping_startdate' => array('$gte'=> new \MongoDB\BSON\UTCDateTime(strtotime($start_time) * 1000)),
+							//'tmap.mapping_enddate' => array('$lte'=>new \MongoDB\BSON\UTCDateTime(strtotime($end_time) * 1000)),
 							'tmap.mapping_status' => 'A',
 							'updatetime_difference' => array( '$lte' => (int)$up_time_milli),
 						);
@@ -672,7 +672,7 @@ class Model_Find113 extends Model
 							'loc' => '$loc.coordinates',
 							'people' => 1,	
 							'updatetime_difference' => array('$subtract'=>
-								array(new MongoDate(strtotime($current_time)),'$update_date'))
+								array(new \MongoDB\BSON\UTCDateTime(strtotime($current_time) * 1000),'$update_date'))
 						)),
 			array('$lookup'=>array(
 							'from' => MDB_TAXI_DRIVER_MAPPING,
@@ -1192,8 +1192,8 @@ class Model_Find113 extends Model
 							'_id'=>array('$in'=>$driver_list_array)
 						);
         $match2   = array(  'updatetime_difference' => array('$lte'=>LOCATIONUPDATESECONDS),
-							'tmap.mapping_startdate' => array('$lte'=> new MongoDate(strtotime($start_time))),
-							'tmap.mapping_enddate' => array('$gte'=> new MongoDate(strtotime($end_time))),
+							'tmap.mapping_startdate' => array('$lte'=> new \MongoDB\BSON\UTCDateTime(strtotime($start_time) * 1000)),
+							'tmap.mapping_enddate' => array('$gte'=> new \MongoDB\BSON\UTCDateTime(strtotime($end_time) * 1000)),
 							'tmap.mapping_status' => 'A',
 						);
         $arguments = array(
@@ -1212,7 +1212,7 @@ class Model_Find113 extends Model
 							'status' => '$status',
 							'loc' => '$loc.coordinates',
 							'people' => 1,	
-							'updatetime_difference' => array('$subtract'=>array(new MongoDate(strtotime($current_time)),
+							'updatetime_difference' => array('$subtract'=>array(new \MongoDB\BSON\UTCDateTime(strtotime($current_time) * 1000),
 																				'$update_date'))
 						)),
 						array('$match'=>$match1),				

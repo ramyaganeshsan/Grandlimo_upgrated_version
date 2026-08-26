@@ -1,7 +1,5 @@
-var querystring = require("querystring");
 var apimodel = require("../../models/passapimodel_v1");
 var axios = require("axios");
-var time = require("time");
 var async = require("async");
 var dateFormat = require("dateformat");
 var dateformatter = require("date-format-php");
@@ -75,7 +73,7 @@ exports.send_sms = function (
           to = countryCode + to;
         }
         try {
-          const postData = querystring.stringify({
+          const postData = new URLSearchParams({
             username: global.settings.smsbox_username,
             password: global.settings.smsbox_password,
             customerid: global.settings.smsbox_customerid,
@@ -85,7 +83,7 @@ exports.send_sms = function (
             defdate: "",
             isblink: "false",
             isflash: "false",
-          });
+          }).toString();
 
           // axios.get('http://www.smsbox.com/smsgateway/services/messaging.asmx/Http_SendSMS?'+postData)
           //   .then(response => {
@@ -1195,28 +1193,26 @@ var filterZoneFareByModel = async function (q, zone_fare_list, element) {
 };
 
 function getCurrentDate(timezone, date_format) {
-  var now = new time.Date();
-  now.setTimezone(timezone);
-  return dateFormat(new Date(now.toLocaleDateString()), "yyyy-mm-dd");
+  return moment.tz(timezone || "UTC").format("YYYY-MM-DD");
 }
 
 function getStartingDateAndEndingDate(timezone) {
-  var now = new time.Date();
-  now.setTimezone(timezone);
+  var now = moment();
+  now.tz(timezone);
   start_date = dateFormat(
-    new Date(now.toLocaleDateString()),
+    new Date(now.format("M/D/YYYY")),
     "yyyy-mm-dd 00:00:00"
   );
   ending_date = dateFormat(
-    new Date(now.toLocaleDateString()),
+    new Date(now.format("M/D/YYYY")),
     "yyyy-mm-dd 23:59:59"
   );
 
-  var start_date = new time.Date(start_date, timezone);
-  var ending_date = new time.Date(ending_date, timezone);
+  var start_date = moment.tz(start_date, timezone);
+  var ending_date = moment.tz(ending_date, timezone);
   return [
-    new Date(start_date.toLocaleString()),
-    new Date(ending_date.toLocaleString()),
+    new Date(start_date.format("M/D/YYYY, h:mm:ss A")),
+    new Date(ending_date.format("M/D/YYYY, h:mm:ss A")),
   ];
 }
 

@@ -216,7 +216,7 @@ Class Model_Cms extends Model
         $inc_id = $taxi_id = $first_key+1;       
       
 
-        $career_data = array('_id' => (int)$inc_id,'job_id'=>(int)$arr['job_id'],'name'=>$arr['name'],'email'=>$arr['email'],'phone'=>$arr['phone'],'resume_file'=>$filename,'created_date' => new MongoDate(strtotime($this->currentdate)) );
+        $career_data = array('_id' => (int)$inc_id,'job_id'=>(int)$arr['job_id'],'name'=>$arr['name'],'email'=>$arr['email'],'phone'=>$arr['phone'],'resume_file'=>$filename,'created_date' => new \MongoDB\BSON\UTCDateTime(strtotime($this->currentdate) * 1000) );
 
         $result = $this->mongo_db->insert(MDB_RESUMES,$career_data);
 
@@ -485,7 +485,7 @@ Class Model_Cms extends Model
             'subject' => $sign['subject'],
             'message'=> $message,
             'phone' =>  $sign['phone'],
-            'sent_date' =>  new MongoDate(strtotime($current_time))
+            'sent_date' =>  new \MongoDB\BSON\UTCDateTime(strtotime($current_time) * 1000)
             
         );  
             $insert      = $this->mongo_db->Insert(MDB_CONTACTS,$fieldname_array);
@@ -777,8 +777,8 @@ Class Model_Cms extends Model
             'drop_location' => $post['drop'],
             'drop_latitude' => $post['drop_lat'],
             'drop_longitude' => $post['drop_lng'],
-            'pickup_time' => new MongoDate(strtotime($pickup_datetime)),
-            'actual_pickup_time' => new MongoDate(strtotime($pickup_datetime)),
+            'pickup_time' => new \MongoDB\BSON\UTCDateTime(strtotime($pickup_datetime) * 1000),
+            'actual_pickup_time' => new \MongoDB\BSON\UTCDateTime(strtotime($pickup_datetime) * 1000),
             'no_passengers' => $post['passenger'],
             'approx_distance' => '',
             'approx_duration' => '',
@@ -807,7 +807,7 @@ Class Model_Cms extends Model
             'taxi_modelid' => (int)$post['car_model'],
             'recurrent_type' => 0,
             'company_tax' => 0,
-            'createdate' => new MongoDate(strtotime($current_datetime)),
+            'createdate' => new \MongoDB\BSON\UTCDateTime(strtotime($current_datetime) * 1000),
             'logs' => array(),
             "book_type" => "Book Later",
             "book_tag" => "N",

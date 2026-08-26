@@ -391,7 +391,7 @@ Class Controller_Mobileapi120 extends Controller_Mobile102
                             'shift_status' => 'OUT',
                             'bearing'=>(double)$bearing ,
                             'accuracy'=>(int)$accuracy ,
-                                                        'update_date' => new MongoDate(strtotime($company_all_currenttimestamp))
+                                                        'update_date' => new \MongoDB\BSON\UTCDateTime(strtotime($company_all_currenttimestamp) * 1000)
                                                 );
                                     } 
                                     /***** Update Driver Current Location *********************/
@@ -404,7 +404,7 @@ Class Controller_Mobileapi120 extends Controller_Mobile102
                                                     'status' => 'F',
                                                     'bearing'=>(double)$bearing ,
                                                      'accuracy'=>(int)$accuracy ,
-                                                    'update_date' => new MongoDate(strtotime($company_all_currenttimestamp))
+                                                    'update_date' => new \MongoDB\BSON\UTCDateTime(strtotime($company_all_currenttimestamp) * 1000)
                                                 );
                                             } else {
                                                 $update_driver_array = array(
@@ -413,7 +413,7 @@ Class Controller_Mobileapi120 extends Controller_Mobile102
                                                     'bearing'=>(double)$bearing ,
                                                     'accuracy'=>(int)$accuracy ,
                                                     "status" => strtoupper($driver_status),
-                                                    "update_date" => new MongoDate(strtotime($company_all_currenttimestamp))
+                                                    "update_date" => new \MongoDB\BSON\UTCDateTime(strtotime($company_all_currenttimestamp) * 1000)
                                                 );
                                             }                                           
                                             if ($trip_id > 0) {
@@ -583,7 +583,7 @@ Class Controller_Mobileapi120 extends Controller_Mobile102
                                             "status" => strtoupper($driver_status),
                                             'bearing'=>(double)$bearing ,
                                             'accuracy'=>(int)$accuracy ,
-                                            "update_date" => new MongoDate(strtotime($this->currentdate))
+                                            "update_date" => new \MongoDB\BSON\UTCDateTime(strtotime($this->currentdate) * 1000)
                                         );
                                     $update_current_result = $api->update_table(MDB_DRIVER_INFO, $update_driver_array, '_id', (int)$driver_id);
                                     /*******************************************************************************/
@@ -668,7 +668,7 @@ $travel_status  = $get_passenger_log_details[0]['travel_status'];
                                             "status" => strtoupper($driver_status),
                                             'bearing'=>(double)$bearing ,
                                              'accuracy'=>(int)$accuracy ,
-                                            "update_date" => new MongoDate(strtotime($company_all_currenttimestamp))
+                                            "update_date" => new \MongoDB\BSON\UTCDateTime(strtotime($company_all_currenttimestamp) * 1000)
                                         );
                                         $update_current_result = $api->update_table(MDB_DRIVER_INFO, $update_driver_array, '_id', (int)$driver_id);
                                     }
@@ -3731,7 +3731,7 @@ $iosmessage = '';
                                         "selected_driver" => (int)$nearest_driver,
                                         "status" => 0,
                                         "rejected_timeout_drivers" => null,
-                                        "createdate" => new MongoDate(strtotime($company_all_currenttimestamp))
+                                        "createdate" => new \MongoDB\BSON\UTCDateTime(strtotime($company_all_currenttimestamp) * 1000)
                                     );
                                     //Inserting to Transaction Table 
                                     $transaction  = $this->commonmodel->insert(MDB_REQUEST_HISTORY, $insert_array);
@@ -4508,7 +4508,7 @@ $intq = array(
                         /********** Update Driver Status after complete Payments *****************/
                         $update_pass_array     = array(
                             "travel_status" => (int)3,
-                            "arrived_time" => new MongoDate(strtotime($company_all_currenttimestamp))
+                            "arrived_time" => new \MongoDB\BSON\UTCDateTime(strtotime($company_all_currenttimestamp) * 1000)
                         ); // Start to Pickup
                         $result                = $api->update_table(MDB_PASSENGERS_LOGS, $update_pass_array, '_id', $trip_id);
                         /*************** Update arrival in driver request table ******************/
@@ -4675,8 +4675,8 @@ $intq = array(
                                 $km_reach_status = is_array($ifTaxiReachService) ? true : false;
                                 $service_id = is_array($ifTaxiReachService) ? $ifTaxiReachService['_id'] : 0;
                                 $shiftupdate_arrary  = array(
-                                    "shift_end" => new MongoDate(strtotime($this->currentdate)),
-                                    "login_end" => new MongoDate(strtotime($this->currentdate)),
+                                    "shift_end" => new \MongoDB\BSON\UTCDateTime(strtotime($this->currentdate) * 1000),
+                                    "login_end" => new \MongoDB\BSON\UTCDateTime(strtotime($this->currentdate) * 1000),
                                     "status" => "Logout",
                                     "end_km" => (int)$end_km,
                                     "km_reach_status" => $km_reach_status
@@ -4766,7 +4766,7 @@ $intq = array(
                                 $driver_reply        = $driver_model->update_driver_shift_status($update_id, '0');
                                 /** Update in driver shift history table **/
                                 $shiftupdate_arrary  = array(
-                                    "shift_end" => new MongoDate(strtotime($this->currentdate))
+                                    "shift_end" => new \MongoDB\BSON\UTCDateTime(strtotime($this->currentdate) * 1000)
                                 );
                                 $shiftupdateid       = $shiftupdate_id;
                                 if ($shiftupdateid) {
@@ -8310,7 +8310,7 @@ $intq = array(
                                         $act_pic_long               = ($driver_status_array['longitude'] != 0) ? $driver_status_array['longitude'] : $pickup_longitude;
                                         $update_passenger_log_array = array(
                                             'travel_status' =>(int)$travel_status,
-                                            'actual_pickup_time' => new MongoDate(strtotime($actual_pickup_time)),
+                                            'actual_pickup_time' => new \MongoDB\BSON\UTCDateTime(strtotime($actual_pickup_time) * 1000),
                                             'current_location' => $act_pickup_location,
                                             'pickup_latitude' => (double)$act_pic_lat,
                                             'pickup_longitude' => (double)$act_pic_long
@@ -9356,10 +9356,10 @@ $intq = array(
                                             "_id"=>$cat_id,
                                             "driver_shift_id" => (int)$driver_id,
                                             "taxi_id" => $taxi_id,
-                                            "shift_start" => new MongoDate(strtotime($company_all_currenttimestamp)),
+                                            "shift_start" => new \MongoDB\BSON\UTCDateTime(strtotime($company_all_currenttimestamp) * 1000),
                                             "shift_end" => "",
                                             "reason" => $array['reason'],
-                                            "createdate" => new MongoDate(strtotime($this->currentdate)),
+                                            "createdate" => new \MongoDB\BSON\UTCDateTime(strtotime($this->currentdate) * 1000),
                                             "start_km" => (int)$taxi_start_km,
 											"end_km" => (int)0,
 											"km_reach_status" => $km_reach_status,
@@ -9410,7 +9410,7 @@ $intq = array(
                                       $update_id     = $array['update_id'];
                                         //$company_all_currenttimestamp = $this->commonmodel->getcompany_all_currenttimestamp($default_companyid);
                                         $update_arrary = array(
-                                            "shift_end" => new MongoDate(strtotime($company_all_currenttimestamp)),
+                                            "shift_end" => new \MongoDB\BSON\UTCDateTime(strtotime($company_all_currenttimestamp) * 1000),
                                             "status" => "Shift OUT",
                                         );
                                         if ($update_id != "") {
@@ -9768,7 +9768,7 @@ $intq = array(
                                             "loc" => array("type" => "Point",
                                                            "coordinates" => array((double)$array['drop_longitude'],(double)$array['drop_latitude'])),
                                             "status" => strtoupper('A'),
-                                            "update_date" => new MongoDate(strtotime($this->currentdate))
+                                            "update_date" => new \MongoDB\BSON\UTCDateTime(strtotime($this->currentdate) * 1000)
                                         );
                                         if (($array['drop_latitude'] > 0) && ($array['drop_longitude'] > 0)) {
                                             $result = $api->update_table(MDB_DRIVER_INFO, $update_driver_array, '_id', $driver_id);
@@ -10255,7 +10255,7 @@ $intq = array(
                                                     "notify_status" => (int)0,
                                                     "advance_payment" => (int)$advance_payment,
                                                     "wallet_amount_used" => $used_wallet_amount,
-                                                    "current_date" => new MongoDate(strtotime($this->currentdate)),
+                                                    "current_date" => new \MongoDB\BSON\UTCDateTime(strtotime($this->currentdate) * 1000),
                                                 );
                                                 $check_trans_already_exist = $api->checktrans_details($passenger_log_id);
                                                 
@@ -10671,7 +10671,7 @@ $intq = array(
                                         "actual_paid_amt" => $array['actual_paid_amt'],
                                         "pending_amt" => $array['pending_amt'],
                                         "passenger_pending_amt" => isset($array['passenger_pending_amt'])?$array['passenger_pending_amt']:0,
-                                        "current_date" => new MongoDate(strtotime($this->currentdate))
+                                        "current_date" => new \MongoDB\BSON\UTCDateTime(strtotime($this->currentdate) * 1000)
                                     );
                                     $check_trans_already_exist = $api->checktrans_details($passenger_log_id);
                                     
@@ -11116,7 +11116,7 @@ $intq = array(
                                         "trans_packtype" => $update_commission['trans_packtype'],
                                         "payment_basis" => (int)$payBy['pay_by'],
                                         "notify_status" => (int)0,
-                                        "current_date" => new MongoDate(strtotime($this->currentdate))
+                                        "current_date" => new \MongoDB\BSON\UTCDateTime(strtotime($this->currentdate) * 1000)
                                     );
                                     $check_trans_already_exist = $api->checktrans_details($passenger_log_id);
                                     
@@ -11359,7 +11359,7 @@ unset(MangoDB::$instances['default']);
                                             "admin_amount" => $update_commission['admin_commission'],
                                             "company_amount" => $update_commission['company_commission'],
                                             "trans_packtype" => $update_commission['trans_packtype'],
-                                            'current_date' => new MongoDate(strtotime($this->currentdate)),
+                                            'current_date' => new \MongoDB\BSON\UTCDateTime(strtotime($this->currentdate) * 1000),
                                         );
                                         $transaction                = $this->commonmodel->insert(MDB_TRANSACTION, $insert_array);
                                         $update_travel_status_array = array(
@@ -12046,11 +12046,11 @@ unset(MangoDB::$instances['default']);
                                                 '_id' => (int)$cat_id,
                                                 'driver_shift_id' => (int)$driver_id,
                                                 'taxi_id' => (int)$taxi_id,
-                                                'shift_start' => new MongoDate(strtotime($company_all_currenttimestamp)),
-                                                'login_start' => new MongoDate(strtotime($company_all_currenttimestamp)),
+                                                'shift_start' => new \MongoDB\BSON\UTCDateTime(strtotime($company_all_currenttimestamp) * 1000),
+                                                'login_start' => new \MongoDB\BSON\UTCDateTime(strtotime($company_all_currenttimestamp) * 1000),
                                                 'shift_end' => null,
                                                 'reason' => null,
-                                                'createdate' => new MongoDate(strtotime($this->currentdate)),
+                                                'createdate' => new \MongoDB\BSON\UTCDateTime(strtotime($this->currentdate) * 1000),
                                                 'start_km' => (int)$start_km,
                                                 'end_km' => (int)0,
                                                 'km_reach_status' => $km_reach_status,

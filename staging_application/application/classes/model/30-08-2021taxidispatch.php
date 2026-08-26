@@ -221,9 +221,9 @@ class Model_Taxidispatch extends Model
             $match_query['shift_status'] = $driver_status;
         }
        
-        //echo date(DATE_ISO8601, (new MongoDate())->sec);echo '--';echo new MongoDate();exit;
+        //echo date(DATE_ISO8601, (new \MongoDB\BSON\UTCDateTime())->sec);echo '--';echo new \MongoDB\BSON\UTCDateTime();exit;
         $company_current_time = $this->company_current_time;
-        //print_r(new MongoDate(strtotime($company_current_time)));
+        //print_r(new \MongoDB\BSON\UTCDateTime(strtotime($company_current_time) * 1000));
 		$arguments = array(
 			array(
 				'$lookup' => array(
@@ -247,7 +247,7 @@ class Model_Taxidispatch extends Model
                     'shift_status' => '$shift_status',
                     'update_date' => '$update_date',
                     'loc' => '$loc.coordinates',
-                   'updatetime_difference' =>  array( '$divide' => array( array('$subtract' =>array(new MongoDate(strtotime($company_current_time)),'$update_date')), 1000)),
+                   'updatetime_difference' =>  array( '$divide' => array( array('$subtract' =>array(new \MongoDB\BSON\UTCDateTime(strtotime($company_current_time) * 1000),'$update_date')), 1000)),
                     //'updatetime_difference' => '$update_date',
                 )
             ),
@@ -343,8 +343,8 @@ class Model_Taxidispatch extends Model
                     'driver_status' => '$status',
                     'driver.shift_status' => '$shift_status',
                     '$update_date' => '$driver.update_date',
-                   // 'updatetime_difference' => array('$subtract' =>array(new MongoDate(strtotime($company_current_time)),'$driver.update_date')),
-                      'updatetime_difference' =>  array( '$divide' => array( array('$subtract' =>array(new MongoDate(strtotime($company_current_time)),'$driver.update_date')), 1000)),
+                   // 'updatetime_difference' => array('$subtract' =>array(new \MongoDB\BSON\UTCDateTime(strtotime($company_current_time) * 1000),'$driver.update_date')),
+                      'updatetime_difference' =>  array( '$divide' => array( array('$subtract' =>array(new \MongoDB\BSON\UTCDateTime(strtotime($company_current_time) * 1000),'$driver.update_date')), 1000)),
                 )
             ),
             array('$match' => array('updatetime_difference'=>array('$lte'=>(int)LOCATIONUPDATESECONDS ))),
@@ -435,8 +435,8 @@ class Model_Taxidispatch extends Model
                 "name" => '$name',
                 "user_type" => '$user_type',
                 "status" => '$status',
-               // 'updatetime_difference' => array('$subtract' =>array(new MongoDate(strtotime($date)),'$driver.update_date')),
-                'updatetime_difference' =>  array( '$divide' => array( array('$subtract' =>array(new MongoDate(strtotime($date)),'$driver.update_date')), 1000)),
+               // 'updatetime_difference' => array('$subtract' =>array(new \MongoDB\BSON\UTCDateTime(strtotime($date) * 1000),'$driver.update_date')),
+                'updatetime_difference' =>  array( '$divide' => array( array('$subtract' =>array(new \MongoDB\BSON\UTCDateTime(strtotime($date) * 1000),'$driver.update_date')), 1000)),
                 )
             ),
             array('$match' => array('updatetime_difference'=>array('$lte'=>(int)LOCATIONUPDATESECONDS))),
@@ -518,8 +518,8 @@ class Model_Taxidispatch extends Model
                     'name' => '$name',
                     'driver_status' => '$status',
                     'driver.shift_status' => '$shift_status',
-                   // 'updatetime_difference' => array('$subtract' =>array(new MongoDate(strtotime($company_current_time)),'$driver.update_date')),
-                      'updatetime_difference' =>  array( '$divide' => array( array('$subtract' =>array(new MongoDate(strtotime($company_current_time)),'$driver.update_date')), 1000)),
+                   // 'updatetime_difference' => array('$subtract' =>array(new \MongoDB\BSON\UTCDateTime(strtotime($company_current_time) * 1000),'$driver.update_date')),
+                      'updatetime_difference' =>  array( '$divide' => array( array('$subtract' =>array(new \MongoDB\BSON\UTCDateTime(strtotime($company_current_time) * 1000),'$driver.update_date')), 1000)),
                 )
             ),
             array('$match' => array('updatetime_difference'=>array('$lte'=>(int)LOCATIONUPDATESECONDS ))),
@@ -743,8 +743,8 @@ class Model_Taxidispatch extends Model
                 'drop_location' => $post['drop_location'],
                 'drop_latitude' => $post['drop_lat'],
                 'drop_longitude' => $post['drop_lng'],
-                'pickup_time' => new MongoDate(strtotime($pickup_datetime)),
-		        'actual_pickup_time' => new MongoDate(strtotime($pickup_datetime)),
+                'pickup_time' => new \MongoDB\BSON\UTCDateTime(strtotime($pickup_datetime) * 1000),
+		        'actual_pickup_time' => new \MongoDB\BSON\UTCDateTime(strtotime($pickup_datetime) * 1000),
                 'no_passengers' => $post['no_passengers'],
                 'approx_distance' => (float)$post['distance_km'],
                 'approx_duration' => $post['total_duration'],
@@ -774,7 +774,7 @@ class Model_Taxidispatch extends Model
                 'taxi_modelid' => (int)$post['taxi_model'],
                 'recurrent_type' => (int)$post['recurrent'],
                 'company_tax' => (int)$post['company_tax'],
-                'createdate' => new MongoDate(strtotime($current_datetime)),
+                'createdate' => new \MongoDB\BSON\UTCDateTime(strtotime($current_datetime) * 1000),
                 'logs' => array(),
                 "book_type" => "Book Later",
                 "book_tag" => "N",
@@ -896,7 +896,7 @@ class Model_Taxidispatch extends Model
                                 'travel_status'=>7,
                                 'driver_reply'=>'',
                                 'msg_status'=>'U',
-                                'dispatch_time'=>new MongoDate(strtotime($current_datetime))
+                                'dispatch_time'=>new \MongoDB\BSON\UTCDateTime(strtotime($current_datetime) * 1000)
                             );
                         } else {
                             $updatequery = array(
@@ -905,7 +905,7 @@ class Model_Taxidispatch extends Model
                                 'travel_status'=>7,
                                 'driver_reply'=>'',
                                 'msg_status'=>'U',
-                                'dispatch_time'=>new MongoDate(strtotime($current_datetime))
+                                'dispatch_time'=>new \MongoDB\BSON\UTCDateTime(strtotime($current_datetime) * 1000)
                             );
                         }
                         $updateresult = $this->mongo_db->update(MDB_PASSENGERS_LOGS,array('_id'=>(int)$pass_logid),array('$set'=>$updatequery),array('upsert'=>true));
@@ -931,7 +931,7 @@ class Model_Taxidispatch extends Model
                             "selected_driver" => (int)$nearest_driver_id,
                             "status" => 0,
                             "rejected_timeout_drivers" => "",
-                            "createdate" => new MongoDate(strtotime($current_datetime))
+                            "createdate" => new \MongoDB\BSON\UTCDateTime(strtotime($current_datetime) * 1000)
                         );
                         //Inserting to Transaction Table 
                         $transaction        = $this->mongo_db->insert(MDB_REQUEST_HISTORY, $insert_array);
@@ -1162,20 +1162,20 @@ class Model_Taxidispatch extends Model
             $match_query['travel_status'] = array('$in' => $travel_status);
         }
         if ($fromdate != '' && $todate != '') {
-            $match_query['pickup_time'] = array('$gte' => new MongoDate(strtotime($fromdate)),'$lte' => new MongoDate(strtotime($todate)));
-            //$match_query['actual_pickup_time'] = array('$gte' => new MongoDate(strtotime($fromdate)),'$lte' => new MongoDate(strtotime($todate)));
+            $match_query['pickup_time'] = array('$gte' => new \MongoDB\BSON\UTCDateTime(strtotime($fromdate) * 1000),'$lte' => new \MongoDB\BSON\UTCDateTime(strtotime($todate) * 1000));
+            //$match_query['actual_pickup_time'] = array('$gte' => new \MongoDB\BSON\UTCDateTime(strtotime($fromdate) * 1000),'$lte' => new \MongoDB\BSON\UTCDateTime(strtotime($todate) * 1000));
         }elseif($fromdate != '' || $todate != ''){
             $datesearch = ($to_date != '') ? $to_date : $filter_date;
             $dateArr    = explode(" ", $datesearch);
             $staDate    = $dateArr[0] . ' 00:00:01';
             $endDate    = $dateArr[0] . ' 23:59:59';
-            $match_query['pickup_time'] = array('$gte' => new MongoDate(strtotime($staDate)),'$lte' => new MongoDate(strtotime($endDate)));
-            //$match_query['actual_pickup_time'] = array('$gte' => new MongoDate(strtotime($staDate)),'$lte' => new MongoDate(strtotime($endDate)));
+            $match_query['pickup_time'] = array('$gte' => new \MongoDB\BSON\UTCDateTime(strtotime($staDate) * 1000),'$lte' => new \MongoDB\BSON\UTCDateTime(strtotime($endDate) * 1000));
+            //$match_query['actual_pickup_time'] = array('$gte' => new \MongoDB\BSON\UTCDateTime(strtotime($staDate) * 1000),'$lte' => new \MongoDB\BSON\UTCDateTime(strtotime($endDate) * 1000));
         }else{
-            $match_query['pickup_time'] = array('$gte' => new MongoDate(strtotime($two_days_before)));
+            $match_query['pickup_time'] = array('$gte' => new \MongoDB\BSON\UTCDateTime(strtotime($two_days_before) * 1000));
         }
         if ($manage_status == 0) {
-            $match_query['pickup_time'] = array('$gte' => new MongoDate(strtotime($two_days_before)));
+            $match_query['pickup_time'] = array('$gte' => new \MongoDB\BSON\UTCDateTime(strtotime($two_days_before) * 1000));
         }
         if($booking_key != '') {
             $match_query['booking_key'] = $booking_key;
@@ -1351,7 +1351,7 @@ class Model_Taxidispatch extends Model
                     'notes'=>'$notes_driver',
                     'pickup_time'=>'$pickup_time',
                     'booking_time'=>'$createdate',
-                    'act_pickuptime' => array('$sum' => array('$cond' => array(array('$eq' => array('$actual_pickup_time',new MongoDate(strtotime('0000-00-00 00:00:00')))),'$pickup_time','$actual_pickup_time'))),
+                    'act_pickuptime' => array('$sum' => array('$cond' => array(array('$eq' => array('$actual_pickup_time',new \MongoDB\BSON\UTCDateTime(strtotime('0000-00-00 00:00:00') * 1000))),'$pickup_time','$actual_pickup_time'))),
                     'pickup_latitude'=>'$pickup_latitude',
                     'pickup_longitude'=>'$pickup_longitude',
                     'drop_latitude'=>'$drop_latitude',
@@ -1764,8 +1764,8 @@ class Model_Taxidispatch extends Model
             "drop_location" => $post['edit_drop_location'],
             "drop_latitude" => $post['edit_drop_lat'],
             "drop_longitude" => $post['edit_drop_lng'],
-            "pickup_time" => new MongoDate(strtotime($pickup_datetime)),
-            "actual_pickup_time" => new MongoDate(strtotime($pickup_datetime)),
+            "pickup_time" => new \MongoDB\BSON\UTCDateTime(strtotime($pickup_datetime) * 1000),
+            "actual_pickup_time" => new \MongoDB\BSON\UTCDateTime(strtotime($pickup_datetime) * 1000),
             "no_passengers" => (int)$post['edit_no_passengers'],
             "approx_distance" => (float)$post['edit_distance_km'],
             "approx_duration" => $post['edit_total_duration'],
@@ -1805,8 +1805,8 @@ class Model_Taxidispatch extends Model
             "drop_location" => $post['edit_drop_location'],
             "drop_latitude" => $post['edit_drop_lat'],
             "drop_longitude" => $post['edit_drop_lng'],
-            "pickup_time" => new MongoDate(strtotime($pickup_datetime)),
-            "actual_pickup_time" => new MongoDate(strtotime($pickup_datetime)),
+            "pickup_time" => new \MongoDB\BSON\UTCDateTime(strtotime($pickup_datetime) * 1000),
+            "actual_pickup_time" => new \MongoDB\BSON\UTCDateTime(strtotime($pickup_datetime) * 1000),
             "no_passengers" => (int)$post['edit_no_passengers'],
             "approx_distance" => (float)$post['edit_distance_km'],
             "approx_duration" => $post['edit_total_duration'],
@@ -1967,7 +1967,7 @@ class Model_Taxidispatch extends Model
                                 'travel_status'=>7,
                                 'driver_reply'=>'',
                                 'msg_status'=>'U',
-                                'dispatch_time'=>new MongoDate(strtotime($current_datetime)),
+                                'dispatch_time'=>new \MongoDB\BSON\UTCDateTime(strtotime($current_datetime) * 1000),
                                 "createdby_username"=>$this->session->get('name'),
                             );
                         }
@@ -1999,7 +1999,7 @@ class Model_Taxidispatch extends Model
                             "selected_driver" => (int)$nearest_driver_id,
                             "status" => 0,
                             "rejected_timeout_drivers" => "",
-                            "createdate" => new MongoDate(strtotime($current_datetime))
+                            "createdate" => new \MongoDB\BSON\UTCDateTime(strtotime($current_datetime) * 1000)
                         );
                         //print_r($insert_array);exit;
                         //Inserting to Driver request table Table 
@@ -2317,8 +2317,8 @@ $mat['updatetime_difference'] = array( '$lte' => (int)LOCATIONUPDATESECONDS);
                 "shift_status" => '$shift_status',
                 "status" => '$status',
                 "people" => 1,
-               // "updatetime_difference" => array('$subtract' =>array(new MongoDate(strtotime($current_time)),'$update_date'))
-                'updatetime_difference' =>  array( '$divide' => array( array('$subtract' =>array(new MongoDate(strtotime($current_time)),'$update_date')), 1000)),
+               // "updatetime_difference" => array('$subtract' =>array(new \MongoDB\BSON\UTCDateTime(strtotime($current_time) * 1000),'$update_date'))
+                'updatetime_difference' =>  array( '$divide' => array( array('$subtract' =>array(new \MongoDB\BSON\UTCDateTime(strtotime($current_time) * 1000),'$update_date')), 1000)),
                 )
             ),
             /*array('$match' => array(
@@ -2467,7 +2467,7 @@ $mat['updatetime_difference'] = array( '$lte' => (int)LOCATIONUPDATESECONDS);
         if($check_pass_log > 0 ){
 			
 			$match['people.booking_limit'] = array('$gt' => $this->mongo_db->count(MDB_PASSENGERS_LOGS,array('createdate'=>array(
-									'$gte'=> new MongoDate(strtotime($start_time))),
+									'$gte'=> new \MongoDB\BSON\UTCDateTime(strtotime($start_time) * 1000)),
 									//'driver_id'=>'people._id',
 									'travel_status'=>1,
 									'booking_from' => array('$ne'=>2))));
@@ -2814,7 +2814,7 @@ $mat['updatetime_difference'] = array( '$lte' => (int)LOCATIONUPDATESECONDS);
         return ($trip_count > 0) ? $trip_count : 0;*/
         
         //MongoDB
-        $srch_query = array( "\$and" => array(array('driver_reply'=>'A','driver_id'=>(int)$driver_id,'dispatch_time'=>array('$gte'=>new MongoDate(strtotime($two_days_before)))),array("\$or"=>array(array( 'travel_status' => array('$in' => array(2,3,5,9) )) ) ) ) );
+        $srch_query = array( "\$and" => array(array('driver_reply'=>'A','driver_id'=>(int)$driver_id,'dispatch_time'=>array('$gte'=>new \MongoDB\BSON\UTCDateTime(strtotime($two_days_before) * 1000))),array("\$or"=>array(array( 'travel_status' => array('$in' => array(2,3,5,9) )) ) ) ) );
         $result = $this->mongo_db->count(MDB_PASSENGERS_LOGS,$srch_query);
         return $result;
     }
@@ -2826,7 +2826,7 @@ $mat['updatetime_difference'] = array( '$lte' => (int)LOCATIONUPDATESECONDS);
         return ($trip_count > 0) ? $trip_count : 0;*/
     
         //MongoDB
-        $srch_query = array('status'=>1,'selected_driver'=>(int)$driver_id,'createdate'=>array('$gte'=>new MongoDate(strtotime($two_minutes_before))));
+        $srch_query = array('status'=>1,'selected_driver'=>(int)$driver_id,'createdate'=>array('$gte'=>new \MongoDB\BSON\UTCDateTime(strtotime($two_minutes_before) * 1000)));
         $result = $this->mongo_db->count(MDB_REQUEST_HISTORY,$srch_query);
         return $result;
     }
@@ -2948,7 +2948,7 @@ $mat['updatetime_difference'] = array( '$lte' => (int)LOCATIONUPDATESECONDS);
                         'gps_enable' => array('$ifNull'=>array('$gps_enable',1)),
                         'update_date' => '$update_date',
                         'model_name'=>'$model.model_name',
-                        'updatetime_difference' =>  array( '$divide' => array( array('$subtract' =>array(new MongoDate(strtotime($company_current_time)),'$update_date')), 1000)),
+                        'updatetime_difference' =>  array( '$divide' => array( array('$subtract' =>array(new \MongoDB\BSON\UTCDateTime(strtotime($company_current_time) * 1000),'$update_date')), 1000)),
                     )
                 ),
                //array('$match' => array('updatetime_difference'=>array('$lte'=>(int)LOCATIONUPDATESECONDS ))),
@@ -3016,7 +3016,7 @@ $mat['updatetime_difference'] = array( '$lte' => (int)LOCATIONUPDATESECONDS);
                         'gps_enable' => array('$ifNull'=>array('$gps_enable',1)),
                          'model_name'=>'$model.model_name',
                         'update_date' => '$update_date',
-                        'updatetime_difference' =>  array( '$divide' => array( array('$subtract' =>array(new MongoDate(strtotime($company_current_time)),'$update_date')), 1000)),
+                        'updatetime_difference' =>  array( '$divide' => array( array('$subtract' =>array(new \MongoDB\BSON\UTCDateTime(strtotime($company_current_time) * 1000),'$update_date')), 1000)),
                     )
                 ),
                // array('$match' => array('updatetime_difference'=>array('$lte'=>(int)LOCATIONUPDATESECONDS )))
@@ -3148,7 +3148,7 @@ $mat['updatetime_difference'] = array( '$lte' => (int)LOCATIONUPDATESECONDS);
                         'update_date' => '$driver_driverinfo.update_date',
                         'model_name'=>'$model.model_name',
                         'trip_remaining_time'=>array('$ifNull'=>array('$driver_driverinfo.trip_remaining_time',0)),
-                        'updatetime_difference' =>  array( '$divide' => array( array('$subtract' =>array(new MongoDate(strtotime($company_current_time)),'$driver_driverinfo.update_date')), 1000)),
+                        'updatetime_difference' =>  array( '$divide' => array( array('$subtract' =>array(new \MongoDB\BSON\UTCDateTime(strtotime($company_current_time) * 1000),'$driver_driverinfo.update_date')), 1000)),
                         'model_id'=>'$model._id',//26 feb 2021
                     )
                 ),
@@ -3219,7 +3219,7 @@ $mat['updatetime_difference'] = array( '$lte' => (int)LOCATIONUPDATESECONDS);
                         'update_date' => '$driver_driverinfo.update_date',
                         'update_date' => '$driver_driverinfo.update_date',
                         'trip_remaining_time'=>array('$ifNull'=>array('$driver_driverinfo.trip_remaining_time',0)),
-                        'updatetime_difference' =>  array( '$divide' => array( array('$subtract' =>array(new MongoDate(strtotime($company_current_time)),'$driver_driverinfo.update_date')), 1000)),
+                        'updatetime_difference' =>  array( '$divide' => array( array('$subtract' =>array(new \MongoDB\BSON\UTCDateTime(strtotime($company_current_time) * 1000),'$driver_driverinfo.update_date')), 1000)),
                         'model_id'=>'$model._id',//26 feb 2021
                     )
                 ),
@@ -3368,9 +3368,9 @@ $mat['updatetime_difference'] = array( '$lte' => (int)LOCATIONUPDATESECONDS);
         }*/
         if ($manage_status == 0) {
             $match_array['pickup_time'] = array(
-                '$gte' => new MongoDate(strtotime($two_days_before))
-                //'$gte' => new MongoDate(strtotime($currentdate)),
-                //'$lte' => new MongoDate(strtotime($enddate))
+                '$gte' => new \MongoDB\BSON\UTCDateTime(strtotime($two_days_before) * 1000)
+                //'$gte' => new \MongoDB\BSON\UTCDateTime(strtotime($currentdate) * 1000),
+                //'$lte' => new \MongoDB\BSON\UTCDateTime(strtotime($enddate) * 1000)
             );
         }
         
@@ -3827,7 +3827,7 @@ $mat['updatetime_difference'] = array( '$lte' => (int)LOCATIONUPDATESECONDS);
             'comments' => '',
             "createdby_username"=>$this->session->get('name'),
             "operator_id"=>$userid,
-            'dispatch_time'=>new MongoDate(strtotime($current_datetime))
+            'dispatch_time'=>new \MongoDB\BSON\UTCDateTime(strtotime($current_datetime) * 1000)
         );
         $updateresult = $this->mongo_db->update(MDB_PASSENGERS_LOGS,array('_id'=>(int)$data['pass_logid']),array('$set'=>$updatequery),array('upsert'=>true));
         return (empty($updateresult['err']))?1:$updateresult['errmsg'];
@@ -3959,7 +3959,7 @@ $mat['updatetime_difference'] = array( '$lte' => (int)LOCATIONUPDATESECONDS);
                             'travel_status'=>7,
                             'driver_reply'=>'',
                             'msg_status'=>'U',
-                            'dispatch_time'=>new MongoDate(strtotime($current_datetime)),
+                            'dispatch_time'=>new \MongoDB\BSON\UTCDateTime(strtotime($current_datetime) * 1000),
                             "createdby_username"=>$this->session->get('name'),
                             );
                    } else {
@@ -3968,7 +3968,7 @@ $mat['updatetime_difference'] = array( '$lte' => (int)LOCATIONUPDATESECONDS);
                         'travel_status'=>7,
                         'driver_reply'=>'',
                         'msg_status'=>'U',
-                        'dispatch_time'=>new MongoDate(strtotime($current_datetime)),
+                        'dispatch_time'=>new \MongoDB\BSON\UTCDateTime(strtotime($current_datetime) * 1000),
                         "createdby_username"=>$this->session->get('name'),
                     );
                 }
@@ -4001,7 +4001,7 @@ $mat['updatetime_difference'] = array( '$lte' => (int)LOCATIONUPDATESECONDS);
                         "selected_driver" => (int)$nearest_driver_id,
                         "status" => 0,
                         "rejected_timeout_drivers" => "",
-                        "createdate" => new MongoDate(strtotime($current_datetime))
+                        "createdate" => new \MongoDB\BSON\UTCDateTime(strtotime($current_datetime) * 1000)
                     );
            //print_r($insert_array);exit;
                 //Inserting to Driver Request Table
@@ -4171,7 +4171,7 @@ $mat['updatetime_difference'] = array( '$lte' => (int)LOCATIONUPDATESECONDS);
        $interval_time_per_zone = date('Y-m-d H:i:s', $endTime);//2017-06-22 08:45:32
 
    
-        $match_array['pickup_time'] = array('$gte' => new MongoDate(strtotime($current_time_per_zone)),'$lte' => new MongoDate(strtotime($interval_time_per_zone)));
+        $match_array['pickup_time'] = array('$gte' => new \MongoDB\BSON\UTCDateTime(strtotime($current_time_per_zone) * 1000),'$lte' => new \MongoDB\BSON\UTCDateTime(strtotime($interval_time_per_zone) * 1000));
   $arguments = array(array(
                 '$match' => $match_array
             ),
@@ -4384,7 +4384,7 @@ $mat['updatetime_difference'] = array( '$lte' => (int)LOCATIONUPDATESECONDS);
             "passenger_id"=>(int)$data['passenger_id'],
             "change_amount"=>(double)$data['add_amt'],
             "wallet_amount"=>(double)$data['current_wallet_amt'],
-            "created_date" => new MongoDate(strtotime($this->currentdate)),
+            "created_date" => new \MongoDB\BSON\UTCDateTime(strtotime($this->currentdate) * 1000),
             "created_by" => (int)$data['passenger_id'],
             "recharge_type" =>(int)$data['recharge_type'],
             "trip_id" =>(int)$data['trip_id'],
@@ -4399,13 +4399,13 @@ $mat['updatetime_difference'] = array( '$lte' => (int)LOCATIONUPDATESECONDS);
         $currentdate = date('Y-m-01 h:i:s',strtotime(Commonfunction::getCurrentTimeStamp()));
         $current_date_last = date('Y-m-d 23:59:59',strtotime(Commonfunction::getCurrentTimeStamp()));
 
-        //$match_array = array('pickup_time' => array('$gte' => new MongoDate(strtotime($currentdate))),'travel_status'=>(int)1);
+        //$match_array = array('pickup_time' => array('$gte' => new \MongoDB\BSON\UTCDateTime(strtotime($currentdate) * 1000)),'travel_status'=>(int)1);
         // if($operator_id != '')
         // {
         //     $match_array['operator_id']=(int)$operator_id;
         // }
 
-        $match_array = array( "\$and" => array( array('pickup_time' => array('$gte' => new MongoDate(strtotime($currentdate)))), array('pickup_time' =>array('$lte' => new MongoDate(strtotime($current_date_last))) ), array('travel_status'=>(int)1 )) );
+        $match_array = array( "\$and" => array( array('pickup_time' => array('$gte' => new \MongoDB\BSON\UTCDateTime(strtotime($currentdate) * 1000))), array('pickup_time' =>array('$lte' => new \MongoDB\BSON\UTCDateTime(strtotime($current_date_last) * 1000)) ), array('travel_status'=>(int)1 )) );
 
 
                 $arguments = array(array('$match'=>$match_array),array('$lookup'=>array(
@@ -4445,7 +4445,7 @@ $mat['updatetime_difference'] = array( '$lte' => (int)LOCATIONUPDATESECONDS);
         
         //echo $current_date_last;exit;
 
-        $match_array = array( "\$and" => array( array('pickup_time' => array('$gte' => new MongoDate(strtotime($currentdate)))), array('pickup_time' =>array('$lte' => new MongoDate(strtotime($current_date_last))) ), array('travel_status'=>(int)1 )) );
+        $match_array = array( "\$and" => array( array('pickup_time' => array('$gte' => new \MongoDB\BSON\UTCDateTime(strtotime($currentdate) * 1000))), array('pickup_time' =>array('$lte' => new \MongoDB\BSON\UTCDateTime(strtotime($current_date_last) * 1000)) ), array('travel_status'=>(int)1 )) );
         // if($operator_id != '')
         // {
         //     $match_array['operator_id']=(int)$operator_id;
@@ -4609,20 +4609,20 @@ $mat['updatetime_difference'] = array( '$lte' => (int)LOCATIONUPDATESECONDS);
             $match_query['travel_status'] = array('$in' => $travel_status);
         }
         if ($fromdate != '' && $todate != '') {
-            $match_query['pickup_time'] = array('$gte' => new MongoDate(strtotime($fromdate)),'$lte' => new MongoDate(strtotime($todate)));
-            //$match_query['actual_pickup_time'] = array('$gte' => new MongoDate(strtotime($fromdate)),'$lte' => new MongoDate(strtotime($todate)));
+            $match_query['pickup_time'] = array('$gte' => new \MongoDB\BSON\UTCDateTime(strtotime($fromdate) * 1000),'$lte' => new \MongoDB\BSON\UTCDateTime(strtotime($todate) * 1000));
+            //$match_query['actual_pickup_time'] = array('$gte' => new \MongoDB\BSON\UTCDateTime(strtotime($fromdate) * 1000),'$lte' => new \MongoDB\BSON\UTCDateTime(strtotime($todate) * 1000));
         }elseif($fromdate != '' || $todate != ''){
             $datesearch = ($to_date != '') ? $to_date : $filter_date;
             $dateArr    = explode(" ", $datesearch);
             $staDate    = $dateArr[0] . ' 00:00:01';
             $endDate    = $dateArr[0] . ' 23:59:59';
-            $match_query['pickup_time'] = array('$gte' => new MongoDate(strtotime($staDate)),'$lte' => new MongoDate(strtotime($endDate)));
-            //$match_query['actual_pickup_time'] = array('$gte' => new MongoDate(strtotime($staDate)),'$lte' => new MongoDate(strtotime($endDate)));
+            $match_query['pickup_time'] = array('$gte' => new \MongoDB\BSON\UTCDateTime(strtotime($staDate) * 1000),'$lte' => new \MongoDB\BSON\UTCDateTime(strtotime($endDate) * 1000));
+            //$match_query['actual_pickup_time'] = array('$gte' => new \MongoDB\BSON\UTCDateTime(strtotime($staDate) * 1000),'$lte' => new \MongoDB\BSON\UTCDateTime(strtotime($endDate) * 1000));
         }else{
-            $match_query['pickup_time'] = array('$gte' => new MongoDate(strtotime($two_days_before)));
+            $match_query['pickup_time'] = array('$gte' => new \MongoDB\BSON\UTCDateTime(strtotime($two_days_before) * 1000));
         }
         if ($manage_status == 0) {
-            $match_query['pickup_time'] = array('$gte' => new MongoDate(strtotime($two_days_before)));
+            $match_query['pickup_time'] = array('$gte' => new \MongoDB\BSON\UTCDateTime(strtotime($two_days_before) * 1000));
         }
         if($booking_key != '') {
             $match_query['booking_key'] = $booking_key;
@@ -4798,7 +4798,7 @@ $mat['updatetime_difference'] = array( '$lte' => (int)LOCATIONUPDATESECONDS);
                     'notes'=>'$notes_driver',
                     'pickup_time'=>'$pickup_time',
                     'booking_time'=>'$createdate',
-                    'act_pickuptime' => array('$sum' => array('$cond' => array(array('$eq' => array('$actual_pickup_time',new MongoDate(strtotime('0000-00-00 00:00:00')))),'$pickup_time','$actual_pickup_time'))),
+                    'act_pickuptime' => array('$sum' => array('$cond' => array(array('$eq' => array('$actual_pickup_time',new \MongoDB\BSON\UTCDateTime(strtotime('0000-00-00 00:00:00') * 1000))),'$pickup_time','$actual_pickup_time'))),
                     'pickup_latitude'=>'$pickup_latitude',
                     'pickup_longitude'=>'$pickup_longitude',
                     'drop_latitude'=>'$drop_latitude',

@@ -2,7 +2,7 @@
  * Configurations of logger.
  */
 //const winston = require('winston');
-const time = require('time');
+var moment = require("moment-timezone");
 var dateFormat = require('dateformat'); 
 var fs = require('fs'); 
 
@@ -10,8 +10,8 @@ var fs = require('fs');
 
 // const { combine, timestamp, label, printf , prettyPrint} = format;
 
-var now = new time.Date();
-//var current_date = dateFormat(new Date(now.toLocaleString()),"yyyy-mm-dd-HH");   
+var now = moment();
+//var current_date = dateFormat(new Date(now.format("M/D/YYYY, h:mm:ss A")),"yyyy-mm-dd-HH");   
 var current_date = new Date();   
 
 current_date =  current_date.getTime();

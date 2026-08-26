@@ -146,7 +146,7 @@ class Controller_Schedulecron extends Controller_Config
                         $insert_array['mail_status']    = $mail_status;
                         $insert_array['passenger_id']   = $k['_id']['passenger_id'];
                         $insert_array['file']           = $attachment;
-                        $insert_array['created_date']   = new MongoDate(strtotime($now));
+                        $insert_array['created_date']   = new \MongoDB\BSON\UTCDateTime(strtotime($now) * 1000);
                         $insert_array['period']         = $weekstart_time." - ".$end_time;
                         $insert_array['amount']         = $k['total_fare'];
                         

@@ -2180,7 +2180,7 @@ class Model_Admin extends Model
             'trip_fare_notification_emails' => $post_value_array['trip_fare_notification_emails'],
 
             /* Sasidharan june 20 2022 */
-            'register_promocode' => new MongoDate(strtotime($post_value_array['register_promocode'])),
+            'register_promocode' => new \MongoDB\BSON\UTCDateTime(strtotime($post_value_array['register_promocode']) * 1000),
 
             /* Sasidharan Feb 07 2022 */
             'surge_on_week_days' => isset($post_value_array['surge_on_week_days']) ?$post_value_array['surge_on_week_days'] : (object)[],

@@ -8,7 +8,6 @@ var fs = require("fs");
 var validate = require("validate.js");
 var dateFormat = require("dateformat");
 var md5 = require("md5");
-var time = require("time");
 //var i18n = require('i18n');
 var t = require("../../config/table_config.json");
 var uniqid = require("uniqid");
@@ -738,11 +737,11 @@ exports.passenger_update_drop_location = function (q, req) {
           apimodel
             .passenger_update_drop_location(q, trip_id, update_array)
             .then(function (update_drop) {
-              //console.log(trip_id,'-------------update_drop--->',update_drop.result.nModified);
+              //console.log(trip_id,'-------------update_drop--->',update_drop.modifiedCount);
               try {
                 var tripdetails = {};
 
-                if (update_drop.result.nModified == 1) {
+                if (update_drop.modifiedCount == 1) {
                   //console.log('first',update_drop);
 
                   //common.ApproximateDuration(q,pickup_location,drop_location).then(function(durationresults){
@@ -1149,30 +1148,27 @@ function get_travel_msg(req, travel_status) {
 }
 
 function getCurrentDate(timezone, date_format) {
-  var now = new time.Date();
-  now.setTimezone(timezone);
-  return dateFormat(new Date(now.toLocaleDateString()), "yyyy-mm-dd");
+  return moment.tz(timezone || "UTC").format("YYYY-MM-DD");
 }
 
 function getStartingDateAndEndingDate(timezone) {
   try {
-    var time = require("time");
-    var now = new time.Date();
-    now.setTimezone(timezone);
+    var now = moment();
+    now.tz(timezone);
     start_date = dateFormat(
-      new Date(now.toLocaleDateString()),
+      new Date(now.format("M/D/YYYY")),
       "yyyy-mm-dd 00:00:00"
     );
     ending_date = dateFormat(
-      new Date(now.toLocaleDateString()),
+      new Date(now.format("M/D/YYYY")),
       "yyyy-mm-dd 23:59:59"
     );
 
-    var start_date = new time.Date(start_date, timezone);
-    var ending_date = new time.Date(ending_date, timezone);
+    var start_date = moment.tz(start_date, timezone);
+    var ending_date = moment.tz(ending_date, timezone);
     return [
-      new Date(start_date.toLocaleString()),
-      new Date(ending_date.toLocaleString()),
+      new Date(start_date.format("M/D/YYYY, h:mm:ss A")),
+      new Date(ending_date.format("M/D/YYYY, h:mm:ss A")),
     ];
   } catch (err) {
     console.log("getStartingDateAndEndingDate errr", err);

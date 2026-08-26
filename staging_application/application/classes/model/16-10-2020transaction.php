@@ -2136,8 +2136,8 @@ public function getpassengerdetails($company_id, $manager_id)
             //$date_condition = array('createdate'=>array(array('$gte'=>$startdate),array('$lte'=>$enddate)));
             $date_condition = array(
                    'createdate' => array(
-                    '$gte' => new MongoDate(strtotime($startdate)),
-                    '$lte' => new MongoDate(strtotime($enddate))
+                    '$gte' => new \MongoDB\BSON\UTCDateTime(strtotime($startdate) * 1000),
+                    '$lte' => new \MongoDB\BSON\UTCDateTime(strtotime($enddate) * 1000)
                 )
             );
         }
@@ -2613,8 +2613,8 @@ public function getpassengerdetails($company_id, $manager_id)
         if ($startdate != "") {
             $date_condition = array(
  'createdate' => array(
-                    '$gte' => new MongoDate(strtotime($startdate)),
-                    '$lte' => new MongoDate(strtotime($enddate))
+                    '$gte' => new \MongoDB\BSON\UTCDateTime(strtotime($startdate) * 1000),
+                    '$lte' => new \MongoDB\BSON\UTCDateTime(strtotime($enddate) * 1000)
                 )
             );
         }
@@ -3021,8 +3021,8 @@ public function getpassengerdetails($company_id, $manager_id)
         //$startdate = '2015-05-01 00:00:00';
         //$enddate = '2015-05-31 12:59:59';
         if ($startdate != "") {
-            $match['createdate'] = array('$gte' => new MongoDate(strtotime($startdate)),
-                                         '$lte' => new MongoDate(strtotime($enddate)));
+            $match['createdate'] = array('$gte' => new \MongoDB\BSON\UTCDateTime(strtotime($startdate) * 1000),
+                                         '$lte' => new \MongoDB\BSON\UTCDateTime(strtotime($enddate) * 1000));
         }
         if ($payment_type != 'All' && $payment_type != '') {
             $match['trans.payment_type'] = (int)$payment_type;
@@ -3083,8 +3083,8 @@ public function getpassengerdetails($company_id, $manager_id)
         //$startdate = '2015-03-01 00:00:00';
         //$enddate = '2015-03-31 00:00:00';
         if ($startdate != "") {
-            $match['createdate'] = array('$gte' => new MongoDate(strtotime($startdate)),
-                                         '$lte' => new MongoDate(strtotime($enddate)));
+            $match['createdate'] = array('$gte' => new \MongoDB\BSON\UTCDateTime(strtotime($startdate) * 1000),
+                                         '$lte' => new \MongoDB\BSON\UTCDateTime(strtotime($enddate) * 1000));
         }
         if ($payment_type != 'All' && $payment_type != '') {
             $match['trans.payment_type'] = $payment_type;

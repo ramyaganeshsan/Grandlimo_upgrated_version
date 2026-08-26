@@ -3841,7 +3841,7 @@ Class Model_Manage extends Model
 						'photo' => '$people.profile_picture',
 						'driver_status' => '$people.status',
 						'updatetime_difference' => array('$subtract'=>
-								array(new MongoDate(strtotime($this->currentdate)),'$driver.update_date'))
+								array(new \MongoDB\BSON\UTCDateTime(strtotime($this->currentdate) * 1000),'$driver.update_date'))
 					)
 				),
 				array('$skip'	=> (int)$offset ),
@@ -7381,7 +7381,7 @@ Class Model_Manage extends Model
     {
 		
         if($current_date != 1){
-			$match_query =  array('passengers_id' => (int)$id,'msg_status' => $msg_status,'driver_reply'=>$driver_reply,'travel_status' => (int)$travel_status,'$and' => array(array('pickup_time' =>  array('$gte'=>new MongoDate(strtotime($fromdate))) ),array('pickup_time' =>  array('$lte'=>new MongoDate(strtotime($todate))) ) ) );
+			$match_query =  array('passengers_id' => (int)$id,'msg_status' => $msg_status,'driver_reply'=>$driver_reply,'travel_status' => (int)$travel_status,'$and' => array(array('pickup_time' =>  array('$gte'=>new \MongoDB\BSON\UTCDateTime(strtotime($fromdate) * 1000)) ),array('pickup_time' =>  array('$lte'=>new \MongoDB\BSON\UTCDateTime(strtotime($todate) * 1000)) ) ) );
 		}else{
 			$match_query =  array('passengers_id' => (int)$id,'msg_status' => $msg_status,'driver_reply'=>$driver_reply,'travel_status' => (int)$travel_status);
 		}
@@ -7911,19 +7911,19 @@ Class Model_Manage extends Model
 				$match_query['promocode'] = new MongoRegex("/$keyword/i");
 			}
 			if (!empty($search['startdate']) && !empty($search['enddate'])) {
-				$match_query['start_date'] = array('$gte' => new MongoDate(strtotime($search["startdate"])), '$lte' => new MongoDate(strtotime($search["enddate"])));
+				$match_query['start_date'] = array('$gte' => new \MongoDB\BSON\UTCDateTime(strtotime($search["startdate"]) * 1000), '$lte' => new \MongoDB\BSON\UTCDateTime(strtotime($search["enddate"]) * 1000));
             }elseif(!empty($search['startdate'])) {
-				$match_query['start_date'] = array('$gte' => new MongoDate(strtotime($search["startdate"])));
+				$match_query['start_date'] = array('$gte' => new \MongoDB\BSON\UTCDateTime(strtotime($search["startdate"]) * 1000));
             }elseif(!empty($search['enddate'])) {
-				$match_query['start_date'] = array('$lte' => new MongoDate(strtotime($search["enddate"])));
+				$match_query['start_date'] = array('$lte' => new \MongoDB\BSON\UTCDateTime(strtotime($search["enddate"]) * 1000));
             }
 			
 			if (!empty($search['e_startdate']) && !empty($search['e_enddate'])) {
-				$match_query['expire_date'] = array('$gte' => new MongoDate(strtotime($search["e_startdate"])), '$lte' => new MongoDate(strtotime($search["e_enddate"])));
+				$match_query['expire_date'] = array('$gte' => new \MongoDB\BSON\UTCDateTime(strtotime($search["e_startdate"]) * 1000), '$lte' => new \MongoDB\BSON\UTCDateTime(strtotime($search["e_enddate"]) * 1000));
             }elseif(!empty($search['e_startdate'])) {
-				$match_query['expire_date'] = array('$gte' => new MongoDate(strtotime($search["e_startdate"])));
+				$match_query['expire_date'] = array('$gte' => new \MongoDB\BSON\UTCDateTime(strtotime($search["e_startdate"]) * 1000));
             }elseif(!empty($search['e_enddate'])) {
-				$match_query['expire_date'] = array('$lte' => new MongoDate(strtotime($search["e_enddate"])));
+				$match_query['expire_date'] = array('$lte' => new \MongoDB\BSON\UTCDateTime(strtotime($search["e_enddate"]) * 1000));
             }
 			
             if (!empty($search['company'])) {
@@ -8104,7 +8104,7 @@ Class Model_Manage extends Model
 		$match = array();
 		$match['driver_id'] = (int)$driver_id;
 		$match['driver_reply'] = "A";
-		$match['pickup_time'] = array('$gte'=> new MongoDate(strtotime($start_time)));
+		$match['pickup_time'] = array('$gte'=> new \MongoDB\BSON\UTCDateTime(strtotime($start_time) * 1000));
 		$match['travel_status'] = array('$in' => array(9,5,3,2));
 		if ($company_id != "" && $company_id != 0) {
 			$match['company_id'] = (int)$company_id;
@@ -9229,7 +9229,7 @@ Class Model_Manage extends Model
 			$_id = $rs_first_key + 1;
             
             $current_date      = date('Y-m-d H:i:s', time());
-            $currentdate = new MongoDate(strtotime($current_date));
+            $currentdate = new \MongoDB\BSON\UTCDateTime(strtotime($current_date) * 1000);
 
             $data = array('_id'=>$_id,
 				'message' => $pushmessage,
@@ -9670,7 +9670,7 @@ Class Model_Manage extends Model
 			"passenger_id"=>(int)$data['passenger_id'],
 			"change_amount"=>(double)$data['add_amt'],
 			"wallet_amount"=>(double)$data['current_wallet_amt'],
-            "created_date" => new MongoDate(strtotime($this->currentdate)),
+            "created_date" => new \MongoDB\BSON\UTCDateTime(strtotime($this->currentdate) * 1000),
             "created_by" => (int)$this->user_createdby,
             "recharge_type" =>(int)1
 			);
@@ -9783,7 +9783,7 @@ Class Model_Manage extends Model
                 $additional_amt = $add_amt;
            // } 
 
-            $currentdate = new MongoDate(strtotime($this->currentdate));
+            $currentdate = new \MongoDB\BSON\UTCDateTime(strtotime($this->currentdate) * 1000);
 
             $update_data      = array(
             "wallet_amount"=>(double)$update_wallet_amt,
@@ -9814,7 +9814,7 @@ Class Model_Manage extends Model
             "passenger_id"=>(int)$data['passenger_id'],
             "change_amount"=>(double)$data['add_amt'],
             "wallet_amount"=>(double)$data['current_wallet_amt'],
-            "created_date" => new MongoDate(strtotime($this->currentdate)),
+            "created_date" => new \MongoDB\BSON\UTCDateTime(strtotime($this->currentdate) * 1000),
             "created_by" => (int)$data['passenger_id'],
             "recharge_type" =>(int)$data['recharge_type'],
             //"transaction_id" =>(int)$data['transaction_id'],

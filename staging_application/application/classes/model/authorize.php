@@ -504,8 +504,8 @@ class Model_Authorize extends Model
                 'wallet_max_limit_check' => isset($post['wallet_max_limit_check'])?(int)$post['wallet_max_limit_check']:0,
                 'surge_price_disable' => isset($post['surge_price_disable'])?(int)$post['surge_price_disable']:0,
                 'vip_user' => isset($post['vip_user'])?(int)$post['vip_user']:0,
-				'lateral_start_date' => new MongoDate(strtotime($startdate)),
-				'lateral_end_date' => new MongoDate(strtotime($enddate)),
+				'lateral_start_date' => new \MongoDB\BSON\UTCDateTime(strtotime($startdate) * 1000),
+				'lateral_end_date' => new \MongoDB\BSON\UTCDateTime(strtotime($enddate) * 1000),
                 'trip_amt_limit' =>isset($post['trip_amt_limit'])?$post['trip_amt_limit']:'',
                 'notes' =>$post['notes']
 			);	

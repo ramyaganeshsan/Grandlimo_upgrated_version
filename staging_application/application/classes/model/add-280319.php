@@ -1446,12 +1446,12 @@ Class Model_Add extends Model
 			'driver_code'=>$driver_code,
 			///Driver Code///
 			'gender'=>$post['gender'],
-			'dob'=> new MongoDate(strtotime($post['dob'])),
+			'dob'=> new \MongoDB\BSON\UTCDateTime(strtotime($post['dob']) * 1000),
 			'email'=>$post['email'],
 			'phone'=>$post['phone'],
 			'password'=>$password,
 			'org_password'=>$post['password'],
-			'created_date' => new MongoDate(strtotime($current_date)),
+			'created_date' => new \MongoDB\BSON\UTCDateTime(strtotime($current_date) * 1000),
 			'user_type' => 'D',
 			'status' => ACTIVE,
 			'user_createdby' => (int)$user_createdby,
@@ -1517,7 +1517,7 @@ Class Model_Add extends Model
             $longitude = $post['longitude'];
 			$dt = new DateTime(date('Y-m-d H:i:s'), new DateTimeZone('UTC'));
 			$ts = $dt->getTimestamp();
-			$today = new MongoDate($ts);
+			$today = new \MongoDB\BSON\UTCDateTime(($ts) * 1000);
 			$insert_data = array(
 				'_id' => $driver_id,
 				'status'=>'F',
@@ -1530,13 +1530,13 @@ Class Model_Add extends Model
         if ($result) {
 			$driver_insert_data = array(
 						'driverinfo' =>array(array(
-								'driver_license_expire_date' => new MongoDate(strtotime($post['driver_license_expire_date'])),
+								'driver_license_expire_date' => new \MongoDB\BSON\UTCDateTime(strtotime($post['driver_license_expire_date']) * 1000),
 								'driver_pco_license_number' => $post['driver_pco_license_number'],
-								'driver_pco_license_expire_date'=> new MongoDate(strtotime($post['driver_pco_license_expire_date'])),
+								'driver_pco_license_expire_date'=> new \MongoDB\BSON\UTCDateTime(strtotime($post['driver_pco_license_expire_date']) * 1000),
 								'driver_insurance_number'=>(int)$post['driver_insurance_number'],
-								'driver_insurance_expire_date'=> new MongoDate(strtotime($post['driver_insurance_expire_date'])),
+								'driver_insurance_expire_date'=> new \MongoDB\BSON\UTCDateTime(strtotime($post['driver_insurance_expire_date']) * 1000),
 								'driver_national_insurance_number'=>$post['driver_national_insurance_number'],
-								'driver_national_insurance_expire_date'=> new MongoDate(strtotime($post['driver_national_insurance_expire_date'])))));			
+								'driver_national_insurance_expire_date'=> new \MongoDB\BSON\UTCDateTime(strtotime($post['driver_national_insurance_expire_date']) * 1000))));			
 			$result = $this->mongo_db->update(MDB_DRIVER_INFO,array('_id'=>(int)$driver_id),array('$set'=>$driver_insert_data),array('upsert'=>false));
             return $driver_id;
         } else {
@@ -2516,11 +2516,11 @@ Class Model_Add extends Model
                         'company_id' =>  (int)$insert_array['company_id'],
                         'promocode' =>  $insert_array['promocode'],
                         'package' =>(int) $insert_array['package'],
-                        'start_date' => new MongoDate(strtotime($insert_array['start_date'])),
-                        'expire_date' => new MongoDate(strtotime($insert_array['expire_date'])),
+                        'start_date' => new \MongoDB\BSON\UTCDateTime(strtotime($insert_array['start_date']) * 1000),
+                        'expire_date' => new \MongoDB\BSON\UTCDateTime(strtotime($insert_array['expire_date']) * 1000),
                         'promo_limit' => (int)$insert_array['promo_limit'],
                         'promo_type' => $insert_array['promo_type'],
-                        'createdate' => new MongoDate(strtotime($insert_array['createdate'])),
+                        'createdate' => new \MongoDB\BSON\UTCDateTime(strtotime($insert_array['createdate']) * 1000),
                         'total_applied' => 0,
                         'total_used' => 0, 
                     );
@@ -2537,12 +2537,12 @@ Class Model_Add extends Model
                         'package' =>(int) $insert_array['package'],
                         'promo_used' => (int)$insert_array['promo_used'],
                         'amount_earned' => (int)$insert_array['amount_earned'],
-                        'start_date' => new MongoDate(strtotime($insert_array['start_date'])),
-                        'expire_date' => new MongoDate(strtotime($insert_array['expire_date'])),
+                        'start_date' => new \MongoDB\BSON\UTCDateTime(strtotime($insert_array['start_date']) * 1000),
+                        'expire_date' => new \MongoDB\BSON\UTCDateTime(strtotime($insert_array['expire_date']) * 1000),
                         'promo_limit' => (int)$insert_array['promo_limit'],
                         'customer_number' => $insert_array['customer_number'],
                         'customer_email' => $insert_array['customer_email'],
-                        'createdate' => new MongoDate(strtotime($insert_array['createdate'])),
+                        'createdate' => new \MongoDB\BSON\UTCDateTime(strtotime($insert_array['createdate']) * 1000),
                         'total_applied' => 0,
                         'total_used' => 0, 
                     );
@@ -4631,7 +4631,7 @@ public static function driver_id_isValid($id="")
 			'phone'=>$post['phone'],
 			'password'=>$password,
 			'org_password'=>$post['password'],
-			'created_date' => new MongoDate(strtotime($current_date)),
+			'created_date' => new \MongoDB\BSON\UTCDateTime(strtotime($current_date) * 1000),
 			'user_type' => 'O',
 			'status' => ACTIVE,
 			'user_createdby' => (int)$user_createdby,
@@ -4795,7 +4795,7 @@ public static function driver_id_isValid($id="")
             $_id = $rs_first_key + 1;
             
             $current_date      = date('Y-m-d H:i:s', time());
-            $currentdate = new MongoDate(strtotime($current_date));
+            $currentdate = new \MongoDB\BSON\UTCDateTime(strtotime($current_date) * 1000);
 
             $status = isset($post['status'])?$post['status']:0;
             $data = array('_id'=>$_id,

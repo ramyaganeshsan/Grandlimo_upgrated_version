@@ -376,7 +376,7 @@ class Model_Cronbooking extends Model
 			//exit;
 			$match_query['company.dispatch_algorithm.labelname'] = '1';
 		    $match_query['driver_id']    =(int)0;
-		    $match_query['pickup_time']    = array('$gte' => new MongoDate(strtotime($start_datetime)),'$lte' => new MongoDate(strtotime($end_datetime)));
+		    $match_query['pickup_time']    = array('$gte' => new \MongoDB\BSON\UTCDateTime(strtotime($start_datetime) * 1000),'$lte' => new \MongoDB\BSON\UTCDateTime(strtotime($end_datetime) * 1000));
 			
 				$field_arguments = array(
 					array(
@@ -606,7 +606,7 @@ class Model_Cronbooking extends Model
                                         "status" => 0,
                                         "rejected_timeout_drivers" => "",
                                         "selected_driver" => "".$driver_id."",
-                                        "createdate" => new MongoDate(strtotime($current_datetime))
+                                        "createdate" => new \MongoDB\BSON\UTCDateTime(strtotime($current_datetime) * 1000)
                                     );
                                     //Inserting to Transaction Table 
                         $transaction  = $this->commonmodel->insert(MDB_REQUEST_HISTORY, $insert_array);
@@ -814,11 +814,11 @@ class Model_Cronbooking extends Model
         $match_query['people.status'] = 'A';
         $match_query['people.availability_status'] = 'A';
         $match_query['mapping.mapping_status'] = 'A';
-        //$match_query['mapping.mapping_startdate'] = array('$lte'=> new MongoDate(strtotime($current_time)));
-        //$match_query['mapping.mapping_enddate'] = array('$gte'=> new MongoDate(strtotime($current_time)));
+        //$match_query['mapping.mapping_startdate'] = array('$lte'=> new \MongoDB\BSON\UTCDateTime(strtotime($current_time) * 1000));
+        //$match_query['mapping.mapping_enddate'] = array('$gte'=> new \MongoDB\BSON\UTCDateTime(strtotime($current_time) * 1000));
         $match_query['company.companydetails.company_status'] = 'A';
         //$match_query['report.check_package_type'] = 'T';
-        //$match_query['report.upgrade_expirydate'] = array('$gte'=>new MongoDate(strtotime($current_time)));
+        //$match_query['report.upgrade_expirydate'] = array('$gte'=>new \MongoDB\BSON\UTCDateTime(strtotime($current_time) * 1000));
         $match_query['people.booking_limit'] = array('$gt' => $this->mongo_db->count(MDB_PASSENGERS_LOGS,array('createdate'=>array('$gte'=>$start_time),'driver_id'=>'people._id','travel_status'=>1,'booking_from' => array('$ne'=>2))));
         //echo '<pre>';print_r($match_query);
         $ops = array(
@@ -1162,8 +1162,8 @@ class Model_Cronbooking extends Model
 	public function updateLateral($pid,$startdate,$enddate) {
 		$mongo_db = MangoDB::instance('default'); 
 		$data = array(
-				'lateral_start_date' => new MongoDate(strtotime($startdate)),
-				'lateral_end_date' => new MongoDate(strtotime($enddate))
+				'lateral_start_date' => new \MongoDB\BSON\UTCDateTime(strtotime($startdate) * 1000),
+				'lateral_end_date' => new \MongoDB\BSON\UTCDateTime(strtotime($enddate) * 1000)
 		);
 		$result = $mongo_db->update(MDB_PASSENGERS,array('_id'=>(int)$pid),array('$set'=>$data),array('upsert'=>true));
 	}
@@ -1306,7 +1306,7 @@ class Model_Cronbooking extends Model
 							"_id" => (int)$new_id,
 							"cron" => "Auto Dispatch",
 							"status" => "Running",
-							"createdate" => new MongoDate(strtotime($current_time)),
+							"createdate" => new \MongoDB\BSON\UTCDateTime(strtotime($current_time) * 1000),
 							"current_time" => $current_time,
 						);
 			$cron = $this->mongo_db->Insert('cron',$cron_array);
@@ -1356,7 +1356,7 @@ class Model_Cronbooking extends Model
 							'travel_status' => 7,
 							'driver_reply' => '',
 							'msg_status' => 'U',
-							'dispatch_time' => new MongoDate(strtotime($current_time)),
+							'dispatch_time' => new \MongoDB\BSON\UTCDateTime(strtotime($current_time) * 1000),
 							'auto_dispatch_status' => (int)1 // Success
 						);
 						$update_device_token_result = $this->mongo_db->update(MDB_PASSENGERS_LOGS,array('_id'=>(int)$pass_logid),array('$set'=>$update_array),array('upsert'=>false)); 
@@ -1371,7 +1371,7 @@ class Model_Cronbooking extends Model
 							"selected_driver" => (int)$nearest_driver_id,
 							"status" => 0,
 							"rejected_timeout_drivers" => "",
-							"createdate" => new MongoDate(strtotime($current_time)),
+							"createdate" => new \MongoDB\BSON\UTCDateTime(strtotime($current_time) * 1000),
 						);
 						$transaction = $this->mongo_db->Insert(MDB_REQUEST_HISTORY,$insert_array);
 						echo 'Later booking request has been dispatched to driver.';
@@ -1453,8 +1453,8 @@ class Model_Cronbooking extends Model
 		$match = array('driver_id' => 0,
 					   'taxi_modelid' => (int)4,
 					   'now_after' => (int)1,
-					   'pickup_time' => array('$gte' => new MongoDate(strtotime($start_datetime)),
-											  '$lte' => new MongoDate(strtotime($end_datetime)))
+					   'pickup_time' => array('$gte' => new \MongoDB\BSON\UTCDateTime(strtotime($start_datetime) * 1000),
+											  '$lte' => new \MongoDB\BSON\UTCDateTime(strtotime($end_datetime) * 1000))
 					);
 		$args = array(
 			array('$match' => $match),
@@ -1514,7 +1514,7 @@ class Model_Cronbooking extends Model
        
         $match = array('travel_status' => array('$in' => array(2,3,5,9)),
 						'driver_reply' => (int)$driver_id,
-						'dispatch_time' => array('$gte' => new MongoDate(strtotime($two_days_before)))
+						'dispatch_time' => array('$gte' => new \MongoDB\BSON\UTCDateTime(strtotime($two_days_before) * 1000))
 					);
 		$result = $this->mongo_db->count(MDB_PASSENGERS_LOGS, $match);
 		return isset($result) ? $result:0;
@@ -1526,7 +1526,7 @@ class Model_Cronbooking extends Model
        
         $match = array('status' => 1,
 						'selected_driver' => (int)$driver_id,
-						'createdate' => array('$gte' => new MongoDate(strtotime($two_minutes_before)))
+						'createdate' => array('$gte' => new \MongoDB\BSON\UTCDateTime(strtotime($two_minutes_before) * 1000))
 					);
 		$result = $this->mongo_db->count(MDB_REQUEST_HISTORY,$match);
 		return isset($result) ? $result:0;
@@ -1642,8 +1642,8 @@ class Model_Cronbooking extends Model
             ),
             array('$unwind' => array('path' => '$comp','preserveNullAndEmptyArrays' => true)),
             array('$match' => array(
-                    //"tmap.mapping_startdate" => array('$lte' => new MongoDate(strtotime($start_time))),
-                    //"tmap.mapping_enddate" => array('$gte' => new MongoDate(strtotime($end_time))),
+                    //"tmap.mapping_startdate" => array('$lte' => new \MongoDB\BSON\UTCDateTime(strtotime($start_time) * 1000)),
+                    //"tmap.mapping_enddate" => array('$gte' => new \MongoDB\BSON\UTCDateTime(strtotime($end_time) * 1000)),
                     "tmap.mapping_status" => 'A',
                     "taxi.taxi_model" => (int)$taxi_model
                 )
@@ -1667,7 +1667,7 @@ class Model_Cronbooking extends Model
                         "taxi_image" => '$taxi.taxi_image',
                         "taxi_capacity" => '$taxi.taxi_capacity',
                         "taxi_id" => '$taxi._id',
-                        'updatetime_difference' => array('$multiply' => array(array('$subtract' => array(new MongoDate(strtotime($current_time)),'$update_date')),0.0001))
+                        'updatetime_difference' => array('$multiply' => array(array('$subtract' => array(new \MongoDB\BSON\UTCDateTime(strtotime($current_time) * 1000),'$update_date')),0.0001))
                     )
                 )
             ),

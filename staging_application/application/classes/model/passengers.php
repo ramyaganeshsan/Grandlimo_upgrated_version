@@ -1152,7 +1152,7 @@ activation_status,user_status,created_date,updated_date,passenger_cid)values('" 
 							'passengers_id'=>(int)$userid,
 							'travel_status'=>(int)$status,
 							'driver_reply'=>  $driver_reply,
-							'pickup_time'=> array('$gte' => new MongoDate(strtotime($start_time))),
+							'pickup_time'=> array('$gte' => new \MongoDB\BSON\UTCDateTime(strtotime($start_time) * 1000)),
 							
 						)),	
 						array('$sort' => array('_id' => -1)),
@@ -1325,7 +1325,7 @@ activation_status,user_status,created_date,updated_date,passenger_cid)values('" 
             }
         }
         //echo $start_time;
-        //echo $check = new MongoDate(strtotime($start_time));exit;
+        //echo $check = new \MongoDB\BSON\UTCDateTime(strtotime($start_time) * 1000);exit;
         //echo $start_time;exit;
         /* MONGO CONVERSION */
          $arguments = array(array('$lookup'=>array(
@@ -1424,7 +1424,7 @@ activation_status,user_status,created_date,updated_date,passenger_cid)values('" 
 							'passengers_id'=>(int)$userid,
 							'travel_status'=> array('$in' => array(0,9,2)),
 							'driver_reply'=> $driver_reply,
-							'pickup_time'=> array('$gte' => new MongoDate(strtotime($start_time)))
+							'pickup_time'=> array('$gte' => new \MongoDB\BSON\UTCDateTime(strtotime($start_time) * 1000))
 							
 						)),	
 						array('$sort' => array('_id' => -1)),
@@ -1584,7 +1584,7 @@ activation_status,user_status,created_date,updated_date,passenger_cid)values('" 
 							'passengers_id'=>(int)$userid,
 							'travel_status'=>(int)$status,
 							'driver_reply'=>  $driver_reply,
-							//'pickup_time'=> array('$gte' => new MongoDate(strtotime($start_time))),
+							//'pickup_time'=> array('$gte' => new \MongoDB\BSON\UTCDateTime(strtotime($start_time) * 1000)),
 							
 						)),	
 						array('$sort' => array('_id' => -1)),
@@ -1787,7 +1787,7 @@ activation_status,user_status,created_date,updated_date,passenger_cid)values('" 
 							'passengers_id'=>(int)$userid,
 							'travel_status'=>(int)$status,
 							'driver_reply'=>  $driver_reply,
-							//'pickup_time'=> array('$gte' => new MongoDate(strtotime($start_time))),
+							//'pickup_time'=> array('$gte' => new \MongoDB\BSON\UTCDateTime(strtotime($start_time) * 1000)),
 							
 						)),	
 						array('$sort' => array('_id' => -1))
@@ -2208,7 +2208,7 @@ activation_status,user_status,created_date,updated_date,passenger_cid)values('" 
     // Reset User Password if User Forgot Password 
     public function forgot_password_phone($array_data, $value, $random_key, $company_id = null)
     {
-        $mdate  = new MongoDate(strtotime($this->currentdate));
+        $mdate  = new \MongoDB\BSON\UTCDateTime(strtotime($this->currentdate) * 1000);
         $pass   = md5($random_key);
         $match =array();
         $match['phone'] = $value['phone_no'];
@@ -2908,7 +2908,7 @@ activation_status,user_status,created_date,updated_date,passenger_cid)values('" 
 							'passengers_id'=>(int)$id,
 							'travel_status'=>(int)4,
 							//'driver_reply'=>  $driver_reply,
-							//'pickup_time'=> array('$gte' => new MongoDate(strtotime($start_time))),
+							//'pickup_time'=> array('$gte' => new \MongoDB\BSON\UTCDateTime(strtotime($start_time) * 1000)),
 							
 						)),	
 						array('$sort' => array('_id' => -1))
@@ -3457,7 +3457,7 @@ activation_status,user_status,created_date,updated_date,passenger_cid)values('" 
 								'default_card' => (int)$default,
 								'creditcard_cvv' => $creditcard_cvv,
 								'status' => 1,
-								"createdate" => new MongoDate(strtotime($this->currentdate))));
+								"createdate" => new \MongoDB\BSON\UTCDateTime(strtotime($this->currentdate) * 1000)));
             if ($default == 1) {
 				//echo "ssdsds ";exit;
 				$match = array('_id'=>(int)$passenger_id);
@@ -3908,16 +3908,16 @@ activation_status,user_status,created_date,updated_date,passenger_cid)values('" 
           
         if($status == '2'){ //Upcoming
 			$status_array = array('$in' => array(9,3,0));
-			$dateQry = array('$gte' => new MongoDate(strtotime($current_time)));
+			$dateQry = array('$gte' => new \MongoDB\BSON\UTCDateTime(strtotime($current_time) * 1000));
 			
 			
 		}else if($status == '1'){ //Ongoing
 			//echo "HELLO";exit;
 			$status_array = array('$in' => array(2,5));
-            $dateQry = array('$gte' => new MongoDate(strtotime($start_time)), '$lte' => new MongoDate(strtotime($end_time)));
+            $dateQry = array('$gte' => new \MongoDB\BSON\UTCDateTime(strtotime($start_time) * 1000), '$lte' => new \MongoDB\BSON\UTCDateTime(strtotime($end_time) * 1000));
 		}else{ //Completed
 			$status_array = 1;
-			$dateQry = array('$lte' => new MongoDate(strtotime($end_time)));
+			$dateQry = array('$lte' => new \MongoDB\BSON\UTCDateTime(strtotime($end_time) * 1000));
 		}
        
         /* MONGO CONVERSION */
