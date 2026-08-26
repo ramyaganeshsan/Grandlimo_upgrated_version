@@ -333,7 +333,7 @@ const isAirportZone = function (longitude, latitude) {
   };
   var collection = db.get().collection(t.MDB_ZONES);
   let results = collection
-    .find(match_array, { _id: 1, zone_name: 1 })
+    .find(match_array, { projection: { _id: 1, zone_name: 1 } })
     .limit(1)
     .toArray();
   return results;

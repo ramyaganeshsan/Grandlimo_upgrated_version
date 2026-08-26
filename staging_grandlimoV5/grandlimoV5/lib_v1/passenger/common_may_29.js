@@ -1092,11 +1092,6 @@ exports.nearestdriverslist = async function (
                           console.log(err);
                         });
                     });
-                
-            
-            .catch((err) => {
-              console.log(err);
-            });
         } else {
           message.message = passenger_socket_i18n.__("invalid_user");
           message.model_info = [];

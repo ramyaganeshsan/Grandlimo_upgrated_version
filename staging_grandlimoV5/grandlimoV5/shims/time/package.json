@@ -1,0 +1,6 @@
+{
+  "name": "time",
+  "version": "1.0.0",
+  "description": "Node 22-compatible replacement for the native time@0.12 addon",
+  "main": "index.js"
+}

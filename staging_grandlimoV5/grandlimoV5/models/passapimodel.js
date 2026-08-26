@@ -2,7 +2,7 @@ var db = require("../config/dbconnection");
 var t = require("../config/table_config.json");
 var md5 = require("md5");
 
-exports.getSiteInfo = function (q) {
+exports.getSiteInfo = async function (q) {
   var deferred = q.defer();
 
   var collection = db.get().collection(t.MDB_SITEINFO);
@@ -60,18 +60,19 @@ exports.getSiteInfo = function (q) {
       },
     },
   ];
-
-  collection.aggregate(arguments).toArray(function (err, results) {
-    console.log("err", err);
-    deferred.resolve(results);
-    deferred.makeNodeResolver();
-    result = null;
-  });
+    try {
+    const results = await collection.aggregate(arguments).toArray();
+        deferred.resolve(results);
+  
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
 
   return deferred.promise;
 };
 
-exports.cmsPages = function (q) {
+exports.cmsPages = async function (q) {
   var deferred = q.defer();
 
   var collection = db.get().collection(t.MDB_CMS);
@@ -91,16 +92,19 @@ exports.cmsPages = function (q) {
   ];
 
   //console.log(arguments);
-  collection.aggregate(arguments).toArray(function (err, results) {
-    deferred.resolve(results);
-    deferred.makeNodeResolver();
-    result = null;
-  });
+    try {
+    const results = await collection.aggregate(arguments).toArray();
+        deferred.resolve(results);
+  
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
 
   return deferred.promise;
 };
 
-exports.company_model_details = function (q) {
+exports.company_model_details = async function (q) {
   var deferred = q.defer();
   var collection = db.get().collection(t.MDB_MOTOR_MODEL);
   var arguments = [
@@ -152,29 +156,34 @@ exports.company_model_details = function (q) {
       },
     },
   ];
-
-  collection.aggregate(arguments).toArray(function (err, results) {
-    //console.log('err',result);
-    deferred.resolve(results);
-    deferred.makeNodeResolver();
-    results = null;
-  });
+    try {
+    const results = await collection.aggregate(arguments).toArray();
+        //console.log('err',result);
+        deferred.resolve(results);
+  
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
   return deferred.promise;
 };
 
-exports.SiteSettings = function (q) {
+exports.SiteSettings = async function (q) {
   var deferred = q.defer();
   var collection = db.get().collection(t.MDB_SITEINFO);
-  collection.find({ _id: parseInt(1) }).toArray(function (err, results) {
-    deferred.resolve(results);
-    deferred.makeNodeResolver();
-    result = null;
-  });
+    try {
+    const results = await collection.find({ _id: parseInt(1) }).toArray();
+        deferred.resolve(results);
+  
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
 
   return deferred.promise;
 };
 
-exports.getCompanyKey = function (q, key) {
+exports.getCompanyKey = async function (q, key) {
   var deferred = q.defer();
 
   var collection = db.get().collection(t.MDB_COMPANY);
@@ -193,18 +202,20 @@ exports.getCompanyKey = function (q, key) {
       },
     },
   ];
-
-  collection.aggregate(arguments).toArray(function (err, results) {
-    //console.log('company key err',err);
-    deferred.resolve(results);
-    deferred.makeNodeResolver();
-    result = null;
-  });
+    try {
+    const results = await collection.aggregate(arguments).toArray();
+        //console.log('company key err',err);
+        deferred.resolve(results);
+  
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
 
   return deferred.promise;
 };
 
-exports.check_phone_passengers = function (q, phone) {
+exports.check_phone_passengers = async function (q, phone) {
   var deferred = q.defer();
 
   let match_array = {
@@ -212,95 +223,101 @@ exports.check_phone_passengers = function (q, phone) {
   };
 
   var collection = db.get().collection(t.MDB_PASSENGERS);
-  collection
-    .find(match_array, { phone: 1, user_status: 1 })
-    .toArray(function (err, results) {
-      deferred.resolve(results);
-      deferred.makeNodeResolver();
-      result = null;
-    });
+    try {
+    const results = await collection
+    .find(match_array, { projection: { phone: 1, user_status: 1 } }).toArray();
+          deferred.resolve(results);
+    
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
 
   return deferred.promise;
 };
 
-exports.update_passenger_by_phone = function (q, phone, update_array) {
+exports.update_passenger_by_phone = async function (q, phone, update_array) {
   var deferred = q.defer();
 
   var collection = db.get().collection(t.MDB_PASSENGERS);
 
-  collection.update(
+  
+    try {
+    const data = await collection.updateOne(
     { phone: phone },
     { $set: update_array },
-    { $upsert: false },
-    function (err, data) {
-      console.log("err2", err);
-      deferred.resolve(data);
-      deferred.makeNodeResolver();
-      data = null;
-    }
-  );
+    { upsert: false });
+          deferred.resolve(data);
+    
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
 
   return deferred.promise;
 };
 
-exports.update_passenger_by_id = function (q, id, update_array) {
+exports.update_passenger_by_id = async function (q, id, update_array) {
   var deferred = q.defer();
 
   var collection = db.get().collection(t.MDB_PASSENGERS);
 
-  collection.update(
+  
+    try {
+    const data = await collection.updateOne(
     { _id: parseInt(id) },
     { $set: update_array },
-    { $upsert: false },
-    function (err, data) {
-      console.log("err2", err);
-      deferred.resolve(data);
-      deferred.makeNodeResolver();
-      data = null;
-    }
-  );
+    { upsert: false });
+          deferred.resolve(data);
+    
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
 
   return deferred.promise;
 };
 
-exports.get_auto_id = function (q, table_name) {
+exports.get_auto_id = async function (q, table_name) {
   var deferred = q.defer();
 
   var collection = db.get().collection(table_name);
-  collection
-    .find({}, { _id: -1 })
+    try {
+    let results = await collection
+    .find({})
     .sort({ _id: -1 })
-    .limit(1)
-    .toArray(function (err, results) {
-      console.log("err", err);
-      if (results.length > 0) {
-        results = results;
-      } else {
-        results = [{ _id: 0 }];
-      }
-      deferred.resolve(results);
-      deferred.makeNodeResolver();
-      result = null;
-    });
+    .limit(1).toArray();
+          if (!results.length) {
+            results = [{ _id: 0 }];
+          }
+          deferred.resolve(results);
+    
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
 
   return deferred.promise;
 };
 
-exports.insert_passenger_details = function (q, insertArray) {
+exports.insert_passenger_details = async function (q, insertArray) {
   var deferred = q.defer();
 
   var collection = db.get().collection(t.MDB_PASSENGERS);
-  collection.insert(insertArray, function (err, results) {
-    console.log("insert err", err);
-    deferred.resolve(results);
-    deferred.makeNodeResolver();
-    result = null;
-  });
+  
+    try {
+    const results = await collection.insertOne(insertArray);
+        deferred.resolve(results);
+  
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
 
   return deferred.promise;
 };
 
-exports.passenger_profile_by_phone = function (q, phone) {
+exports.passenger_profile_by_phone = async function (q, phone) {
   var deferred = q.defer();
 
   var collection = db.get().collection(t.MDB_PASSENGERS);
@@ -333,17 +350,19 @@ exports.passenger_profile_by_phone = function (q, phone) {
       },
     },
   ];
-
-  collection.aggregate(arguments).toArray(function (err, results) {
-    deferred.resolve(results);
-    deferred.makeNodeResolver();
-    result = null;
-  });
+    try {
+    const results = await collection.aggregate(arguments).toArray();
+        deferred.resolve(results);
+  
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
 
   return deferred.promise;
 };
 
-exports.passenger_profile_by_id = function (q, id) {
+exports.passenger_profile_by_id = async function (q, id) {
   var deferred = q.defer();
 
   let match_array = {
@@ -400,17 +419,19 @@ exports.passenger_profile_by_id = function (q, id) {
       },
     },
   ];
-
-  collection.aggregate(arguments).toArray(function (err, results) {
-    deferred.resolve(results);
-    deferred.makeNodeResolver();
-    result = null;
-  });
+    try {
+    const results = await collection.aggregate(arguments).toArray();
+        deferred.resolve(results);
+  
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
 
   return deferred.promise;
 };
 
-exports.passenger_verify_otp = function (q, phone, otp) {
+exports.passenger_verify_otp = async function (q, phone, otp) {
   var deferred = q.defer();
 
   let match_array = {
@@ -447,17 +468,19 @@ exports.passenger_verify_otp = function (q, phone, otp) {
       },
     },
   ];
-
-  collection.aggregate(arguments).toArray(function (err, results) {
-    deferred.resolve(results);
-    deferred.makeNodeResolver();
-    result = null;
-  });
+    try {
+    const results = await collection.aggregate(arguments).toArray();
+        deferred.resolve(results);
+  
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
 
   return deferred.promise;
 };
 
-exports.passenger_email_exists = function (q, email) {
+exports.passenger_email_exists = async function (q, email) {
   var deferred = q.defer();
 
   let match_array = {
@@ -465,16 +488,19 @@ exports.passenger_email_exists = function (q, email) {
   };
 
   var collection = db.get().collection(t.MDB_PASSENGERS);
-  collection.find(match_array).count(function (err, results) {
-    deferred.resolve(results);
-    deferred.makeNodeResolver();
-    result = null;
-  });
+    try {
+    const results = await collection.countDocuments(match_array);
+        deferred.resolve(results);
+  
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
 
   return deferred.promise;
 };
 
-exports.passenger_email_exists_id = function (q, id, email) {
+exports.passenger_email_exists_id = async function (q, id, email) {
   var deferred = q.defer();
 
   let match_array = {
@@ -483,16 +509,19 @@ exports.passenger_email_exists_id = function (q, id, email) {
   };
 
   var collection = db.get().collection(t.MDB_PASSENGERS);
-  collection.find(match_array).count(function (err, results) {
-    deferred.resolve(results);
-    deferred.makeNodeResolver();
-    result = null;
-  });
+    try {
+    const results = await collection.countDocuments(match_array);
+        deferred.resolve(results);
+  
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
 
   return deferred.promise;
 };
 
-exports.passenger_pending_list = function (q, passenger_id, timerange) {
+exports.passenger_pending_list = async function (q, passenger_id, timerange) {
   try {
     var deferred = q.defer();
 
@@ -594,21 +623,24 @@ exports.passenger_pending_list = function (q, passenger_id, timerange) {
       },
       { $sort: { _id: -1 } },
     ];
-
-    collection.aggregate(arguments).toArray(function (err, results) {
-      //console.log('company key err',err);
-      deferred.resolve(results);
-      deferred.makeNodeResolver();
-      result = null;
-    });
+        try {
+      const results = await collection.aggregate(arguments).toArray();
+            //console.log('company key err',err);
+            deferred.resolve(results);
+    
+    } catch (err) {
+      console.log(err);
+      throw err;
+    }
   } catch (err) {
     console.log(err);
+    throw err;
   }
 
   return deferred.promise;
 };
 
-exports.passenger_current_trip = function (q, passenger_id) {
+exports.passenger_current_trip = async function (q, passenger_id) {
   var deferred = q.defer();
 
   let match_array = {
@@ -620,16 +652,19 @@ exports.passenger_current_trip = function (q, passenger_id) {
   };
 
   var collection = db.get().collection(t.MDB_PASSENGERSLOG);
-  collection.find(match_array, {}).toArray(function (err, results) {
-    deferred.resolve(results);
-    deferred.makeNodeResolver();
-    result = null;
-  });
+    try {
+    const results = await collection.find(match_array).toArray();
+        deferred.resolve(results);
+  
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
 
   return deferred.promise;
 };
 
-exports.get_passenger_added_promocode = function (q, passenger_id) {
+exports.get_passenger_added_promocode = async function (q, passenger_id) {
   var deferred = q.defer();
 
   var match_array = {
@@ -662,17 +697,20 @@ exports.get_passenger_added_promocode = function (q, passenger_id) {
       },
     },
   ];
-  collection.aggregate(arguments).toArray(function (err, results) {
-    //console.log('company key err',err);
-    deferred.resolve(results);
-    deferred.makeNodeResolver();
-    result = null;
-  });
+    try {
+    const results = await collection.aggregate(arguments).toArray();
+        //console.log('company key err',err);
+        deferred.resolve(results);
+  
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
 
   return deferred.promise;
 };
 
-exports.get_favourite_list = function (q, passenger_id) {
+exports.get_favourite_list = async function (q, passenger_id) {
   try {
     var deferred = q.defer();
 
@@ -702,34 +740,41 @@ exports.get_favourite_list = function (q, passenger_id) {
         },
       },
     ];
-    collection.aggregate(arguments).toArray(function (err, results) {
-      //console.log('company key err',err);
-      deferred.resolve(results);
-      deferred.makeNodeResolver();
-      result = null;
-    });
+        try {
+      const results = await collection.aggregate(arguments).toArray();
+            //console.log('company key err',err);
+            deferred.resolve(results);
+    
+    } catch (err) {
+      console.log(err);
+      throw err;
+    }
   } catch (err) {
     console.log(err);
+    throw err;
   }
 
   return deferred.promise;
 };
 
-exports.add_favourite = function (q, insertArray) {
+exports.add_favourite = async function (q, insertArray) {
   var deferred = q.defer();
 
   var collection = db.get().collection(t.MDB_PASSENGERS_FAVOURITES);
-  collection.insert(insertArray, function (err, results) {
-    console.log("insert err", err);
-    deferred.resolve(results);
-    deferred.makeNodeResolver();
-    result = null;
-  });
+  
+    try {
+    const results = await collection.insertOne(insertArray);
+        deferred.resolve(results);
+  
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
 
   return deferred.promise;
 };
 
-exports.check_fav_exists = function (q, input_array) {
+exports.check_fav_exists = async function (q, input_array) {
   var deferred = q.defer();
 
   var p_fav_place = input_array.p_favourite_place;
@@ -758,17 +803,19 @@ exports.check_fav_exists = function (q, input_array) {
   }
 
   var collection = db.get().collection(t.MDB_PASSENGERS_FAVOURITES);
-  collection.find(match_array, {}).toArray(function (err, results) {
-    console.log("fav err", err);
-    deferred.resolve(results);
-    deferred.makeNodeResolver();
-    result = null;
-  });
+    try {
+    const results = await collection.find(match_array).toArray();
+        deferred.resolve(results);
+  
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
 
   return deferred.promise;
 };
 
-exports.check_fav_type_exists = function (q, input_array) {
+exports.check_fav_type_exists = async function (q, input_array) {
   var deferred = q.defer();
 
   var p_fav_locationtype = input_array.p_fav_locationtype;
@@ -787,36 +834,40 @@ exports.check_fav_type_exists = function (q, input_array) {
   }
 
   var collection = db.get().collection(t.MDB_PASSENGERS_FAVOURITES);
-  collection.find(match_array, {}).toArray(function (err, results) {
-    deferred.resolve(results);
-    deferred.makeNodeResolver();
-    result = null;
-  });
+    try {
+    const results = await collection.find(match_array).toArray();
+        deferred.resolve(results);
+  
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
 
   return deferred.promise;
 };
 
-exports.update_favourites = function (q, id, update_array) {
+exports.update_favourites = async function (q, id, update_array) {
   var deferred = q.defer();
 
   var collection = db.get().collection(t.MDB_PASSENGERS_FAVOURITES);
 
-  collection.update(
+  
+    try {
+    const data = await collection.updateOne(
     { _id: parseInt(id) },
     { $set: update_array },
-    { $upsert: false },
-    function (err, data) {
-      console.log("err2", err);
-      deferred.resolve(data);
-      deferred.makeNodeResolver();
-      data = null;
-    }
-  );
+    { upsert: false });
+          deferred.resolve(data);
+    
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
 
   return deferred.promise;
 };
 
-exports.delete_favourites = function (q, id) {
+exports.delete_favourites = async function (q, id) {
   var deferred = q.defer();
 
   let match_array = {
@@ -824,16 +875,20 @@ exports.delete_favourites = function (q, id) {
   };
 
   var collection = db.get().collection(t.MDB_PASSENGERS_FAVOURITES);
-  collection.remove(match_array, function (err, results) {
-    deferred.resolve(results);
-    deferred.makeNodeResolver();
-    result = null;
-  });
+  
+    try {
+    const results = await collection.deleteOne(match_array);
+        deferred.resolve(results);
+  
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
 
   return deferred.promise;
 };
 
-exports.check_fav_exists_id = function (q, id) {
+exports.check_fav_exists_id = async function (q, id) {
   var deferred = q.defer();
 
   let match_array = {
@@ -841,16 +896,19 @@ exports.check_fav_exists_id = function (q, id) {
   };
 
   var collection = db.get().collection(t.MDB_PASSENGERS_FAVOURITES);
-  collection.find(match_array, {}).toArray(function (err, results) {
-    deferred.resolve(results);
-    deferred.makeNodeResolver();
-    result = null;
-  });
+    try {
+    const results = await collection.find(match_array).toArray();
+        deferred.resolve(results);
+  
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
 
   return deferred.promise;
 };
 
-exports.nearest_drivers = function (q, model_id, latitude, longitude) {
+exports.nearest_drivers = async function (q, model_id, latitude, longitude) {
   try {
     var deferred = q.defer();
     var up_time_milli = global.settings.location_update_seconds * 1000;
@@ -998,22 +1056,25 @@ exports.nearest_drivers = function (q, model_id, latitude, longitude) {
       },
       { $sort: { "_id.distance": 1 } },
     ];
-
-    collection.aggregate(arguments).toArray(function (err, results) {
-      //console.log('company key err',err);
-      //console.log('search results',results);
-      deferred.resolve(results);
-      deferred.makeNodeResolver();
-      result = null;
-    });
+        try {
+      const results = await collection.aggregate(arguments).toArray();
+            //console.log('company key err',err);
+            //console.log('search results',results);
+            deferred.resolve(results);
+    
+    } catch (err) {
+      console.log(err);
+      throw err;
+    }
   } catch (err) {
     console.log(err);
+    throw err;
   }
 
   return deferred.promise;
 };
 
-exports.model_fare_details = function (q, model_id) {
+exports.model_fare_details = async function (q, model_id) {
   var deferred = q.defer();
 
   var match_array = {
@@ -1068,17 +1129,19 @@ exports.model_fare_details = function (q, model_id) {
       },
     },
   ];
-
-  collection.aggregate(arguments).toArray(function (err, results) {
-    //console.log('err',result);
-    deferred.resolve(results);
-    deferred.makeNodeResolver();
-    results = null;
-  });
+    try {
+    const results = await collection.aggregate(arguments).toArray();
+        //console.log('err',result);
+        deferred.resolve(results);
+  
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
   return deferred.promise;
 };
 
-exports.passenger_current_trips = function (q, id) {
+exports.passenger_current_trips = async function (q, id) {
   var deferred = q.defer();
 
   let match_array = {
@@ -1087,16 +1150,19 @@ exports.passenger_current_trips = function (q, id) {
   };
 
   var collection = db.get().collection(t.MDB_PASSENGERSLOG);
-  collection.find(match_array, {}).toArray(function (err, results) {
-    deferred.resolve(results);
-    deferred.makeNodeResolver();
-    result = null;
-  });
+    try {
+    const results = await collection.find(match_array).toArray();
+        deferred.resolve(results);
+  
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
 
   return deferred.promise;
 };
 
-exports.currentday_booking_count = function (q, driver_id, time_range) {
+exports.currentday_booking_count = async function (q, driver_id, time_range) {
   var deferred = q.defer();
 
   var match_array = {
@@ -1114,18 +1180,20 @@ exports.currentday_booking_count = function (q, driver_id, time_range) {
       },
     },
   ];
-
-  collection.aggregate(arguments).toArray(function (err, results) {
-    console.log("results", results);
-    deferred.resolve(results);
-    deferred.makeNodeResolver();
-    result = null;
-  });
+    try {
+    const results = await collection.aggregate(arguments).toArray();
+        console.log("results", results);
+        deferred.resolve(results);
+  
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
 
   return deferred.promise;
 };
 
-exports.promocode_details = function (q, promocode) {
+exports.promocode_details = async function (q, promocode) {
   var deferred = q.defer();
 
   //~ let match_array = {
@@ -1138,8 +1206,9 @@ exports.promocode_details = function (q, promocode) {
   };
 
   var collection = db.get().collection(t.MDB_PASSENGER_PROMO);
-  collection
-    .find(match_array, {
+    try {
+    const results = await collection
+    .find(match_array, { projection: {
       promocode: 1,
       promo_discount: 1,
       promo_used: 1,
@@ -1148,17 +1217,18 @@ exports.promocode_details = function (q, promocode) {
       promo_limit: 1,
       total_applied: 1,
       total_used: 1,
-    })
-    .toArray(function (err, results) {
-      deferred.resolve(results);
-      deferred.makeNodeResolver();
-      result = null;
-    });
+    } }).toArray();
+          deferred.resolve(results);
+    
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
 
   return deferred.promise;
 };
 
-exports.promocode_details_by_phone = function (q, promocode, phone) {
+exports.promocode_details_by_phone = async function (q, promocode, phone) {
   var deferred = q.defer();
 
   //~ let match_array = {
@@ -1173,8 +1243,9 @@ exports.promocode_details_by_phone = function (q, promocode, phone) {
   };
 
   var collection = db.get().collection(t.MDB_PASSENGER_PROMO);
-  collection
-    .find(match_array, {
+    try {
+    const results = await collection
+    .find(match_array, { projection: {
       promocode: 1,
       promo_discount: 1,
       promo_used: 1,
@@ -1183,17 +1254,18 @@ exports.promocode_details_by_phone = function (q, promocode, phone) {
       promo_limit: 1,
       total_applied: 1,
       total_used: 1,
-    })
-    .toArray(function (err, results) {
-      deferred.resolve(results);
-      deferred.makeNodeResolver();
-      result = null;
-    });
+    } }).toArray();
+          deferred.resolve(results);
+    
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
 
   return deferred.promise;
 };
 
-exports.promocode_count = function (q, promocode, passengers_id) {
+exports.promocode_count = async function (q, promocode, passengers_id) {
   var deferred = q.defer();
 
   let match_array = {
@@ -1204,18 +1276,20 @@ exports.promocode_count = function (q, promocode, passengers_id) {
   console.log(match_array);
 
   var collection = db.get().collection(t.MDB_PASSENGERSLOG);
-  collection
-    .find(match_array, { promocode: 1 })
-    .toArray(function (err, results) {
-      deferred.resolve(results);
-      deferred.makeNodeResolver();
-      result = null;
-    });
+    try {
+    const results = await collection
+    .find(match_array, { projection: { promocode: 1 } }).toArray();
+          deferred.resolve(results);
+    
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
 
   return deferred.promise;
 };
 
-exports.check_passenger_trips = function (q, id) {
+exports.check_passenger_trips = async function (q, id) {
   var deferred = q.defer();
 
   var current_date = new Date();
@@ -1229,16 +1303,19 @@ exports.check_passenger_trips = function (q, id) {
   };
 
   var collection = db.get().collection(t.MDB_PASSENGERSLOG);
-  collection.find(match_array, {}).toArray(function (err, results) {
-    deferred.resolve(results);
-    deferred.makeNodeResolver();
-    result = null;
-  });
+    try {
+    const results = await collection.find(match_array).toArray();
+        deferred.resolve(results);
+  
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
 
   return deferred.promise;
 };
 
-exports.city_details_by_name = function (q, city_name) {
+exports.city_details_by_name = async function (q, city_name) {
   var deferred = q.defer();
 
   var collection = db.get().collection(t.MDB_PASSENGERSLOG);
@@ -1256,18 +1333,20 @@ exports.city_details_by_name = function (q, city_name) {
     { $project: { city_id: "$stateinfo.cityinfo.city_id" } },
     { $limit: 1 },
   ];
-
-  collection.aggregate(arguments).toArray(function (err, results) {
-    console.log("results", results);
-    deferred.resolve(results);
-    deferred.makeNodeResolver();
-    result = null;
-  });
+    try {
+    const results = await collection.aggregate(arguments).toArray();
+        console.log("results", results);
+        deferred.resolve(results);
+  
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
 
   return deferred.promise;
 };
 
-exports.default_city_details = function (q) {
+exports.default_city_details = async function (q) {
   var deferred = q.defer();
 
   var collection = db.get().collection(t.MDB_PASSENGERSLOG);
@@ -1287,18 +1366,20 @@ exports.default_city_details = function (q) {
     { $project: { city_id: "$stateinfo.cityinfo.city_id" } },
     { $limit: 1 },
   ];
-
-  collection.aggregate(arguments).toArray(function (err, results) {
-    console.log("results", results);
-    deferred.resolve(results);
-    deferred.makeNodeResolver();
-    result = null;
-  });
+    try {
+    const results = await collection.aggregate(arguments).toArray();
+        console.log("results", results);
+        deferred.resolve(results);
+  
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
 
   return deferred.promise;
 };
 
-exports.get_driver_availability = function (q, driver_id, pickup_time) {
+exports.get_driver_availability = async function (q, driver_id, pickup_time) {
   var deferred = q.defer();
 
   let match_array = {
@@ -1308,8 +1389,9 @@ exports.get_driver_availability = function (q, driver_id, pickup_time) {
   };
 
   var collection = db.get().collection(t.MDB_PASSENGERSLOG);
-  collection
-    .find(match_array, {
+    try {
+    const results = await collection
+    .find(match_array, { projection: {
       promocode: 1,
       promo_discount: 1,
       promo_used: 1,
@@ -1318,71 +1400,77 @@ exports.get_driver_availability = function (q, driver_id, pickup_time) {
       promo_limit: 1,
       total_applied: 1,
       total_used: 1,
-    })
-    .toArray(function (err, results) {
-      deferred.resolve(results);
-      deferred.makeNodeResolver();
-      result = null;
-    });
+    } }).toArray();
+          deferred.resolve(results);
+    
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
 
   return deferred.promise;
 };
 
-exports.update_passengers_logs = function (q, id, update_array) {
+exports.update_passengers_logs = async function (q, id, update_array) {
   var deferred = q.defer();
 
   var collection = db.get().collection(t.MDB_PASSENGERSLOG);
 
-  collection.update(
+  
+    try {
+    const data = await collection.updateOne(
     { _id: parseInt(id) },
     { $set: update_array },
-    { $upsert: false },
-    function (err, data) {
-      console.log("err2", err);
-      deferred.resolve(data);
-      deferred.makeNodeResolver();
-      data = null;
-    }
-  );
+    { upsert: false });
+          deferred.resolve(data);
+    
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
 
   return deferred.promise;
 };
 
-exports.insert_passengers_logs = function (q, insertArray) {
+exports.insert_passengers_logs = async function (q, insertArray) {
   var deferred = q.defer();
 
   var collection = db.get().collection(t.MDB_PASSENGERSLOG);
-  collection.insert(insertArray, function (err, results) {
-    console.log("insert err", err);
-    deferred.resolve(results);
-    deferred.makeNodeResolver();
-    result = null;
-  });
+  
+    try {
+    const results = await collection.insertOne(insertArray);
+        deferred.resolve(results);
+  
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
 
   return deferred.promise;
 };
 
-exports.update_siteinfo = function (q, update_array) {
+exports.update_siteinfo = async function (q, update_array) {
   var deferred = q.defer();
 
   var collection = db.get().collection(t.MDB_SITEINFO);
 
-  collection.update(
+  
+    try {
+    const data = await collection.updateOne(
     { _id: parseInt(1) },
     { $set: update_array },
-    { $upsert: false },
-    function (err, data) {
-      console.log("err2", err);
-      deferred.resolve(data);
-      deferred.makeNodeResolver();
-      data = null;
-    }
-  );
+    { upsert: false });
+          deferred.resolve(data);
+    
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
 
   return deferred.promise;
 };
 
-exports.get_last_logid = function (q) {
+exports.get_last_logid = async function (q) {
   var deferred = q.defer();
 
   let match_array = {
@@ -1390,18 +1478,20 @@ exports.get_last_logid = function (q) {
   };
 
   var collection = db.get().collection(t.MDB_SITEINFO);
-  collection
-    .find(match_array, { last_logid: 1 })
-    .toArray(function (err, results) {
-      deferred.resolve(results);
-      deferred.makeNodeResolver();
-      result = null;
-    });
+    try {
+    const results = await collection
+    .find(match_array, { projection: { last_logid: 1 } }).toArray();
+          deferred.resolve(results);
+    
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
 
   return deferred.promise;
 };
 
-exports.get_sublogid = function (q, sublog_id) {
+exports.get_sublogid = async function (q, sublog_id) {
   var deferred = q.defer();
 
   let match_array = {
@@ -1409,72 +1499,79 @@ exports.get_sublogid = function (q, sublog_id) {
   };
 
   var collection = db.get().collection(t.MDB_PASSENGERSLOG);
-  collection
-    .find(match_array, { sub_logid: 1 })
-    .toArray(function (err, results) {
-      deferred.resolve(results);
-      deferred.makeNodeResolver();
-      result = null;
-    });
+    try {
+    const results = await collection
+    .find(match_array, { projection: { sub_logid: 1 } }).toArray();
+          deferred.resolve(results);
+    
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
 
   return deferred.promise;
 };
 
-exports.update_sublog_id = function (q, update_array, id) {
+exports.update_sublog_id = async function (q, update_array, id) {
   var deferred = q.defer();
 
   var collection = db.get().collection(t.MDB_PASSENGERSLOG);
 
-  collection.update(
+  
+    try {
+    const data = await collection.updateOne(
     { _id: parseInt(id) },
     { $set: update_array },
-    { $upsert: false },
-    function (err, data) {
-      console.log("err2", err);
-      deferred.resolve(data);
-      deferred.makeNodeResolver();
-      data = null;
-    }
-  );
+    { upsert: false });
+          deferred.resolve(data);
+    
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
 
   return deferred.promise;
 };
 
-exports.update_request_details = function (q, id, update_array) {
+exports.update_request_details = async function (q, id, update_array) {
   var deferred = q.defer();
 
   var collection = db.get().collection(t.MDB_DRIVER_REQUEST_DETAILS);
 
-  collection.update(
+  
+    try {
+    const data = await collection.updateOne(
     { _id: parseInt(id) },
     { $set: update_array },
-    { $upsert: false },
-    function (err, data) {
-      console.log("err2", err);
-      deferred.resolve(data);
-      deferred.makeNodeResolver();
-      data = null;
-    }
-  );
+    { upsert: false });
+          deferred.resolve(data);
+    
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
 
   return deferred.promise;
 };
 
-exports.insert_request_details = function (q, insertArray) {
+exports.insert_request_details = async function (q, insertArray) {
   var deferred = q.defer();
 
   var collection = db.get().collection(t.MDB_DRIVER_REQUEST_DETAILS);
-  collection.insert(insertArray, function (err, results) {
-    console.log("insert err", err);
-    deferred.resolve(results);
-    deferred.makeNodeResolver();
-    result = null;
-  });
+  
+    try {
+    const results = await collection.insertOne(insertArray);
+        deferred.resolve(results);
+  
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
 
   return deferred.promise;
 };
 
-exports.get_trip_detail = function (q, trip_id) {
+exports.get_trip_detail = async function (q, trip_id) {
   var deferred = q.defer();
 
   var match_array = {
@@ -1737,17 +1834,19 @@ exports.get_trip_detail = function (q, trip_id) {
     },
   ];
   var collection = db.get().collection(t.MDB_PASSENGERSLOG);
-  collection.aggregate(arguments).toArray(function (err, results) {
-    console.log("err trip", err);
-    deferred.resolve(results);
-    deferred.makeNodeResolver();
-    result = null;
-  });
+    try {
+    const results = await collection.aggregate(arguments).toArray();
+        deferred.resolve(results);
+  
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
 
   return deferred.promise;
 };
 
-exports.past_trip_places = function (q, id) {
+exports.past_trip_places = async function (q, id) {
   var deferred = q.defer();
 
   var collection = db.get().collection(t.MDB_LOGS_COMPLETED);
@@ -1772,17 +1871,19 @@ exports.past_trip_places = function (q, id) {
     { $skip: parseInt(0) },
     { $limit: parseInt(15) },
   ];
-
-  collection.aggregate(arguments).toArray(function (err, results) {
-    deferred.resolve(results);
-    deferred.makeNodeResolver();
-    result = null;
-  });
+    try {
+    const results = await collection.aggregate(arguments).toArray();
+        deferred.resolve(results);
+  
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
 
   return deferred.promise;
 };
 
-exports.recent_trip_places = function (
+exports.recent_trip_places = async function (
   q,
   passenger_id,
   place_type,
@@ -1850,58 +1951,62 @@ exports.recent_trip_places = function (
   ];
 
   //console.log(match_array);
-
-  collection.aggregate(arguments).toArray(function (err, results) {
-    //console.log(results);
-    deferred.resolve(results);
-    deferred.makeNodeResolver();
-    result = null;
-  });
+    try {
+    const results = await collection.aggregate(arguments).toArray();
+        //console.log(results);
+        deferred.resolve(results);
+  
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
 
   return deferred.promise;
 };
 
-exports.update_ratings = function (q, id, update_array) {
+exports.update_ratings = async function (q, id, update_array) {
   var deferred = q.defer();
 
   var collection = db.get().collection(t.MDB_PASSENGERSLOG);
 
-  collection.update(
+  
+    try {
+    const data = await collection.updateOne(
     { _id: parseInt(id) },
     { $set: update_array },
-    { $upsert: false },
-    function (err, data) {
-      console.log("err2", err);
-      deferred.resolve(data);
-      deferred.makeNodeResolver();
-      data = null;
-    }
-  );
+    { upsert: false });
+          deferred.resolve(data);
+    
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
 
   return deferred.promise;
 };
 
-exports.update_ratings_completed = function (q, id, update_array) {
+exports.update_ratings_completed = async function (q, id, update_array) {
   var deferred = q.defer();
 
   var collection = db.get().collection(t.MDB_LOGS_COMPLETED);
 
-  collection.update(
+  
+    try {
+    const data = await collection.updateOne(
     { _id: parseInt(id) },
     { $set: update_array },
-    { $upsert: false },
-    function (err, data) {
-      console.log("err2", err);
-      deferred.resolve(data);
-      deferred.makeNodeResolver();
-      data = null;
-    }
-  );
+    { upsert: false });
+          deferred.resolve(data);
+    
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
 
   return deferred.promise;
 };
 
-exports.passenger_trips_completed = function (q, userid) {
+exports.passenger_trips_completed = async function (q, userid) {
   var deferred = q.defer();
 
   var match_array = {
@@ -2058,17 +2163,19 @@ exports.passenger_trips_completed = function (q, userid) {
     },
   ];
   var collection = db.get().collection(t.MDB_LOGS_COMPLETED);
-  collection.aggregate(arguments).toArray(function (err, results) {
-    console.log("err", err);
-    deferred.resolve(results);
-    deferred.makeNodeResolver();
-    result = null;
-  });
+    try {
+    const results = await collection.aggregate(arguments).toArray();
+        deferred.resolve(results);
+  
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
 
   return deferred.promise;
 };
 
-exports.passenger_trips_cancelled = function (q, userid) {
+exports.passenger_trips_cancelled = async function (q, userid) {
   var deferred = q.defer();
 
   var match_array = {
@@ -2243,17 +2350,19 @@ exports.passenger_trips_cancelled = function (q, userid) {
     },
   ];
   var collection = db.get().collection(t.MDB_LOGS_CANCELLED);
-  collection.aggregate(arguments).toArray(function (err, results) {
-    console.log("err", err);
-    deferred.resolve(results);
-    deferred.makeNodeResolver();
-    result = null;
-  });
+    try {
+    const results = await collection.aggregate(arguments).toArray();
+        deferred.resolve(results);
+  
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
 
   return deferred.promise;
 };
 
-exports.passenger_trips_missed = function (q, userid) {
+exports.passenger_trips_missed = async function (q, userid) {
   var deferred = q.defer();
 
   var match_array = {
@@ -2425,16 +2534,18 @@ exports.passenger_trips_missed = function (q, userid) {
     },
   ];
   var collection = db.get().collection(t.MDB_LOGS_MISSED);
-  collection.aggregate(arguments).toArray(function (err, results) {
-    console.log("err", err);
-    deferred.resolve(results);
-    deferred.makeNodeResolver();
-    result = null;
-  });
+    try {
+    const results = await collection.aggregate(arguments).toArray();
+        deferred.resolve(results);
+  
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
 
   return deferred.promise;
 };
-exports.passenger_trips_rejected = function (q, userid) {
+exports.passenger_trips_rejected = async function (q, userid) {
   var deferred = q.defer();
 
   var match_array = {
@@ -2606,17 +2717,19 @@ exports.passenger_trips_rejected = function (q, userid) {
     },
   ];
   var collection = db.get().collection(t.MDB_LOGS_REJECTED);
-  collection.aggregate(arguments).toArray(function (err, results) {
-    console.log("err", err);
-    deferred.resolve(results);
-    deferred.makeNodeResolver();
-    result = null;
-  });
+    try {
+    const results = await collection.aggregate(arguments).toArray();
+        deferred.resolve(results);
+  
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
 
   return deferred.promise;
 };
 
-exports.check_passenger_in_book_now = function (
+exports.check_passenger_in_book_now = async function (
   q,
   passenger_id,
   current_trip_id
@@ -2631,41 +2744,45 @@ exports.check_passenger_in_book_now = function (
   };
 
   var collection = db.get().collection(t.MDB_PASSENGERSLOG);
-  collection
-    .find(match_array, { pickup_time: 1, _id: 1, confirm_flag: 1 })
-    .toArray(function (err, results) {
-      deferred.resolve(results);
-      deferred.makeNodeResolver();
-      result = null;
-    });
+    try {
+    const results = await collection
+    .find(match_array, { projection: { pickup_time: 1, _id: 1, confirm_flag: 1 } }).toArray();
+          deferred.resolve(results);
+    
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
 
   return deferred.promise;
 };
 
-exports.get_ratings_info = function (q) {
+exports.get_ratings_info = async function (q) {
   var deferred = q.defer();
 
   let match_array = {};
 
   var collection = db.get().collection(t.MDB_RATINGS);
-  collection
-    .find(match_array, {
+    try {
+    const results = await collection
+    .find(match_array, { projection: {
       ratings_no: 1,
       ratings_title: 1,
       ratings_title_ar: 1,
       ratings_tags: 1,
       ratings_tags_ar: 1,
-    })
-    .toArray(function (err, results) {
-      deferred.resolve(results);
-      deferred.makeNodeResolver();
-      result = null;
-    });
+    } }).toArray();
+          deferred.resolve(results);
+    
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
 
   return deferred.promise;
 };
 
-exports.trip_pay_details = function (q, trip_id) {
+exports.trip_pay_details = async function (q, trip_id) {
   var deferred = q.defer();
 
   let match_array = {
@@ -2673,16 +2790,19 @@ exports.trip_pay_details = function (q, trip_id) {
   };
 
   var collection = db.get().collection(t.MDB_PAYDETAILS);
-  collection.find(match_array, {}).toArray(function (err, results) {
-    deferred.resolve(results);
-    deferred.makeNodeResolver();
-    result = null;
-  });
+    try {
+    const results = await collection.find(match_array).toArray();
+        deferred.resolve(results);
+  
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
 
   return deferred.promise;
 };
 
-exports.check_confirmed_status = function (q, trip_id) {
+exports.check_confirmed_status = async function (q, trip_id) {
   var deferred = q.defer();
 
   let match_array = {
@@ -2690,43 +2810,46 @@ exports.check_confirmed_status = function (q, trip_id) {
   };
 
   var collection = db.get().collection(t.MDB_PASSENGERSLOG);
-  collection
-    .find(match_array, {
+    try {
+    const results = await collection
+    .find(match_array, { projection: {
       travel_status: 1,
       confirm_flag: 1,
       book_type: 1,
       driver_reply: 1,
-    })
-    .toArray(function (err, results) {
-      deferred.resolve(results);
-      deferred.makeNodeResolver();
-      result = null;
-    });
+    } }).toArray();
+          deferred.resolve(results);
+    
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
 
   return deferred.promise;
 };
 
-exports.passenger_update_drop_location = function (q, trip_id, update_array) {
+exports.passenger_update_drop_location = async function (q, trip_id, update_array) {
   var deferred = q.defer();
 
   var collection = db.get().collection(t.MDB_PASSENGERSLOG);
 
-  collection.update(
+  
+    try {
+    const data = await collection.updateOne(
     { _id: parseInt(trip_id) },
     { $set: update_array },
-    { $upsert: false },
-    function (err, data) {
-      console.log("err2", err);
-      deferred.resolve(data);
-      deferred.makeNodeResolver();
-      data = null;
-    }
-  );
+    { upsert: false });
+          deferred.resolve(data);
+    
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
 
   return deferred.promise;
 };
 
-exports.passengers_wallet_logs = function (q, userid, start, limit) {
+exports.passengers_wallet_logs = async function (q, userid, start, limit) {
   var deferred = q.defer();
 
   var match_array = {
@@ -2773,17 +2896,19 @@ exports.passengers_wallet_logs = function (q, userid, start, limit) {
 
   //console.log(arguments);
   var collection = db.get().collection(t.MDB_PASSENGER_WALLET_LOG);
-  collection.aggregate(arguments).toArray(function (err, results) {
-    console.log("err", err);
-    deferred.resolve(results);
-    deferred.makeNodeResolver();
-    result = null;
-  });
+    try {
+    const results = await collection.aggregate(arguments).toArray();
+        deferred.resolve(results);
+  
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
 
   return deferred.promise;
 };
 
-exports.get_added_promocodes = function (q, userid) {
+exports.get_added_promocodes = async function (q, userid) {
   var deferred = q.defer();
 
   var match_array = {
@@ -2823,17 +2948,19 @@ exports.get_added_promocodes = function (q, userid) {
     { $sort: { _id: -1 } },
   ];
   var collection = db.get().collection(t.MDB_PASSENGERS_ADDED_PROMO);
-  collection.aggregate(arguments).toArray(function (err, results) {
-    console.log("err", err);
-    deferred.resolve(results);
-    deferred.makeNodeResolver();
-    result = null;
-  });
+    try {
+    const results = await collection.aggregate(arguments).toArray();
+        deferred.resolve(results);
+  
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
 
   return deferred.promise;
 };
 
-exports.get_passenger_notifications = function (q) {
+exports.get_passenger_notifications = async function (q) {
   var deferred = q.defer();
 
   let arguments = [
@@ -2850,17 +2977,19 @@ exports.get_passenger_notifications = function (q) {
     { $sort: { _id: -1 } },
   ];
   var collection = db.get().collection(t.MDB_NOTIFICATIONS);
-  collection.aggregate(arguments).toArray(function (err, results) {
-    console.log("err", err);
-    deferred.resolve(results);
-    deferred.makeNodeResolver();
-    result = null;
-  });
+    try {
+    const results = await collection.aggregate(arguments).toArray();
+        deferred.resolve(results);
+  
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
 
   return deferred.promise;
 };
 
-exports.check_already_promocode_added = function (q, passenger_id) {
+exports.check_already_promocode_added = async function (q, passenger_id) {
   var deferred = q.defer();
 
   var match_array = {
@@ -2897,18 +3026,20 @@ exports.check_already_promocode_added = function (q, passenger_id) {
   ];
 
   var collection = db.get().collection(t.MDB_PASSENGERS_ADDED_PROMO);
-  collection.aggregate(arguments).toArray(function (err, results) {
-    console.log("err", err);
-    //console.log('chcek promocode',results);
-    deferred.resolve(results);
-    deferred.makeNodeResolver();
-    result = null;
-  });
+    try {
+    const results = await collection.aggregate(arguments).toArray();
+        //console.log('chcek promocode',results);
+        deferred.resolve(results);
+  
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
 
   return deferred.promise;
 };
 
-exports.get_cancellation_fare = function (q, trip_id) {
+exports.get_cancellation_fare = async function (q, trip_id) {
   var deferred = q.defer();
 
   let arguments = [
@@ -2940,140 +3071,155 @@ exports.get_cancellation_fare = function (q, trip_id) {
   ];
 
   var collection = db.get().collection(t.MDB_PASSENGERSLOG);
-  collection.aggregate(arguments).toArray(function (err, results) {
-    console.log("err", err);
-    deferred.resolve(results);
-    deferred.makeNodeResolver();
-    result = null;
-  });
+    try {
+    const results = await collection.aggregate(arguments).toArray();
+        deferred.resolve(results);
+  
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
 
   return deferred.promise;
 };
 
-exports.insert_passenger_added_promocode = function (q, insertArray) {
+exports.insert_passenger_added_promocode = async function (q, insertArray) {
   var deferred = q.defer();
 
   var collection = db.get().collection(t.MDB_PASSENGERS_ADDED_PROMO);
-  collection.insert(insertArray, function (err, results) {
-    console.log("insert err", err);
-    deferred.resolve(results);
-    deferred.makeNodeResolver();
-    result = null;
-  });
+  
+    try {
+    const results = await collection.insertOne(insertArray);
+        deferred.resolve(results);
+  
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
 
   return deferred.promise;
 };
 
-exports.get_cms_content = function (q, menu) {
+exports.get_cms_content = async function (q, menu) {
   var deferred = q.defer();
 
   var match_array = { menu_link: menu };
 
   var collection = db.get().collection(t.MDB_CMS);
-  collection.find(match_array, {}).toArray(function (err, results) {
-    deferred.resolve(results);
-    deferred.makeNodeResolver();
-    result = null;
-  });
+    try {
+    const results = await collection.find(match_array).toArray();
+        deferred.resolve(results);
+  
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
 
   return deferred.promise;
 };
 
-exports.update_driver_status = function (q, id, update_array) {
+exports.update_driver_status = async function (q, id, update_array) {
   var deferred = q.defer();
 
   var collection = db.get().collection(t.MDB_DRIVER_INFO);
 
-  collection.update(
+  
+    try {
+    const data = await collection.updateOne(
     { _id: parseInt(id) },
     { $set: update_array },
-    { $upsert: false },
-    function (err, data) {
-      console.log("err2", err);
-      deferred.resolve(data);
-      deferred.makeNodeResolver();
-      data = null;
-    }
-  );
+    { upsert: false });
+          deferred.resolve(data);
+    
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
 
   return deferred.promise;
 };
 
-exports.update_request_details = function (q, id, update_array) {
+exports.update_request_details = async function (q, id, update_array) {
   var deferred = q.defer();
 
   var collection = db.get().collection(t.MDB_DRIVER_REQUEST_DETAILS);
 
-  collection.update(
+  
+    try {
+    const data = await collection.updateOne(
     { _id: parseInt(id) },
     { $set: update_array },
-    { $upsert: false },
-    function (err, data) {
-      console.log("err2", err);
-      deferred.resolve(data);
-      deferred.makeNodeResolver();
-      data = null;
-    }
-  );
+    { upsert: false });
+          deferred.resolve(data);
+    
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
 
   return deferred.promise;
 };
 
-exports.update_log_details = function (q, id, update_array) {
+exports.update_log_details = async function (q, id, update_array) {
   var deferred = q.defer();
 
   var collection = db.get().collection(t.MDB_PASSENGERSLOG);
 
-  collection.update(
+  
+    try {
+    const data = await collection.updateOne(
     { _id: parseInt(id) },
     { $set: update_array },
-    { $upsert: false },
-    function (err, data) {
-      console.log("err2", err);
-      deferred.resolve(data);
-      deferred.makeNodeResolver();
-      data = null;
-    }
-  );
+    { upsert: false });
+          deferred.resolve(data);
+    
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
 
   return deferred.promise;
 };
 
-exports.update_passenger_wallet = function (q, id, update_array) {
+exports.update_passenger_wallet = async function (q, id, update_array) {
   var deferred = q.defer();
 
   var collection = db.get().collection(t.MDB_PASSENGERS);
 
-  collection.update(
+  
+    try {
+    const data = await collection.updateOne(
     { _id: parseInt(id) },
     { $set: update_array },
-    { $upsert: false },
-    function (err, data) {
-      console.log("err2", err);
-      deferred.resolve(data);
-      deferred.makeNodeResolver();
-      data = null;
-    }
-  );
+    { upsert: false });
+          deferred.resolve(data);
+    
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
 
   return deferred.promise;
 };
 
-exports.insert_transaction_details = function (q, insertArray) {
+exports.insert_transaction_details = async function (q, insertArray) {
   var deferred = q.defer();
 
   var collection = db.get().collection(t.MDB_TRANS);
-  collection.insert(insertArray, function (err, results) {
-    console.log("insert err", err);
-    deferred.resolve(results);
-    deferred.makeNodeResolver();
-    result = null;
-  });
+  
+    try {
+    const results = await collection.insertOne(insertArray);
+        deferred.resolve(results);
+  
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
 
   return deferred.promise;
 };
 
-exports.update_passenger_language = function (q, id, lang) {
+exports.update_passenger_language = async function (q, id, lang) {
   var deferred = q.defer();
 
   var update_array = {
@@ -3082,42 +3228,44 @@ exports.update_passenger_language = function (q, id, lang) {
 
   var collection = db.get().collection(t.MDB_PASSENGERS);
 
-  collection.update(
+  
+    try {
+    const data = await collection.updateOne(
     { _id: parseInt(id) },
     { $set: update_array },
-    { $upsert: false },
-    function (err, data) {
-      console.log("err2", err);
-      deferred.resolve(data);
-      deferred.makeNodeResolver();
-      data = null;
-    }
-  );
+    { upsert: false });
+          deferred.resolve(data);
+    
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
 
   return deferred.promise;
 };
 
-exports.update_passenger_details = function (q, id, update_array) {
+exports.update_passenger_details = async function (q, id, update_array) {
   var deferred = q.defer();
 
   var collection = db.get().collection(t.MDB_PASSENGERS);
 
-  collection.update(
+  
+    try {
+    const data = await collection.updateOne(
     { _id: parseInt(id) },
     { $set: update_array },
-    { $upsert: false },
-    function (err, data) {
-      console.log("err2", err);
-      deferred.resolve(data);
-      deferred.makeNodeResolver();
-      data = null;
-    }
-  );
+    { upsert: false });
+          deferred.resolve(data);
+    
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
 
   return deferred.promise;
 };
 
-exports.passenger_trips_upcoming = function (q, userid) {
+exports.passenger_trips_upcoming = async function (q, userid) {
   var deferred = q.defer();
 
   var match_array1 = {
@@ -3278,18 +3426,19 @@ exports.passenger_trips_upcoming = function (q, userid) {
     },
   ];
   var collection = db.get().collection(t.MDB_PASSENGERSLOG);
-  collection.aggregate(arguments).toArray(function (err, results) {
-    console.log("err", err);
-
-    deferred.resolve(results);
-    deferred.makeNodeResolver();
-    result = null;
-  });
+    try {
+    const results = await collection.aggregate(arguments).toArray();
+        deferred.resolve(results);
+  
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
 
   return deferred.promise;
 };
 
-exports.get_trip_detail_complete = function (q, trip_id) {
+exports.get_trip_detail_complete = async function (q, trip_id) {
   var deferred = q.defer();
 
   var match_array = {
@@ -3516,71 +3665,78 @@ exports.get_trip_detail_complete = function (q, trip_id) {
     },
   ];
   var collection = db.get().collection(t.MDB_PASSENGERSLOG);
-  collection.aggregate(arguments).toArray(function (err, results) {
-    console.log("err trip", err);
-    deferred.resolve(results);
-    deferred.makeNodeResolver();
-    result = null;
-  });
+    try {
+    const results = await collection.aggregate(arguments).toArray();
+        deferred.resolve(results);
+  
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
 
   return deferred.promise;
 };
 
-exports.insert_temp_logs = function (q, insertArray) {
+exports.insert_temp_logs = async function (q, insertArray) {
   var deferred = q.defer();
 
   var collection = db.get().collection(t.MDB_PASSENGERS_LOGS_TEMP);
-  collection.insert(insertArray, function (err, results) {
-    console.log("err", err);
-    deferred.resolve(results);
-    deferred.makeNodeResolver();
-    result = null;
-  });
+  
+    try {
+    const results = await collection.insertOne(insertArray);
+        deferred.resolve(results);
+  
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
 
   return deferred.promise;
 };
 
-exports.update_trip = function (q, updateArray, trip_id) {
+exports.update_trip = async function (q, updateArray, trip_id) {
   var deferred = q.defer();
 
   var collection = db.get().collection(t.MDB_PASSENGERSLOG);
 
-  collection.update(
+  
+    try {
+    const data = await collection.updateOne(
     { _id: parseInt(trip_id) },
     { $set: updateArray },
-    { $upsert: false },
-    function (err, data) {
-      console.log("err2", err);
-      deferred.resolve(data);
-      deferred.makeNodeResolver();
-      data = null;
-    }
-  );
+    { upsert: false });
+          deferred.resolve(data);
+    
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
 
   return deferred.promise;
 };
 
-exports.update_trip_reward = function (q, updateArray, id) {
+exports.update_trip_reward = async function (q, updateArray, id) {
   var deferred = q.defer();
 
   var collection = db.get().collection(t.MDB_PASSENGERS);
 
-  collection.update(
+  
+    try {
+    const data = await collection.updateOne(
     { _id: parseInt(id) },
     updateArray,
-    { $upsert: false },
-    function (err, data) {
-      console.log("err2", err);
-      deferred.resolve(data);
-      deferred.makeNodeResolver();
-      data = null;
-    }
-  );
+    { upsert: false });
+          deferred.resolve(data);
+    
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
 
   return deferred.promise;
 };
 
-exports.get_completed_trip_detail = function (q, trip_id) {
+exports.get_completed_trip_detail = async function (q, trip_id) {
   var deferred = q.defer();
 
   var match_array = {
@@ -3844,31 +4000,36 @@ exports.get_completed_trip_detail = function (q, trip_id) {
     },
   ];
   var collection = db.get().collection(t.MDB_LOGS_COMPLETED);
-  collection.aggregate(arguments).toArray(function (err, results) {
-    console.log("err trip", err);
-    deferred.resolve(results);
-    deferred.makeNodeResolver();
-    result = null;
-  });
+    try {
+    const results = await collection.aggregate(arguments).toArray();
+        deferred.resolve(results);
+  
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
 
   return deferred.promise;
 };
 
-exports.update_notification_logs = function (q, insertArray) {
+exports.update_notification_logs = async function (q, insertArray) {
   var deferred = q.defer();
 
   var collection = db.get().collection(t.MDB_LOGS);
-  collection.insert(insertArray, function (err, results) {
-    console.log("err", err);
-    deferred.resolve(results);
-    deferred.makeNodeResolver();
-    result = null;
-  });
+  
+    try {
+    const results = await collection.insertOne(insertArray);
+        deferred.resolve(results);
+  
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
 
   return deferred.promise;
 };
 
-exports.all_model_fare_details = function (q, model_id) {
+exports.all_model_fare_details = async function (q, model_id) {
   var deferred = q.defer();
   var collection = db.get().collection(t.MDB_MOTOR_MODEL);
 
@@ -3912,48 +4073,54 @@ exports.all_model_fare_details = function (q, model_id) {
       },
     },
   ];
-
-  collection.aggregate(arguments).toArray(function (err, results) {
-    //console.log('db err',err);
-    deferred.resolve(results);
-    deferred.makeNodeResolver();
-    result = null;
-  });
+    try {
+    const results = await collection.aggregate(arguments).toArray();
+        //console.log('db err',err);
+        deferred.resolve(results);
+  
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
 
   return deferred.promise;
 };
 
-exports.update_estimate_fare = function (q, id, estimate_fare) {
+exports.update_estimate_fare = async function (q, id, estimate_fare) {
   var deferred = q.defer();
   update_array = { approx_fare: parseFloat(estimate_fare) };
   //condition = {'_id':parseInt(id),'travel_status':3};
 
   var collection = db.get().collection(t.MDB_PASSENGERSLOG);
 
-  collection.update(
+  
+    try {
+    const data = await collection.updateOne(
     { _id: parseInt(id) },
     { $set: update_array },
-    { $upsert: false },
-    function (err, data) {
-      console.log("err2", err);
-      deferred.resolve(data);
-      deferred.makeNodeResolver();
-      data = null;
-    }
-  );
+    { upsert: false });
+          deferred.resolve(data);
+    
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
 
   return deferred.promise;
 };
 
-exports.get_airport_terminals = function (q) {
+exports.get_airport_terminals = async function (q) {
   var deferred = q.defer();
   var collection = db.get().collection(t.MDB_AIRPORTS);
-  collection.find({}).toArray(function (err, results) {
-    //console.log(results,'results----->')
-    deferred.resolve(results);
-    deferred.makeNodeResolver();
-    result = null;
-  });
+    try {
+    const results = await collection.find({}).toArray();
+        //console.log(results,'results----->')
+        deferred.resolve(results);
+  
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
 
   return deferred.promise;
 };

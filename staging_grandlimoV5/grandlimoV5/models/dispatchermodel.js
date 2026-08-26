@@ -3,7 +3,7 @@ var t=require('../config/table_config.json');
 var md5 = require('md5');
 
 
-exports.GetBookingList= function(q,data,time_range,two_days_before){
+exports.GetBookingList= async function(q,data,time_range,two_days_before){
 
 	var deferred = q.defer();
     try
@@ -277,15 +277,18 @@ exports.GetBookingList= function(q,data,time_range,two_days_before){
     }
     //console.log('table name',table_name);
 	var collection = db.get().collection(table_name);
-    collection.aggregate(arguments).toArray(function(err, results) {
-        //console.log('err',err);
+		try {
+	  const results = await collection.aggregate(arguments).toArray();
+	          //console.log('err',err);
 
-        //console.log('dispatcher results....count ---',results.length);
+	          //console.log('dispatcher results....count ---',results.length);
 
-        deferred.resolve(results);
-        deferred.makeNodeResolver()
-        result=null;
-      });
+	          deferred.resolve(results);
+      
+	} catch (err) {
+	  console.log(err);
+	  throw err;
+	}
 
     }
     catch(err)
@@ -298,7 +301,7 @@ exports.GetBookingList= function(q,data,time_range,two_days_before){
 
 
 
-exports.GetDriverList= function(q,data,time_range,two_days_before){
+exports.GetDriverList= async function(q,data,time_range,two_days_before){
     
     var deferred = q.defer();
     var match_query = {};
@@ -392,12 +395,15 @@ exports.GetDriverList= function(q,data,time_range,two_days_before){
     
             
     var collection = db.get().collection(t.MDB_DRIVER_INFO);
-    collection.aggregate(arguments).toArray(function(err, results) {
-        //console.log('results',results);
-        deferred.resolve(results);
-        deferred.makeNodeResolver()
-        result=null;
-      });
+        try {
+      const results = await collection.aggregate(arguments).toArray();
+              //console.log('results',results);
+              deferred.resolve(results);
+      
+    } catch (err) {
+      console.log(err);
+      throw err;
+    }
 
      return deferred.promise;
 }

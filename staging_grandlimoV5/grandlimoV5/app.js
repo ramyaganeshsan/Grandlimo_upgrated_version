@@ -10,6 +10,7 @@ var express = require("express"),
 
 var db = require("./config/dbconnection");
 var dbconfig = require("./config/database.json");
+var { buildMongoUrl } = require("./config/mongoUrl");
 var md5 = require("md5");
 var base64 = require("base-64");
 var q = require("q");
@@ -50,7 +51,10 @@ var apimodel = require("./models/apimodel");
 var http = require("http");
 
 var server = http.createServer(app);
-var io = require("socket.io")(server);
+var io = require("socket.io")(server, {
+  allowEIO3: true,
+  cors: { origin: true, credentials: true },
+});
 
 let socketobj = {};
 app.set("views", path.join(__dirname, "views"));
@@ -90,36 +94,22 @@ app.use((req, res, next) => {
   next();
 });
 
-if (dbconfig.db_uname != "" && dbconfig.db_pwd != "") {
-  var url =
-    "mongodb://" +
-    dbconfig.db_uname +
-    ":" +
-    dbconfig.db_pwd +
-    "@" +
-    dbconfig.host +
-    ":" +
-    dbconfig.port +
-    "/?authMechanism=SCRAM-SHA-1&authSource=" +
-    dbconfig.authsource;
-} else {
-  var url = "mongodb://" + dbconfig.host + ":" + dbconfig.port;
-}
+var url = buildMongoUrl(dbconfig);
 
-db.connect(url, dbconfig.db, function (err) {
-  if (err) {
-    console.log("Unable to connect to Mongo.");
+(async function connectMongo() {
+  try {
+    await db.connect(url, dbconfig.db);
+    const siteinforesults = await apimodel.SiteSettings(q);
+    if (siteinforesults && siteinforesults.length > 0) {
+      global.settings = siteinforesults[0];
+    } else {
+      global.settings = {};
+    }
+  } catch (err) {
+    console.error("Unable to connect to Mongo.", err);
     process.exit(1);
-  } else {
-    apimodel.SiteSettings(q).then(function (siteinforesults) {
-      if (siteinforesults.length > 0) {
-        global.settings = siteinforesults[0];
-      } else {
-        global.settings = {};
-      }
-    });
   }
-});
+})();
 
 app.get("/access", function (req, res) {
   try {
