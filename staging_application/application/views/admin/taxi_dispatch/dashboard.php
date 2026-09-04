@@ -77,7 +77,7 @@ if ($_SESSION['user_type'] == "O") {
 
 <!-- Sasidharan April 29 2025 -->
 <div style="position: absolute; top: 12%; left: 64%; z-index: 1;">
-    <button onclick="handleDriverOnGoingPopup()" style="padding: 8px 16px; outline: none;background: green;color: white; border: none; border-radius:6px;">Drivers on trip</button>
+    <button onclick="handleDriverOnGoingPopup()" style="padding: 8px 16px; outline: none;background: red;color: white; border: none; border-radius:6px;">Drivers on trip TEST</button>
 </div>
 <div style="display:none;width:100%;background-color:rgba(0,0,0,0.6);height:100dvh;z-index: 999999;position: absolute;justify-content: center;align-items: center;" id="driver_on_going_model">
    <div style="min-width:500px; max-width:500px; background-color:white;padding:16px 16px; border-radius: 8px;">
@@ -211,7 +211,7 @@ if ($_SESSION['user_type'] == "O") {
 
                 <!-- Nav tabs -->
                 <ul class="nav nav-tabs" role="tablist">
-                    <li id="ab_tab" class="active"><a href="#add_booking" style="cursor:pointer;" id="add_booking_tab" role="tab" data-toggle="tab">Add booking</a></li>
+                    <li id="ab_tab" class="active"><a href="#add_booking" style="cursor:pointer;" id="add_booking_tab" role="tab" data-toggle="tab">Add booking TEST</a></li>
                     <li id="eb_tab"><a href="#edit_booking" role="tab" id="edit_booking_tab" data-toggle="tab">Edit Booking</a></li>
 
                     <?php if ($_SESSION['user_type'] == "A") { ?>
