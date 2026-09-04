@@ -408,6 +408,32 @@ exports.savebooking = function (q, req) {
     console.error("pickupTime : ", pickupTime);
     console.error("pickup_time : ", pickup_time);
 
+    // Schedule / Book Later: reject if pickup is sooner than book_later_time minutes
+    var scheduleMinTimeError = getScheduleBookingMinTimeError(
+      req,
+      now_after,
+      pickupDate,
+      pickup_time,
+      createdDate
+    );
+    if (scheduleMinTimeError) {
+      console.error(
+        "[BOOK LATER MIN TIME] rejected:",
+        scheduleMinTimeError,
+        "now_after:",
+        now_after,
+        "pickupDate:",
+        pickupDate,
+        "createdDate:",
+        createdDate
+      );
+      message.message = scheduleMinTimeError;
+      message.status = -1;
+      deferred.resolve(message);
+      deferred.makeNodeResolver();
+      return deferred.promise;
+    }
+
     // console.error("pickupDate.getTime() : ", pickupDate.getTime());
     // console.error("createdDate.getTime() : ", createdDate.getTime());
 
@@ -2846,6 +2872,56 @@ function ValidateSavebookingGetDriverReply(q, input) {
   validate.options = { format: "flat" };
   var result = validate(input, constraints);
   return result;
+}
+
+function getScheduleBookingMinTimeError(
+  req,
+  now_after,
+  pickupDate,
+  pickup_time,
+  createdDate
+) {
+  if (parseInt(now_after, 10) !== 1) {
+    return null;
+  }
+
+  var settings = global.settings || {};
+  var rawMinutes =
+    settings.book_later_time != null && settings.book_later_time !== ""
+      ? settings.book_later_time
+      : settings.book_later_interval;
+  var bookLaterMinutes = parseInt(rawMinutes, 10);
+  if (isNaN(bookLaterMinutes) || bookLaterMinutes < 0) {
+    bookLaterMinutes = 90;
+  }
+
+  var schedulePickupDate = pickupDate;
+  if (!schedulePickupDate || isNaN(schedulePickupDate.getTime())) {
+    schedulePickupDate = pickup_time ? new Date(pickup_time) : new Date(NaN);
+  }
+
+  if (isNaN(schedulePickupDate.getTime())) {
+    var invalidMsg = req.__("previous_time");
+    if (!invalidMsg || invalidMsg === "previous_time") {
+      invalidMsg = "Invalid pickup time.";
+    }
+    return invalidMsg;
+  }
+
+  var nowMs =
+    createdDate && !isNaN(createdDate.getTime())
+      ? createdDate.getTime()
+      : Date.now();
+  if (schedulePickupDate.getTime() < nowMs + bookLaterMinutes * 60 * 1000) {
+    var bookLaterMsg = req.__("book_later_min_time");
+    if (!bookLaterMsg || bookLaterMsg === "book_later_min_time") {
+      bookLaterMsg =
+        "Your booking time is less than ##MINUTES## minutes from now. Please choose a later pickup time.";
+    }
+    return bookLaterMsg.replace("##MINUTES##", String(bookLaterMinutes));
+  }
+
+  return null;
 }
 
 function add_extra_time(pickup_time) {

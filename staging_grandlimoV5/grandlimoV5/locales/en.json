@@ -243,5 +243,7 @@
   "PaymentSuceesWalletUpdate": "Payment successful & wallet updated.",
   "PaymentSuccessNoWallet": "Payment succeeded, but wallet update failed.",
   "paymentFailedSystem": "Payment failed due to system error.",
-  "TripUpdated": "Trip updated successfully"
+  "TripUpdated": "Trip updated successfully",
+  "previous_time": "Invalid pickup time.",
+  "book_later_min_time": "Your booking time is less than ##MINUTES## minutes from now. Please choose a later pickup time."
 }

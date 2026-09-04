@@ -156,5 +156,7 @@
   "NoAgreementId": "فشل عملية الدفع! المطلوب بطاقة اتفاقية الدفع",
   "PaymentSuceesWalletUpdate": "نجحت عملية الدفع وتم تحديث المحفظة.",
   "PaymentSuccessNoWallet": "نجحت عملية الدفع، لكن تحديث المحفظة فشل.",
-  "paymentFailedSystem": "فشل عملية الدفع بسبب خطأ في النظام"
+  "paymentFailedSystem": "فشل عملية الدفع بسبب خطأ في النظام",
+  "previous_time": "وقت الاستلام غير صالح.",
+  "book_later_min_time": "وقت الحجز أقل من ##MINUTES## دقيقة من الآن. يرجى اختيار وقت استلام لاحق."
 }
