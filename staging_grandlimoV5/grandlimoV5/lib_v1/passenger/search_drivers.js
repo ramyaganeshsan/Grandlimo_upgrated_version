@@ -399,8 +399,10 @@ exports.savebooking = function (q, req) {
     var now_after = inputParams.now_after;
     var pickup_time = urlencode.decode(inputParams.pickup_time);
     var pickupTime = inputParams.pickup_time;
-    // //ramya
     var pickupDate = new Date(pickupTime);
+    if (isNaN(pickupDate.getTime()) && pickup_time) {
+      pickupDate = new Date(pickup_time);
+    }
     var createdDate = new Date();
 
     console.error("pickupDate : ", pickupDate);
@@ -408,43 +410,34 @@ exports.savebooking = function (q, req) {
     console.error("pickupTime : ", pickupTime);
     console.error("pickup_time : ", pickup_time);
 
-    // console.error("pickupDate.getTime() : ", pickupDate.getTime());
-    // console.error("createdDate.getTime() : ", createdDate.getTime());
+    // All trips: reject pickup in the past (even 1 minute)
+    if (isNaN(pickupDate.getTime()) || pickupDate.getTime() < createdDate.getTime()) {
+      message.message =
+        "Pickup time should be greater than current time. Please choose a later pickup time.";
+      message.status = -1;
+      deferred.resolve(message);
+      deferred.makeNodeResolver();
+      return deferred.promise;
+    }
 
-    // if (isNaN(pickupDate.getTime())) {
-    //   message.message = req.__("previous_time");
-    //   message.status = -1;
-    //   deferred.resolve(message);
-    //   deferred.makeNodeResolver();
-    //   return deferred.promise;
-    // }
-
-    // // Check if pickup time is before created date/time ramya
-    // if (pickupDate.getTime() < createdDate.getTime()) {
-    //   message.message = req.__("previous_time");
-    //   message.status = -1;
-    //   deferred.resolve(message);
-    //   deferred.makeNodeResolver();
-    //   return deferred.promise;
-    // }
-
-    // // ---------- NOW / AFTER AUTO-DETECTION (AUTHORITATIVE) ---------- ramya
-    // if (parseInt(now_after) === 0) {
-    //   const THIRTY_MINUTES_MS = 30 * 60 * 1000;
-
-    //   const timeDiff = pickupDate.getTime() - createdDate.getTime();
-
-    //   // If pickup time is 30 minutes or more in the future
-    //   if (timeDiff >= THIRTY_MINUTES_MS) {
-    //     inputParams.now_after = 1;
-    //     now_after = 1;
-
-    //     console.error(
-    //       "[AUTO NOW_AFTER] Pickup is > 30 mins ahead. Overriding now_after = 1"
-    //     );
-    //   }
-    // }
-    // ---------------------------------------------------------------
+    // Schedule trips: pickup must be at least book_later_time minutes from now
+    if (parseInt(now_after, 10) === 1) {
+      var bookLaterMinutes = parseInt(global.settings.book_later_time, 10);
+      if (!isNaN(bookLaterMinutes) && bookLaterMinutes > 0) {
+        var minPickupMs = createdDate.getTime() + bookLaterMinutes * 60 * 1000;
+        console.error("minPickupMs : ", minPickupMs);
+        if (pickupDate.getTime() < minPickupMs) {
+          message.message =
+            "For schedule trip,your booking time should be greater than " +
+            bookLaterMinutes +
+            " minutes from now. Please choose a later pickup time.";
+          message.status = -1;
+          deferred.resolve(message);
+          deferred.makeNodeResolver();
+          return deferred.promise;
+        }
+      }
+    }
 
     /* Sasidharan oct 04 2022 */
     inputParams.surge_display_fare = "";

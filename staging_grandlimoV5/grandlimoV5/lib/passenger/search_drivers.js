@@ -209,6 +209,37 @@ exports.savebooking= function(q,req){
 		var phone = inputParams.phone;
 		var now_after = inputParams.now_after;
 		var pickup_time = urlencode.decode(inputParams.pickup_time);
+		var pickupDate = new Date(inputParams.pickup_time);
+		if (isNaN(pickupDate.getTime()) && pickup_time) {
+			pickupDate = new Date(pickup_time);
+		}
+		var createdDate = new Date();
+
+		if (isNaN(pickupDate.getTime()) || pickupDate.getTime() < createdDate.getTime()) {
+			message.message =
+				"Pickup time should be greater than current time. Please choose a later pickup time.";
+			message.status = -1;
+			deferred.resolve(message);
+			deferred.makeNodeResolver();
+			return deferred.promise;
+		}
+
+		if (parseInt(now_after, 10) === 1) {
+			var bookLaterMinutes = parseInt(global.settings.book_later_time, 10);
+			if (!isNaN(bookLaterMinutes) && bookLaterMinutes > 0) {
+				var minPickupMs = createdDate.getTime() + bookLaterMinutes * 60 * 1000;
+				if (pickupDate.getTime() < minPickupMs) {
+					message.message =
+						"For schedule trip,your booking time should be greater than " +
+						bookLaterMinutes +
+						" minutes from now. Please choose a later pickup time.";
+					message.status = -1;
+					deferred.resolve(message);
+					deferred.makeNodeResolver();
+					return deferred.promise;
+				}
+			}
+		}
 
 		apimodel.passenger_profile_by_id(q,passenger_id).then(function(profile_results){
 
