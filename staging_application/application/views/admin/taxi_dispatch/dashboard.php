@@ -2421,8 +2421,10 @@ foreach($model_details as $list) { ?>
                     }
 
                     $('#all_booking_manage_list').html(data[1]);
+                    addPassengerPhoneIcons();
                     //edit booking in dashboard
-                    $('.oddtr').bind('click', function() {
+                    $('.oddtr').bind('click', function(e) {
+                        if ($(e.target).closest('.passenger-phone-icon, .sec-phone-icon').length) { return; }
                         console.log("oddtrk");
                         var isrdata = this.id;
                         var findid = isrdata.split('_').pop();
@@ -4059,3 +4061,4 @@ foreach($model_details as $list) { ?>
    }
 
 </script>
+<?php include APPPATH . 'views/admin/taxi_dispatch/secondary_contact_popup.php'; ?>

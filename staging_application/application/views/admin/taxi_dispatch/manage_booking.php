@@ -521,6 +521,7 @@ $(window).resize(function() {
 				dataType: 'html',
 				success: function(response){
 					$('#all_booking_manage_list_all').html(response);
+					addPassengerPhoneIcons();
 					
 					var $table = $('table.scroll_manage'),
 					$bodyCells = $table.find('tbody tr:first').children(),
@@ -536,7 +537,8 @@ $(window).resize(function() {
 						$(v).width(colWidth[i]);
 					}); 
 					//edit button click function
-					$('.oddtr').on('click', function(){
+					$('.oddtr').on('click', function(e){
+						if ($(e.target).closest('.passenger-phone-icon, .sec-phone-icon').length) { return; }
 						var findid = $('#edit_pass_logid').val();
 			        	var isrdata = this.id;
 			            var findid = isrdata.split('_').pop();
@@ -688,6 +690,7 @@ function trim(e) {
 			all_booking_manage_list_all()  
 		},60000); // For 60 seconds interval */
 	</script>
+<?php include APPPATH . 'views/admin/taxi_dispatch/secondary_contact_popup.php'; ?>
 <div class="modal fade" id="dispatchSetting" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">

@@ -1545,7 +1545,7 @@ class Controller_Taxidispatch extends Controller_Dispatchadmin
                 }*/
                 $op[] .= '<td width="7%">' . ucfirst($driver_name) . '' . $driver_phone . '</td>';
                 $op[] .= '<td width="5%">' . $model_name . '</td>';
-                $op[] .= '<td width="10%">' . $passenger_phone . '</td>';
+                $op[] .= '<td width="10%">' . $this->secondary_contact_cell($listings, $passenger_phone, 0) . '</td>';
                 $op[] .= '<td width="11%">' . $current_location ."<br>".$pick_ll.'</td>';
                 $op[] .= '<td width="11%">' . $drop_location ."<br>".$drop_ll. '</td>';
                 //$op[] .= '<td width="11%">' . $current_location .'</td>';
@@ -1983,7 +1983,7 @@ class Controller_Taxidispatch extends Controller_Dispatchadmin
                 }*/
                 $op[] .= '<td width="7%">' . ucfirst($driver_name) . $driver_phone . '</td>';
                 $op[] .= '<td width="5%">' . $model_name . '</td>';
-                $op[] .= '<td width="10%">' . $passenger_phone . '</td>';
+                $op[] .= '<td width="10%">' . $this->secondary_contact_cell($listings, $passenger_phone, 1) . '</td>';
                 $op[] .= '<td width="11%">' . $current_location . '</td>';
                 $op[] .= '<td width="11%">' . $drop_location . '</td>';
                 $op[] .= '<td width="5%">' . $approx_distance . '</td>';
@@ -3003,7 +3003,7 @@ public function action_pay_details()
                 }*/
                 $op[] .= '<td width="7%">' . ucfirst($driver_name) . $driver_phone . '</td>';
                 $op[] .= '<td width="5%">' . $model_name . '</td>';
-                $op[] .= '<td width="10%">' . $passenger_phone . '</td>';
+                $op[] .= '<td width="10%">' . $this->secondary_contact_cell($listings, $passenger_phone, 1) . '</td>';
                 $op[] .= '<td width="11%">' . $current_location . '</td>';
                 $op[] .= '<td width="11%">' . $drop_location . '</td>';
                 $op[] .= '<td width="5%">' . $approx_distance . '</td>';
@@ -3151,6 +3151,51 @@ public function action_pay_details()
         echo "Before message";
         print_r($p_send_notification);
         echo "After message";
+        exit;
+    }
+
+    public function secondary_contact_cell($listings, $passenger_phone, $view_only = 0)
+    {
+        $trip_id = isset($listings['pass_logid']) ? $listings['pass_logid'] : '';
+        $phone = isset($listings['secondary_phone']) ? $listings['secondary_phone'] : '';
+        $name = isset($listings['secondary_name']) ? $listings['secondary_name'] : '';
+        if (is_array($phone)) { $phone = isset($phone[0]) ? $phone[0] : ''; }
+        if (is_array($name)) { $name = isset($name[0]) ? $name[0] : ''; }
+        $phone = htmlspecialchars(trim((string)$phone), ENT_QUOTES);
+        $name = htmlspecialchars(trim((string)$name), ENT_QUOTES);
+        $has_phone = ($phone !== '');
+        $color = $has_phone ? '#0a7c2f' : 'red';
+        $mode = $view_only ? 'view' : 'edit';
+        $icon = '<span class="passenger-phone-icon sec-phone-icon" data-mode="'.$mode.'" data-trip-id="'.$trip_id.'" data-secondary-phone="'.$phone.'" data-sec-phone="'.$phone.'" data-sec-name="'.$name.'" title="Secondary contact" onclick="event.stopPropagation(); openSecondaryContact(this);" style="cursor:pointer;margin-right:5px;vertical-align:middle;display:inline-block;"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="18" viewBox="0 0 24 24" fill="'.$color.'"><path d="M17 1.01L7 1c-1.1 0-2 .9-2 2v18c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V3c0-1.1-.9-1.99-2-1.99zM17 19H7V5h10v14z"/></svg></span>';
+        $extra = '';
+        if ($phone !== '' || $name !== '') {
+            $extra = '<div class="sec-phone-text secondary-phone-text" style="font-size:11px;color:#555;line-height:14px;margin-top:3px;">';
+            if ($phone !== '') { $extra .= 'S : '.$phone; }
+            if ($phone !== '' && $name !== '') { $extra .= '<br/>'; }
+            if ($name !== '') { $extra .= 'N : '.$name; }
+            $extra .= '</div>';
+        }
+        return $icon . $passenger_phone . $extra;
+    }
+
+    public function action_save_secondary_phone()
+    {
+        $this->is_login();
+        $trip_id = isset($_POST['trip_id']) ? (int)$_POST['trip_id'] : 0;
+        $secondary_phone = isset($_POST['secondary_phone']) ? trim($_POST['secondary_phone']) : '';
+        $secondary_name = isset($_POST['secondary_name']) ? trim($_POST['secondary_name']) : '';
+        header('Content-Type: application/json');
+        if ($trip_id <= 0 || $secondary_phone == '' || $secondary_name == '') {
+            echo json_encode(array('status' => 0, 'message' => 'Name and phone are required'));
+            exit;
+        }
+        $this->tdispatch_model->save_secondary_phone($trip_id, $secondary_phone, $secondary_name);
+        echo json_encode(array(
+            'status' => 1,
+            'message' => 'Secondary number saved.',
+            'secondary_phone' => $secondary_phone,
+            'secondary_name' => $secondary_name
+        ));
         exit;
     }
 }

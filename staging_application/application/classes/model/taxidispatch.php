@@ -1228,6 +1228,10 @@ class Model_Taxidispatch extends Model
                     ['_id'=>new \MongoDB\BSON\Regex($search_txt, 'i')],
                     ['passengers.name'=>new \MongoDB\BSON\Regex($search_txt, 'i')],
                     ['passengers.phone'=>new \MongoDB\BSON\Regex($search_txt, 'i')],
+                    ['passengers.secondary_phone'=>new \MongoDB\BSON\Regex($search_txt, 'i')],
+                    ['secondary_phone'=>new \MongoDB\BSON\Regex($search_txt, 'i')],
+                    ['passengers.secondary_name'=>new \MongoDB\BSON\Regex($search_txt, 'i')],
+                    ['secondary_name'=>new \MongoDB\BSON\Regex($search_txt, 'i')],
                     ['people.name'=>new \MongoDB\BSON\Regex($search_txt, 'i')],
                     ['people.phone'=>new \MongoDB\BSON\Regex($search_txt, 'i')],
                     ['people.driver_code'=>new \MongoDB\BSON\Regex($search_txt, 'i')],
@@ -1404,6 +1408,8 @@ class Model_Taxidispatch extends Model
                     'pass_logid'=>'$_id',
                     'passenger_name'=>'$passengers.name',
                     'passenger_phone'=>'$passengers.phone',
+                    'secondary_phone' => ['$ifNull'=>['$secondary_phone', ['$ifNull'=>['$passengers.secondary_phone','']]]],
+                    'secondary_name' => ['$ifNull'=>['$secondary_name', ['$ifNull'=>['$passengers.secondary_name','']]]],
                     'wallet_amount'=>'$passengers.wallet_amount',
                     'passenger_id'=>'$passengers._id',
                     'passenger_country_code'=>'$passengers.country_code',
@@ -3646,6 +3652,8 @@ $mat['updatetime_difference'] = [ '$lte' => (int)LOCATIONUPDATESECONDS];
                     'passenger_country_code' => '$passengers.country_code',
                     'passenger_wallet_amount' => '$passengers.wallet_amount',
                     'passenger_phone' => '$passengers.phone',
+                    'secondary_phone' => ['$ifNull'=>['$secondary_phone', ['$ifNull'=>['$passengers.secondary_phone','']]]],
+                    'secondary_name' => ['$ifNull'=>['$secondary_name', ['$ifNull'=>['$passengers.secondary_name','']]]],
                     'model_name' => '$motormodel.model_name',
                     'edit_model_name' => ['$ifNull'=>['$motormodel_edit.model_name','']],
                     //'company_name' => '$company.companydetails.company_name',
@@ -4991,6 +4999,10 @@ $mat['updatetime_difference'] = [ '$lte' => (int)LOCATIONUPDATESECONDS];
                     ['_id'=>new \MongoDB\BSON\Regex($search_txt, 'i')],
                     ['passengers.name'=>new \MongoDB\BSON\Regex($search_txt, 'i')],
                     ['passengers.phone'=>new \MongoDB\BSON\Regex($search_txt, 'i')],
+                    ['passengers.secondary_phone'=>new \MongoDB\BSON\Regex($search_txt, 'i')],
+                    ['secondary_phone'=>new \MongoDB\BSON\Regex($search_txt, 'i')],
+                    ['passengers.secondary_name'=>new \MongoDB\BSON\Regex($search_txt, 'i')],
+                    ['secondary_name'=>new \MongoDB\BSON\Regex($search_txt, 'i')],
                     ['people.name'=>new \MongoDB\BSON\Regex($search_txt, 'i')],
                     ['people.phone'=>new \MongoDB\BSON\Regex($search_txt, 'i')],
                     ['people.driver_code'=>new \MongoDB\BSON\Regex($search_txt, 'i')],
@@ -5167,6 +5179,8 @@ $mat['updatetime_difference'] = [ '$lte' => (int)LOCATIONUPDATESECONDS];
                     'pass_logid'=>'$_id',
                     'passenger_name'=>'$passengers.name',
                     'passenger_phone'=>'$passengers.phone',
+                    'secondary_phone' => ['$ifNull'=>['$secondary_phone', ['$ifNull'=>['$passengers.secondary_phone','']]]],
+                    'secondary_name' => ['$ifNull'=>['$secondary_name', ['$ifNull'=>['$passengers.secondary_name','']]]],
                     'wallet_amount'=>'$passengers.wallet_amount',
                     'passenger_id'=>'$passengers._id',
                     'passenger_country_code'=>'$passengers.country_code',
@@ -5826,6 +5840,23 @@ $mat['updatetime_difference'] = [ '$lte' => (int)LOCATIONUPDATESECONDS];
         ];
         $result = $this->mongo_db->aggregate(MDB_PASSENGERS_LOGS, $aggregate);
         return (!empty($result['result'])) ? $result['result'] : [];
+    }
+
+    public function save_secondary_phone($trip_id, $secondary_phone, $secondary_name)
+    {
+        $trip_id = (int)$trip_id;
+        $secondary_phone = trim($secondary_phone);
+        $secondary_name = trim($secondary_name);
+        $set = [
+            'secondary_phone' => $secondary_phone,
+            'secondary_name' => $secondary_name
+        ];
+        $this->mongo_db->update(MDB_PASSENGERS_LOGS, ['_id' => $trip_id], ['$set' => $set]);
+        $log = $this->mongo_db->find_one(MDB_PASSENGERS_LOGS, ['_id' => $trip_id], ['passengers_id']);
+        if (!empty($log['passengers_id'])) {
+            $this->mongo_db->update(MDB_PASSENGERS, ['_id' => (int)$log['passengers_id']], ['$set' => $set]);
+        }
+        return 1;
     }
 
 }
