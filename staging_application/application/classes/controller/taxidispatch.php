@@ -3157,19 +3157,32 @@ public function action_pay_details()
     public function secondary_contact_cell($listings, $passenger_phone, $view_only = 0)
     {
         $trip_id = isset($listings['pass_logid']) ? $listings['pass_logid'] : '';
+        if (is_array($trip_id)) { $trip_id = isset($trip_id[0]) ? $trip_id[0] : ''; }
         $phone = isset($listings['secondary_phone']) ? $listings['secondary_phone'] : '';
         $name = isset($listings['secondary_name']) ? $listings['secondary_name'] : '';
         if (is_array($phone)) { $phone = isset($phone[0]) ? $phone[0] : ''; }
         if (is_array($name)) { $name = isset($name[0]) ? $name[0] : ''; }
-        $phone = htmlspecialchars(trim((string)$phone), ENT_QUOTES);
-        $name = htmlspecialchars(trim((string)$name), ENT_QUOTES);
+        $phone = trim((string)$phone);
+        $name = trim((string)$name);
+        if ($phone === '' && isset($listings['pass_secondary_phone'])) {
+            $phone = $listings['pass_secondary_phone'];
+            if (is_array($phone)) { $phone = isset($phone[0]) ? $phone[0] : ''; }
+            $phone = trim((string)$phone);
+        }
+        if ($name === '' && isset($listings['pass_secondary_name'])) {
+            $name = $listings['pass_secondary_name'];
+            if (is_array($name)) { $name = isset($name[0]) ? $name[0] : ''; }
+            $name = trim((string)$name);
+        }
+        $phone = htmlspecialchars($phone, ENT_QUOTES);
+        $name = htmlspecialchars($name, ENT_QUOTES);
         $has_phone = ($phone !== '');
         $color = $has_phone ? '#0a7c2f' : 'red';
         $mode = $view_only ? 'view' : 'edit';
         $icon = '<span class="passenger-phone-icon sec-phone-icon" data-mode="'.$mode.'" data-trip-id="'.$trip_id.'" data-secondary-phone="'.$phone.'" data-sec-phone="'.$phone.'" data-sec-name="'.$name.'" title="Secondary contact" onclick="event.stopPropagation(); openSecondaryContact(this);" style="cursor:pointer;margin-right:5px;vertical-align:middle;display:inline-block;"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="18" viewBox="0 0 24 24" fill="'.$color.'"><path d="M17 1.01L7 1c-1.1 0-2 .9-2 2v18c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V3c0-1.1-.9-1.99-2-1.99zM17 19H7V5h10v14z"/></svg></span>';
         $extra = '';
         if ($phone !== '' || $name !== '') {
-            $extra = '<div class="sec-phone-text secondary-phone-text" style="font-size:11px;color:#555;line-height:14px;margin-top:3px;">';
+            $extra = '<div class="sec-phone-text secondary-phone-text" style="display:block;font-size:11px;color:#555;line-height:14px;margin-top:3px;">';
             if ($phone !== '') { $extra .= 'S : '.$phone; }
             if ($phone !== '' && $name !== '') { $extra .= '<br/>'; }
             if ($name !== '') { $extra .= 'N : '.$name; }
