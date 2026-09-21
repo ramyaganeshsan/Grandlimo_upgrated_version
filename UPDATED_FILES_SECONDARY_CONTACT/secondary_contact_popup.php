@@ -159,12 +159,25 @@ function saveSecondaryContact() {
                 $error.css('color', 'tomato').text((res && res.message) ? res.message : 'Failed to save.');
             }
         },
-        error: function () {
+        error: function (xhr) {
             if (saveButton) {
                 saveButton.disabled = false;
                 saveButton.innerHTML = 'Save';
             }
-            $error.css('color', 'tomato').text('Failed to save.');
+            var msg = 'Failed to save.';
+            if (xhr && xhr.responseText) {
+                if (xhr.responseText.indexOf('Cannot redeclare') !== -1) {
+                    msg = 'Duplicate action_save_secondary_phone in controller. Keep only one.';
+                } else if (xhr.status == 404) {
+                    msg = 'save_secondary_phone action not found in controller.';
+                } else {
+                    try {
+                        var parsed = $.parseJSON(xhr.responseText);
+                        if (parsed && parsed.message) { msg = parsed.message; }
+                    } catch (e) {}
+                }
+            }
+            $error.css('color', 'tomato').text(msg);
         }
     });
 }
