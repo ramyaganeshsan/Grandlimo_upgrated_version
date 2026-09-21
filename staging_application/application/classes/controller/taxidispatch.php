@@ -3182,7 +3182,7 @@ public function action_pay_details()
         $icon = '<span class="passenger-phone-icon sec-phone-icon" data-mode="'.$mode.'" data-trip-id="'.$trip_id.'" data-secondary-phone="'.$phone.'" data-sec-phone="'.$phone.'" data-sec-name="'.$name.'" title="Secondary contact" onclick="event.stopPropagation(); openSecondaryContact(this);" style="cursor:pointer;margin-right:5px;vertical-align:middle;display:inline-block;"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="18" viewBox="0 0 24 24" fill="'.$color.'"><path d="M17 1.01L7 1c-1.1 0-2 .9-2 2v18c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V3c0-1.1-.9-1.99-2-1.99zM17 19H7V5h10v14z"/></svg></span>';
         $extra = '';
         if ($phone !== '' || $name !== '') {
-            $extra = '<div class="sec-phone-text secondary-phone-text" style="display:block;font-size:11px;color:#555;line-height:14px;margin-top:3px;">';
+            $extra = '<div class="sec-contact-lines sec-phone-text" style="display:block;font-size:11px;color:#333;line-height:16px;margin-top:3px;">';
             if ($phone !== '') { $extra .= 'S : '.$phone; }
             if ($phone !== '' && $name !== '') { $extra .= '<br/>'; }
             if ($name !== '') { $extra .= 'N : '.$name; }

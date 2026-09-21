@@ -67,7 +67,14 @@ function setSecondaryPhonePopupIcon(hasNumber) {
     }
 }
 
+function cleanSecPhone(phone) {
+    phone = $.trim(phone || '');
+    return phone.replace(/^S\s*:\s*/i, '');
+}
+
 function secondaryContactLines(phone, name) {
+    phone = cleanSecPhone(phone);
+    name = $.trim(name || '');
     var lines = [];
     if (phone) { lines.push('S : ' + escapeSecondaryHtml(phone)); }
     if (name) { lines.push('N : ' + escapeSecondaryHtml(name)); }
@@ -81,10 +88,10 @@ function renderSecondaryContacts() {
     $('.passenger-phone-icon, .sec-phone-icon').each(function () {
         var $icon = $(this);
         var tripId = String($icon.attr('data-trip-id') || '');
-        var phone = $icon.attr('data-sec-phone') || $icon.attr('data-secondary-phone') || '';
-        var name = $icon.attr('data-sec-name') || '';
+        var phone = cleanSecPhone($icon.attr('data-sec-phone') || $icon.attr('data-secondary-phone') || '');
+        var name = $.trim($icon.attr('data-sec-name') || '');
         if (savedSecondaryContacts[tripId]) {
-            if (savedSecondaryContacts[tripId].phone) { phone = savedSecondaryContacts[tripId].phone; }
+            if (savedSecondaryContacts[tripId].phone) { phone = cleanSecPhone(savedSecondaryContacts[tripId].phone); }
             if (savedSecondaryContacts[tripId].name) { name = savedSecondaryContacts[tripId].name; }
             $icon.attr('data-sec-phone', phone);
             $icon.attr('data-secondary-phone', phone);
@@ -92,9 +99,9 @@ function renderSecondaryContacts() {
         }
         $icon.find('svg').attr('fill', phone ? '#0a7c2f' : 'red');
         var $td = $icon.closest('td');
-        $td.find('.sec-phone-text, .secondary-phone-text').remove();
+        $td.find('.sec-contact-lines, .sec-phone-text, .secondary-phone-text').remove();
         if (phone || name) {
-            $td.append('<div class="sec-phone-text secondary-phone-text">' + secondaryContactLines(phone, name) + '</div>');
+            $td.append('<div class="sec-contact-lines sec-phone-text" style="display:block;font-size:11px;color:#333;line-height:16px;margin-top:3px;white-space:normal;">' + secondaryContactLines(phone, name) + '</div>');
         }
     });
 }
@@ -103,10 +110,10 @@ function openSecondaryContact(el) {
     var $el = $(el);
     var mode = $el.attr('data-mode') || 'edit';
     var tripId = $el.attr('data-trip-id') || '';
-    var phone = $el.attr('data-sec-phone') || $el.attr('data-secondary-phone') || '';
-    var name = $el.attr('data-sec-name') || '';
+    var phone = cleanSecPhone($el.attr('data-sec-phone') || $el.attr('data-secondary-phone') || '');
+    var name = $.trim($el.attr('data-sec-name') || '');
     if (savedSecondaryContacts[tripId]) {
-        if (savedSecondaryContacts[tripId].phone) { phone = savedSecondaryContacts[tripId].phone; }
+        if (savedSecondaryContacts[tripId].phone) { phone = cleanSecPhone(savedSecondaryContacts[tripId].phone); }
         if (savedSecondaryContacts[tripId].name) { name = savedSecondaryContacts[tripId].name; }
     }
     $('#sec_trip_id').val(tripId);
@@ -213,5 +220,8 @@ $(document).on('click.secContact', '.passenger-phone-icon, .sec-phone-icon', fun
     e.stopPropagation();
     openSecondaryContact(this);
     return false;
+});
+$(document).off('ajaxComplete.secContact').on('ajaxComplete.secContact', function () {
+    setTimeout(function () { renderSecondaryContacts(); }, 80);
 });
 </script>
