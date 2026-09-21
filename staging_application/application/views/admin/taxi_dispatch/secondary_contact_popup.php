@@ -12,7 +12,7 @@
     display: block;
 }
 </style>
-<div style="display:none;width:100%;background-color:rgba(0,0,0,0.6);height:100dvh;z-index: 999999;position: absolute;justify-content: center;align-items: center;" id="secondaryPhoneModel">
+<div style="display:none;width:100%;background-color:rgba(0,0,0,0.6);height:100%;z-index: 999999;position: fixed;left:0;top:0;justify-content: center;align-items: center;" id="secondaryPhoneModel">
     <div style="min-width:300px;background-color:white;padding:16px 16px;border-radius:8px;">
         <div>
             <h2 id="secondaryPhoneTitle" style="margin: 0px;font-size: 18px;letter-spacing: 1px;font-weight: bold;">Add Secondary Number</h2>
@@ -185,7 +185,9 @@ $(document).off('click', '.passenger-phone-icon');
 $(document).off('click.secContact');
 $(document).on('click.secContact', '.passenger-phone-icon, .sec-phone-icon', function (e) {
     e.preventDefault();
+    e.stopImmediatePropagation();
     e.stopPropagation();
     openSecondaryContact(this);
+    return false;
 });
 </script>
