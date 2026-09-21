@@ -75,6 +75,9 @@ function secondaryContactLines(phone, name) {
 }
 
 function addPassengerPhoneIcons() {
+    window.renderSecondaryContacts();
+}
+function renderSecondaryContacts() {
     $('.passenger-phone-icon, .sec-phone-icon').each(function () {
         var $icon = $(this);
         var tripId = String($icon.attr('data-trip-id') || '');

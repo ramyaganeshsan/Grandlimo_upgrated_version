@@ -2421,7 +2421,7 @@ foreach($model_details as $list) { ?>
                     }
 
                     $('#all_booking_manage_list').html(data[1]);
-                    addPassengerPhoneIcons();
+                    if (typeof renderSecondaryContacts === 'function') { renderSecondaryContacts(); }
                     //edit booking in dashboard
                     $('.oddtr').bind('click', function(e) {
                         if ($(e.target).closest('.passenger-phone-icon, .sec-phone-icon').length) { return; }
