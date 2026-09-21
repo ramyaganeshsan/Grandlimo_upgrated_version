@@ -5,6 +5,48 @@ Green icon when a **phone number** exists. Name + phone are both required to Sav
 
 ---
 
+## DO THIS NOW — manage_booking empty red icon
+
+Dashboard already has the saved secondary name/phone. manage_booking still
+shows a **red icon and empty popup** because its list query `$group` `$push`
+keeps `passenger_phone` and **throws away** `secondary_phone` / `secondary_name`.
+
+**File:** `application/classes/model/taxidispatch.php`
+
+Search for this exact line **inside `$group` / `$push`** (there are two copies:
+`get_all_booking_list_all` and `get_all_complete_booking_list_all`):
+
+```php
+                    'passenger_phone'=>'$passenger_phone',
+```
+
+Paste these 4 lines **immediately after** that line, in **both** `$group` blocks:
+
+```php
+                    'secondary_phone'=>'$secondary_phone',
+                    'secondary_name'=>'$secondary_name',
+                    'pass_secondary_phone'=>'$pass_secondary_phone',
+                    'pass_secondary_name'=>'$pass_secondary_name',
+```
+
+Also confirm the `$project` in those same two functions still has this right
+after `'passenger_phone' => '$passengers.phone',`:
+
+```php
+                    'secondary_phone' => array('$ifNull'=>array('$secondary_phone', array('$ifNull'=>array('$passengers.secondary_phone','')))),
+                    'secondary_name' => array('$ifNull'=>array('$secondary_name', array('$ifNull'=>array('$passengers.secondary_name','')))),
+                    'pass_secondary_phone' => array('$ifNull'=>array('$passengers.secondary_phone','')),
+                    'pass_secondary_name' => array('$ifNull'=>array('$passengers.secondary_name','')),
+```
+
+Save the model. Refresh manage_booking. The icon should be green, the cell
+should show `S : {phone}` and `N : {name}`, and the popup should be filled
+(view only, Close button).
+
+Do **not** paste dashboard.php again if dashboard already works.
+
+---
+
 ## BEFORE ANY PASTE — DELETE old code on live
 
 If you skip this, you get the old black/tomato popup with no name field,
@@ -86,10 +128,15 @@ If you cannot use include, paste the **full** contents of
 
 ## FILE C — manage_booking.php
 
-1. After `$('#all_booking_manage_list_all').html(response);` add:
+1. After `$('#all_booking_manage_list_all').html(response);` use this (not the old icon function):
 
 ```javascript
-					addPassengerPhoneIcons();
+					$('#all_booking_manage_list_all').html(response);
+					setTimeout(function(){
+						if (typeof renderSecondaryContacts === 'function') {
+							renderSecondaryContacts();
+						}
+					}, 80);
 ```
 
 2. Change `.oddtr` click to:
@@ -193,11 +240,24 @@ Replace the phone `<td>` with:
 
 **Path:** `application/classes/model/taxidispatch.php`
 
-### After `'passenger_phone' => '$passengers.phone',` in `dispatcher_booking_list` AND `get_all_booking_list_all` `$project`:
+### After `'passenger_phone' => '$passengers.phone',` in `dispatcher_booking_list`, `get_all_booking_list_all`, AND `get_all_complete_booking_list_all` `$project`:
 
 ```php
                     'secondary_phone' => array('$ifNull'=>array('$secondary_phone', array('$ifNull'=>array('$passengers.secondary_phone','')))),
                     'secondary_name' => array('$ifNull'=>array('$secondary_name', array('$ifNull'=>array('$passengers.secondary_name','')))),
+                    'pass_secondary_phone' => array('$ifNull'=>array('$passengers.secondary_phone','')),
+                    'pass_secondary_name' => array('$ifNull'=>array('$passengers.secondary_name','')),
+```
+
+### After `'passenger_phone'=>'$passenger_phone',` in the `$group` `$push` of `get_all_booking_list_all` AND `get_all_complete_booking_list_all`:
+
+This is the manage_booking red-icon fix. If you skip it, `$project` finds the secondary fields and `$group` throws them away.
+
+```php
+                    'secondary_phone'=>'$secondary_phone',
+                    'secondary_name'=>'$secondary_name',
+                    'pass_secondary_phone'=>'$pass_secondary_phone',
+                    'pass_secondary_name'=>'$pass_secondary_name',
 ```
 
 ### After `array('passengers.phone'=>new MongoRegex("/$search_txt/i")),` in `get_all_booking_list_all` (and complete list if used):

@@ -521,7 +521,11 @@ $(window).resize(function() {
 				dataType: 'html',
 				success: function(response){
 					$('#all_booking_manage_list_all').html(response);
-					addPassengerPhoneIcons();
+					setTimeout(function(){
+						if (typeof renderSecondaryContacts === 'function') {
+							renderSecondaryContacts();
+						}
+					}, 80);
 					
 					var $table = $('table.scroll_manage'),
 					$bodyCells = $table.find('tbody tr:first').children(),

@@ -3154,25 +3154,30 @@ public function action_pay_details()
         exit;
     }
 
+    private function secondary_contact_scalar($value)
+    {
+        while (is_array($value)) {
+            if (!isset($value[0]) || $value[0] === '' || $value[0] === null) {
+                return '';
+            }
+            $value = $value[0];
+        }
+        if (is_object($value)) {
+            $value = (string)$value;
+        }
+        return trim((string)$value);
+    }
+
     public function secondary_contact_cell($listings, $passenger_phone, $view_only = 0)
     {
-        $trip_id = isset($listings['pass_logid']) ? $listings['pass_logid'] : '';
-        if (is_array($trip_id)) { $trip_id = isset($trip_id[0]) ? $trip_id[0] : ''; }
-        $phone = isset($listings['secondary_phone']) ? $listings['secondary_phone'] : '';
-        $name = isset($listings['secondary_name']) ? $listings['secondary_name'] : '';
-        if (is_array($phone)) { $phone = isset($phone[0]) ? $phone[0] : ''; }
-        if (is_array($name)) { $name = isset($name[0]) ? $name[0] : ''; }
-        $phone = trim((string)$phone);
-        $name = trim((string)$name);
-        if ($phone === '' && isset($listings['pass_secondary_phone'])) {
-            $phone = $listings['pass_secondary_phone'];
-            if (is_array($phone)) { $phone = isset($phone[0]) ? $phone[0] : ''; }
-            $phone = trim((string)$phone);
+        $trip_id = $this->secondary_contact_scalar(isset($listings['pass_logid']) ? $listings['pass_logid'] : '');
+        $phone = $this->secondary_contact_scalar(isset($listings['secondary_phone']) ? $listings['secondary_phone'] : '');
+        $name = $this->secondary_contact_scalar(isset($listings['secondary_name']) ? $listings['secondary_name'] : '');
+        if ($phone === '') {
+            $phone = $this->secondary_contact_scalar(isset($listings['pass_secondary_phone']) ? $listings['pass_secondary_phone'] : '');
         }
-        if ($name === '' && isset($listings['pass_secondary_name'])) {
-            $name = $listings['pass_secondary_name'];
-            if (is_array($name)) { $name = isset($name[0]) ? $name[0] : ''; }
-            $name = trim((string)$name);
+        if ($name === '') {
+            $name = $this->secondary_contact_scalar(isset($listings['pass_secondary_name']) ? $listings['pass_secondary_name'] : '');
         }
         $phone = htmlspecialchars($phone, ENT_QUOTES);
         $name = htmlspecialchars($name, ENT_QUOTES);
