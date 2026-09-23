@@ -209,6 +209,51 @@ exports.savebooking= function(q,req){
 		var phone = inputParams.phone;
 		var now_after = inputParams.now_after;
 		var pickup_time = urlencode.decode(inputParams.pickup_time);
+		var pickupTime = inputParams.pickup_time;
+		var pickupDate = new Date(pickupTime || pickup_time);
+
+		var busySlotFrom = null;
+		var busySlotTo = null;
+		if (global.settings && global.settings.busy_slot_from) {
+			busySlotFrom = new Date(global.settings.busy_slot_from);
+		}
+		if (global.settings && global.settings.busy_slot_to) {
+			busySlotTo = new Date(global.settings.busy_slot_to);
+		}
+		var pickupForBusy = pickupDate;
+		var pickupRaw = String(pickupTime || pickup_time || "");
+		if (pickupRaw && !/[zZ]|[+\-]\d{2}:?\d{2}$/.test(pickupRaw)) {
+			var kuwaitPickup = moment.tz(
+				pickupRaw.replace("%20", " "),
+				["YYYY-MM-DD HH:mm:ss", "YYYY-MM-DDTHH:mm:ss"],
+				"Asia/Kuwait"
+			);
+			if (kuwaitPickup.isValid()) {
+				pickupForBusy = kuwaitPickup.toDate();
+			}
+		}
+		if (
+			busySlotFrom &&
+			busySlotTo &&
+			!isNaN(busySlotFrom.getTime()) &&
+			!isNaN(busySlotTo.getTime()) &&
+			pickupForBusy &&
+			!isNaN(pickupForBusy.getTime()) &&
+			pickupForBusy.getTime() >= busySlotFrom.getTime() &&
+			pickupForBusy.getTime() <= busySlotTo.getTime()
+		) {
+			var busyUntilKuwait = moment(busySlotTo)
+				.tz("Asia/Kuwait")
+				.format("D MMM YYYY, h:mm A");
+			message.message =
+				"All cars are booked until " +
+				busyUntilKuwait +
+				". Please try after that time.";
+			message.status = -1;
+			deferred.resolve(message);
+			deferred.makeNodeResolver();
+			return deferred.promise;
+		}
 
 		apimodel.passenger_profile_by_id(q,passenger_id).then(function(profile_results){
 
