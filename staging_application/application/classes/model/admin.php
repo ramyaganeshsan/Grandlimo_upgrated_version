@@ -2181,6 +2181,10 @@ class Model_Admin extends Model
 
             /* Sasidharan june 20 2022 */
             'register_promocode' => new \MongoDB\BSON\UTCDateTime(strtotime($post_value_array['register_promocode']) * 1000),
+            /* Car Busy Slot's — posted strings are Kuwait local; PHP tz Asia/Kuwait
+               makes strtotime() store the UTC instant. Do not append ' UTC'. */
+            'busy_slot_from' => !empty($post_value_array['busy_slot_from']) ? new \MongoDB\BSON\UTCDateTime(strtotime($post_value_array['busy_slot_from']) * 1000) : null,
+            'busy_slot_to' => !empty($post_value_array['busy_slot_to']) ? new \MongoDB\BSON\UTCDateTime(strtotime($post_value_array['busy_slot_to']) * 1000) : null,
 
             /* Sasidharan Feb 07 2022 */
             'surge_on_week_days' => isset($post_value_array['surge_on_week_days']) ?$post_value_array['surge_on_week_days'] : (object)[],

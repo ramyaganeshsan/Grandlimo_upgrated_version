@@ -711,6 +711,85 @@ $surgePriceOnWeekDays = isset($site_settings[0]['surge_on_week_days']) ? $site_s
 											</td>
                     </tr>
 
+                    <?php
+                    /* Car Busy Slot's — admin form is Kuwait time; Mongo stores UTC.
+                       Never use gmdate() here. convertphpdate() is the same Kuwait
+                       conversion as register_promocode. */
+                    $busy_slot_date = '';
+                    $busy_slot_from_hour = '';
+                    $busy_slot_to_hour = '';
+                    $busy_slot_from_val = '';
+                    $busy_slot_to_val = '';
+
+                    if (isset($postvalue['busy_slot_from']) && $postvalue['busy_slot_from'] != '') {
+                        $busy_slot_from_val = $postvalue['busy_slot_from'];
+                        $busy_slot_date = substr($postvalue['busy_slot_from'], 0, 10);
+                        $busy_slot_from_hour = (string)((int)substr($postvalue['busy_slot_from'], 11, 2));
+                    }
+                    if (isset($postvalue['busy_slot_to']) && $postvalue['busy_slot_to'] != '') {
+                        $busy_slot_to_val = $postvalue['busy_slot_to'];
+                        $busy_slot_to_hour = (string)((int)substr($postvalue['busy_slot_to'], 11, 2));
+                        if ($busy_slot_date == '') {
+                            $busy_slot_date = substr($postvalue['busy_slot_to'], 0, 10);
+                        }
+                    }
+
+                    if ($busy_slot_from_val == '' && isset($site_settings[0]['busy_slot_from']) && !empty($site_settings[0]['busy_slot_from'])) {
+                        $busy_slot_date = trim(commonfunction::convertphpdate('Y-m-d', $site_settings[0]['busy_slot_from']));
+                        $busy_slot_from_hour = (string)((int)commonfunction::convertphpdate('G', $site_settings[0]['busy_slot_from']));
+                        $busy_slot_from_val = trim(commonfunction::convertphpdate('Y-m-d H:i:s', $site_settings[0]['busy_slot_from']));
+                    }
+                    if ($busy_slot_to_val == '' && isset($site_settings[0]['busy_slot_to']) && !empty($site_settings[0]['busy_slot_to'])) {
+                        $busy_slot_to_hour = (string)((int)commonfunction::convertphpdate('G', $site_settings[0]['busy_slot_to']));
+                        $busy_slot_to_val = trim(commonfunction::convertphpdate('Y-m-d H:i:s', $site_settings[0]['busy_slot_to']));
+                        if ($busy_slot_date == '') {
+                            $busy_slot_date = trim(commonfunction::convertphpdate('Y-m-d', $site_settings[0]['busy_slot_to']));
+                        }
+                    }
+
+                    $busy_hour_labels = [
+                        0 => '12 AM', 1 => '1 AM', 2 => '2 AM', 3 => '3 AM', 4 => '4 AM', 5 => '5 AM',
+                        6 => '6 AM', 7 => '7 AM', 8 => '8 AM', 9 => '9 AM', 10 => '10 AM', 11 => '11 AM',
+                        12 => '12 PM', 13 => '1 PM', 14 => '2 PM', 15 => '3 PM', 16 => '4 PM', 17 => '5 PM',
+                        18 => '6 PM', 19 => '7 PM', 20 => '8 PM', 21 => '9 PM', 22 => '10 PM', 23 => '11 PM'
+                    ];
+                    ?>
+                    <tr>
+                        <td valign="top" width="20%"><label>Car Busy Slot's</label></td>
+                        <td>
+                            <div class="new_input_field" style="width:420px;">
+                                <input type="hidden" id="busy_slot_from" name="busy_slot_from" value="<?php echo htmlspecialchars($busy_slot_from_val, ENT_QUOTES); ?>" />
+                                <input type="hidden" id="busy_slot_to" name="busy_slot_to" value="<?php echo htmlspecialchars($busy_slot_to_val, ENT_QUOTES); ?>" />
+                                <div style="margin-bottom:8px;">
+                                    <label style="display:block;margin-bottom:4px;">Select date</label>
+                                    <input type="text" maxlength="30" title="Car Busy Slot date" id="busy_slot_date" value="<?php echo htmlspecialchars($busy_slot_date, ENT_QUOTES); ?>" placeholder="YYYY-MM-DD" readonly="readonly" style="width:220px;" />
+                                </div>
+                                <div id="car_busy_slots_times" style="<?php echo ($busy_slot_date != '') ? '' : 'display:none;'; ?>">
+                                    <div style="margin-bottom:8px;">
+                                        <label style="display:block;margin-bottom:4px;">From</label>
+                                        <select id="busy_slot_from_hour" title="Busy slot from" style="width:220px;">
+                                            <option value="">-- Select from --</option>
+                                            <?php foreach ($busy_hour_labels as $hour_val => $hour_label) { ?>
+                                            <option value="<?php echo $hour_val; ?>" <?php if ((string)$busy_slot_from_hour !== '' && (string)$busy_slot_from_hour === (string)$hour_val) { echo 'selected="selected"'; } ?>><?php echo $hour_label; ?></option>
+                                            <?php } ?>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label style="display:block;margin-bottom:4px;">To</label>
+                                        <select id="busy_slot_to_hour" title="Busy slot to" style="width:220px;">
+                                            <option value="">-- Select to --</option>
+                                            <?php foreach ($busy_hour_labels as $hour_val => $hour_label) { ?>
+                                            <option value="<?php echo $hour_val; ?>" <?php if ((string)$busy_slot_to_hour !== '' && (string)$busy_slot_to_hour === (string)$hour_val) { echo 'selected="selected"'; } ?>><?php echo $hour_label; ?></option>
+                                            <?php } ?>
+                                        </select>
+                                    </div>
+                                    <div style="margin-top:6px;color:#666;font-size:12px;">To time must be after From time. Example: 5 AM to 11 PM.</div>
+                                    <span id="busy_slot_error" class="error" style="<?php echo (isset($errors['busy_slot_to'])) ? '' : 'display:none;'; ?>"><?php echo isset($errors['busy_slot_to']) ? htmlspecialchars($errors['busy_slot_to']) : ''; ?></span>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+
                     <!--  Sasidharan Feb 06 2023  -->
                    <tr>
                    		<td>
@@ -935,6 +1014,104 @@ $(document).ready(function() {
 		stepMinute: 1,
 		stepSecond: 1
  	});
+
+	/* Car Busy Slot's — hidden values are naive Kuwait datetimes.
+	   PHP Asia/Kuwait strtotime() converts them to UTC for Mongo. */
+	function syncBusySlotDatetimes() {
+		var d = $.trim($('#busy_slot_date').val());
+		var fromH = $('#busy_slot_from_hour').val();
+		var toH = $('#busy_slot_to_hour').val();
+		if (d !== '' && fromH !== '') {
+			var fh = (parseInt(fromH, 10) < 10) ? ('0' + parseInt(fromH, 10)) : String(parseInt(fromH, 10));
+			$('#busy_slot_from').val(d + ' ' + fh + ':00:00');
+		} else {
+			$('#busy_slot_from').val('');
+		}
+		if (d !== '' && toH !== '') {
+			var th = (parseInt(toH, 10) < 10) ? ('0' + parseInt(toH, 10)) : String(parseInt(toH, 10));
+			$('#busy_slot_to').val(d + ' ' + th + ':00:00');
+		} else {
+			$('#busy_slot_to').val('');
+		}
+	}
+	function showBusySlotError(msg) {
+		var $err = $('#busy_slot_error');
+		if (!$err.length) { return; }
+		if (msg) {
+			$err.text(msg).show();
+		} else {
+			$err.text('').hide();
+		}
+	}
+	function filterBusySlotToHours() {
+		var fromH = $('#busy_slot_from_hour').val();
+		var toH = $('#busy_slot_to_hour').val();
+		$('#busy_slot_to_hour option').each(function () {
+			var v = $(this).val();
+			if (v === '' || fromH === '') {
+				$(this).removeAttr('disabled');
+				return;
+			}
+			if (parseInt(v, 10) <= parseInt(fromH, 10)) {
+				$(this).attr('disabled', 'disabled');
+			} else {
+				$(this).removeAttr('disabled');
+			}
+		});
+		if (fromH !== '' && toH !== '' && parseInt(toH, 10) <= parseInt(fromH, 10)) {
+			$('#busy_slot_to_hour').val('');
+			showBusySlotError('To time must be after From time');
+		} else if (fromH === '23') {
+			showBusySlotError('From cannot be 11 PM. Choose an earlier From time.');
+		} else {
+			showBusySlotError('');
+		}
+	}
+	$('#busy_slot_date').datetimepicker({
+		showTimepicker: false,
+		dateFormat: 'yy-mm-dd',
+		onSelect: function () {
+			$('#car_busy_slots_times').show();
+			filterBusySlotToHours();
+			syncBusySlotDatetimes();
+		}
+	});
+	if ($.trim($('#busy_slot_date').val()) !== '') {
+		$('#car_busy_slots_times').show();
+	}
+	$('#busy_slot_from_hour').change(function () {
+		filterBusySlotToHours();
+		syncBusySlotDatetimes();
+	});
+	$('#busy_slot_date, #busy_slot_to_hour').change(function () {
+		if ($.trim($('#busy_slot_date').val()) !== '') {
+			$('#car_busy_slots_times').show();
+		} else {
+			$('#car_busy_slots_times').hide();
+		}
+		filterBusySlotToHours();
+		syncBusySlotDatetimes();
+	});
+	$('#settings').submit(function () {
+		filterBusySlotToHours();
+		syncBusySlotDatetimes();
+		var d = $.trim($('#busy_slot_date').val());
+		var fromH = $('#busy_slot_from_hour').val();
+		var toH = $('#busy_slot_to_hour').val();
+		if (d !== '' && (fromH === '' || toH === '')) {
+			showBusySlotError('Select both From and To times');
+			alert('Select both From and To times');
+			return false;
+		}
+		if (fromH !== '' && toH !== '' && parseInt(toH, 10) <= parseInt(fromH, 10)) {
+			showBusySlotError('To time must be after From time');
+			alert('To time must be after From time');
+			return false;
+		}
+		return true;
+	});
+	filterBusySlotToHours();
+	syncBusySlotDatetimes();
 
 	toggle(3);
 	
