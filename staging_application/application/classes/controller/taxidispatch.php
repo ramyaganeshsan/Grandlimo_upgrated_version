@@ -3173,12 +3173,6 @@ public function action_pay_details()
         $trip_id = $this->secondary_contact_scalar(isset($listings['pass_logid']) ? $listings['pass_logid'] : '');
         $phone = $this->secondary_contact_scalar(isset($listings['secondary_phone']) ? $listings['secondary_phone'] : '');
         $name = $this->secondary_contact_scalar(isset($listings['secondary_name']) ? $listings['secondary_name'] : '');
-        if ($phone === '') {
-            $phone = $this->secondary_contact_scalar(isset($listings['pass_secondary_phone']) ? $listings['pass_secondary_phone'] : '');
-        }
-        if ($name === '') {
-            $name = $this->secondary_contact_scalar(isset($listings['pass_secondary_name']) ? $listings['pass_secondary_name'] : '');
-        }
         $phone = htmlspecialchars($phone, ENT_QUOTES);
         $name = htmlspecialchars($name, ENT_QUOTES);
         $has_phone = ($phone !== '');

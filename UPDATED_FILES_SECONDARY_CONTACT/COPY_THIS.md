@@ -3,6 +3,9 @@
 One popup. Same look as the original dashboard (black Save / tomato Cancel).
 Green icon when a **phone number** exists. Name + phone are both required to Save.
 
+Secondary contact is **per trip** on `passengers_log` only. Same passenger,
+two bookings → two different numbers. See `PER_TRIP_PASTE.md`.
+
 ---
 
 ## DO THIS NOW — manage_booking empty red icon
@@ -25,18 +28,14 @@ Paste these 4 lines **immediately after** that line, in **both** `$group` blocks
 ```php
                     'secondary_phone'=>'$secondary_phone',
                     'secondary_name'=>'$secondary_name',
-                    'pass_secondary_phone'=>'$pass_secondary_phone',
-                    'pass_secondary_name'=>'$pass_secondary_name',
 ```
 
 Also confirm the `$project` in those same two functions still has this right
 after `'passenger_phone' => '$passengers.phone',`:
 
 ```php
-                    'secondary_phone' => array('$ifNull'=>array('$secondary_phone', array('$ifNull'=>array('$passengers.secondary_phone','')))),
-                    'secondary_name' => array('$ifNull'=>array('$secondary_name', array('$ifNull'=>array('$passengers.secondary_name','')))),
-                    'pass_secondary_phone' => array('$ifNull'=>array('$passengers.secondary_phone','')),
-                    'pass_secondary_name' => array('$ifNull'=>array('$passengers.secondary_name','')),
+                    'secondary_phone' => array('$ifNull'=>array('$secondary_phone','')),
+                    'secondary_name' => array('$ifNull'=>array('$secondary_name','')),
 ```
 
 Save the model. Refresh manage_booking. The icon should be green, the cell
@@ -243,10 +242,8 @@ Replace the phone `<td>` with:
 ### After `'passenger_phone' => '$passengers.phone',` in `dispatcher_booking_list`, `get_all_booking_list_all`, AND `get_all_complete_booking_list_all` `$project`:
 
 ```php
-                    'secondary_phone' => array('$ifNull'=>array('$secondary_phone', array('$ifNull'=>array('$passengers.secondary_phone','')))),
-                    'secondary_name' => array('$ifNull'=>array('$secondary_name', array('$ifNull'=>array('$passengers.secondary_name','')))),
-                    'pass_secondary_phone' => array('$ifNull'=>array('$passengers.secondary_phone','')),
-                    'pass_secondary_name' => array('$ifNull'=>array('$passengers.secondary_name','')),
+                    'secondary_phone' => array('$ifNull'=>array('$secondary_phone','')),
+                    'secondary_name' => array('$ifNull'=>array('$secondary_name','')),
 ```
 
 ### After `'passenger_phone'=>'$passenger_phone',` in the `$group` `$push` of `get_all_booking_list_all` AND `get_all_complete_booking_list_all`:
@@ -256,16 +253,12 @@ This is the manage_booking red-icon fix. If you skip it, `$project` finds the se
 ```php
                     'secondary_phone'=>'$secondary_phone',
                     'secondary_name'=>'$secondary_name',
-                    'pass_secondary_phone'=>'$pass_secondary_phone',
-                    'pass_secondary_name'=>'$pass_secondary_name',
 ```
 
 ### After `array('passengers.phone'=>new MongoRegex("/$search_txt/i")),` in `get_all_booking_list_all` (and complete list if used):
 
 ```php
-                    array('passengers.secondary_phone'=>new MongoRegex("/$search_txt/i")),
                     array('secondary_phone'=>new MongoRegex("/$search_txt/i")),
-                    array('passengers.secondary_name'=>new MongoRegex("/$search_txt/i")),
                     array('secondary_name'=>new MongoRegex("/$search_txt/i")),
 ```
 
@@ -282,10 +275,6 @@ This is the manage_booking red-icon fix. If you skip it, `$project` finds the se
             'secondary_name' => $secondary_name
         );
         $this->mongo_db->update(MDB_PASSENGERS_LOGS, array('_id' => $trip_id), array('$set' => $set));
-        $log = $this->mongo_db->find_one(MDB_PASSENGERS_LOGS, array('_id' => $trip_id), array('passengers_id'));
-        if (!empty($log['passengers_id'])) {
-            $this->mongo_db->update(MDB_PASSENGERS, array('_id' => (int)$log['passengers_id']), array('$set' => $set));
-        }
         return 1;
     }
 ```
@@ -297,4 +286,5 @@ This is the manage_booking red-icon fix. If you skip it, `$project` finds the se
 Dashboard: green icon + `S : {phone}` and `N : {name}` under the primary phone.
 manage_booking: same display, popup is view-only (Close only).
 Search matches secondary phone and secondary name.
-Writes both keys to `passengers_log` and `passengers`.
+Writes `secondary_phone` / `secondary_name` on that trip’s `passengers_log` only.
+Same passenger, two trips → two different secondary numbers.

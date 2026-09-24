@@ -17,18 +17,14 @@ Immediately after that line, paste:
 ```php
                     'secondary_phone'=>'$secondary_phone',
                     'secondary_name'=>'$secondary_name',
-                    'pass_secondary_phone'=>'$pass_secondary_phone',
-                    'pass_secondary_name'=>'$pass_secondary_name',
 ```
 
 If those `$project` functions do **not** already have secondary fields, also paste
 this after `'passenger_phone' => '$passengers.phone',`:
 
 ```php
-                    'secondary_phone' => array('$ifNull'=>array('$secondary_phone', array('$ifNull'=>array('$passengers.secondary_phone','')))),
-                    'secondary_name' => array('$ifNull'=>array('$secondary_name', array('$ifNull'=>array('$passengers.secondary_name','')))),
-                    'pass_secondary_phone' => array('$ifNull'=>array('$passengers.secondary_phone','')),
-                    'pass_secondary_name' => array('$ifNull'=>array('$passengers.secondary_name','')),
+                    'secondary_phone' => array('$ifNull'=>array('$secondary_phone','')),
+                    'secondary_name' => array('$ifNull'=>array('$secondary_name','')),
 ```
 
 Save. Refresh manage_booking. Icon green, `S :` / `N :` under the phone,
