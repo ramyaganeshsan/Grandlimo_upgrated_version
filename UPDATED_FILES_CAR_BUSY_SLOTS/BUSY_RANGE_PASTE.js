@@ -2,63 +2,14 @@
    grandlimoV5/lib_v1/passenger/search_drivers.js
    (and lib/passenger/search_drivers.js if that file is live)
 
-   FIND the existing function pickupToUtcDate
+   FIND the existing function busySlotRejectMessage
    REPLACE it with the function below.
 
-   Then FIND the existing function busySlotRejectMessage
-   REPLACE it with the function below (keeps BUSY_SLOT_CHECK log).
+   Error text uses Kuwait time, not UTC. For 12 AM–4 AM Kuwait:
+   "All cars are busy in this time slot (31 October, 2026 12:00 AM - 4:00 AM). Please try after 4:00 AM."
 
-   Restart Node. Next log for "31 October, 2026 03:03" must be:
-     parsedFormat: "D MMMM, YYYY HH:mm"
-     pickupUtc: "2026-10-31T00:03:00.000Z"
-     inRange: true
+   Restart Node.
 */
-
-function pickupToUtcDate(raw) {
-  pickupToUtcDate.lastFormat = null;
-  if (raw === undefined || raw === null || raw === "") {
-    return null;
-  }
-  var s = String(raw);
-  try {
-    s = decodeURIComponent(s);
-  } catch (e) {}
-  s = s.replace(/\+/g, " ").replace(/%20/g, " ").trim();
-  if (!s) {
-    return null;
-  }
-  if (/[zZ]|[+\-]\d{2}:?\d{2}$/.test(s)) {
-    var alreadyUtc = new Date(s);
-    pickupToUtcDate.lastFormat = "offset-or-z";
-    return isNaN(alreadyUtc.getTime()) ? null : alreadyUtc;
-  }
-  var formats = [
-    "D MMMM, YYYY HH:mm:ss",
-    "D MMMM, YYYY HH:mm",
-    "DD MMMM, YYYY HH:mm:ss",
-    "DD MMMM, YYYY HH:mm",
-    "MMMM D, YYYY HH:mm:ss",
-    "MMMM D, YYYY HH:mm",
-    "YYYY-MM-DD HH:mm:ss",
-    "YYYY-MM-DD HH:mm",
-    "YYYY-MM-DDTHH:mm:ss",
-    "YYYY-MM-DDTHH:mm",
-    "YYYY-MM-DD hh:mm:ss A",
-    "YYYY-MM-DD hh:mm A",
-    "YYYY-MM-DD h:mm:ss A",
-    "YYYY-MM-DD h:mm A"
-  ];
-  var i;
-  var parsed;
-  for (i = 0; i < formats.length; i++) {
-    parsed = moment.tz(s, formats[i], "Asia/Kuwait");
-    if (parsed.isValid() && parsed.format(formats[i]) === s) {
-      pickupToUtcDate.lastFormat = formats[i];
-      return parsed.toDate();
-    }
-  }
-  return null;
-}
 
 function busySlotRejectMessage(pickupRaw) {
   var busyFrom = mongoSettingToDate(
@@ -100,14 +51,33 @@ function busySlotRejectMessage(pickupRaw) {
         busyToMs: busyToMs,
         gteFrom: gteFrom,
         lteTo: lteTo,
-        inRange: inRange
+        inRange: inRange,
+        kuwaitFrom: moment(busyFrom).tz("Asia/Kuwait").format("D MMMM, YYYY h:mm A"),
+        kuwaitTo: moment(busyTo).tz("Asia/Kuwait").format("D MMMM, YYYY h:mm A")
       })
   );
   if (!pickupUtc) {
     return null;
   }
   if (inRange) {
-    return "All cars are currently booked during this time. Please select a pickup time after some times.";
+    var fromKwt = moment(busyFrom).tz("Asia/Kuwait");
+    var toKwt = moment(busyTo).tz("Asia/Kuwait");
+    var fromDate = fromKwt.format("D MMMM, YYYY");
+    var toDate = toKwt.format("D MMMM, YYYY");
+    var fromTime = fromKwt.format("h:mm A");
+    var toTime = toKwt.format("h:mm A");
+    var slotLabel =
+      fromDate === toDate
+        ? fromDate + " " + fromTime + " - " + toTime
+        : fromDate + " " + fromTime + " - " + toDate + " " + toTime;
+    var tryAfter = fromDate === toDate ? toTime : toDate + " " + toTime;
+    return (
+      "All cars are busy in this time slot (" +
+      slotLabel +
+      "). Please try after " +
+      tryAfter +
+      "."
+    );
   }
   return null;
 }

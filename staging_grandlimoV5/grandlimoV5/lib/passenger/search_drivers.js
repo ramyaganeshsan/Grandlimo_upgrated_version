@@ -1623,14 +1623,33 @@ function busySlotRejectMessage(pickupRaw) {
         busyToMs: busyToMs,
         gteFrom: gteFrom,
         lteTo: lteTo,
-        inRange: inRange
+        inRange: inRange,
+        kuwaitFrom: moment(busyFrom).tz("Asia/Kuwait").format("D MMMM, YYYY h:mm A"),
+        kuwaitTo: moment(busyTo).tz("Asia/Kuwait").format("D MMMM, YYYY h:mm A")
       })
   );
   if (!pickupUtc) {
     return null;
   }
   if (inRange) {
-    return "All cars are currently booked during this time. Please select a pickup time after some times.";
+    var fromKwt = moment(busyFrom).tz("Asia/Kuwait");
+    var toKwt = moment(busyTo).tz("Asia/Kuwait");
+    var fromDate = fromKwt.format("D MMMM, YYYY");
+    var toDate = toKwt.format("D MMMM, YYYY");
+    var fromTime = fromKwt.format("h:mm A");
+    var toTime = toKwt.format("h:mm A");
+    var slotLabel =
+      fromDate === toDate
+        ? fromDate + " " + fromTime + " - " + toTime
+        : fromDate + " " + fromTime + " - " + toDate + " " + toTime;
+    var tryAfter = fromDate === toDate ? toTime : toDate + " " + toTime;
+    return (
+      "All cars are busy in this time slot (" +
+      slotLabel +
+      "). Please try after " +
+      tryAfter +
+      "."
+    );
   }
   return null;
 }
