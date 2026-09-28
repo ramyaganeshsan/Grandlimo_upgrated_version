@@ -408,6 +408,15 @@ exports.savebooking = function (q, req) {
     console.error("pickupTime : ", pickupTime);
     console.error("pickup_time : ", pickup_time);
 
+    var busySlotMessage = busySlotRejectMessage(pickupTime || pickup_time);
+    if (busySlotMessage) {
+      message.message = busySlotMessage;
+      message.status = -1;
+      deferred.resolve(message);
+      deferred.makeNodeResolver();
+      return deferred.promise;
+    }
+
     // console.error("pickupDate.getTime() : ", pickupDate.getTime());
     // console.error("createdDate.getTime() : ", createdDate.getTime());
 
@@ -2947,3 +2956,89 @@ function closest(array, num) {
   return ans;
 }
 //26 feb 2021
+
+function mongoSettingToDate(value) {
+  if (value === undefined || value === null || value === "") {
+    return null;
+  }
+  if (value instanceof Date) {
+    return isNaN(value.getTime()) ? null : value;
+  }
+  if (typeof value === "object") {
+    if (value.$date) {
+      return mongoSettingToDate(value.$date);
+    }
+    if (typeof value.toDate === "function") {
+      try {
+        var converted = value.toDate();
+        if (converted instanceof Date && !isNaN(converted.getTime())) {
+          return converted;
+        }
+      } catch (e) {}
+    }
+    if (typeof value.getTime === "function") {
+      var millis = value.getTime();
+      if (typeof millis === "number" && !isNaN(millis)) {
+        return new Date(millis);
+      }
+    }
+    if (value.sec != null) {
+      return new Date(Number(value.sec) * 1000);
+    }
+  }
+  var parsed = new Date(value);
+  return isNaN(parsed.getTime()) ? null : parsed;
+}
+
+function parsePickupAsKuwait(raw) {
+  if (raw === undefined || raw === null || raw === "") {
+    return null;
+  }
+  var s = String(raw);
+  try {
+    s = decodeURIComponent(s);
+  } catch (e) {}
+  s = s.replace(/\+/g, " ").replace(/%20/g, " ").trim();
+  if (!s) {
+    return null;
+  }
+  if (/[zZ]|[+\-]\d{2}:?\d{2}$/.test(s)) {
+    var withOffset = new Date(s);
+    return isNaN(withOffset.getTime()) ? null : withOffset;
+  }
+  var formats = [
+    "YYYY-MM-DD HH:mm:ss",
+    "YYYY-MM-DD HH:mm",
+    "YYYY-MM-DDTHH:mm:ss",
+    "YYYY-MM-DDTHH:mm",
+    "YYYY-MM-DD hh:mm:ss A",
+    "YYYY-MM-DD hh:mm A",
+    "YYYY-MM-DD h:mm:ss A",
+    "YYYY-MM-DD h:mm A",
+  ];
+  var kuwaitPickup = moment.tz(s, formats, true, "Asia/Kuwait");
+  if (!kuwaitPickup.isValid()) {
+    kuwaitPickup = moment.tz(s, "Asia/Kuwait");
+  }
+  return kuwaitPickup.isValid() ? kuwaitPickup.toDate() : null;
+}
+
+function busySlotRejectMessage(pickupRaw) {
+  var busyFrom = mongoSettingToDate(
+    global.settings && global.settings.busy_slot_from
+  );
+  var busyTo = mongoSettingToDate(
+    global.settings && global.settings.busy_slot_to
+  );
+  if (!busyFrom || !busyTo) {
+    return null;
+  }
+  var pickup = parsePickupAsKuwait(pickupRaw);
+  if (!pickup) {
+    return null;
+  }
+  if (pickup.getTime() >= busyFrom.getTime() && pickup.getTime() <= busyTo.getTime()) {
+    return "All cars are currently booked during this time. Please select a pickup time after some times.";
+  }
+  return null;
+}
