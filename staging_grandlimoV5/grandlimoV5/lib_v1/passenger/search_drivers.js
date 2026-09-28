@@ -2990,7 +2990,10 @@ function mongoSettingToDate(value) {
   return isNaN(parsed.getTime()) ? null : parsed;
 }
 
-function parsePickupAsKuwait(raw) {
+function pickupToUtcDate(raw) {
+  /* siteinfo busy_slot_* is UTC.
+     App with Z or +hh:mm → already absolute UTC (or offset) → use as-is.
+     App with no timezone (2026-10-31 03:50:00) → Kuwait → convert to UTC. */
   if (raw === undefined || raw === null || raw === "") {
     return null;
   }
@@ -3003,8 +3006,8 @@ function parsePickupAsKuwait(raw) {
     return null;
   }
   if (/[zZ]|[+\-]\d{2}:?\d{2}$/.test(s)) {
-    var withOffset = new Date(s);
-    return isNaN(withOffset.getTime()) ? null : withOffset;
+    var alreadyUtc = new Date(s);
+    return isNaN(alreadyUtc.getTime()) ? null : alreadyUtc;
   }
   var formats = [
     "YYYY-MM-DD HH:mm:ss",
@@ -3033,11 +3036,11 @@ function busySlotRejectMessage(pickupRaw) {
   if (!busyFrom || !busyTo) {
     return null;
   }
-  var pickup = parsePickupAsKuwait(pickupRaw);
-  if (!pickup) {
+  var pickupUtc = pickupToUtcDate(pickupRaw);
+  if (!pickupUtc) {
     return null;
   }
-  if (pickup.getTime() >= busyFrom.getTime() && pickup.getTime() <= busyTo.getTime()) {
+  if (pickupUtc.getTime() >= busyFrom.getTime() && pickupUtc.getTime() <= busyTo.getTime()) {
     return "All cars are currently booked during this time. Please select a pickup time after some times.";
   }
   return null;
