@@ -757,12 +757,13 @@ $surgePriceOnWeekDays = isset($site_settings[0]['surge_on_week_days']) ? $site_s
                     <tr>
                         <td valign="top" width="20%"><label>Car Busy Slot's</label></td>
                         <td>
-                            <div class="new_input_field" style="width:420px;">
+                            <div class="new_input_field" style="width:520px;">
                                 <input type="hidden" id="busy_slot_from" name="busy_slot_from" value="<?php echo htmlspecialchars($busy_slot_from_val, ENT_QUOTES); ?>" />
                                 <input type="hidden" id="busy_slot_to" name="busy_slot_to" value="<?php echo htmlspecialchars($busy_slot_to_val, ENT_QUOTES); ?>" />
                                 <div style="margin-bottom:8px;">
                                     <label style="display:block;margin-bottom:4px;">Select date</label>
                                     <input type="text" maxlength="30" title="Car Busy Slot date" id="busy_slot_date" value="<?php echo htmlspecialchars($busy_slot_date, ENT_QUOTES); ?>" placeholder="YYYY-MM-DD" readonly="readonly" style="width:220px;" />
+                                    <input type="button" id="busy_slot_clear" value="Clear" class="button" title="Clear date and time" style="margin-left:8px;padding:4px 12px;cursor:pointer;" />
                                 </div>
                                 <div id="car_busy_slots_times" style="<?php echo ($busy_slot_date != '') ? '' : 'display:none;'; ?>">
                                     <div style="margin-bottom:8px;">
@@ -1075,6 +1076,21 @@ $(document).ready(function() {
 			filterBusySlotToHours();
 			syncBusySlotDatetimes();
 		}
+	});
+	function clearBusySlot() {
+		$('#busy_slot_date').val('');
+		try { $('#busy_slot_date').datepicker('setDate', null); } catch (e) {}
+		$('#busy_slot_from_hour').val('');
+		$('#busy_slot_to_hour').val('');
+		$('#busy_slot_from').val('');
+		$('#busy_slot_to').val('');
+		$('#car_busy_slots_times').hide();
+		showBusySlotError('');
+		syncBusySlotDatetimes();
+	}
+	$('#busy_slot_clear').click(function (e) {
+		e.preventDefault();
+		clearBusySlot();
 	});
 	if ($.trim($('#busy_slot_date').val()) !== '') {
 		$('#car_busy_slots_times').show();
