@@ -408,6 +408,15 @@ exports.savebooking = function (q, req) {
     console.error("pickupTime : ", pickupTime);
     console.error("pickup_time : ", pickup_time);
 
+    var busySlotMessage = busySlotRejectMessage(pickupTime || pickup_time);
+    if (busySlotMessage) {
+      message.message = busySlotMessage;
+      message.status = -1;
+      deferred.resolve(message);
+      deferred.makeNodeResolver();
+      return deferred.promise;
+    }
+
     // console.error("pickupDate.getTime() : ", pickupDate.getTime());
     // console.error("createdDate.getTime() : ", createdDate.getTime());
 
@@ -2947,3 +2956,158 @@ function closest(array, num) {
   return ans;
 }
 //26 feb 2021
+
+function mongoSettingToDate(value) {
+  if (value === undefined || value === null || value === "") {
+    return null;
+  }
+  if (value instanceof Date) {
+    return isNaN(value.getTime()) ? null : value;
+  }
+  if (typeof value === "object") {
+    if (value.$date) {
+      return mongoSettingToDate(value.$date);
+    }
+    if (typeof value.toDate === "function") {
+      try {
+        var converted = value.toDate();
+        if (converted instanceof Date && !isNaN(converted.getTime())) {
+          return converted;
+        }
+      } catch (e) {}
+    }
+    if (typeof value.getTime === "function") {
+      var millis = value.getTime();
+      if (typeof millis === "number" && !isNaN(millis)) {
+        return new Date(millis);
+      }
+    }
+    if (value.sec != null) {
+      return new Date(Number(value.sec) * 1000);
+    }
+  }
+  var parsed = new Date(value);
+  return isNaN(parsed.getTime()) ? null : parsed;
+}
+
+function pickupToUtcDate(raw) {
+  /* siteinfo busy_slot_* is UTC.
+     App with Z or +hh:mm → already absolute UTC (or offset) → use as-is.
+     App with no timezone ("31 October, 2026 03:03") → Kuwait → convert to UTC.
+     Do not use moment.tz(s, zone) without a format: Node falls back to Date()
+     and treats the string as UTC (log: 03:03 → 2026-10-31T03:03:00.000Z). */
+  pickupToUtcDate.lastFormat = null;
+  if (raw === undefined || raw === null || raw === "") {
+    return null;
+  }
+  var s = String(raw);
+  try {
+    s = decodeURIComponent(s);
+  } catch (e) {}
+  s = s.replace(/\+/g, " ").replace(/%20/g, " ").trim();
+  if (!s) {
+    return null;
+  }
+  if (/[zZ]|[+\-]\d{2}:?\d{2}$/.test(s)) {
+    var alreadyUtc = new Date(s);
+    pickupToUtcDate.lastFormat = "offset-or-z";
+    return isNaN(alreadyUtc.getTime()) ? null : alreadyUtc;
+  }
+  var formats = [
+    "D MMMM, YYYY HH:mm:ss",
+    "D MMMM, YYYY HH:mm",
+    "DD MMMM, YYYY HH:mm:ss",
+    "DD MMMM, YYYY HH:mm",
+    "MMMM D, YYYY HH:mm:ss",
+    "MMMM D, YYYY HH:mm",
+    "YYYY-MM-DD HH:mm:ss",
+    "YYYY-MM-DD HH:mm",
+    "YYYY-MM-DDTHH:mm:ss",
+    "YYYY-MM-DDTHH:mm",
+    "YYYY-MM-DD hh:mm:ss A",
+    "YYYY-MM-DD hh:mm A",
+    "YYYY-MM-DD h:mm:ss A",
+    "YYYY-MM-DD h:mm A"
+  ];
+  var i;
+  var parsed;
+  for (i = 0; i < formats.length; i++) {
+    parsed = moment.tz(s, formats[i], "Asia/Kuwait");
+    if (parsed.isValid() && parsed.format(formats[i]) === s) {
+      pickupToUtcDate.lastFormat = formats[i];
+      return parsed.toDate();
+    }
+  }
+  return null;
+}
+
+function busySlotRejectMessage(pickupRaw) {
+  var busyFrom = mongoSettingToDate(
+    global.settings && global.settings.busy_slot_from
+  );
+  var busyTo = mongoSettingToDate(
+    global.settings && global.settings.busy_slot_to
+  );
+  if (!busyFrom || !busyTo) {
+    console.error(
+      "BUSY_SLOT_CHECK " +
+        JSON.stringify({
+          rawPickup: pickupRaw,
+          skip: "no_busy_slot"
+        })
+    );
+    return null;
+  }
+  var pickupUtc = pickupToUtcDate(pickupRaw);
+  var pickupMs = pickupUtc ? pickupUtc.getTime() : null;
+  var busyFromMs = busyFrom.getTime();
+  var busyToMs = busyTo.getTime();
+  var gteFrom = pickupMs != null && pickupMs >= busyFromMs;
+  var lteTo = pickupMs != null && pickupMs <= busyToMs;
+  var inRange = !!(gteFrom && lteTo);
+  console.error(
+    "BUSY_SLOT_CHECK " +
+      JSON.stringify({
+        rawPickup: pickupRaw,
+        pickupType: typeof pickupRaw,
+        parsedFormat: pickupToUtcDate.lastFormat || null,
+        pickupUtc: pickupUtc ? pickupUtc.toISOString() : null,
+        pickupUtcMs: pickupMs,
+        busyFromRaw: busyFrom.toISOString(),
+        busyToRaw: busyTo.toISOString(),
+        busyFromUtc: busyFrom.toISOString(),
+        busyToUtc: busyTo.toISOString(),
+        busyFromMs: busyFromMs,
+        busyToMs: busyToMs,
+        gteFrom: gteFrom,
+        lteTo: lteTo,
+        inRange: inRange,
+        kuwaitFrom: moment(busyFrom).tz("Asia/Kuwait").format("D MMMM, YYYY h:mm A"),
+        kuwaitTo: moment(busyTo).tz("Asia/Kuwait").format("D MMMM, YYYY h:mm A")
+      })
+  );
+  if (!pickupUtc) {
+    return null;
+  }
+  if (inRange) {
+    var fromKwt = moment(busyFrom).tz("Asia/Kuwait");
+    var toKwt = moment(busyTo).tz("Asia/Kuwait");
+    var fromDate = fromKwt.format("D MMMM, YYYY");
+    var toDate = toKwt.format("D MMMM, YYYY");
+    var fromTime = fromKwt.format("h:mm A");
+    var toTime = toKwt.format("h:mm A");
+    var slotLabel =
+      fromDate === toDate
+        ? fromDate + " " + fromTime + " - " + toTime
+        : fromDate + " " + fromTime + " - " + toDate + " " + toTime;
+    var tryAfter = fromDate === toDate ? toTime : toDate + " " + toTime;
+    return (
+      "All cars are busy in this time slot (" +
+      slotLabel +
+      "). Please try after " +
+      tryAfter +
+      "."
+    );
+  }
+  return null;
+}
