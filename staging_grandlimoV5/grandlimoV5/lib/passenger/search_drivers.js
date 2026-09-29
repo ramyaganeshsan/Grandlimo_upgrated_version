@@ -1583,30 +1583,118 @@ function pickupToUtcDate(raw) {
   return null;
 }
 
+function getBusySlotWindows() {
+  var windows = [];
+  var i;
+  var from;
+  var to;
+  var row;
+  if (global.busy_slots && global.busy_slots.length) {
+    for (i = 0; i < global.busy_slots.length; i++) {
+      row = global.busy_slots[i];
+      from = mongoSettingToDate(row && row.busy_slot_from);
+      to = mongoSettingToDate(row && row.busy_slot_to);
+      if (from && to) {
+        windows.push({
+          source: "busy_slot_timing",
+          id: row._id,
+          from: from,
+          to: to
+        });
+      }
+    }
+  }
+  if (!windows.length) {
+    from = mongoSettingToDate(
+      global.settings && global.settings.busy_slot_from
+    );
+    to = mongoSettingToDate(global.settings && global.settings.busy_slot_to);
+    if (from && to) {
+      windows.push({
+        source: "siteinfo",
+        id: null,
+        from: from,
+        to: to
+      });
+    }
+  }
+  return windows;
+}
+
+function formatKuwaitBusySlotMessage(busyFrom, busyTo) {
+  var fromKwt = moment(busyFrom).tz("Asia/Kuwait");
+  var toKwt = moment(busyTo).tz("Asia/Kuwait");
+  var fromDate = fromKwt.format("D MMMM, YYYY");
+  var toDate = toKwt.format("D MMMM, YYYY");
+  var fromTime = fromKwt.format("h:mm A");
+  var toTime = toKwt.format("h:mm A");
+  var slotLabel =
+    fromDate === toDate
+      ? fromDate + " " + fromTime + " - " + toTime
+      : fromDate + " " + fromTime + " - " + toDate + " " + toTime;
+  var tryAfter = fromDate === toDate ? toTime : toDate + " " + toTime;
+  return (
+    "All cars are busy in this time slot (" +
+    slotLabel +
+    "). Please try after " +
+    tryAfter +
+    "."
+  );
+}
+
 function busySlotRejectMessage(pickupRaw) {
-  var busyFrom = mongoSettingToDate(
-    global.settings && global.settings.busy_slot_from
-  );
-  var busyTo = mongoSettingToDate(
-    global.settings && global.settings.busy_slot_to
-  );
-  if (!busyFrom || !busyTo) {
+  var windows = getBusySlotWindows();
+  if (!windows.length) {
     console.error(
       "BUSY_SLOT_CHECK " +
         JSON.stringify({
           rawPickup: pickupRaw,
-          skip: "no_busy_slot"
+          skip: "no_busy_slot",
+          slotCount: 0
         })
     );
     return null;
   }
   var pickupUtc = pickupToUtcDate(pickupRaw);
   var pickupMs = pickupUtc ? pickupUtc.getTime() : null;
-  var busyFromMs = busyFrom.getTime();
-  var busyToMs = busyTo.getTime();
-  var gteFrom = pickupMs != null && pickupMs >= busyFromMs;
-  var lteTo = pickupMs != null && pickupMs <= busyToMs;
-  var inRange = !!(gteFrom && lteTo);
+  var matched = null;
+  var slotLogs = [];
+  var i;
+  var win;
+  var busyFromMs;
+  var busyToMs;
+  var gteFrom;
+  var lteTo;
+  var inRange;
+  for (i = 0; i < windows.length; i++) {
+    win = windows[i];
+    busyFromMs = win.from.getTime();
+    busyToMs = win.to.getTime();
+    gteFrom = pickupMs != null && pickupMs >= busyFromMs;
+    lteTo = pickupMs != null && pickupMs <= busyToMs;
+    inRange = !!(gteFrom && lteTo);
+    slotLogs.push({
+      source: win.source,
+      slotId: win.id,
+      slotIndex: i,
+      busyFromUtc: win.from.toISOString(),
+      busyToUtc: win.to.toISOString(),
+      busyFromMs: busyFromMs,
+      busyToMs: busyToMs,
+      gteFrom: gteFrom,
+      lteTo: lteTo,
+      inRange: inRange,
+      kuwaitFrom: moment(win.from)
+        .tz("Asia/Kuwait")
+        .format("D MMMM, YYYY h:mm A"),
+      kuwaitTo: moment(win.to)
+        .tz("Asia/Kuwait")
+        .format("D MMMM, YYYY h:mm A")
+    });
+    if (inRange && (!matched || busyToMs > matched.to.getTime())) {
+      matched = win;
+    }
+  }
   console.error(
     "BUSY_SLOT_CHECK " +
       JSON.stringify({
@@ -1615,41 +1703,15 @@ function busySlotRejectMessage(pickupRaw) {
         parsedFormat: pickupToUtcDate.lastFormat || null,
         pickupUtc: pickupUtc ? pickupUtc.toISOString() : null,
         pickupUtcMs: pickupMs,
-        busyFromRaw: busyFrom.toISOString(),
-        busyToRaw: busyTo.toISOString(),
-        busyFromUtc: busyFrom.toISOString(),
-        busyToUtc: busyTo.toISOString(),
-        busyFromMs: busyFromMs,
-        busyToMs: busyToMs,
-        gteFrom: gteFrom,
-        lteTo: lteTo,
-        inRange: inRange,
-        kuwaitFrom: moment(busyFrom).tz("Asia/Kuwait").format("D MMMM, YYYY h:mm A"),
-        kuwaitTo: moment(busyTo).tz("Asia/Kuwait").format("D MMMM, YYYY h:mm A")
+        slotCount: windows.length,
+        inRange: !!matched,
+        matchedSource: matched ? matched.source : null,
+        matchedId: matched ? matched.id : null,
+        slots: slotLogs
       })
   );
-  if (!pickupUtc) {
+  if (!pickupUtc || !matched) {
     return null;
   }
-  if (inRange) {
-    var fromKwt = moment(busyFrom).tz("Asia/Kuwait");
-    var toKwt = moment(busyTo).tz("Asia/Kuwait");
-    var fromDate = fromKwt.format("D MMMM, YYYY");
-    var toDate = toKwt.format("D MMMM, YYYY");
-    var fromTime = fromKwt.format("h:mm A");
-    var toTime = toKwt.format("h:mm A");
-    var slotLabel =
-      fromDate === toDate
-        ? fromDate + " " + fromTime + " - " + toTime
-        : fromDate + " " + fromTime + " - " + toDate + " " + toTime;
-    var tryAfter = fromDate === toDate ? toTime : toDate + " " + toTime;
-    return (
-      "All cars are busy in this time slot (" +
-      slotLabel +
-      "). Please try after " +
-      tryAfter +
-      "."
-    );
-  }
-  return null;
+  return formatKuwaitBusySlotMessage(matched.from, matched.to);
 }
