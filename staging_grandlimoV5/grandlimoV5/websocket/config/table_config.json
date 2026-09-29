@@ -46,6 +46,5 @@
 "MDB_PASSENGER_TRACK_LOGS":"passenger_track_logs",
 "MDB_CORPORATE_GROUP_NEW":"corporate_group_new",
 "MDB_CORPORATE_PAYMENT_LOG" : "corporate_payment_log",
-"MDB_PROMOCODE_CORPORATE_GROUP": "promocode_corporate_group",
-"MDB_BUSY_SLOT_TIMING": "busy_slot_timing"
+"MDB_PROMOCODE_CORPORATE_GROUP": "promocode_corporate_group"
 }

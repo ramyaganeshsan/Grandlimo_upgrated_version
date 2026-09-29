@@ -5014,21 +5014,4 @@ public static function driver_id_isValid($id="")
         return (!empty($result) && empty($result['err'])) ? 1 : 0;
     }
 
-    public function add_busy_slot($post)
-    {
-        $rs = $this->mongo_db->find(MDB_BUSY_SLOT_TIMING, [], ['_id'])->sort(['_id' => -1])->limit(1);
-        $res = iterator_to_array($rs);
-        reset($res);
-        $first_key = key($res);
-        $inc_id = empty($res) ? 1 : ((int)$first_key + 1);
-        $data = [
-            '_id' => (int)$inc_id,
-            'busy_slot_from' => new \MongoDB\BSON\UTCDateTime(strtotime($post['busy_slot_from']) * 1000),
-            'busy_slot_to' => new \MongoDB\BSON\UTCDateTime(strtotime($post['busy_slot_to']) * 1000),
-            'created_date' => new \MongoDB\BSON\UTCDateTime(strtotime(date('Y-m-d H:i:s')) * 1000)
-        ];
-        $result = $this->mongo_db->insert(MDB_BUSY_SLOT_TIMING, $data);
-        return (!empty($result) && empty($result['err'])) ? 1 : 0;
-    }
-
 }

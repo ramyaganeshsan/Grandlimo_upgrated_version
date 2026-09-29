@@ -254,20 +254,6 @@ exports.SiteSettings = async function (q) {
   return deferred.promise;
 };
 
-exports.BusySlotTimings = async function (q) {
-  var deferred = q.defer();
-  var collectionName = t.MDB_BUSY_SLOT_TIMING || "busy_slot_timing";
-  try {
-    var collection = db.get().collection(collectionName);
-    const results = await collection.find({}).toArray();
-    deferred.resolve(results || []);
-  } catch (err) {
-    console.log(err);
-    deferred.resolve([]);
-  }
-  return deferred.promise;
-};
-
 exports.getCompanyKey = async function (q, key) {
   var deferred = q.defer();
 

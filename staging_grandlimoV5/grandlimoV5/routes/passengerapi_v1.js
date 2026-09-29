@@ -56,19 +56,7 @@ module.exports = function (app, io) {
             } else {
               global.settings = {};
             }
-            var loadSlots = apimodel.BusySlotTimings
-              ? apimodel.BusySlotTimings(q)
-              : q.when([]);
-            loadSlots.then(
-              function (slots) {
-                global.busy_slots = slots || [];
-                next();
-              },
-              function () {
-                global.busy_slots = [];
-                next();
-              }
-            );
+            next();
           });
         } else {
           var message = { message: "invalid_company", status: 8 };

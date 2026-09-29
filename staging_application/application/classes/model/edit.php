@@ -3810,20 +3810,4 @@ Class Model_Edit extends Model
         return (empty($result['err']))?1:$result['err'];
     }
 
-    public function get_busy_slot($id)
-    {
-        $result = $this->mongo_db->find_one(MDB_BUSY_SLOT_TIMING, ['_id' => (int)$id]);
-        return (!empty($result)) ? [$result] : [];
-    }
-
-    public function update_busy_slot($id, $post)
-    {
-        $data = [
-            'busy_slot_from' => new \MongoDB\BSON\UTCDateTime(strtotime($post['busy_slot_from']) * 1000),
-            'busy_slot_to' => new \MongoDB\BSON\UTCDateTime(strtotime($post['busy_slot_to']) * 1000)
-        ];
-        $result = $this->mongo_db->update(MDB_BUSY_SLOT_TIMING, ['_id' => (int)$id], ['$set' => $data], ['upsert' => false]);
-        return (empty($result['err'])) ? 1 : 0;
-    }
-
 }

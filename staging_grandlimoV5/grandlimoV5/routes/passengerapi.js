@@ -58,16 +58,7 @@ module.exports = function (app) {
 						{
 							global.settings = {};
 						}
-						var loadSlots = apimodel.BusySlotTimings
-							? apimodel.BusySlotTimings(q)
-							: q.when([]);
-						loadSlots.then(function(slots){
-							global.busy_slots = slots || [];
-							next();
-						}, function(){
-							global.busy_slots = [];
-							next();
-						});
+						next();
 					})
 					
 				}

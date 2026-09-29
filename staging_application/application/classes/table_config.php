@@ -140,5 +140,4 @@ define("MDB_CORPORATE_GROUP_PROMOCODE","corporate_promocode");
 define("MDB_PROMOCODE_CORPORATE_GROUP", "promocode_corporate_group");
 define("MDB_CORPORATE_PAYMENT_LOG", "corporate_payment_log");
 define("MDB_TRIP_FARE_EDIT_LOG", "trip_fare_edit_log");
-define("MDB_BUSY_SLOT_TIMING", "busy_slot_timing");
 ?>
