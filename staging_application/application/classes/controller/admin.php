@@ -628,8 +628,6 @@ class Controller_Admin extends Controller_Siteadmin
 
                 /* Sasidharan june 20 2022 */
                 'register_promocode',
-                'busy_slot_from',
-                'busy_slot_to',
 
                 //'cancellation_fare',
                // 'tax',
@@ -724,14 +722,7 @@ class Controller_Admin extends Controller_Siteadmin
 			//~ exit;
 			//////////// Milestone ////////////
 
-            $busy_slot_error = [];
-            if (!empty($post_values['busy_slot_from']) && !empty($post_values['busy_slot_to'])) {
-                if (strtotime($post_values['busy_slot_from']) >= strtotime($post_values['busy_slot_to'])) {
-                    $busy_slot_error['busy_slot_to'] = 'To time must be after From time';
-                }
-            }
-			
-            if ($validator->check() && empty($milestones_error) && empty($busy_slot_error)) {
+            if ($validator->check() && empty($milestones_error)) {
                 //to get previous referral amount to check whether new referral amount
                 //$referralAmount = $site_settings[0]['referral_amount'];
                  if (!empty($_FILES['sitead_image']['name'])) {
@@ -834,7 +825,7 @@ class Controller_Admin extends Controller_Siteadmin
                 $this->request->redirect("admin/manage_site");
             } else {
                 $errors = $validator->errors('errors');                
-                $errors = array_merge($errors, $milestones_error, $busy_slot_error);                
+                $errors = array_merge($errors, $milestones_error);                
             }
         }
         $currencysymbol             = $this->currencysymbol;

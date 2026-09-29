@@ -14987,5 +14987,22 @@ public function gift_card_logs($keyword = "", $status = "",$recharge_type="",$st
 		$result = $this->mongo_db->find("promotional_push_notifications")->sort(['_id'=>1])->skip($offset)->limit($val);	
 		return (!empty($result))?iterator_to_array($result):[];
 	}
-	
+
+	public function count_busy_slot_list()
+	{
+		return $this->mongo_db->count(MDB_BUSY_SLOT_TIMING, []);
+	}
+
+	public function all_busy_slot_list($offset, $val)
+	{
+		$result = $this->mongo_db->find(MDB_BUSY_SLOT_TIMING)->sort(['busy_slot_from' => -1])->skip((int)$offset)->limit((int)$val);
+		return (!empty($result)) ? iterator_to_array($result, false) : [];
+	}
+
+	public function delete_busy_slot($id)
+	{
+		$result = $this->mongo_db->remove(MDB_BUSY_SLOT_TIMING, ['_id' => (int)$id]);
+		return (empty($result['err'])) ? 1 : 0;
+	}
+
 }

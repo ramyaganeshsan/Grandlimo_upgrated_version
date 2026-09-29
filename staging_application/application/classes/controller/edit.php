@@ -2610,4 +2610,46 @@ class Controller_Edit extends Controller_Siteadmin
         $this->template->content    = $view;
     }
 
+    public function action_busy_slot()
+    {
+        $usertype = $this->usertype;
+        if ($usertype != 'A' && $usertype != 'S') {
+            $this->request->redirect("admin/login");
+        }
+        $id           = $this->request->param('id');
+        $slot_details = $this->edit_model->get_busy_slot($id);
+        if (count($slot_details) == 0) {
+            $this->request->redirect("manage/busy_slot");
+        }
+        $signup_submit = arr::get($_REQUEST, 'submit_edit_busy_slot');
+        $errors        = [];
+        $post_values   = [];
+        if ($signup_submit && Validation::factory($_POST)) {
+            $post_values = $_POST;
+            $post        = Arr::map('trim', $this->request->post());
+            $busy_slot_error = [];
+            if (empty($post['busy_slot_from']) || empty($post['busy_slot_to'])) {
+                $busy_slot_error['busy_slot_to'] = 'Select date, From and To times';
+            } else if (strtotime($post['busy_slot_from']) >= strtotime($post['busy_slot_to'])) {
+                $busy_slot_error['busy_slot_to'] = 'To time must be after From time';
+            }
+            if (empty($busy_slot_error)) {
+                $status = $this->edit_model->update_busy_slot($id, $post);
+                if ($status == 1) {
+                    Message::success(__('sucessfull_updated_busy_slot'));
+                } else {
+                    Message::error(__('not_updated'));
+                }
+                $this->request->redirect("manage/busy_slot");
+            } else {
+                $errors = $busy_slot_error;
+            }
+        }
+        $view                       = View::factory('admin/edit_busy_slot')->bind('errors', $errors)->bind('postvalue', $post_values)->bind('slot_details', $slot_details);
+        $this->template->content    = $view;
+        $this->template->title      = SITENAME . " | " . __('edit_busy_slot');
+        $this->template->page_title = __('edit_busy_slot');
+        $this->template->content    = $view;
+    }
+
 } // End Edit
