@@ -12,6 +12,8 @@ Client: hourly blocks work; they need exact start/end (1 hour 20 mins, 1 hour 50
 
 If Add and Edit do **not** include `busy_slot_fields.php` (form is inline), paste the From/To hour+min selects + JS from `BUSY_SLOT_FIELDS_MINUTES.php` into that view instead.
 
+Hour and Minutes sit on one row (nested table + CSS). Replace `busy_slot_fields.php` again if you already pasted the first minutes version.
+
 ## After paste
 
 - Add: date + From hour/min + To hour/min. Example: 1:00 AM → 2:20 AM

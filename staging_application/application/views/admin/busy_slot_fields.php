@@ -26,65 +26,139 @@ $busy_hour_labels = [
     18 => '6 PM', 19 => '7 PM', 20 => '8 PM', 21 => '9 PM', 22 => '10 PM', 23 => '11 PM'
 ];
 ?>
+<style type="text/css">
+.busy-slot-date-wrap input[type="text"]#busy_slot_date {
+    width: 220px !important;
+    height: 32px !important;
+    display: inline-block !important;
+    vertical-align: middle;
+    box-sizing: border-box;
+    padding: 4px 8px;
+}
+.busy-slot-date-wrap #busy_slot_clear {
+    margin-left: 10px;
+    vertical-align: middle;
+}
+.busy-slot-times {
+    border-collapse: collapse;
+    border: 0;
+}
+.busy-slot-times td {
+    border: none !important;
+    background: transparent !important;
+    padding: 0 16px 0 0 !important;
+    vertical-align: top;
+}
+.busy-slot-times .busy-slot-colon {
+    padding: 24px 12px 0 0 !important;
+    font-size: 18px;
+    font-weight: bold;
+    color: #555;
+    line-height: 32px;
+}
+.busy-slot-sublabel {
+    display: block;
+    margin: 0 0 6px 0;
+    color: #666;
+    font-size: 12px;
+    font-weight: normal;
+}
+.busy-slot-times select,
+.busy-slot-times .new_input_field select {
+    display: inline-block !important;
+    float: none !important;
+    width: 170px !important;
+    max-width: 170px !important;
+    height: 32px !important;
+    padding: 4px 8px !important;
+    box-sizing: border-box;
+    margin: 0 !important;
+}
+.busy-slot-hint {
+    margin-top: 10px;
+    color: #777;
+    font-size: 12px;
+    line-height: 1.45;
+    max-width: 380px;
+}
+</style>
 <tr>
-    <td valign="top" width="20%"><label>Select date</label><span class="star">*</span></td>
+    <td valign="middle" width="20%"><label>Select date</label><span class="star">*</span></td>
     <td>
-        <div class="new_input_field" style="width:520px;">
+        <div class="busy-slot-date-wrap">
             <input type="hidden" id="busy_slot_from" name="busy_slot_from" value="<?php echo htmlspecialchars($busy_slot_from_val, ENT_QUOTES); ?>" />
             <input type="hidden" id="busy_slot_to" name="busy_slot_to" value="<?php echo htmlspecialchars($busy_slot_to_val, ENT_QUOTES); ?>" />
-            <input type="text" maxlength="30" title="Car Busy Slot date" id="busy_slot_date" value="<?php echo htmlspecialchars($busy_slot_date, ENT_QUOTES); ?>" placeholder="YYYY-MM-DD" readonly="readonly" style="width:220px;" />
-            <input type="button" id="busy_slot_clear" value="Clear" class="button" title="Clear date and time" style="margin-left:8px;padding:4px 12px;cursor:pointer;" />
+            <input type="text" maxlength="30" title="Select date" id="busy_slot_date" value="<?php echo htmlspecialchars($busy_slot_date, ENT_QUOTES); ?>" placeholder="YYYY-MM-DD" readonly="readonly" />
+            <input type="button" id="busy_slot_clear" value="Clear" class="button" title="Clear date and time" />
         </div>
     </td>
 </tr>
 <tr>
     <td valign="top" width="20%"><label>From</label><span class="star">*</span></td>
     <td>
-        <div class="new_input_field">
-            <select id="busy_slot_from_hour" title="Busy slot from hour" style="width:140px;">
-                <option value="">Hour</option>
-                <?php foreach ($busy_hour_labels as $hour_val => $hour_label) { ?>
-                <option value="<?php echo $hour_val; ?>" <?php if ((string)$busy_slot_from_hour !== '' && (string)$busy_slot_from_hour === (string)$hour_val) { echo 'selected="selected"'; } ?>><?php echo $hour_label; ?></option>
-                <?php } ?>
-            </select>
-            <select id="busy_slot_from_min" title="Busy slot from minutes" style="width:80px;margin-left:8px;">
-                <option value="">Min</option>
-                <?php for ($m = 0; $m < 60; $m++) {
-                    $min_val = str_pad((string)$m, 2, '0', STR_PAD_LEFT);
-                ?>
-                <option value="<?php echo $min_val; ?>" <?php if ($busy_slot_from_min !== '' && $busy_slot_from_min === $min_val) { echo 'selected="selected"'; } ?>><?php echo $min_val; ?></option>
-                <?php } ?>
-            </select>
-        </div>
+        <table class="busy-slot-times" cellpadding="0" cellspacing="0" border="0">
+            <tr>
+                <td>
+                    <span class="busy-slot-sublabel">Hour</span>
+                    <select id="busy_slot_from_hour" title="Hour">
+                        <option value="">Select</option>
+                        <?php foreach ($busy_hour_labels as $hour_val => $hour_label) { ?>
+                        <option value="<?php echo $hour_val; ?>" <?php if ((string)$busy_slot_from_hour !== '' && (string)$busy_slot_from_hour === (string)$hour_val) { echo 'selected="selected"'; } ?>><?php echo $hour_label; ?></option>
+                        <?php } ?>
+                    </select>
+                </td>
+                <td class="busy-slot-colon">:</td>
+                <td>
+                    <span class="busy-slot-sublabel">Minutes</span>
+                    <select id="busy_slot_from_min" title="Minutes">
+                        <option value="">Select</option>
+                        <?php for ($m = 0; $m < 60; $m++) {
+                            $min_val = str_pad((string)$m, 2, '0', STR_PAD_LEFT);
+                        ?>
+                        <option value="<?php echo $min_val; ?>" <?php if ($busy_slot_from_min !== '' && $busy_slot_from_min === $min_val) { echo 'selected="selected"'; } ?>><?php echo $min_val; ?></option>
+                        <?php } ?>
+                    </select>
+                </td>
+            </tr>
+        </table>
     </td>
 </tr>
 <tr>
     <td valign="top" width="20%"><label>To</label><span class="star">*</span></td>
     <td>
-        <div class="new_input_field">
-            <select id="busy_slot_to_hour" title="Busy slot to hour" style="width:140px;">
-                <option value="">Hour</option>
-                <?php foreach ($busy_hour_labels as $hour_val => $hour_label) { ?>
-                <option value="<?php echo $hour_val; ?>" <?php if ((string)$busy_slot_to_hour !== '' && (string)$busy_slot_to_hour === (string)$hour_val) { echo 'selected="selected"'; } ?>><?php echo $hour_label; ?></option>
-                <?php } ?>
-            </select>
-            <select id="busy_slot_to_min" title="Busy slot to minutes" style="width:80px;margin-left:8px;">
-                <option value="">Min</option>
-                <?php for ($m = 0; $m < 60; $m++) {
-                    $min_val = str_pad((string)$m, 2, '0', STR_PAD_LEFT);
-                ?>
-                <option value="<?php echo $min_val; ?>" <?php if ($busy_slot_to_min !== '' && $busy_slot_to_min === $min_val) { echo 'selected="selected"'; } ?>><?php echo $min_val; ?></option>
-                <?php } ?>
-            </select>
-            <div style="margin-top:6px;color:#666;font-size:12px;">Pick exact start and end times. Example: 1:00 AM to 2:20 AM, or 3:00 PM to 4:50 PM. To must be after From.</div>
-            <span id="busy_slot_error" class="error" style="<?php echo (isset($errors['busy_slot_to']) || isset($errors['busy_slot_from'])) ? '' : 'display:none;'; ?>"><?php
-                if (isset($errors['busy_slot_to'])) {
-                    echo htmlspecialchars($errors['busy_slot_to']);
-                } else if (isset($errors['busy_slot_from'])) {
-                    echo htmlspecialchars($errors['busy_slot_from']);
-                }
-            ?></span>
-        </div>
+        <table class="busy-slot-times" cellpadding="0" cellspacing="0" border="0">
+            <tr>
+                <td>
+                    <span class="busy-slot-sublabel">Hour</span>
+                    <select id="busy_slot_to_hour" title="Hour">
+                        <option value="">Select</option>
+                        <?php foreach ($busy_hour_labels as $hour_val => $hour_label) { ?>
+                        <option value="<?php echo $hour_val; ?>" <?php if ((string)$busy_slot_to_hour !== '' && (string)$busy_slot_to_hour === (string)$hour_val) { echo 'selected="selected"'; } ?>><?php echo $hour_label; ?></option>
+                        <?php } ?>
+                    </select>
+                </td>
+                <td class="busy-slot-colon">:</td>
+                <td>
+                    <span class="busy-slot-sublabel">Minutes</span>
+                    <select id="busy_slot_to_min" title="Minutes">
+                        <option value="">Select</option>
+                        <?php for ($m = 0; $m < 60; $m++) {
+                            $min_val = str_pad((string)$m, 2, '0', STR_PAD_LEFT);
+                        ?>
+                        <option value="<?php echo $min_val; ?>" <?php if ($busy_slot_to_min !== '' && $busy_slot_to_min === $min_val) { echo 'selected="selected"'; } ?>><?php echo $min_val; ?></option>
+                        <?php } ?>
+                    </select>
+                </td>
+            </tr>
+        </table>
+        <div class="busy-slot-hint">To time must be after From time. Example: 1:00 AM to 2:20 AM.</div>
+        <span id="busy_slot_error" class="error" style="<?php echo (isset($errors['busy_slot_to']) || isset($errors['busy_slot_from'])) ? '' : 'display:none;'; ?>"><?php
+            if (isset($errors['busy_slot_to'])) {
+                echo htmlspecialchars($errors['busy_slot_to']);
+            } else if (isset($errors['busy_slot_from'])) {
+                echo htmlspecialchars($errors['busy_slot_from']);
+            }
+        ?></span>
     </td>
 </tr>
 <tr>
