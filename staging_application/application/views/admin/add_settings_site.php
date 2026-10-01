@@ -718,6 +718,8 @@ $surgePriceOnWeekDays = isset($site_settings[0]['surge_on_week_days']) ? $site_s
                     $busy_slot_date = '';
                     $busy_slot_from_hour = '';
                     $busy_slot_to_hour = '';
+                    $busy_slot_from_min = '';
+                    $busy_slot_to_min = '';
                     $busy_slot_from_val = '';
                     $busy_slot_to_val = '';
 
@@ -725,10 +727,12 @@ $surgePriceOnWeekDays = isset($site_settings[0]['surge_on_week_days']) ? $site_s
                         $busy_slot_from_val = $postvalue['busy_slot_from'];
                         $busy_slot_date = substr($postvalue['busy_slot_from'], 0, 10);
                         $busy_slot_from_hour = (string)((int)substr($postvalue['busy_slot_from'], 11, 2));
+                        $busy_slot_from_min = str_pad((string)((int)substr($postvalue['busy_slot_from'], 14, 2)), 2, '0', STR_PAD_LEFT);
                     }
                     if (isset($postvalue['busy_slot_to']) && $postvalue['busy_slot_to'] != '') {
                         $busy_slot_to_val = $postvalue['busy_slot_to'];
                         $busy_slot_to_hour = (string)((int)substr($postvalue['busy_slot_to'], 11, 2));
+                        $busy_slot_to_min = str_pad((string)((int)substr($postvalue['busy_slot_to'], 14, 2)), 2, '0', STR_PAD_LEFT);
                         if ($busy_slot_date == '') {
                             $busy_slot_date = substr($postvalue['busy_slot_to'], 0, 10);
                         }
@@ -737,15 +741,25 @@ $surgePriceOnWeekDays = isset($site_settings[0]['surge_on_week_days']) ? $site_s
                     if ($busy_slot_from_val == '' && isset($site_settings[0]['busy_slot_from']) && !empty($site_settings[0]['busy_slot_from'])) {
                         $busy_slot_date = trim(commonfunction::convertphpdate('Y-m-d', $site_settings[0]['busy_slot_from']));
                         $busy_slot_from_hour = (string)((int)commonfunction::convertphpdate('G', $site_settings[0]['busy_slot_from']));
+                        $busy_slot_from_min = trim(commonfunction::convertphpdate('i', $site_settings[0]['busy_slot_from']));
                         $busy_slot_from_val = trim(commonfunction::convertphpdate('Y-m-d H:i:s', $site_settings[0]['busy_slot_from']));
                     }
                     if ($busy_slot_to_val == '' && isset($site_settings[0]['busy_slot_to']) && !empty($site_settings[0]['busy_slot_to'])) {
                         $busy_slot_to_hour = (string)((int)commonfunction::convertphpdate('G', $site_settings[0]['busy_slot_to']));
+                        $busy_slot_to_min = trim(commonfunction::convertphpdate('i', $site_settings[0]['busy_slot_to']));
                         $busy_slot_to_val = trim(commonfunction::convertphpdate('Y-m-d H:i:s', $site_settings[0]['busy_slot_to']));
                         if ($busy_slot_date == '') {
                             $busy_slot_date = trim(commonfunction::convertphpdate('Y-m-d', $site_settings[0]['busy_slot_to']));
                         }
                     }
+                    if ($busy_slot_from_hour !== '' && $busy_slot_from_min === '') {
+                        $busy_slot_from_min = '00';
+                    }
+                    if ($busy_slot_to_hour !== '' && $busy_slot_to_min === '') {
+                        $busy_slot_to_min = '00';
+                    }
+                    $busy_slot_from_min = ($busy_slot_from_min === '') ? '' : str_pad((string)((int)$busy_slot_from_min), 2, '0', STR_PAD_LEFT);
+                    $busy_slot_to_min = ($busy_slot_to_min === '') ? '' : str_pad((string)((int)$busy_slot_to_min), 2, '0', STR_PAD_LEFT);
 
                     $busy_hour_labels = [
                         0 => '12 AM', 1 => '1 AM', 2 => '2 AM', 3 => '3 AM', 4 => '4 AM', 5 => '5 AM',
@@ -768,23 +782,39 @@ $surgePriceOnWeekDays = isset($site_settings[0]['surge_on_week_days']) ? $site_s
                                 <div id="car_busy_slots_times" style="<?php echo ($busy_slot_date != '') ? '' : 'display:none;'; ?>">
                                     <div style="margin-bottom:8px;">
                                         <label style="display:block;margin-bottom:4px;">From</label>
-                                        <select id="busy_slot_from_hour" title="Busy slot from" style="width:220px;">
-                                            <option value="">-- Select from --</option>
+                                        <select id="busy_slot_from_hour" title="Busy slot from hour" style="width:140px;">
+                                            <option value="">Hour</option>
                                             <?php foreach ($busy_hour_labels as $hour_val => $hour_label) { ?>
                                             <option value="<?php echo $hour_val; ?>" <?php if ((string)$busy_slot_from_hour !== '' && (string)$busy_slot_from_hour === (string)$hour_val) { echo 'selected="selected"'; } ?>><?php echo $hour_label; ?></option>
+                                            <?php } ?>
+                                        </select>
+                                        <select id="busy_slot_from_min" title="Busy slot from minutes" style="width:80px;margin-left:8px;">
+                                            <option value="">Min</option>
+                                            <?php for ($m = 0; $m < 60; $m++) {
+                                                $min_val = str_pad((string)$m, 2, '0', STR_PAD_LEFT);
+                                            ?>
+                                            <option value="<?php echo $min_val; ?>" <?php if ($busy_slot_from_min !== '' && $busy_slot_from_min === $min_val) { echo 'selected="selected"'; } ?>><?php echo $min_val; ?></option>
                                             <?php } ?>
                                         </select>
                                     </div>
                                     <div>
                                         <label style="display:block;margin-bottom:4px;">To</label>
-                                        <select id="busy_slot_to_hour" title="Busy slot to" style="width:220px;">
-                                            <option value="">-- Select to --</option>
+                                        <select id="busy_slot_to_hour" title="Busy slot to hour" style="width:140px;">
+                                            <option value="">Hour</option>
                                             <?php foreach ($busy_hour_labels as $hour_val => $hour_label) { ?>
                                             <option value="<?php echo $hour_val; ?>" <?php if ((string)$busy_slot_to_hour !== '' && (string)$busy_slot_to_hour === (string)$hour_val) { echo 'selected="selected"'; } ?>><?php echo $hour_label; ?></option>
                                             <?php } ?>
                                         </select>
+                                        <select id="busy_slot_to_min" title="Busy slot to minutes" style="width:80px;margin-left:8px;">
+                                            <option value="">Min</option>
+                                            <?php for ($m = 0; $m < 60; $m++) {
+                                                $min_val = str_pad((string)$m, 2, '0', STR_PAD_LEFT);
+                                            ?>
+                                            <option value="<?php echo $min_val; ?>" <?php if ($busy_slot_to_min !== '' && $busy_slot_to_min === $min_val) { echo 'selected="selected"'; } ?>><?php echo $min_val; ?></option>
+                                            <?php } ?>
+                                        </select>
                                     </div>
-                                    <div style="margin-top:6px;color:#666;font-size:12px;">To time must be after From time. Example: 5 AM to 11 PM.</div>
+                                    <div style="margin-top:6px;color:#666;font-size:12px;">Pick exact start and end times. Example: 1:00 AM to 2:20 AM, or 3:00 PM to 4:50 PM. To must be after From.</div>
                                     <span id="busy_slot_error" class="error" style="<?php echo (isset($errors['busy_slot_to'])) ? '' : 'display:none;'; ?>"><?php echo isset($errors['busy_slot_to']) ? htmlspecialchars($errors['busy_slot_to']) : ''; ?></span>
                                 </div>
                             </div>
@@ -1018,19 +1048,32 @@ $(document).ready(function() {
 
 	/* Car Busy Slot's — hidden values are naive Kuwait datetimes.
 	   PHP Asia/Kuwait strtotime() converts them to UTC for Mongo. */
+	function padBusySlot2(n) {
+		n = parseInt(n, 10);
+		return (n < 10) ? ('0' + n) : String(n);
+	}
+	function busySlotParts() {
+		return {
+			fromH: $('#busy_slot_from_hour').val(),
+			fromM: $('#busy_slot_from_min').val(),
+			toH: $('#busy_slot_to_hour').val(),
+			toM: $('#busy_slot_to_min').val()
+		};
+	}
+	function busySlotTotalMin(hour, min) {
+		if (hour === '' || min === '') { return null; }
+		return (parseInt(hour, 10) * 60) + parseInt(min, 10);
+	}
 	function syncBusySlotDatetimes() {
 		var d = $.trim($('#busy_slot_date').val());
-		var fromH = $('#busy_slot_from_hour').val();
-		var toH = $('#busy_slot_to_hour').val();
-		if (d !== '' && fromH !== '') {
-			var fh = (parseInt(fromH, 10) < 10) ? ('0' + parseInt(fromH, 10)) : String(parseInt(fromH, 10));
-			$('#busy_slot_from').val(d + ' ' + fh + ':00:00');
+		var t = busySlotParts();
+		if (d !== '' && t.fromH !== '' && t.fromM !== '') {
+			$('#busy_slot_from').val(d + ' ' + padBusySlot2(t.fromH) + ':' + padBusySlot2(t.fromM) + ':00');
 		} else {
 			$('#busy_slot_from').val('');
 		}
-		if (d !== '' && toH !== '') {
-			var th = (parseInt(toH, 10) < 10) ? ('0' + parseInt(toH, 10)) : String(parseInt(toH, 10));
-			$('#busy_slot_to').val(d + ' ' + th + ':00:00');
+		if (d !== '' && t.toH !== '' && t.toM !== '') {
+			$('#busy_slot_to').val(d + ' ' + padBusySlot2(t.toH) + ':' + padBusySlot2(t.toM) + ':00');
 		} else {
 			$('#busy_slot_to').val('');
 		}
@@ -1044,26 +1087,36 @@ $(document).ready(function() {
 			$err.text('').hide();
 		}
 	}
-	function filterBusySlotToHours() {
-		var fromH = $('#busy_slot_from_hour').val();
-		var toH = $('#busy_slot_to_hour').val();
+	function filterBusySlotToTimes() {
+		var t = busySlotParts();
+		var fromTotal = busySlotTotalMin(t.fromH, t.fromM);
+		var toTotal = busySlotTotalMin(t.toH, t.toM);
 		$('#busy_slot_to_hour option').each(function () {
 			var v = $(this).val();
-			if (v === '' || fromH === '') {
+			if (v === '' || t.fromH === '') {
 				$(this).removeAttr('disabled');
 				return;
 			}
-			if (parseInt(v, 10) <= parseInt(fromH, 10)) {
+			if (parseInt(v, 10) < parseInt(t.fromH, 10)) {
 				$(this).attr('disabled', 'disabled');
 			} else {
 				$(this).removeAttr('disabled');
 			}
 		});
-		if (fromH !== '' && toH !== '' && parseInt(toH, 10) <= parseInt(fromH, 10)) {
-			$('#busy_slot_to_hour').val('');
+		$('#busy_slot_to_min option').each(function () {
+			var v = $(this).val();
+			if (v === '' || t.fromH === '' || t.fromM === '' || t.toH === '' || parseInt(t.toH, 10) !== parseInt(t.fromH, 10)) {
+				$(this).removeAttr('disabled');
+				return;
+			}
+			if (parseInt(v, 10) <= parseInt(t.fromM, 10)) {
+				$(this).attr('disabled', 'disabled');
+			} else {
+				$(this).removeAttr('disabled');
+			}
+		});
+		if (fromTotal !== null && toTotal !== null && toTotal <= fromTotal) {
 			showBusySlotError('To time must be after From time');
-		} else if (fromH === '23') {
-			showBusySlotError('From cannot be 11 PM. Choose an earlier From time.');
 		} else {
 			showBusySlotError('');
 		}
@@ -1073,7 +1126,7 @@ $(document).ready(function() {
 		dateFormat: 'yy-mm-dd',
 		onSelect: function () {
 			$('#car_busy_slots_times').show();
-			filterBusySlotToHours();
+			filterBusySlotToTimes();
 			syncBusySlotDatetimes();
 		}
 	});
@@ -1081,7 +1134,9 @@ $(document).ready(function() {
 		$('#busy_slot_date').val('');
 		try { $('#busy_slot_date').datepicker('setDate', null); } catch (e) {}
 		$('#busy_slot_from_hour').val('');
+		$('#busy_slot_from_min').val('');
 		$('#busy_slot_to_hour').val('');
+		$('#busy_slot_to_min').val('');
 		$('#busy_slot_from').val('');
 		$('#busy_slot_to').val('');
 		$('#car_busy_slots_times').hide();
@@ -1095,38 +1150,35 @@ $(document).ready(function() {
 	if ($.trim($('#busy_slot_date').val()) !== '') {
 		$('#car_busy_slots_times').show();
 	}
-	$('#busy_slot_from_hour').change(function () {
-		filterBusySlotToHours();
-		syncBusySlotDatetimes();
-	});
-	$('#busy_slot_date, #busy_slot_to_hour').change(function () {
+	$('#busy_slot_from_hour, #busy_slot_from_min, #busy_slot_to_hour, #busy_slot_to_min, #busy_slot_date').change(function () {
 		if ($.trim($('#busy_slot_date').val()) !== '') {
 			$('#car_busy_slots_times').show();
 		} else {
 			$('#car_busy_slots_times').hide();
 		}
-		filterBusySlotToHours();
+		filterBusySlotToTimes();
 		syncBusySlotDatetimes();
 	});
 	$('#settings').submit(function () {
-		filterBusySlotToHours();
+		filterBusySlotToTimes();
 		syncBusySlotDatetimes();
 		var d = $.trim($('#busy_slot_date').val());
-		var fromH = $('#busy_slot_from_hour').val();
-		var toH = $('#busy_slot_to_hour').val();
-		if (d !== '' && (fromH === '' || toH === '')) {
-			showBusySlotError('Select both From and To times');
-			alert('Select both From and To times');
+		var t = busySlotParts();
+		var fromTotal = busySlotTotalMin(t.fromH, t.fromM);
+		var toTotal = busySlotTotalMin(t.toH, t.toM);
+		if (d !== '' && (t.fromH === '' || t.fromM === '' || t.toH === '' || t.toM === '')) {
+			showBusySlotError('Select exact From and To times (hour and minutes)');
+			alert('Select exact From and To times (hour and minutes)');
 			return false;
 		}
-		if (fromH !== '' && toH !== '' && parseInt(toH, 10) <= parseInt(fromH, 10)) {
+		if (fromTotal !== null && toTotal !== null && toTotal <= fromTotal) {
 			showBusySlotError('To time must be after From time');
 			alert('To time must be after From time');
 			return false;
 		}
 		return true;
 	});
-	filterBusySlotToHours();
+	filterBusySlotToTimes();
 	syncBusySlotDatetimes();
 
 	toggle(3);
