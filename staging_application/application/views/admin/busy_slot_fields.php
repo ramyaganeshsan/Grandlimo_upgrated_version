@@ -98,6 +98,7 @@ $busy_hour_labels = [
 $(document).ready(function() {
 	function pad2(n) {
 		n = parseInt(n, 10);
+		if (isNaN(n) || n < 0) { return ''; }
 		return (n < 10) ? ('0' + n) : String(n);
 	}
 	function busySlotParts() {
@@ -115,13 +116,17 @@ $(document).ready(function() {
 	function syncBusySlotDatetimes() {
 		var d = $.trim($('#busy_slot_date').val());
 		var t = busySlotParts();
-		if (d !== '' && t.fromH !== '' && t.fromM !== '') {
-			$('#busy_slot_from').val(d + ' ' + pad2(t.fromH) + ':' + pad2(t.fromM) + ':00');
+		var fromH = pad2(t.fromH);
+		var fromM = pad2(t.fromM);
+		var toH = pad2(t.toH);
+		var toM = pad2(t.toM);
+		if (d !== '' && fromH !== '' && fromM !== '') {
+			$('#busy_slot_from').val(d + ' ' + fromH + ':' + fromM + ':00');
 		} else {
 			$('#busy_slot_from').val('');
 		}
-		if (d !== '' && t.toH !== '' && t.toM !== '') {
-			$('#busy_slot_to').val(d + ' ' + pad2(t.toH) + ':' + pad2(t.toM) + ':00');
+		if (d !== '' && toH !== '' && toM !== '') {
+			$('#busy_slot_to').val(d + ' ' + toH + ':' + toM + ':00');
 		} else {
 			$('#busy_slot_to').val('');
 		}
@@ -163,6 +168,16 @@ $(document).ready(function() {
 				$(this).removeAttr('disabled');
 			}
 		});
+		if ($('#busy_slot_to_hour option:selected').is(':disabled')) {
+			$('#busy_slot_to_hour').val('');
+			t.toH = '';
+			toTotal = null;
+		}
+		if ($('#busy_slot_to_min option:selected').is(':disabled')) {
+			$('#busy_slot_to_min').val('');
+			t.toM = '';
+			toTotal = null;
+		}
 		if (fromTotal !== null && toTotal !== null && toTotal <= fromTotal) {
 			showBusySlotError('To time must be after From time');
 		} else {

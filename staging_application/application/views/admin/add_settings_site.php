@@ -1050,6 +1050,7 @@ $(document).ready(function() {
 	   PHP Asia/Kuwait strtotime() converts them to UTC for Mongo. */
 	function padBusySlot2(n) {
 		n = parseInt(n, 10);
+		if (isNaN(n) || n < 0) { return ''; }
 		return (n < 10) ? ('0' + n) : String(n);
 	}
 	function busySlotParts() {
@@ -1067,13 +1068,17 @@ $(document).ready(function() {
 	function syncBusySlotDatetimes() {
 		var d = $.trim($('#busy_slot_date').val());
 		var t = busySlotParts();
-		if (d !== '' && t.fromH !== '' && t.fromM !== '') {
-			$('#busy_slot_from').val(d + ' ' + padBusySlot2(t.fromH) + ':' + padBusySlot2(t.fromM) + ':00');
+		var fromH = padBusySlot2(t.fromH);
+		var fromM = padBusySlot2(t.fromM);
+		var toH = padBusySlot2(t.toH);
+		var toM = padBusySlot2(t.toM);
+		if (d !== '' && fromH !== '' && fromM !== '') {
+			$('#busy_slot_from').val(d + ' ' + fromH + ':' + fromM + ':00');
 		} else {
 			$('#busy_slot_from').val('');
 		}
-		if (d !== '' && t.toH !== '' && t.toM !== '') {
-			$('#busy_slot_to').val(d + ' ' + padBusySlot2(t.toH) + ':' + padBusySlot2(t.toM) + ':00');
+		if (d !== '' && toH !== '' && toM !== '') {
+			$('#busy_slot_to').val(d + ' ' + toH + ':' + toM + ':00');
 		} else {
 			$('#busy_slot_to').val('');
 		}
@@ -1115,6 +1120,16 @@ $(document).ready(function() {
 				$(this).removeAttr('disabled');
 			}
 		});
+		if ($('#busy_slot_to_hour option:selected').is(':disabled')) {
+			$('#busy_slot_to_hour').val('');
+			t.toH = '';
+			toTotal = null;
+		}
+		if ($('#busy_slot_to_min option:selected').is(':disabled')) {
+			$('#busy_slot_to_min').val('');
+			t.toM = '';
+			toTotal = null;
+		}
 		if (fromTotal !== null && toTotal !== null && toTotal <= fromTotal) {
 			showBusySlotError('To time must be after From time');
 		} else {
