@@ -7761,34 +7761,49 @@ class Controller_Manage extends Controller_Siteadmin
         // }
             if(isset($_SESSION['download_set']))
             {
-                $all_company_list = $this->manage_model->passenger_wallet_logs(trim(Html::chars($keyword)), trim(Html::chars($status)),$recharge_type,$start_date,$end_date, $company,0,3000);
-                $xls_output = $all_company_list;
-                foreach($all_company_list as $key => $val)
+                /* Export dropdown is 1-20000, but fetch was hardcoded to 3000. */
+                $export_range = explode('-', $_SESSION['download_set']);
+                $export_start = (isset($export_range[0]) && (int)$export_range[0] > 0) ? (int)$export_range[0] : 1;
+                $export_end = (isset($export_range[1]) && (int)$export_range[1] > 0) ? (int)$export_range[1] : 20000;
+                if ($export_end < $export_start) {
+                    $export_end = $export_start;
+                }
+                $export_offset = $export_start - 1;
+                $export_limit = $export_end - $export_start + 1;
+                if ($export_limit > 20000) {
+                    $export_limit = 20000;
+                }
+                @set_time_limit(0);
+                $all_company_list = $this->manage_model->passenger_wallet_logs(trim(Html::chars($keyword)), trim(Html::chars($status)),$recharge_type,$start_date,$end_date, $company,$export_offset,$export_limit);
+                $xls_output = [];
+                $row_index = $export_offset;
+                foreach($all_company_list as $val)
                 {
+                    $xls_output[$row_index] = $val;
                     if($val['change_amount'] > 0)
                     {
-                    $xls_output[$key]['amount_credit'] =round($val['change_amount'],3);
+                    $xls_output[$row_index]['amount_credit'] =round($val['change_amount'],3);
                     }
                     else
                     {
-                       $xls_output[$key]['amount_credit'] =0;
+                       $xls_output[$row_index]['amount_credit'] =0;
 
                     }
                     if($val['change_amount'] < 0)
                     {
-                    $xls_output[$key]['amount_debit'] =round($val['change_amount'],3);
+                    $xls_output[$row_index]['amount_debit'] =round($val['change_amount'],3);
                     }
                     else
                     {
-                       $xls_output[$key]['amount_debit'] =0;
+                       $xls_output[$row_index]['amount_debit'] =0;
 
                     }
                     
                     if($val['recharge_type'] == 4 || $val['recharge_type'] == 5)
 					 {
-						$xls_output[$key]['trip_fare'] = isset($val['tripfare'])?$val['tripfare']:'-';
+						$xls_output[$row_index]['trip_fare'] = isset($val['tripfare'])?$val['tripfare']:'-';
 					 }else{
-						$xls_output[$key]['trip_fare'] = '-';
+						$xls_output[$row_index]['trip_fare'] = '-';
 					 }
                     
 
@@ -7847,9 +7862,10 @@ class Controller_Manage extends Controller_Siteadmin
                             }
                         break;
                     }
-                    $xls_output[$key]['recharge_type'] = $recharge_type;
+                    $xls_output[$row_index]['recharge_type'] = $recharge_type;
 
-                    $xls_output[$key]['created_date'] = Commonfunction::convertphpdate('Y-m-d h:i:s A',$val['created_date']);
+                    $xls_output[$row_index]['created_date'] = Commonfunction::convertphpdate('Y-m-d h:i:s A',$val['created_date']);
+                    $row_index++;
                 }
 
                 $export_table_header = [__('passenger_name'),__('passenger_phone'),__('current_wallet_amt'),__('amount_credit'),__('amount_debit'),__('recharge_type'),'Trip fare',__('trip_id'),__('redeem_points'),__('notes'),__('created_date')];
