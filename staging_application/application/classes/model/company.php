@@ -828,15 +828,18 @@ Class Model_Company extends Model
     
     public function dashboard_driverdetails($cid = '')
     {
-        $query    = "SELECT count(`id`) as co_nt FROM " . PEOPLE . " as p Join " . COMPANY . " as c ON p.company_id=c.cid where user_type='D' and status='A' and cid = '$cid'";
-        $queryval = Db::query(Database::SELECT, $query)->execute()->as_array();
-        $result   = "";
-        foreach ($queryval as $res) {
-            if ($res["co_nt"] > 0) {
-                $result .= "['Driver', " . $res["co_nt"] . "" . "],";
-            }
+        $match_query = [
+            'user_type' => 'D',
+            'status' => 'A'
+        ];
+        if ($cid != '' && $cid != 0) {
+            $match_query['company_id'] = (int)$cid;
         }
-        $result = rtrim($result, ",");
+        $count = $this->mongo_db->count(MDB_PEOPLE, $match_query);
+        $result = '';
+        if ($count > 0) {
+            $result = "['Driver', " . $count . "]";
+        }
         return $result;
     }    
     public function changedashboard_driverdetails($cid = '', $startdate = '', $enddate = '')
@@ -883,21 +886,23 @@ Class Model_Company extends Model
 			}	
 		}
 		$result = rtrim($result_val, ",");
-		echo "<pre>"; print_r($result); exit;
         return $result;
     }
     
     public function dashboard_managerdetails($cid = '')
     {
-        $query    = "SELECT count(`id`) as co_nt FROM " . PEOPLE . " as p Join " . COMPANY . " as c ON p.company_id=c.cid where user_type='M' and status='A' and cid = '$cid'";
-        $queryval = Db::query(Database::SELECT, $query)->execute()->as_array();
-        $result   = "";
-        foreach ($queryval as $res) {
-            if ($res["co_nt"] > 0) {
-                $result .= "['Manager', " . $res["co_nt"] . "" . "],";
-            }
+        $match_query = [
+            'user_type' => 'M',
+            'status' => 'A'
+        ];
+        if ($cid != '' && $cid != 0) {
+            $match_query['company_id'] = (int)$cid;
         }
-        $result = rtrim($result, ",");
+        $count = $this->mongo_db->count(MDB_PEOPLE, $match_query);
+        $result = '';
+        if ($count > 0) {
+            $result = "['Manager', " . $count . "]";
+        }
         return $result;
     }
     
@@ -951,15 +956,17 @@ Class Model_Company extends Model
     
     public function dashboard_taxidetails($cid = '')
     {
-        $query    = "SELECT count(`taxi_id`) as co_nt FROM " . TAXI . " where taxi_company='$cid' and taxi_status = 'A' ";
-        $queryval = Db::query(Database::SELECT, $query)->execute()->as_array();
-        $result   = "";
-        foreach ($queryval as $res) {
-            if ($res["co_nt"] > 0) {
-                $result .= "['Taxi', " . $res["co_nt"] . "" . "],";
-            }
+        $match_query = [
+            'taxi_status' => 'A'
+        ];
+        if ($cid != '' && $cid != 0) {
+            $match_query['taxi_company'] = (int)$cid;
         }
-        $result = rtrim($result, ",");
+        $count = $this->mongo_db->count(MDB_TAXI, $match_query);
+        $result = '';
+        if ($count > 0) {
+            $result = "['Taxi', " . $count . "]";
+        }
         return $result;
     }
     
