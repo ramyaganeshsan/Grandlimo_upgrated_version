@@ -1,139 +1,162 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.'); ?>
-<link rel="stylesheet" href="<?php echo URL_BASE; ?>public/bootstrap-3.2.0/vendor/bootstrap/css/bootstrap.css"/>
-<link rel="stylesheet" href="<?php echo URL_BASE; ?>public/bootstrap-3.2.0/vendor/bootstrap/css/style.css"/>
-<link rel="stylesheet" href="<?php echo URL_BASE; ?>public/bootstrap-3.2.0/vendor/bootstrap/css/simple-sidebar.css"/>
-<link rel="stylesheet" href="<?php echo URL_BASE; ?>public/bootstrap-3.2.0/dist/css/formValidation.css"/>
-<link rel="stylesheet" href="<?php echo URL_BASE; ?>public/bootstrap-3.2.0/vendor/bootstrap/css/bootstrap-datetimepicker.css"/>
-<link rel="stylesheet" href="<?php echo URL_BASE; ?>public/bootstrap-3.2.0/vendor/bootstrap/css/media_style.css"/>
 <style>
-    /* View-only dispatcher: same live dashboard layout, no add/edit/side menu */
-    .view_only_dispatch .lft_outer,
-    .view_only_dispatch #add_book_tab,
-    .view_only_dispatch #edit_book_tab,
-    .view_only_dispatch #ab_tab,
-    .view_only_dispatch #eb_tab,
-    .view_only_dispatch .sidebar-nav,
-    .view_only_dispatch #wrapper { display: none !important; }
+/* VIEW-ONLY LAYOUT V3 — isolated so dispatcher CSS cannot overlap headings */
+html, body { margin: 0; padding: 0; height: 100%; overflow: hidden; font-family: Arial, Helvetica, sans-serif; }
+#content, .container_content { width: 100% !important; max-width: 100% !important; margin: 0 !important; padding: 0 !important; }
+.loader { display: none; }
 
-    .view_only_dispatch .col-md-4-inner {
-        position: absolute !important;
-        z-index: 12;
-        width: auto !important;
-        left: 8px;
-        top: 8px;
-        background: transparent !important;
-        padding: 0 !important;
-    }
-    .view_only_dispatch .col-md-4-inner .nav-tabs {
-        border: 0;
-        background: #ea9c0e;
-        display: inline-block;
-        padding: 4px 8px;
-        margin: 0;
-    }
-    .view_only_dispatch .col-md-4-inner .nav-tabs > li {
-        float: left;
-        margin: 0 4px 0 0;
-    }
-    .view_only_dispatch #map-section {
-        width: calc(100% - 250px) !important;
-        margin-left: 0 !important;
-        float: left;
-        padding-left: 0 !important;
-        padding-right: 0 !important;
-    }
-    .view_only_dispatch .driver_status {
-        width: 250px !important;
-        float: right;
-        right: 0;
-        position: absolute;
-        top: 52px;
-        z-index: 8;
-        background: #fff;
-    }
-    .view_only_dispatch ul.driver_details {
-        list-style: none;
-        margin: 0;
-        padding: 0;
-        clear: both;
-    }
-    .view_only_dispatch ul.driver_details li {
-        display: block;
-        clear: both;
-        overflow: hidden;
-        padding: 6px 8px;
-        border-bottom: 1px solid #eee;
-        position: relative;
-    }
-    .view_only_dispatch ul.driver_details li span {
-        display: inline-block;
-        vertical-align: middle;
-        float: none;
-        position: static;
-    }
-    .view_only_dispatch table.scroll {
-        border-collapse: collapse;
-        width: 100%;
-        min-width: 1600px;
-        table-layout: auto;
-    }
-    .view_only_dispatch table.scroll thead td,
-    .view_only_dispatch table.scroll tbody td {
-        position: static !important;
-        float: none !important;
-        display: table-cell !important;
-        white-space: normal;
-        word-break: break-word;
-        vertical-align: top;
-        padding: 6px 4px;
-    }
-    .view_only_dispatch .overflow-block_outer {
-        overflow-x: auto !important;
-        overflow-y: auto !important;
-        width: 100%;
-    }
-    .view_only_dispatch #changetr thead td:last-child,
-    .view_only_dispatch #changetr tbody td:nth-last-child(-n+2) {
-        display: none !important;
-    }
-    .view_only_dispatch .manage_booking_bottom_scroll {
-        width: 100% !important;
-    }
-    .taxi_dispatcher_inner .rgt_menu {
-        text-align: right;
-        padding-top: 12px;
-    }
-    .taxi_dispatcher_inner .rgt_menu ul {
-        list-style: none;
-        margin: 0;
-        padding: 0;
-    }
-    .taxi_dispatcher_inner .rgt_menu li {
-        display: inline-block;
-        margin-left: 12px;
-    }
+.vo-topbar {
+    height: 56px;
+    background: #fff;
+    border-bottom: 1px solid #e5e5e5;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 16px;
+    position: relative;
+    z-index: 20;
+}
+.vo-topbar img { height: 42px; }
+.vo-topbar .vo-user a { margin-left: 12px; color: #333; }
+
+#vo-app {
+    height: calc(100vh - 56px);
+    display: flex;
+    flex-direction: column;
+    background: #fff;
+    overflow: hidden;
+}
+.vo-main {
+    display: flex;
+    flex: 1 1 58%;
+    min-height: 280px;
+    position: relative;
+}
+.vo-map-wrap {
+    flex: 1 1 auto;
+    min-width: 0;
+    position: relative;
+}
+#map-canvas {
+    width: 100% !important;
+    height: 100% !important;
+}
+.vo-vehicle-bar {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    z-index: 5;
+    background: #ea9c0e;
+    padding: 4px 8px;
+}
+.vo-vehicle-bar select { height: 28px; font-size: 12px; }
+
+.vo-right {
+    width: 260px;
+    flex: 0 0 260px;
+    border-left: 1px solid #ddd;
+    display: flex;
+    flex-direction: column;
+    background: #fff;
+    z-index: 6;
+}
+#all_drivers { flex: 1 1 auto; overflow-y: auto; }
+#all_drivers h4 {
+    margin: 0;
+    padding: 8px 10px;
+    background: #ea9c0e;
+    font-size: 13px;
+    font-weight: bold;
+}
+#all_drivers ul.driver_details { list-style: none; margin: 0; padding: 0; }
+#all_drivers ul.driver_details li {
+    display: flex !important;
+    align-items: center;
+    justify-content: space-between;
+    gap: 6px;
+    padding: 8px 10px;
+    border-bottom: 1px solid #eee;
+    float: none !important;
+    position: static !important;
+    overflow: hidden;
+}
+#all_drivers ul.driver_details li span {
+    display: inline-block;
+    float: none !important;
+    position: static !important;
+}
+#all_drivers ul.driver_details li span:first-child { flex: 1 1 auto; min-width: 0; font-size: 12px; }
+#all_drivers ul.driver_details li span:first-child p { margin: 0; font-size: 11px; }
+#all_drivers .driver_status_active,
+#all_drivers .driver_status_in,
+#all_drivers .driver_status_out,
+#all_drivers .driver_status_busy {
+    padding: 2px 8px;
+    border-radius: 3px;
+    color: #fff;
+    font-size: 11px;
+    white-space: nowrap;
+}
+#all_drivers .driver_status_active { background: #ea9c0e; }
+#all_drivers .driver_status_in { background: #2e7d32; }
+#all_drivers .driver_status_out { background: #1565c0; }
+#all_drivers .driver_status_busy { background: #c62828; }
+
+.vo-earn { display: flex; border-top: 1px solid #ddd; }
+.vo-earn > div { flex: 1; padding: 6px 8px; }
+.vo-earn h4 { margin: 0 0 4px; background: #ea9c0e; padding: 4px 6px; font-size: 12px; }
+.vo-earn ul { list-style: none; margin: 0; padding: 0; font-size: 13px; }
+
+.vo-bottom { flex: 0 0 42%; min-height: 180px; display: flex; flex-direction: column; border-top: 1px solid #ccc; }
+.vo-filters {
+    background: #fff;
+    padding: 6px 8px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px 16px;
+    align-items: center;
+    font-size: 12px;
+}
+.vo-filters label { font-weight: normal; margin: 0; }
+.vo-table-wrap { flex: 1 1 auto; overflow: auto; }
+table.vo-trips {
+    width: 100%;
+    min-width: 1400px;
+    border-collapse: collapse;
+    table-layout: fixed;
+}
+table.vo-trips thead { display: table-header-group !important; }
+table.vo-trips tbody { display: table-row-group !important; }
+table.vo-trips tr { display: table-row !important; }
+table.vo-trips th, table.vo-trips td {
+    display: table-cell !important;
+    position: static !important;
+    float: none !important;
+    white-space: normal;
+    word-break: break-word;
+    vertical-align: top;
+    padding: 6px 5px;
+    font-size: 11px;
+    border-bottom: 1px solid #eee;
+}
+table.vo-trips th {
+    background: #f9c213 !important;
+    color: #000;
+    font-weight: bold;
+    white-space: nowrap;
+    position: sticky !important;
+    top: 0;
+    z-index: 2;
+}
+table.vo-trips tbody tr:nth-child(odd) { background: #f7f7f7; }
 </style>
-<div class="loader">
-    <div class="loader_inner">
-        <div class="clearfix load_logo" style="margin-left: 35px; margin-bottom: 15px;">
-            <img src="<?php echo URL_BASE; ?>public/uploads/site_logo/logo.png" alt="Logo">
-        </div>
-        <div class="clearfix"><img src="<?php echo URL_BASE; ?>public/css/img/ajax-loaders/294.gif" /></div>
-    </div>
-</div>
-<div class="taxi_dispatcher_inner">
-    <div class="row">
-        <div class="col-lg-5"></div>
-        <div class="col-md-6">
-            <a href="<?php echo URL_BASE; ?>dispatch-panel/view-only" title="logo">
-                <img src="<?php echo URL_BASE; ?>public/uploads/site_logo/logo.png" alt="Logo">
-            </a>
-        </div>
-        <div class="col-lg-5 rgt_menu">
-            <ul>
-                <li><span><?php echo isset($_SESSION['name']) ? htmlspecialchars($_SESSION['name']) : 'View Dispatcher'; ?></span></li>
-                <li><a href="<?php echo URL_BASE; ?>dispatch-panel/logout" title="Logout">Logout</a></li>
-            </ul>
-        </div>
+<div class="vo-topbar">
+    <span></span>
+    <a href="<?php echo URL_BASE; ?>dispatch-panel/view-only" title="logo">
+        <img src="<?php echo URL_BASE; ?>public/uploads/site_logo/logo.png" alt="Logo">
+    </a>
+    <div class="vo-user">
+        <span><?php echo isset($_SESSION['name']) ? htmlspecialchars($_SESSION['name']) : 'View Dispatcher'; ?></span>
+        <a href="<?php echo URL_BASE; ?>dispatch-panel/logout">Logout</a>
     </div>
 </div>

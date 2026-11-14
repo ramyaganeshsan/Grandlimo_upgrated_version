@@ -128,16 +128,9 @@ class Controller_Dispatchpanel extends Controller_Template
         $this->require_viewer();
         $this->tdispatch_model = Model::factory('taxidispatch');
 
+        /* Same Kuwait center the live dispatcher uses as fallback — do not use LOCATION_LATI (Los Angeles). */
         $current_latitude  = 29.3117;
         $current_longitude = 47.4818;
-        if (!empty($this->city_company) || !empty($this->state_company) || !empty($this->country_company)) {
-            $company_location = $this->city_company . ',' . $this->state_company . ',' . $this->country_company;
-            $current_location = $this->getLatLong($company_location);
-            if (!empty($current_location[0]) && !empty($current_location[1])) {
-                $current_latitude  = $current_location[0];
-                $current_longitude = $current_location[1];
-            }
-        }
 
         $model_details        = $this->tdispatch_model->model_details();
         $all_company_map_list = $this->tdispatch_model->all_driver_map_list('');
@@ -500,8 +493,6 @@ class Controller_Dispatchpanel extends Controller_Template
                 $op[] = '<td width="6%"><a href="javascript:;" style="cursor:default;" title="' . $tr_icon_title . '">' . $travel_status_html . '</a></td>';
                 $op[] = '<td width="5%" title="' . $tag . '"><span ' . $class . ' >' . $link . '</span></td>';
                 $op[] = '<td width="5%">' . $notes_img . '</td>';
-                $op[] = '<td colspan="2"></td>';
-                $op[] = '<td width="4%"></td>';
                 $op[] = '</tr>';
             }
             $output = implode(' ', $op);
