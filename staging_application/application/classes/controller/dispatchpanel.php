@@ -19,11 +19,14 @@ class Controller_Dispatchpanel extends Controller_Template
 
         $lang = 'en';
         I18n::lang($lang);
-        View::bind_global('js_language', '');
+        $this->javascript_language = '';
+        $action                    = $request->action();
+        $controller                = $request->controller();
+        View::bind_global('js_language', $this->javascript_language);
         View::bind_global('usertype', $this->usertype);
         View::bind_global('username', $this->username);
-        View::bind_global('action', $request->action());
-        View::bind_global('controller', $request->controller());
+        View::bind_global('action', $action);
+        View::bind_global('controller', $controller);
 
         $site_settings = $this->commonmodel->select_site_settings_old();
         $this->app_name = isset($site_settings['app_name']) ? $site_settings['app_name'] : 'Grand Limo';
