@@ -121,9 +121,10 @@ html, body { margin: 0; padding: 0; height: 100%; overflow: hidden; font-family:
 .vo-table-wrap { flex: 1 1 auto; overflow: auto; }
 table.vo-trips {
     width: 100%;
-    min-width: 1400px;
+    min-width: 1600px;
     border-collapse: collapse;
     table-layout: fixed;
+    empty-cells: show;
 }
 table.vo-trips thead { display: table-header-group !important; }
 table.vo-trips tbody { display: table-row-group !important; }
@@ -149,6 +150,9 @@ table.vo-trips th {
     z-index: 2;
 }
 table.vo-trips tbody tr:nth-child(odd) { background: #f7f7f7; }
+.fixed_payment_class { color: #07841e; font-weight: bold; }
+.pending_payment_class { color: #c62828; font-weight: bold; }
+.pass_pend_payment_class { color: #ff9600; font-weight: bold; }
 </style>
 <div class="vo-topbar">
     <span></span>

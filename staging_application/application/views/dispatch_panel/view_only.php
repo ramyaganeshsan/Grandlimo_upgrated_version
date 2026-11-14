@@ -1,5 +1,5 @@
 <?php defined('SYSPATH') or die('No direct access allowed.'); ?>
-<!-- VO-LAYOUT-V3-KUWAIT 29.3117,47.4818 -->
+<!-- VO-LAYOUT-V4-VALUES KUWAIT 29.3117,47.4818 -->
 <div id="vo-app">
     <input name="select_company" id="select_company" type="hidden" value="<?php echo $_SESSION['company_id']; ?>">
     <input type="hidden" name="select_driver_status" id="select_driver_status" value="">
@@ -216,8 +216,9 @@
             dataType: 'html',
             success: function(response) {
                 driver_list_with_status();
-                var data = response.split("@");
-                $('#all_booking_manage_list').html(data[1] || '');
+                var html = String(response);
+                var parts = html.split('|||VO|||');
+                $('#all_booking_manage_list').html(parts.length > 1 ? parts[1] : '');
             }
         });
     }
