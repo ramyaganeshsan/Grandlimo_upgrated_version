@@ -1,7 +1,7 @@
 <?php defined('SYSPATH') or die('No direct access allowed.'); ?>
 <!-- VO-LAYOUT-V5-STATUS-COLORS KUWAIT 29.3117,47.4818 -->
 <div id="vo-app">
-    <input name="select_company" id="select_company" type="hidden" value="<?php echo $_SESSION['company_id']; ?>">
+    <input name="select_company" id="select_company" type="hidden" value="<?php echo isset($company_id) ? htmlspecialchars((string) $company_id) : ''; ?>">
     <input type="hidden" name="select_driver_status" id="select_driver_status" value="">
 
     <div class="vo-main">

@@ -197,7 +197,7 @@ table.vo-trips tbody tr:nth-child(odd) { background: #f7f7f7; }
         <img src="<?php echo URL_BASE; ?>public/uploads/site_logo/logo.png" alt="Logo">
     </a>
     <div class="vo-user">
-        <span><?php echo isset($_SESSION['name']) ? htmlspecialchars($_SESSION['name']) : 'View Dispatcher'; ?></span>
+        <span><?php echo isset($username) && $username ? htmlspecialchars($username) : 'View Dispatcher'; ?></span>
         <a href="<?php echo URL_BASE; ?>dispatch-panel/logout">Logout</a>
     </div>
 </div>

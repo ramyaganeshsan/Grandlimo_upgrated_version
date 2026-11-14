@@ -12,10 +12,11 @@ class Controller_Dispatchpanel extends Controller_Template
         $this->response    = $response;
         $this->mongo_db    = MangoDB::instance('default');
         $this->commonmodel = Model::factory('commonmodel');
-        $this->usertype    = $this->session->get('user_type');
-        $this->userid      = $this->session->get('userid');
-        $this->company_id  = $this->session->get('company_id');
-        $this->username    = $this->session->get('name');
+        $this->migrate_legacy_vo_session();
+        $this->usertype    = $this->session->get('vo_user_type');
+        $this->userid      = $this->session->get('vo_userid');
+        $this->company_id  = $this->session->get('vo_company_id') ? $this->session->get('vo_company_id') : $this->session->get('company_id');
+        $this->username    = $this->session->get('vo_name');
 
         $lang = 'en';
         I18n::lang($lang);
@@ -53,6 +54,25 @@ class Controller_Dispatchpanel extends Controller_Template
     public function before()
     {
         $action = $this->request->action();
+        $allowed = [
+            'index',
+            'login',
+            'logout',
+            'view_only',
+            'driver_list_with_status',
+            'all_booking_list_manage',
+        ];
+        if (!in_array($action, $allowed, true)) {
+            $this->response->status(403);
+            echo 'Forbidden';
+            exit;
+        }
+        $method = strtoupper((string) $this->request->method());
+        if ($action != 'login' && $action != 'index' && $action != 'logout' && in_array($method, ['POST', 'PUT', 'DELETE', 'PATCH'], true)) {
+            $this->response->status(403);
+            echo 'Forbidden';
+            exit;
+        }
         if ($action == 'login' || $action == 'index') {
             $this->template = 'dispatch_panel/login_template';
         }
@@ -87,15 +107,8 @@ class Controller_Dispatchpanel extends Controller_Template
                     'status'    => ACTIVE,
                 ]);
                 if (!empty($user)) {
-                    $this->session->set('userid', $user['_id']);
-                    $this->session->set('user_type', 'V');
-                    $this->session->set('name', isset($user['name']) ? $user['name'] : 'View Dispatcher');
-                    $this->session->set('email', $user['email']);
-                    $this->session->set('company_id', isset($user['company_id']) ? $user['company_id'] : '');
-                    $this->session->set('city_id', isset($user['login_city']) ? $user['login_city'] : 1);
-                    $this->session->set('state_id', isset($user['login_state']) ? $user['login_state'] : 1);
-                    $this->session->set('country_id', isset($user['login_country']) ? $user['login_country'] : 1);
-                    $this->request->redirect('dispatch-panel/view-only');
+                        $this->start_view_only_session($user);
+                        $this->request->redirect('dispatch-panel/view-only');
                 } else {
                     $error_login = 'Invalid view-only dispatcher login';
                 }
@@ -112,12 +125,61 @@ class Controller_Dispatchpanel extends Controller_Template
 
     public function action_logout()
     {
-        $this->session->delete('userid');
-        $this->session->delete('user_type');
-        $this->session->delete('name');
-        $this->session->delete('email');
-        $this->session->delete('company_id');
+        $this->clear_dispatcher_session();
         $this->request->redirect('dispatch-panel/login');
+    }
+
+    private function clear_dispatcher_session()
+    {
+        $keys = [
+            'userid', 'user_type', 'name', 'email', 'company_id',
+            'city_id', 'state_id', 'country_id', 'username', 'first_name',
+            'vo_userid', 'vo_user_type', 'vo_name', 'vo_email', 'vo_company_id',
+        ];
+        foreach ($keys as $key) {
+            $this->session->delete($key);
+        }
+        try {
+            Cookie::$salt = 'userid';
+            Cookie::delete('userid');
+        } catch (Exception $e) {
+        }
+    }
+
+    private function start_view_only_session($user)
+    {
+        $this->clear_dispatcher_session();
+        $company_id = isset($user['company_id']) ? $user['company_id'] : '';
+        $name       = isset($user['name']) ? $user['name'] : 'View Dispatcher';
+        $this->session->set('vo_userid', $user['_id']);
+        $this->session->set('vo_user_type', 'V');
+        $this->session->set('vo_name', $name);
+        $this->session->set('vo_email', isset($user['email']) ? $user['email'] : '');
+        $this->session->set('vo_company_id', $company_id);
+        $this->session->set('company_id', $company_id);
+        $this->session->set('city_id', isset($user['login_city']) ? $user['login_city'] : 1);
+        $this->session->set('state_id', isset($user['login_state']) ? $user['login_state'] : 1);
+        $this->session->set('country_id', isset($user['login_country']) ? $user['login_country'] : 1);
+        $this->userid     = $user['_id'];
+        $this->usertype   = 'V';
+        $this->company_id = $company_id;
+        $this->username   = $name;
+    }
+
+    private function migrate_legacy_vo_session()
+    {
+        if ($this->session->get('vo_userid')) {
+            return;
+        }
+        if ($this->session->get('user_type') === 'V' && $this->session->get('userid')) {
+            $this->session->set('vo_userid', $this->session->get('userid'));
+            $this->session->set('vo_user_type', 'V');
+            $this->session->set('vo_name', $this->session->get('name'));
+            $this->session->set('vo_email', $this->session->get('email'));
+            $this->session->set('vo_company_id', $this->session->get('company_id'));
+            $this->session->delete('userid');
+            $this->session->delete('user_type');
+        }
     }
 
     private function require_viewer()
@@ -150,7 +212,8 @@ class Controller_Dispatchpanel extends Controller_Template
             ->bind('current_longitude', $current_longitude)
             ->bind('total_sum', $total_sum)
             ->bind('total_sum_day', $total_sum_day)
-            ->bind('company_currency', $company_currency);
+            ->bind('company_currency', $company_currency)
+            ->bind('company_id', $this->company_id);
 
         $this->template->title      = SITENAME . ' | View Only Dispatcher';
         $this->template->page_title = 'View Only Dispatcher';
