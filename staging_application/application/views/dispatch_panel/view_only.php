@@ -1,5 +1,5 @@
 <?php defined('SYSPATH') or die('No direct access allowed.'); ?>
-<!-- VO-LAYOUT-V4-VALUES KUWAIT 29.3117,47.4818 -->
+<!-- VO-LAYOUT-V5-STATUS-COLORS KUWAIT 29.3117,47.4818 -->
 <div id="vo-app">
     <input name="select_company" id="select_company" type="hidden" value="<?php echo $_SESSION['company_id']; ?>">
     <input type="hidden" name="select_driver_status" id="select_driver_status" value="">
@@ -56,16 +56,38 @@
 
     <div class="vo-bottom">
         <div class="vo-filters">
-            <label><input type="checkbox" name="status_color" checked value="0" onchange="all_booking_manage_list()"> Assign</label>
-            <label><input type="checkbox" name="status_color" checked value="6, 7, 10" onchange="all_booking_manage_list()"> Reassign</label>
-            <label><input type="checkbox" name="status_color" checked value="9" onchange="all_booking_manage_list()"> Trip Confirmed</label>
-            <label><input type="checkbox" name="status_color" checked value="3" onchange="all_booking_manage_list()"> Start To Pickup</label>
-            <label><input type="checkbox" name="status_color" checked value="2" onchange="all_booking_manage_list()"> In Progress</label>
-            <label><input type="checkbox" name="status_color" checked value="1" onchange="all_booking_manage_list()"> Trip Completed</label>
-            <label><input type="checkbox" name="status_color" checked value="5" onchange="all_booking_manage_list()"> Waiting for Payment</label>
+            <label>
+                <span class="heading_icon_one"><input type="checkbox" name="status_color" checked value="0" onchange="all_booking_manage_list()"></span>
+                Assign
+            </label>
+            <label>
+                <span class="heading_icon_two"><input type="checkbox" name="status_color" checked value="6, 7, 10" onchange="all_booking_manage_list()"></span>
+                Reassign
+            </label>
+            <label>
+                <span class="heading_icon_four"><input type="checkbox" name="status_color" checked value="9" onchange="all_booking_manage_list()"></span>
+                Trip Confirmed
+            </label>
+            <label>
+                <span class="heading_icon_five"><input type="checkbox" name="status_color" checked value="3" onchange="all_booking_manage_list()"></span>
+                Start To Pickup
+            </label>
+            <label>
+                <span class="heading_icon_six"><input type="checkbox" name="status_color" checked value="2" onchange="all_booking_manage_list()"></span>
+                In Progress
+            </label>
+            <label>
+                <span class="heading_icon_sevan"><input type="checkbox" name="status_color" checked value="1" onchange="all_booking_manage_list()"></span>
+                Trip Completed
+            </label>
+            <label>
+                <span class="heading_icon_eight"><input type="checkbox" name="status_color" checked value="5" onchange="all_booking_manage_list()"></span>
+                Waiting for Payment
+            </label>
             <label>
                 <input type="hidden" name="status_color_cancel" id="status_color_cancel" value="8">
-                <input type="checkbox" checked name="status_cancel" id="status_cancel" value="C,R" onchange="all_booking_manage_list()"> Trip Cancelled
+                <span class="heading_icon_nine"><input type="checkbox" checked name="status_cancel" id="status_cancel" value="C,R" onchange="all_booking_manage_list()"></span>
+                Trip Cancelled
             </label>
         </div>
         <div class="vo-table-wrap">

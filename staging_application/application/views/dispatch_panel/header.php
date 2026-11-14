@@ -113,11 +113,48 @@ html, body { margin: 0; padding: 0; height: 100%; overflow: hidden; font-family:
     padding: 6px 8px;
     display: flex;
     flex-wrap: wrap;
-    gap: 10px 16px;
+    gap: 8px 14px;
     align-items: center;
     font-size: 12px;
 }
-.vo-filters label { font-weight: normal; margin: 0; }
+.vo-filters label {
+    font-weight: normal;
+    margin: 0;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    white-space: nowrap;
+}
+.vo-filters [class^="heading_icon_"] {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 16px;
+    height: 16px;
+    border-radius: 2px;
+}
+.vo-filters [class^="heading_icon_"] input {
+    margin: 0;
+    width: 14px;
+    height: 14px;
+    cursor: pointer;
+}
+.heading_icon_one { background: #1298ff; }
+.heading_icon_one input { accent-color: #1298ff; }
+.heading_icon_two { background: #1339f9; }
+.heading_icon_two input { accent-color: #1339f9; }
+.heading_icon_four { background: #12ff00; }
+.heading_icon_four input { accent-color: #12ff00; }
+.heading_icon_five { background: #f9c213; }
+.heading_icon_five input { accent-color: #f9c213; }
+.heading_icon_six { background: #ff9600; }
+.heading_icon_six input { accent-color: #ff9600; }
+.heading_icon_sevan { background: #07841e; }
+.heading_icon_sevan input { accent-color: #07841e; }
+.heading_icon_eight { background: #f91313; }
+.heading_icon_eight input { accent-color: #f91313; }
+.heading_icon_nine { background: #844d06; }
+.heading_icon_nine input { accent-color: #844d06; }
 .vo-table-wrap { flex: 1 1 auto; overflow: auto; }
 table.vo-trips {
     width: 100%;
