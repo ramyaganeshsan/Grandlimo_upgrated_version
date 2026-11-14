@@ -139,6 +139,16 @@ Route::set('error', 'error/<action>/<origuri>/<message>', ['action' => '[0-9]++'
     'controller' => 'error',
     'action'     => 'index'
 ]);
+Route::set('dispatch-panel-view', 'dispatch-panel/view-only')
+->defaults([
+    'controller' => 'dispatchpanel',
+    'action'     => 'view_only',
+]);
+Route::set('dispatch-panel', 'dispatch-panel(/<action>(/<id>))')
+->defaults([
+    'controller' => 'dispatchpanel',
+    'action'     => 'login',
+]);
 Route::set('default', '(<controller>(/<action>(/<id>)))')
 	->defaults([
 		'controller' => 'users',
