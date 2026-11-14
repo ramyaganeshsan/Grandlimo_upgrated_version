@@ -83,7 +83,7 @@
                         <th style="width:11%">Drop Location</th>
                         <th style="width:5%">Time</th>
                         <th style="width:6%">Payment Type</th>
-                        <th style="width:6%">Fare(<?php echo $company_currency; ?>)</th>
+                        <th style="width:6%">Fare(<?php echo defined('CURRENCY') ? CURRENCY : 'KWD'; ?>)</th>
                         <th style="width:6%">Created by</th>
                         <th style="width:6%">Status</th>
                         <th style="width:6%">Booking Type</th>

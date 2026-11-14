@@ -138,13 +138,15 @@ class Controller_Dispatchpanel extends Controller_Template
         $total_sum            = $this->tdispatch_model->get_total_sum($operator_id);
         $total_sum_day        = $this->tdispatch_model->get_total_sum_day($operator_id);
 
+        $company_currency = defined('CURRENCY') ? CURRENCY : 'KWD';
         $view = View::factory('dispatch_panel/view_only')
             ->bind('model_details', $model_details)
             ->bind('all_company_map_list', $all_company_map_list)
             ->bind('current_latitude', $current_latitude)
             ->bind('current_longitude', $current_longitude)
             ->bind('total_sum', $total_sum)
-            ->bind('total_sum_day', $total_sum_day);
+            ->bind('total_sum_day', $total_sum_day)
+            ->bind('company_currency', $company_currency);
 
         $this->template->title      = SITENAME . ' | View Only Dispatcher';
         $this->template->page_title = 'View Only Dispatcher';
